@@ -36,8 +36,8 @@
             </div>
             <div id="main" class="col">
                 <div>Found <span id="numFound"></span> records</div>
-                <div id="records">
-                </div>
+                <div id="prev-next"></div>
+                <div id="records"></div>
             </div>
         </div>
     </div>
@@ -71,10 +71,19 @@
 {{#list filters}}<a href="#" data="{{param}}"><i class="fa fa-minus" aria-hidden="true"></i></a> {{label}}{{/list}}
 </script>
 
+<script id="item-prev-next-template" type="text/x-handlebars-template">
+[<a href="#" data="{{start}}">{{label}}</a>]
+</script>
+
+<script id="list-prev-next-template" type="text/x-handlebars-template">
+{{#list items}}{{item}}{{/list}}
+</script>
+
 <script type="text/javascript">
   var baseUrl = 'http://localhost:8983/solr/tradit/select/';
   var query = '*:*';
   var start = 0;
+  var rows = 10;
   var filters = [];
   var parameters = [
       'wt=json',
@@ -106,10 +115,15 @@
   var listFacetTemplate   = Handlebars.compile($("#list-facet-template").html());
   var filterParamTemplate = Handlebars.compile($("#filter-param-template").html());
   var filterTemplate      = Handlebars.compile($("#list-filters-template").html());
+  var prevNextTemplate    = Handlebars.compile($("#list-prev-next-template").html());
+  var itemPrevNextTemplate= Handlebars.compile($("#item-prev-next-template").html());
 
   function buildUrl() {
-      var url = baseUrl + '?q=' + query
-          + '&' + parameters.join('&');
+      var url = baseUrl
+          + '?q=' + query
+          + '&' + parameters.join('&')
+          + '&start=' + start
+          + '&rows=' + rows;
 
       if (filters.length > 0)
           for (var i = 0; i < filters.length; i++)
@@ -136,6 +150,13 @@
       })
   };
 
+  function getInterval(number) {
+      var beginning = parseInt(number) + 1;
+      var ending = parseInt(number) + parseInt(rows);
+      var startEnd = beginning + '-' + ending;
+      return startEnd;
+  }
+
   function loadUrl(urlParam) {
       // console.log('loading url: ' + urlParam);
 
@@ -149,6 +170,29 @@
           // console.log('loaded url: ' + urlParam);
           // console.log('status: ' + status);
           $('#numFound').html(result.response.numFound.toLocaleString('en-US'));
+
+          var numFound = result.response.numFound;
+          $('#prev-next').html('');
+          var items = [];
+          if (start > 0) {
+              for (var i = 1; i <= 3; i++) {
+                  var item = start - (i * rows);
+                  if (item > 0)
+                      items.push(itemPrevNextTemplate({'start': item, 'label': getInterval(item)}));
+              }
+          }
+          items.push(getInterval(start));
+          for (var i = 1; i <= 3; i++) {
+              var item = parseInt(start) + (i * rows);
+              if (item+1 < numFound)
+                  items.push(itemPrevNextTemplate({'start': item, 'label': getInterval(item)}));
+          }
+          $('#prev-next').html(items.join(' '));
+          $('#prev-next a').click(function (event) {
+              event.preventDefault();
+              start = $(this).attr('data');
+              loadUrl(buildUrl());
+          });
 
           $('#records').html('');
           $('#facet-list').html('');
@@ -186,6 +230,7 @@
   }
 
   function doSearch() {
+      start = 0;
       query = $('#query').val();
       loadUrl(buildUrl());
   }
