@@ -45,6 +45,10 @@ h3 {
     border-bottom: 1px dashed #cccccc;
     margin-bottom: 15px;
 }
+#navigation-footer {
+    border-top: 1px dashed #cccccc;
+    margin-bottom: 15px;
+}
 
 #records {
     padding: 0;
@@ -126,7 +130,13 @@ ul {
                         <span id="items-per-page"></span>
                     </div>
                 </div>
+
                 <div id="records"></div>
+
+                <div class="row" id="navigation-footer">
+                    <div class="col-8" id="prev-next-footer"></div>
+                    <div class="col-4"></div>
+                </div>
                 <div id="solr-url"></div>
             </div>
         </div>
@@ -149,11 +159,13 @@ ul {
 
 <script id="record-template" type="text/x-handlebars-template">
     <div class="record">
-        <h2>{{Title_mainTitle_ss}} <a href="#" data="details-{{id}}"><i class="fa fa-book" aria-hidden="true"></i></a></h2>
+        <h2>{{Title_mainTitle_ss}} {{Title_subtitle_ss}} <a href="#" data="details-{{id}}"><i class="fa fa-book" aria-hidden="true"></i></a></h2>
         {{Title_responsibilityStatement_ss}}<br/>
         {{Edition_editionStatement_ss}}<br/>
         {{Publication_place_ss}} {{Publication_agent_ss}} {{Publication_date_ss}}<br/>
         {{PhysicalDescription_extent_ss}} {{PhysicalDescription_dimensions_ss}}<br/>
+        {{Summary_ss}}<br/>
+        {{TableOfContents_ss}}<br/>
         {{MainPersonalName_personalName_ss}} {{MainPersonalName_dates_ss}}<br/>
         <a href="#" class="record-link" data="Topic_topicalTerm_ss">{{Topic_topicalTerm_ss}}</a><br/>
         <a href="#" class="record-link" data="Topic_geographicSubdivision_ss">{{Topic_geographicSubdivision_ss}}</a><br/>
@@ -267,34 +279,44 @@ ul {
 
   function createPrevNextLinks(numFound) {
       $('#prev-next').html('');
+      $('#prev-next-footer').html('');
       var items = [];
       if (start > 0) {
           for (var i = 1; i <= 3; i++) {
               var item = start - (i * rows);
               if (item >= 0)
                   items.unshift(itemPrevNextTemplate(
-                      {'start': item, 'label': getInterval(item, false)}));
+                      {'start': item, 'label': getInterval(item, numFound, false)}));
           }
       }
-      items.push(strong({'item': getInterval(start, true)}));
+      items.push(strong({'item': getInterval(start, numFound, true)}));
       for (var i = 1; i <= 3; i++) {
           var item = parseInt(start) + (i * rows);
           if (item+1 < numFound)
-              items.push(itemPrevNextTemplate({'start': item, 'label': getInterval(item, false)}));
+              items.push(itemPrevNextTemplate(
+                  {'start': item, 'label': getInterval(item, numFound, false)}));
       }
       $('#prev-next').html(items.join(' &nbsp; '));
+      $('#prev-next-footer').html(items.join(' &nbsp; '));
       $('#prev-next a').click(function (event) {
+          event.preventDefault();
+          start = $(this).attr('data');
+          loadUrl(buildUrl());
+      });
+      $('#prev-next-footer a').click(function (event) {
           event.preventDefault();
           start = $(this).attr('data');
           loadUrl(buildUrl());
       });
   }
 
-  function getInterval(number, both) {
+  function getInterval(number, max, both) {
       var beginning = parseInt(number) + 1;
       var startEnd = beginning + '-';
       if (both === true) {
           var ending = parseInt(number) + parseInt(rows);
+          if (ending > max)
+              ending = max;
           startEnd += ending;
       }
       return startEnd;
