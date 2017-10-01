@@ -8,12 +8,89 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
     <script src="https://use.fontawesome.com/feff23b961.js"></script>
+<style type="text/css">
+#per-page .label {
+    color: #999;
+}
+#query {
+    border-radius: 10px;
+    border-color: #37ba00;
+}
+#content {
+    border-top: 1px solid #cccccc;
+    border-radius: 10px;
+}
+h1 {
+    color: #37ba00;
+    padding: 5px;
+    border-bottom: 1px solid #cccccc;
+    border-radius: 10px;
+    font-weight: 900;
+}
+h1 span {
+    font-size: 80%;
+    color: #333;
+    font-weight: 100;
+}
+h3 {
+    color: #37ba00;
+}
+.search-block {
+    margin-bottom: 10px;
+}
+#message {
+    color: #37ba00;
+}
+#navigation {
+    border-bottom: 1px dashed #cccccc;
+    margin-bottom: 15px;
+}
+
+#records {
+    padding: 0;
+    margin: 0;
+    margin-top: 5px;
+}
+.record {
+    margin-bottom: 15px;
+}
+
+.record h2 {
+    margin-bottom: 0;
+    font-weight: 200;
+}
+.record h2 .fa-book {
+    color: #37ba00;
+}
+
+.record .label {
+    color: #cccccc;
+}
+.record .details {
+    display: none;
+}
+ul {
+    list-style-type: none;
+    padding-left: 0px;
+}
+#numFound {
+    color: #37ba00;
+    font-weight: 900;
+}
+#solr-url {
+    overflow: auto;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    color: #37ba00;
+    font-size: small;
+}
+</style>
 </head>
 <body>
 <div class="container">
     <!-- Content here -->
-    <h1>Tradit catalog :: analysing clusters</h1>
-    <div class="container">
+    <h1><i class="fa fa-book" aria-hidden="true"></i> Tradit catalog <span>analysing clusters</span></h1>
+    <div class="container" id="content">
 
         <div class="row">
             <div id="left" class="col-3">
@@ -35,9 +112,22 @@
                 </div>
             </div>
             <div id="main" class="col">
-                <div>Found <span id="numFound"></span> records</div>
-                <div id="prev-next"></div>
+                <div class="row">
+                    <div class="col-8">
+                        Found <span id="numFound"></span> records
+                    </div>
+                    <div class="col-4" id="message"></div>
+                </div>
+
+                <div class="row" id="navigation">
+                    <div class="col-8" id="prev-next"></div>
+                    <div class="col-4" id="per-page">
+                        <span class="label">Items per page:</span>
+                        <span id="items-per-page"></span>
+                    </div>
+                </div>
                 <div id="records"></div>
+                <div id="solr-url"></div>
             </div>
         </div>
     </div>
@@ -59,8 +149,18 @@
 
 <script id="record-template" type="text/x-handlebars-template">
     <div class="record">
-        <h2>{{Title_mainTitle_ss}}</h2>
-        {{Publication_place_ss}} {{DatesOfPublication_ss}}
+        <h2>{{Title_mainTitle_ss}} <a href="#" data="details-{{id}}"><i class="fa fa-book" aria-hidden="true"></i></a></h2>
+        {{Title_responsibilityStatement_ss}}<br/>
+        {{Edition_editionStatement_ss}}<br/>
+        {{Publication_place_ss}} {{Publication_agent_ss}} {{Publication_date_ss}}<br/>
+        {{PhysicalDescription_extent_ss}} {{PhysicalDescription_dimensions_ss}}<br/>
+        {{MainPersonalName_personalName_ss}} {{MainPersonalName_dates_ss}}<br/>
+        <a href="#" class="record-link" data="Topic_topicalTerm_ss">{{Topic_topicalTerm_ss}}</a><br/>
+        <a href="#" class="record-link" data="Topic_geographicSubdivision_ss">{{Topic_geographicSubdivision_ss}}</a><br/>
+        <a href="#" class="record-link" data="Topic_formSubdivision_ss">{{Topic_formSubdivision_ss}}</a><br/>
+        <div class="details" id="details-{{id}}">
+            {{#list fields}}<span class="label">{{label}}:</span> {{value}}{{/list}}
+        </div>
     </div>
 </script>
 
@@ -72,11 +172,15 @@
 </script>
 
 <script id="item-prev-next-template" type="text/x-handlebars-template">
-[<a href="#" data="{{start}}">{{label}}</a>]
+<a href="#" data="{{start}}">{{label}}</a>
 </script>
 
 <script id="list-prev-next-template" type="text/x-handlebars-template">
 {{#list items}}{{item}}{{/list}}
+</script>
+
+<script id="strong-template" type="text/x-handlebars-template">
+<strong>{{item}}</strong>
 </script>
 
 <script type="text/javascript">
@@ -90,6 +194,9 @@
       'json.nl=map',
       'json.wrf=?',
       'facet=on',
+      // 'facet.field=ManifestationIdentifier_ss',
+      'facet.field=WorkIdentifier_ss',
+      'facet.field=Language_ss',
       'facet.field=AdminMetadata_languageOfCataloging_ss',
       'facet.field=Leader_typeOfRecord_ss',
       'facet.field=GeneralInformation_festschrift_ss',
@@ -97,10 +204,16 @@
   ];
 
   var facetLabels = {
-      'AdminMetadata_languageOfCataloging_ss': 'language',
+      'ManifestationIdentifier_ss': 'manifestations',
+      'WorkIdentifier_ss': 'works',
+      'Language_ss': 'language',
+      'AdminMetadata_languageOfCataloging_ss': 'language of cataloging',
       'Leader_typeOfRecord_ss': 'record type',
       'GeneralInformation_festschrift_ss': 'festschrift',
-      'Leader_descriptiveCatalogingForm_ss': 'cataloging form'
+      'Leader_descriptiveCatalogingForm_ss': 'cataloging form',
+      'Topic_topicalTerm_ss': 'topic',
+      'Topic_geographicSubdivision_ss': 'geographic',
+      'Topic_formSubdivision_ss': 'form',
   };
 
   Handlebars.registerHelper('list', function(items, options) {
@@ -117,6 +230,7 @@
   var filterTemplate      = Handlebars.compile($("#list-filters-template").html());
   var prevNextTemplate    = Handlebars.compile($("#list-prev-next-template").html());
   var itemPrevNextTemplate= Handlebars.compile($("#item-prev-next-template").html());
+  var strong              = Handlebars.compile($("#strong-template").html());
 
   function buildUrl() {
       var url = baseUrl
@@ -145,19 +259,49 @@
           }
           if (index != -1) {
               filters.splice(index, 1);
+              start = 0;
               loadUrl(buildUrl());
           }
       })
   };
 
-  function getInterval(number) {
+  function createPrevNextLinks(numFound) {
+      $('#prev-next').html('');
+      var items = [];
+      if (start > 0) {
+          for (var i = 1; i <= 3; i++) {
+              var item = start - (i * rows);
+              if (item >= 0)
+                  items.unshift(itemPrevNextTemplate(
+                      {'start': item, 'label': getInterval(item, false)}));
+          }
+      }
+      items.push(strong({'item': getInterval(start, true)}));
+      for (var i = 1; i <= 3; i++) {
+          var item = parseInt(start) + (i * rows);
+          if (item+1 < numFound)
+              items.push(itemPrevNextTemplate({'start': item, 'label': getInterval(item, false)}));
+      }
+      $('#prev-next').html(items.join(' &nbsp; '));
+      $('#prev-next a').click(function (event) {
+          event.preventDefault();
+          start = $(this).attr('data');
+          loadUrl(buildUrl());
+      });
+  }
+
+  function getInterval(number, both) {
       var beginning = parseInt(number) + 1;
-      var ending = parseInt(number) + parseInt(rows);
-      var startEnd = beginning + '-' + ending;
+      var startEnd = beginning + '-';
+      if (both === true) {
+          var ending = parseInt(number) + parseInt(rows);
+          startEnd += ending;
+      }
       return startEnd;
   }
 
   function loadUrl(urlParam) {
+      $('#message').html('<i class="fa fa-spinner" aria-hidden="true"></i> loading...');
       // console.log('loading url: ' + urlParam);
 
       if (filters.length > 0) {
@@ -170,36 +314,31 @@
           // console.log('loaded url: ' + urlParam);
           // console.log('status: ' + status);
           $('#numFound').html(result.response.numFound.toLocaleString('en-US'));
+          $('#solr-url').html(urlParam);
 
           var numFound = result.response.numFound;
-          $('#prev-next').html('');
-          var items = [];
-          if (start > 0) {
-              for (var i = 1; i <= 3; i++) {
-                  var item = start - (i * rows);
-                  if (item > 0)
-                      items.push(itemPrevNextTemplate({'start': item, 'label': getInterval(item)}));
-              }
-          }
-          items.push(getInterval(start));
-          for (var i = 1; i <= 3; i++) {
-              var item = parseInt(start) + (i * rows);
-              if (item+1 < numFound)
-                  items.push(itemPrevNextTemplate({'start': item, 'label': getInterval(item)}));
-          }
-          $('#prev-next').html(items.join(' '));
-          $('#prev-next a').click(function (event) {
-              event.preventDefault();
-              start = $(this).attr('data');
-              loadUrl(buildUrl());
-          });
+          createPrevNextLinks(numFound);
 
           $('#records').html('');
           $('#facet-list').html('');
 
           for (var i = 0; i < result.response.docs.length; i++) {
-              $('#records').append(recordTemplate(result.response.docs[i]));
+              fields = [];
+              for (var label in result.response.docs[i]) {
+                  var value = result.response.docs[i][label];
+                  if (Object.prototype.toString.call(value) === '[object Array]'
+                      && value.length) {
+                      value = value[0];
+                  }
+
+                  fields.push({'label': label, 'value': value});
+              }
+              context = result.response.docs[i];
+              context.fields = fields;
+
+              $('#records').append(recordTemplate(context));
           }
+          showRecordDetails();
 
           for (var facetName in result.facet_counts.facet_fields) {
               context = {
@@ -208,11 +347,20 @@
                   'facets': []
               };
               for (var term in result.facet_counts.facet_fields[facetName]) {
-                  context.facets.push({
-                      'term': term,
-                      'count': result.facet_counts.facet_fields[facetName][term].toLocaleString('en-US')
+                  var count = result.facet_counts.facet_fields[facetName][term];
+                  if (count > 0)
+                      context.facets.push({
+                          'term': term,
+                          'count': count //.toLocaleString('en-US')
+                      });
+              }
+              if (facetName == 'ManifestationIdentifier_ss'
+                  || facetName == 'WorkIdentifier_ss') {
+                  context.facets.sort(function(a,b) {
+                      return b.count - a.count;
                   });
               }
+
               $('#facet-list').append(listFacetTemplate(context));
           }
 
@@ -224,18 +372,65 @@
                   'param': filterParam,
                   'label': facetLabels[field] + ': ' + value
               });
+              start = 0;
               loadUrl(buildUrl());
           });
+
+          $('#message').html('');
+      });
+  }
+
+  function showRecordDetails() {
+      $('.record h2 a').click(function (event) {
+          event.preventDefault();
+          var detailsId = $(this).attr('data');
+          console.log(detailsId);
+          $('#' + detailsId).toggle();
+      });
+
+      $('.record-link').click(function (event) {
+          event.preventDefault();
+          var field = $(this).attr('data');
+          var value = $(this).html();
+          var filterParam = filterParamTemplate({'field': field, 'value': value});
+          filters.push({
+              'param': filterParam,
+              'label': facetLabels[field] + ': ' + value
+          });
+          start = 0;
+          loadUrl(buildUrl());
       });
   }
 
   function doSearch() {
-      start = 0;
       query = $('#query').val();
+      start = 0;
       loadUrl(buildUrl());
   }
 
+  function itemsPerPage() {
+      var items = [];
+      var numbers = [10, 25, 50, 100];
+      for (var number in numbers) {
+          if (numbers[number] == rows)
+              items.push(strong({'item': numbers[number]}));
+          else
+              items.push(itemPrevNextTemplate({
+                  'start': numbers[number], 'label': numbers[number]}));
+      }
+      $('#items-per-page').html(items.join(' '));
+      $('#items-per-page a').click(function (event) {
+          event.preventDefault();
+          start = 0;
+          rows = $(this).attr('data');
+          itemsPerPage();
+          loadUrl(buildUrl());
+      });
+  }
+
   $(document).ready(function () {
+      itemsPerPage();
+
       $('.fa-search').click(function (event) {
           doSearch();
       });
