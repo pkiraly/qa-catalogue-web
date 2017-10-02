@@ -285,7 +285,8 @@ ul {
 </script>
 
 <script type="text/javascript">
-  var baseUrl = 'http://localhost:8983/solr/tradit/select/';
+  var host = window.location.hostname;
+  var baseUrl = 'http://' + host + ':8983/solr/tradit/select/';
   var query = '*:*';
   var start = 0;
   var rows = 10;
