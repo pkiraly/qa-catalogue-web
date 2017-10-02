@@ -66,12 +66,16 @@ h3 {
 .record h2 .fa-book {
     color: #37ba00;
 }
-
 .record .label {
     color: #cccccc;
 }
+.record .similarity {
+    text-align: right;
+    color: #999999;
+}
 .record .details {
     display: none;
+    margin-left: 50px;
 }
 ul {
     list-style-type: none;
@@ -93,7 +97,7 @@ ul {
 <body>
 <div class="container">
     <!-- Content here -->
-    <h1><i class="fa fa-book" aria-hidden="true"></i> Tradit catalog <span>analysing clusters</span></h1>
+    <h1><i class="fa fa-book" aria-hidden="true"></i> Tradit catalog <span>for analysing clusters</span></h1>
     <div class="container" id="content">
 
         <div class="row">
@@ -159,17 +163,102 @@ ul {
 
 <script id="record-template" type="text/x-handlebars-template">
     <div class="record">
-        <h2>{{Title_mainTitle_ss}} {{Title_subtitle_ss}} <a href="#" data="details-{{id}}"><i class="fa fa-book" aria-hidden="true"></i></a></h2>
-        {{Title_responsibilityStatement_ss}}<br/>
-        {{Edition_editionStatement_ss}}<br/>
-        {{Publication_place_ss}} {{Publication_agent_ss}} {{Publication_date_ss}}<br/>
-        {{PhysicalDescription_extent_ss}} {{PhysicalDescription_dimensions_ss}}<br/>
-        {{Summary_ss}}<br/>
-        {{TableOfContents_ss}}<br/>
-        {{MainPersonalName_personalName_ss}} {{MainPersonalName_dates_ss}}<br/>
-        <a href="#" class="record-link" data="Topic_topicalTerm_ss">{{Topic_topicalTerm_ss}}</a><br/>
-        <a href="#" class="record-link" data="Topic_geographicSubdivision_ss">{{Topic_geographicSubdivision_ss}}</a><br/>
-        <a href="#" class="record-link" data="Topic_formSubdivision_ss">{{Topic_formSubdivision_ss}}</a><br/>
+        <h2>
+            {{#if Title_mainTitle_ss}}
+                {{Title_mainTitle_ss}}
+            {{/if}}
+            {{#if Title_subtitle_ss}}
+                {{Title_subtitle_ss}}
+            {{/if}}
+            <a href="#" data="details-{{id}}"><i class="fa fa-book" aria-hidden="true"></i></a>
+        </h2>
+        {{#if Title_responsibilityStatement_ss}}
+            {{Title_responsibilityStatement_ss}}<br/>
+        {{/if}}
+        {{#if Edition_editionStatement_ss}}
+            {{Edition_editionStatement_ss}}<br/>
+        {{/if}}
+        {{#if hasPublication}}
+            {{#if PhysicalDescription_extent_ss}}
+                {{Publication_place_ss}}
+            {{/if}}
+            {{#if PhysicalDescription_extent_ss}}
+                {{Publication_agent_ss}}
+            {{/if}}
+            {{#if PhysicalDescription_extent_ss}}
+                {{Publication_date_ss}}
+            {{/if}}
+            <br/>
+        {{/if}}
+        {{#if hasPhysicalDescription}}
+            {{#if PhysicalDescription_extent_ss}}
+                {{PhysicalDescription_extent_ss}}
+            {{/if}}
+            {{#if PhysicalDescription_dimensions_ss}}
+                {{PhysicalDescription_dimensions_ss}}
+            {{/if}}
+            <br/>
+        {{/if}}
+        {{#if Summary_ss}}
+            {{Summary_ss}}<br/>
+        {{/if}}
+        {{#if TableOfContents_ss}}
+            {{TableOfContents_ss}}<br/>
+        {{/if}}
+        {{#if hasMainPersonalName}}
+            {{#if MainPersonalName_personalName_ss}}
+                {{MainPersonalName_personalName_ss}}
+            {{/if}}
+            {{#if MainPersonalName_dates_ss}}
+                {{MainPersonalName_dates_ss}}
+            {{/if}}
+            <br/>
+        {{/if}}
+        {{#if AddedCorporateName_ss}}
+            {{AddedCorporateName_ss}}<br/>
+        {{/if}}
+        {{#if Topic_topicalTerm_ss}}
+            <a href="#" class="record-link" data="Topic_topicalTerm_ss"
+            >{{Topic_topicalTerm_ss}}</a><br/>
+        {{/if}}
+        {{#if Topic_geographicSubdivision_ss}}
+            <a href="#" class="record-link" data="Topic_geographicSubdivision_ss"
+            >{{Topic_geographicSubdivision_ss}}</a><br/>
+        {{/if}}
+        {{#if Topic_formSubdivision_ss}}
+            <a href="#" class="record-link" data="Topic_formSubdivision_ss"
+            >{{Topic_formSubdivision_ss}}</a><br/>
+        {{/if}}
+        {{#if Topic_authorityRecordControlNumber_ss}}
+            <a href="#" class="record-link" data="Topic_authorityRecordControlNumber_ss"
+            >{{Topic_authorityRecordControlNumber_ss}}</a><br/>
+        {{/if}}
+        {{#if Geographic_authorityRecordControlNumber_ss}}
+            <a href="#" class="record-link" data="Geographic_authorityRecordControlNumber_ss"
+            >{{Geographic_authorityRecordControlNumber_ss}}</a><br/>
+        {{/if}}
+        {{#if GenreForm_authorityRecordControlNumber_ss}}
+            <a href="#" class="record-link" data="GenreForm_authorityRecordControlNumber_ss"
+            >{{GenreForm_authorityRecordControlNumber_ss}}</a><br/>
+        {{/if}}
+
+        {{#if hasSimilarBooks}}
+            <div class="similarity">
+                <i class="fa fa-search" aria-hidden="true"></i>
+                Search for similar items:
+            {{#if WorkIdentifier_ss}}
+                works:
+                <a href="#" class="record-link" data="WorkIdentifier_ss"
+                >{{WorkIdentifier_ss}}</a>
+            {{/if}}
+            {{#if ManifestationIdentifier_ss}}
+                manifestations:
+                <a href="#" class="record-link" data="ManifestationIdentifier_ss"
+                >{{ManifestationIdentifier_ss}}</a>
+            {{/if}}
+            </div>
+        {{/if}}
+
         <div class="details" id="details-{{id}}">
             {{#list fields}}<span class="label">{{label}}:</span> {{value}}{{/list}}
         </div>
@@ -345,9 +434,10 @@ ul {
           $('#facet-list').html('');
 
           for (var i = 0; i < result.response.docs.length; i++) {
+              var doc = result.response.docs[i];
               fields = [];
-              for (var label in result.response.docs[i]) {
-                  var value = result.response.docs[i][label];
+              for (var label in doc) {
+                  var value = doc[label];
                   if (Object.prototype.toString.call(value) === '[object Array]'
                       && value.length) {
                       value = value[0];
@@ -355,10 +445,23 @@ ul {
 
                   fields.push({'label': label, 'value': value});
               }
-              context = result.response.docs[i];
-              context.fields = fields;
+              doc.fields = fields;
 
-              $('#records').append(recordTemplate(context));
+              doc.hasPublication = (
+                  typeof doc.Publication_place_ss !== 'undefined'
+                  || typeof doc.Publication_agent_ss !== 'undefined'
+                  || typeof doc.Publication_date_ss !== 'undefined');
+              doc.hasPhysicalDescription = (
+                  typeof doc.PhysicalDescription_extent_ss !== 'undefined'
+                  || typeof PhysicalDescription_dimensions_ss !== 'undefined');
+              doc.hasMainPersonalName = (
+                  typeof doc.MainPersonalName_personalName_ss !== 'undefined'
+                  || typeof doc.MainPersonalName_dates_ss !== 'undefined');
+              doc.hasSimilarBooks = (
+                  typeof doc.WorkIdentifier_ss !== 'undefined'
+                  || typeof doc.ManifestationIdentifier_ss  !== 'undefined');
+
+              $('#records').append(recordTemplate(doc));
           }
           showRecordDetails();
 
