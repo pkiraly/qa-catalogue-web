@@ -305,8 +305,6 @@ ul {
   ];
 
   var facetLabels = {
-      'ManifestationIdentifier_ss': 'manifestations',
-      'WorkIdentifier_ss': 'works',
       'Language_ss': 'language',
       'AdminMetadata_languageOfCataloging_ss': 'language of cataloging',
       'Leader_typeOfRecord_ss': 'record type',
@@ -319,7 +317,7 @@ ul {
       'Geographic_authorityRecordControlNumber_ss': 'geo id',
       'GenreForm_authorityRecordControlNumber_ss': 'genre id',
       'WorkIdentifier_ss': 'work id',
-      'ManifestationIdentifier_ss': 'manifestation id',
+      'ManifestationIdentifier_ss': 'manifestation id'
   };
 
   Handlebars.registerHelper('list', function(items, options) {
@@ -334,7 +332,7 @@ ul {
   var listFacetTemplate   = Handlebars.compile($("#list-facet-template").html());
   var filterParamTemplate = Handlebars.compile($("#filter-param-template").html());
   var filterTemplate      = Handlebars.compile($("#list-filters-template").html());
-  var prevNextTemplate    = Handlebars.compile($("#list-prev-next-template").html());
+  // var prevNextTemplate    = Handlebars.compile($("#list-prev-next-template").html());
   var itemPrevNextTemplate= Handlebars.compile($("#item-prev-next-template").html());
   var strong              = Handlebars.compile($("#strong-template").html());
 
@@ -369,15 +367,16 @@ ul {
               loadUrl(buildUrl());
           }
       })
-  };
+  }
 
   function createPrevNextLinks(numFound) {
       $('#prev-next').html('');
       $('#prev-next-footer').html('');
       var items = [];
+      var itemé
       if (start > 0) {
           for (var i = 1; i <= 3; i++) {
-              var item = start - (i * rows);
+              item = start - (i * rows);
               if (item >= 0)
                   items.unshift(itemPrevNextTemplate(
                       {'start': item, 'label': getInterval(item, numFound, false)}));
@@ -385,7 +384,7 @@ ul {
       }
       items.push(strong({'item': getInterval(start, numFound, true)}));
       for (var i = 1; i <= 3; i++) {
-          var item = parseInt(start) + (i * rows);
+          item = parseInt(start) + (i * rows);
           if (item+1 < numFound)
               items.push(itemPrevNextTemplate(
                   {'start': item, 'label': getInterval(item, numFound, false)}));
@@ -416,6 +415,79 @@ ul {
       return startEnd;
   }
 
+  function processRecord(doc) {
+      fields = [];
+      for (var label in doc) {
+          var value = doc[label];
+          if (Object.prototype.toString.call(value) === '[object Array]'
+              && value.length) {
+              value = value[0];
+          }
+
+          fields.push({'label': label, 'value': value});
+      }
+      doc.fields = fields;
+
+      doc.hasPublication = (
+          typeof doc.Publication_place_ss !== 'undefined'
+          || typeof doc.Publication_agent_ss !== 'undefined'
+          || typeof doc.Publication_date_ss !== 'undefined');
+      doc.hasPhysicalDescription = (
+          typeof doc.PhysicalDescription_extent_ss !== 'undefined'
+          || typeof PhysicalDescription_dimensions_ss !== 'undefined');
+      doc.hasMainPersonalName = (
+          typeof doc.MainPersonalName_personalName_ss !== 'undefined'
+          || typeof doc.MainPersonalName_dates_ss !== 'undefined');
+      doc.hasSimilarBooks = (
+          typeof doc.WorkIdentifier_ss !== 'undefined'
+          || typeof doc.ManifestationIdentifier_ss  !== 'undefined');
+
+      $('#records').append(recordTemplate(doc));
+  }
+
+  function processFacet(facetName, facet) {
+      context = {
+          'facetName': facetLabels[facetName],
+          'machineName': facetName,
+          'facets': []
+      };
+      for (var term in facet) {
+          var count = facet[term];
+          if (count > 0)
+              context.facets.push({
+                  'term': term,
+                  'count': count //.toLocaleString('en-US')
+              });
+      }
+      if (facetName == 'ManifestationIdentifier_ss'
+          || facetName == 'WorkIdentifier_ss') {
+          context.facets.sort(function(a,b) {
+              return b.count - a.count;
+          });
+      }
+
+      for (var i = 0; i < context.facets.length; i++) {
+          item = context.facets[i];
+          item.count = item.count.toLocaleString('en-US');
+      }
+
+      $('#facet-list').append(listFacetTemplate(context));
+  }
+
+  function setFacetClickBehaviour() {
+      $('div.facet-block ul a').click(function (e) {
+          var field = $(this).parent().parent().parent().attr('id');
+          var value = $(this).html();
+          var filterParam = filterParamTemplate({'field': field, 'value': value});
+          filters.push({
+              'param': filterParam,
+              'label': facetLabels[field] + ': ' + value
+          });
+          start = 0;
+          loadUrl(buildUrl());
+      });
+  }
+
   function loadUrl(urlParam) {
       $('#message').html('<i class="fa fa-spinner" aria-hidden="true"></i> loading...');
       // console.log('loading url: ' + urlParam);
@@ -439,72 +511,14 @@ ul {
           $('#facet-list').html('');
 
           for (var i = 0; i < result.response.docs.length; i++) {
-              var doc = result.response.docs[i];
-              fields = [];
-              for (var label in doc) {
-                  var value = doc[label];
-                  if (Object.prototype.toString.call(value) === '[object Array]'
-                      && value.length) {
-                      value = value[0];
-                  }
-
-                  fields.push({'label': label, 'value': value});
-              }
-              doc.fields = fields;
-
-              doc.hasPublication = (
-                  typeof doc.Publication_place_ss !== 'undefined'
-                  || typeof doc.Publication_agent_ss !== 'undefined'
-                  || typeof doc.Publication_date_ss !== 'undefined');
-              doc.hasPhysicalDescription = (
-                  typeof doc.PhysicalDescription_extent_ss !== 'undefined'
-                  || typeof PhysicalDescription_dimensions_ss !== 'undefined');
-              doc.hasMainPersonalName = (
-                  typeof doc.MainPersonalName_personalName_ss !== 'undefined'
-                  || typeof doc.MainPersonalName_dates_ss !== 'undefined');
-              doc.hasSimilarBooks = (
-                  typeof doc.WorkIdentifier_ss !== 'undefined'
-                  || typeof doc.ManifestationIdentifier_ss  !== 'undefined');
-
-              $('#records').append(recordTemplate(doc));
+              processRecord(result.response.docs[i]);
           }
           showRecordDetails();
 
           for (var facetName in result.facet_counts.facet_fields) {
-              context = {
-                  'facetName': facetLabels[facetName],
-                  'machineName': facetName,
-                  'facets': []
-              };
-              for (var term in result.facet_counts.facet_fields[facetName]) {
-                  var count = result.facet_counts.facet_fields[facetName][term];
-                  if (count > 0)
-                      context.facets.push({
-                          'term': term,
-                          'count': count //.toLocaleString('en-US')
-                      });
-              }
-              if (facetName == 'ManifestationIdentifier_ss'
-                  || facetName == 'WorkIdentifier_ss') {
-                  context.facets.sort(function(a,b) {
-                      return b.count - a.count;
-                  });
-              }
-
-              $('#facet-list').append(listFacetTemplate(context));
+              processFacet(facetName, result.facet_counts.facet_fields[facetName]);
           }
-
-          $('div.facet-block ul a').click(function (e) {
-              var field = $(this).parent().parent().parent().attr('id');
-              var value = $(this).html();
-              var filterParam = filterParamTemplate({'field': field, 'value': value});
-              filters.push({
-                  'param': filterParam,
-                  'label': facetLabels[field] + ': ' + value
-              });
-              start = 0;
-              loadUrl(buildUrl());
-          });
+          setFacetClickBehaviour();
 
           $('#message').html('');
       });
@@ -541,12 +555,13 @@ ul {
   function itemsPerPage() {
       var items = [];
       var numbers = [10, 25, 50, 100];
-      for (var number in numbers) {
-          if (numbers[number] == rows)
-              items.push(strong({'item': numbers[number]}));
+      for (var i in numbers) {
+          var number = numbers[i];
+          if (number === rows)
+              items.push(strong({'item': number}));
           else
               items.push(itemPrevNextTemplate({
-                  'start': numbers[number], 'label': numbers[number]}));
+                  'start': number, 'label': number}));
       }
       $('#items-per-page').html(items.join(' '));
       $('#items-per-page a').click(function (event) {
@@ -571,7 +586,5 @@ ul {
       loadUrl(buildUrl());
    });
 </script>
-
-
 </body>
 </html>
