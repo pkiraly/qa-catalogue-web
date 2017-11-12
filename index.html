@@ -7,7 +7,10 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-    <script src="//use.fontawesome.com/feff23b961.js"></script>
+    <!-- script src="//use.fontawesome.com/feff23b961.js"></script -->
+    <script src="feff23b961.js"></script>
+    <script src="configuration.js" type="text/javascript"></script>
+    <script src="selected-facets.js" type="text/javascript"></script>
 <style type="text/css">
 #per-page .label {
     color: #999;
@@ -142,6 +145,9 @@ ul {
                     <div class="col-4"></div>
                 </div>
                 <div id="solr-url"></div>
+                <div class="row" id="settings">
+                    <div class="col-4"><a href="#" id="set-facets">set facets</a></div>
+                </div>
             </div>
         </div>
     </div>
@@ -164,97 +170,128 @@ ul {
 <script id="record-template" type="text/x-handlebars-template">
     <div class="record">
         <h2>
-            {{#if Title_mainTitle_ss}}
-                {{Title_mainTitle_ss}}
+            {{#if 245a_Title_mainTitle_ss}}
+                {{245a_Title_mainTitle_ss}}
             {{/if}}
-            {{#if Title_subtitle_ss}}
-                {{Title_subtitle_ss}}
+            {{#if 245b_Title_subtitle_ss}}
+                {{245b_Title_subtitle_ss}}
             {{/if}}
             <a href="#" data="details-{{id}}"><i class="fa fa-book" aria-hidden="true"></i></a>
         </h2>
-        {{#if Title_responsibilityStatement_ss}}
-            {{Title_responsibilityStatement_ss}}<br/>
+        {{#if 245c_Title_responsibilityStatement_ss}}
+            <i class="fa fa-pencil" aria-hidden="true"></i> {{245c_Title_responsibilityStatement_ss}}<br/>
         {{/if}}
-        {{#if Edition_editionStatement_ss}}
-            {{Edition_editionStatement_ss}}<br/>
+        {{#if 250a_Edition_editionStatement_ss}}
+            {{250a_Edition_editionStatement_ss}}<br/>
         {{/if}}
         {{#if hasPublication}}
-            {{#if PhysicalDescription_extent_ss}}
-                {{Publication_place_ss}}
+            <i class="fa fa-calendar" aria-hidden="true"></i>
+            Published
+            {{#if 260c_Publication_date_ss}}
+                in {{260c_Publication_date_ss}}
             {{/if}}
-            {{#if PhysicalDescription_extent_ss}}
-                {{Publication_agent_ss}}
+            {{#if 260a_Publication_place_ss}}
+                in {{260a_Publication_place_ss}}
             {{/if}}
-            {{#if PhysicalDescription_extent_ss}}
-                {{Publication_date_ss}}
+            {{#if 260b_Publication_agent_ss}}
+                by {{260b_Publication_agent_ss}}
             {{/if}}
             <br/>
         {{/if}}
         {{#if hasPhysicalDescription}}
-            {{#if PhysicalDescription_extent_ss}}
-                {{PhysicalDescription_extent_ss}}
+            {{#if 300a_PhysicalDescription_extent_ss}}
+                {{300a_PhysicalDescription_extent_ss}}
             {{/if}}
-            {{#if PhysicalDescription_dimensions_ss}}
-                {{PhysicalDescription_dimensions_ss}}
+            {{#if 300c_PhysicalDescription_dimensions_ss}}
+                {{300c_PhysicalDescription_dimensions_ss}}
             {{/if}}
             <br/>
         {{/if}}
-        {{#if Summary_ss}}
-            {{Summary_ss}}<br/>
+        {{#if 490a_SeriesStatement_ss}}
+            Series:
+            <a href="#" class="record-link" data="490a_SeriesStatement_ss"
+            >{{490a_SeriesStatement_ss}}</a>
+            {{#if 490a_SeriesStatement_ss}}
+                {{490v_SeriesStatement_volume_ss}}
+            {{/if}}
+            <br/>
         {{/if}}
-        {{#if TableOfContents_ss}}
-            {{TableOfContents_ss}}<br/>
+        {{#if 520a_Summary_ss}}
+            {{520a_Summary_ss}}<br/>
+        {{/if}}
+        {{#if 505a_TableOfContents_ss}}
+            {{505a_TableOfContents_ss}}<br/>
         {{/if}}
         {{#if hasMainPersonalName}}
-            {{#if MainPersonalName_personalName_ss}}
-                {{MainPersonalName_personalName_ss}}
+            <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
+            {{#if 100a_MainPersonalName_personalName_ss}}
+                <a href="#" class="record-link" data="100a_MainPersonalName_personalName_ss"
+                >{{100a_MainPersonalName_personalName_ss}}</a>
             {{/if}}
-            {{#if MainPersonalName_dates_ss}}
-                {{MainPersonalName_dates_ss}}
+            {{#if 100d_MainPersonalName_dates_ss}}
+                {{100d_MainPersonalName_dates_ss}}
             {{/if}}
             <br/>
         {{/if}}
-        {{#if AddedCorporateName_ss}}
-            {{AddedCorporateName_ss}}<br/>
+        {{#if 700a_AddedPersonalName_personalName_ss}}
+            <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
+            <a href="#" class="record-link" data="700a_AddedPersonalName_personalName_ss"
+            >{{700a_AddedPersonalName_personalName_ss}}</a>
+            {{#if 700d_AddedPersonalName_dates_ss}}
+                {{700d_AddedPersonalName_dates_ss}}
+            {{/if}}
+            <br/>
         {{/if}}
-        {{#if Topic_topicalTerm_ss}}
-            <a href="#" class="record-link" data="Topic_topicalTerm_ss"
-            >{{Topic_topicalTerm_ss}}</a><br/>
+
+        {{#if 710a_AddedCorporateName_ss}}
+            {{710a_AddedCorporateName_ss}}
+            {{#if 710d_AddedCorporateName_dates}}
+                {{710d_AddedCorporateName_dates}}
+            {{/if}}
+            <br/>
         {{/if}}
-        {{#if Topic_geographicSubdivision_ss}}
-            <a href="#" class="record-link" data="Topic_geographicSubdivision_ss"
-            >{{Topic_geographicSubdivision_ss}}</a><br/>
+        {{#if 650a_Topic_topicalTerm_ss}}
+            <i class="fa fa-hashtag" aria-hidden="true" title="topical term"></i>
+            <a href="#" class="record-link" data="650a_Topic_topicalTerm_ss"
+            >{{650a_Topic_topicalTerm_ss}}</a><br/>
         {{/if}}
-        {{#if Topic_formSubdivision_ss}}
-            <a href="#" class="record-link" data="Topic_formSubdivision_ss"
-            >{{Topic_formSubdivision_ss}}</a><br/>
+        {{#if 650z_Topic_geographicSubdivision_ss}}
+            <i class="fa fa-map" aria-hidden="true" title="geographic subdivision"></i>
+            <a href="#" class="record-link" data="650z_Topic_geographicSubdivision_ss"
+            >{{650z_Topic_geographicSubdivision_ss}}</a><br/>
         {{/if}}
-        {{#if Topic_authorityRecordControlNumber_ss}}
-            <a href="#" class="record-link" data="Topic_authorityRecordControlNumber_ss"
-            >{{Topic_authorityRecordControlNumber_ss}}</a><br/>
+        {{#if 650v_Topic_formSubdivision_ss}}
+            <i class="fa fa-tag" aria-hidden="true" title="form"></i>
+            <a href="#" class="record-link" data="650v_Topic_formSubdivision_ss"
+            >{{650v_Topic_formSubdivision_ss}}</a><br/>
         {{/if}}
-        {{#if Geographic_authorityRecordControlNumber_ss}}
-            <a href="#" class="record-link" data="Geographic_authorityRecordControlNumber_ss"
-            >{{Geographic_authorityRecordControlNumber_ss}}</a><br/>
+        {{#if 6500_Topic_authorityRecordControlNumber_ss}}
+            <a href="#" class="record-link" data="6500_Topic_authorityRecordControlNumber_ss"
+            >{{6500_Topic_authorityRecordControlNumber_ss}}</a><br/>
         {{/if}}
-        {{#if GenreForm_authorityRecordControlNumber_ss}}
-            <a href="#" class="record-link" data="GenreForm_authorityRecordControlNumber_ss"
-            >{{GenreForm_authorityRecordControlNumber_ss}}</a><br/>
+        {{#if 6510_Geographic_authorityRecordControlNumber_ss}}
+            <i class="fa fa-map" aria-hidden="true"></i>
+            <a href="#" class="record-link" data="6510_Geographic_authorityRecordControlNumber_ss"
+            >{{6510_Geographic_authorityRecordControlNumber_ss}}</a><br/>
+        {{/if}}
+        {{#if 6550_GenreForm_authorityRecordControlNumber_ss}}
+            <a href="#" class="record-link" data="6550_GenreForm_authorityRecordControlNumber_ss"
+            >{{6550_GenreForm_authorityRecordControlNumber_ss}}</a><br/>
         {{/if}}
 
         {{#if hasSimilarBooks}}
             <div class="similarity">
                 <i class="fa fa-search" aria-hidden="true"></i>
                 Search for similar items:
-            {{#if WorkIdentifier_ss}}
+            {{#if 9129_WorkIdentifier_ss}}
                 works:
-                <a href="#" class="record-link" data="WorkIdentifier_ss"
-                >{{WorkIdentifier_ss}}</a>
+                <a href="#" class="record-link" data="9129_WorkIdentifier_ss"
+                >{{9129_WorkIdentifier_ss}}</a>
             {{/if}}
-            {{#if ManifestationIdentifier_ss}}
+            {{#if 9119_ManifestationIdentifier_ss}}
                 manifestations:
-                <a href="#" class="record-link" data="ManifestationIdentifier_ss"
-                >{{ManifestationIdentifier_ss}}</a>
+                <a href="#" class="record-link" data="9119_ManifestationIdentifier_ss"
+                >{{9119_ManifestationIdentifier_ss}}</a>
             {{/if}}
             </div>
         {{/if}}
@@ -285,40 +322,48 @@ ul {
 </script>
 
 <script type="text/javascript">
-  var host = window.location.hostname;
-  var baseUrl = 'http://' + host + ':8983/solr/tradit/select/';
   var query = '*:*';
   var start = 0;
   var rows = 10;
   var filters = [];
+
+  var defaultFacets = [
+      '041a_Language_ss',
+      '040b_AdminMetadata_languageOfCataloging_ss',
+      'Leader_06_typeOfRecord_ss',
+      'Leader_18_descriptiveCatalogingForm_ss'
+  ];
+
+  var facets = defaultFacets;
+  if (typeof selectedFacets != 'undefined')
+      facets = selectedFacets;
+
   var parameters = [
       'wt=json',
       'json.nl=map',
       'json.wrf=?',
-      'facet=on',
+      'facet=on'
       // 'facet.field=ManifestationIdentifier_ss',
-      'facet.field=WorkIdentifier_ss',
-      'facet.field=Language_ss',
-      'facet.field=AdminMetadata_languageOfCataloging_ss',
-      'facet.field=Leader_typeOfRecord_ss',
-      'facet.field=GeneralInformation_festschrift_ss',
-      'facet.field=Leader_descriptiveCatalogingForm_ss'
+      // 'facet.field=9129_WorkIdentifier_ss',
+      // 'facet.field=041a_Language_ss',
+      // 'facet.field=040b_AdminMetadata_languageOfCataloging_ss',
+      // 'facet.field=Leader_06_typeOfRecord_ss',
+      // 'facet.field=Leader_18_descriptiveCatalogingForm_ss'
   ];
 
   var facetLabels = {
-      'Language_ss': 'language',
-      'AdminMetadata_languageOfCataloging_ss': 'language of cataloging',
-      'Leader_typeOfRecord_ss': 'record type',
-      'GeneralInformation_festschrift_ss': 'festschrift',
-      'Leader_descriptiveCatalogingForm_ss': 'cataloging form',
-      'Topic_topicalTerm_ss': 'topic',
-      'Topic_geographicSubdivision_ss': 'geographic',
-      'Topic_formSubdivision_ss': 'form',
-      'Topic_authorityRecordControlNumber_ss': 'topic id',
-      'Geographic_authorityRecordControlNumber_ss': 'geo id',
-      'GenreForm_authorityRecordControlNumber_ss': 'genre id',
-      'WorkIdentifier_ss': 'work id',
-      'ManifestationIdentifier_ss': 'manifestation id'
+      '041a_Language_ss': 'language',
+      '040b_AdminMetadata_languageOfCataloging_ss': 'language of cataloging',
+      'Leader_06_typeOfRecord_ss': 'record type',
+      'Leader_18_descriptiveCatalogingForm_ss': 'cataloging form',
+      '650a_Topic_topicalTerm_ss': 'topic',
+      '650z_Topic_geographicSubdivision_ss': 'geographic',
+      '650v_Topic_formSubdivision_ss': 'form',
+      '6500_Topic_authorityRecordControlNumber_ss': 'topic id',
+      '6510_Geographic_authorityRecordControlNumber_ss': 'geo id',
+      '6550_GenreForm_authorityRecordControlNumber_ss': 'genre id',
+      '9129_WorkIdentifier_ss': 'work id',
+      '9119_ManifestationIdentifier_ss': 'manifestation id'
   };
 
   Handlebars.registerHelper('list', function(items, options) {
@@ -337,10 +382,26 @@ ul {
   var itemPrevNextTemplate= Handlebars.compile($("#item-prev-next-template").html());
   var strong              = Handlebars.compile($("#strong-template").html());
 
+  function getFacetLabel(facet) {
+      if (typeof facetLabels[facet] != "undefined")
+          return facetLabels[facet];
+      return facet.replace(/_ss$/, '');
+  }
+
+  function buildFacetParameters() {
+      var facetParameters = [];
+      for (i in facets) {
+          facetParameters.push('facet.field=' + facets[i]);
+      }
+      return facetParameters;
+  }
+
   function buildUrl() {
+
       var url = baseUrl
           + '?q=' + query
           + '&' + parameters.join('&')
+          + '&' + buildFacetParameters().join('&')
           + '&start=' + start
           + '&rows=' + rows;
 
@@ -430,25 +491,25 @@ ul {
       doc.fields = fields;
 
       doc.hasPublication = (
-          typeof doc.Publication_place_ss !== 'undefined'
-          || typeof doc.Publication_agent_ss !== 'undefined'
-          || typeof doc.Publication_date_ss !== 'undefined');
+          typeof doc['260a_Publication_place_ss'] !== 'undefined'
+          || typeof doc['260b_Publication_agent_ss'] !== 'undefined'
+          || typeof doc['260c_Publication_date_ss'] !== 'undefined');
       doc.hasPhysicalDescription = (
-          typeof doc.PhysicalDescription_extent_ss !== 'undefined'
-          || typeof PhysicalDescription_dimensions_ss !== 'undefined');
+          typeof doc['300a_PhysicalDescription_extent_ss'] !== 'undefined'
+          || typeof doc['300c_PhysicalDescription_dimensions_ss'] !== 'undefined');
       doc.hasMainPersonalName = (
-          typeof doc.MainPersonalName_personalName_ss !== 'undefined'
-          || typeof doc.MainPersonalName_dates_ss !== 'undefined');
+          typeof doc['100a_MainPersonalName_personalName_ss'] !== 'undefined'
+          || typeof doc['100d_MainPersonalName_dates_ss'] !== 'undefined');
       doc.hasSimilarBooks = (
-          typeof doc.WorkIdentifier_ss !== 'undefined'
-          || typeof doc.ManifestationIdentifier_ss  !== 'undefined');
+          typeof doc['9129_WorkIdentifier_ss'] !== 'undefined'
+          || typeof doc['9119_ManifestationIdentifier_ss'] !== 'undefined');
 
       $('#records').append(recordTemplate(doc));
   }
 
   function processFacet(facetName, facet) {
       context = {
-          'facetName': facetLabels[facetName],
+          'facetName': getFacetLabel(facetName),
           'machineName': facetName,
           'facets': []
       };
@@ -460,8 +521,8 @@ ul {
                   'count': count //.toLocaleString('en-US')
               });
       }
-      if (facetName == 'ManifestationIdentifier_ss'
-          || facetName == 'WorkIdentifier_ss') {
+      if (facetName == '9119_ManifestationIdentifier_ss'
+          || facetName == '9129_WorkIdentifier_ss') {
           context.facets.sort(function(a,b) {
               return b.count - a.count;
           });
@@ -482,7 +543,7 @@ ul {
           var filterParam = filterParamTemplate({'field': field, 'value': value});
           filters.push({
               'param': filterParam,
-              'label': facetLabels[field] + ': ' + value
+              'label': getFacetLabel(field) + ': ' + value
           });
           start = 0;
           loadUrl(buildUrl());
@@ -540,7 +601,7 @@ ul {
           var filterParam = filterParamTemplate({'field': field, 'value': value});
           filters.push({
               'param': filterParam,
-              'label': facetLabels[field] + ': ' + value
+              'label': getFacetLabel(field) + ': ' + value
           });
           start = 0;
           loadUrl(buildUrl());
@@ -574,6 +635,72 @@ ul {
       });
   }
 
+  function setFacets() {
+      $('#records').html('<h3>Set facets</h3>');
+      $.getJSON('listFields.php', function(result, status) {
+          console.log('status: ' + status);
+          var htmlForm = '<form id="facetselection">';
+          for (item in result) {
+              var facet = result[item];
+              var isInUse = jQuery.inArray(facet, facets) > -1;
+              var checked = isInUse ? ' checked="checked"' : '';
+              htmlForm += '<input type="checkbox"'
+                        + ' value="' + facet + '"'
+                        + ' name="facet"'
+                        + ' id="' + facet + '"'
+                        + checked
+                        + '> '
+                        + '<label for="' + facet +'">' + facet + '</label><br/>'
+              ;
+          }
+          htmlForm += '<input type="submit" value="save" id="save-facet-change" />';
+          htmlForm += '</form>';
+          $('#records').append(htmlForm);
+
+          setFacetSelectionHandlers();
+      });
+  }
+
+  function setFacetSelectionHandlers() {
+      // $('#facet-selection :checkbox').change(function (){
+      $('input[type="checkbox"]').change(function () {
+          if (this.name == 'facet') {
+              var facet = this.value;
+              if (this.checked) {
+                  facets.push(facet);
+              } else {
+                  var pos = jQuery.inArray(facet, facets);
+                  if (pos > -1)
+                      facets.splice(pos, 1);
+              }
+          }
+      });
+
+      $('#facetselection').submit(function(event) {
+          event.preventDefault();
+          var checkValues = $('input[name=facet]:checked').map(function() {
+              return this.value;
+          }).get().join(',');
+          console.log(checkValues);
+
+          $.post("saveFacets.php", {facet: checkValues}, function(result){
+              console.log(result);
+              $("#message").html("saved");
+          });
+          doSearch();
+      });
+  }
+
+  function loadFacets() {
+      $.getJSON('selected-facets.json', function(result, status) {
+          if (result.length > 0)
+              facets = result;
+          else
+              facets = defaultFacets;
+          console.log('loadFacets/facets: ', facets);
+      });
+  }
+
   $(document).ready(function () {
       itemsPerPage();
 
@@ -584,6 +711,13 @@ ul {
           event.preventDefault();
           doSearch();
       });
+      $('#set-facets').click(function (event) {
+          event.preventDefault();
+          setFacets();
+      });
+      // loadFacets();
+      console.log('main/facets: ', facets);
+      console.log('main/defaultFacets: ', defaultFacets);
       loadUrl(buildUrl());
    });
 </script>
