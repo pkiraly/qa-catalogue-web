@@ -1,0 +1,2 @@
+var host = window.location.hostname;
+var baseUrl = 'http://' + host + ':8983/solr/select/';
