@@ -34,7 +34,7 @@ var baseUrl = 'http://' + host + ':8983/solr/select/';
 ```
 touch selected-facets.js
 chown o+w selected-facets.js
-˙``
+```
 
 
 Please notify me if you would like to use it. Happy searching!
