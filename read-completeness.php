@@ -1,8 +1,10 @@
 <?php
+require_once 'common-functions.php';
 
+$db = getOrDefault('db', 'cerl');
 $configuration = parse_ini_file("configuration.cnf");
 
-$elementsFile = $configuration['dir'] . '/marc-elements.csv';
+$elementsFile = sprintf('%s/%s/marc-elements.csv', $configuration['dir'], $db);
 $records = [];
 $max = 0;
 if (file_exists($elementsFile)) {
