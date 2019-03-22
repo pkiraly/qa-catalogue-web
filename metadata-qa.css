@@ -1,0 +1,183 @@
+#per-page .label {
+  color: #999;
+}
+#query {
+  border-radius: 10px;
+  border-color: #37ba00;
+}
+#content {
+  border-top: 1px solid #cccccc;
+  border-radius: 10px;
+}
+h1 {
+  color: #37ba00;
+  padding: 5px;
+  border-bottom: 1px solid #cccccc;
+  border-radius: 10px;
+  font-weight: 900;
+}
+h1 span {
+  font-size: 80%;
+  color: #333;
+  font-weight: 100;
+}
+h3 {
+  color: #37ba00;
+}
+.search-block {
+  margin-bottom: 10px;
+}
+#message {
+  color: #37ba00;
+}
+#navigation {
+  border-bottom: 1px dashed #cccccc;
+  margin-bottom: 15px;
+}
+#navigation-footer {
+  border-top: 1px dashed #cccccc;
+  margin-bottom: 15px;
+}
+
+#records {
+  padding: 0;
+  margin: 0;
+  margin-top: 5px;
+}
+.record {
+  margin-bottom: 15px;
+}
+
+.record h2 {
+  margin-bottom: 0;
+  font-weight: 200;
+}
+.record h2 .fa-book {
+  color: #37ba00;
+}
+.record .label {
+  color: #cccccc;
+}
+.record .similarity {
+  text-align: right;
+  color: #999999;
+}
+.record .details {
+  display: none;
+  margin-left: 50px;
+}
+ul {
+  list-style-type: none;
+  padding-left: 0px;
+}
+#numFound {
+  color: #37ba00;
+  font-weight: 900;
+}
+#solr-url {
+  overflow: auto;
+  overflow-wrap: break-word;
+  word-break: break-all;
+  color: #37ba00;
+  font-size: small;
+}
+.tab-content {
+  margin-top: 10px;
+}
+#completeness-table table td {
+  width: 50px;
+  text-align: right;
+  vertical-align: top;
+}
+#completeness-table table td.path,
+#completeness-table table td.subfield {
+  text-align: left;
+}
+
+#completeness-table table td.subfield {
+  width: 300px;
+  text-overflow: ellipsis;
+  font-size: 80%;
+}
+
+#completeness-table table td.histogram {
+  width: 400px;
+}
+
+#completeness-table table td.number-of-record {
+  width: 70px;
+}
+
+#completeness-table table td.chart {
+  width: 200px;
+}
+
+#completeness-table table td.chart div {
+  background-color: #37ba00;
+  height: 15px;
+  border-right: 1px solid maroon;
+  border-bottom: 2px solid maroon;
+}
+#completeness-table table td.package {
+  text-align: left;
+  color: #37ba00;
+  font-weight: bold;
+}
+#completeness-table table td.tag {
+  text-align: left;
+  color: #37ba00;
+}
+#completeness-table table tr th,
+#completeness-table table tr td {
+  padding: 1px;
+}
+
+#completeness-table table tr.first th.with-border {
+  text-align: center;
+  border-bottom: 1px solid #cccccc;
+}
+
+#completeness-table table tr.second th {
+  text-align: center;
+}
+
+#completeness-table table tr.second th.left {
+  text-align: left;
+}
+
+#completeness-table table tr.second th.bordered-left {
+  border-left: 1px solid #cccccc;
+}
+#completeness-table table tr.second th.bordered-right {
+  border-right: 1px solid #cccccc;
+}
+
+#issues-table table tr td.type {
+  text-align: left;
+}
+
+#issues-table table tr td.type span.type {
+  color: #37ba00;
+  font-weight: bold;
+}
+
+#issues-table table {
+  width: 100%;
+}
+
+#issues-table table tr td.path {
+  width: 400px;
+}
+
+#issues-table table tr td.count {
+  text-align: right;
+  width: 100px;
+}
+
+#issues-table table tr td.url {
+  width: 20px;
+}
+
+#issues-table table tr.t {
+  display: none;
+}
