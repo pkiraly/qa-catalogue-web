@@ -15,7 +15,7 @@
     var db = 'cerl';
     if (urlParams.has('db'))
       db = urlParams.get('db');
-    console.log('db: ' + db);
+    var marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
   </script>
   <script src="configuration.js" type="text/javascript"></script>
   <script src="selected-facets.js" type="text/javascript"></script>
@@ -190,7 +190,8 @@
 
           var rows = [];
           var typeCounter = 0;
-          for (type in data.records) {
+          for (typeId in data.types) {
+            var type = data.types[typeId];
             var typeRows = [];
             typeCounter++;
             var records = data.records[type];
@@ -207,6 +208,9 @@
                 }
 
                 if (field == 'url') {
+                  if (!content.match(/^http/)) {
+                    content = showMarcUrl(content);
+                  }
                   content = '<a href="' + content + '" target="_blank">'
                           + '<i class="fa fa-info" aria-hidden="true"></i></a>';
                 } else if (field == 'message' && content.match(/^ +$/)) {
@@ -214,16 +218,21 @@
                 }
                 htmlRow.push('<td class="' + field + '">' + content + '</td>');
               }
-              typeRows.push('<tr class="t t-' + typeCounter + '">' + htmlRow.join('') + '</tr>');
+              var typeRow = '<tr class="t t-' + typeCounter + '">'
+                          + htmlRow.join('')
+                          + '</tr>';
+              typeRows.push(typeRow);
             }
-            rows.push('<tr>'
+
+            var typeHeadRow = '<tr>'
               + '<td colspan="3" class="type"><span class="type">' + type + '</span>'
               + ' (' + records.length + ' variants)'
               + ' <a href="javascript:openType(' + typeCounter + ')">[+]</a>'
               + '</td>'
               + '<td class="count">' + numberFormat.format(totalCount) + '</td>'
-              + '</tr>');
-            rows.push(typeRows);
+              + '</tr>';
+            rows.push(typeHeadRow);
+            rows = rows.concat(typeRows);
           }
 
           var table = '<table><thead>' + header + '</thead><tbody>' + rows.join('') + '</tbody></table>';;
@@ -786,6 +795,10 @@
 
   function openType(t) {
     $('tr.t-' + t).toggle();
+  }
+
+  function showMarcUrl(link) {
+    return marcBaseUrl + link;
   }
 
   $(document).ready(function () {
