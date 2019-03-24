@@ -20,6 +20,11 @@ if (file_exists($elementsFile)) {
       $header[0] = 'path';
       error_log('header: ' . json_encode($header));
     } else {
+      if ($lineNumber == 2)
+        error_log(count($header) . ' vs ' . count($values));
+      if (count($header) != count($values)) {
+        error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
+      }
       $record = (object)array_combine($header, $values);
       $type = $record->type;
       unset($record->type);
