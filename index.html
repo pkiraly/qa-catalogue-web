@@ -16,6 +16,10 @@
     if (urlParams.has('db'))
       db = urlParams.get('db');
     var marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
+
+    function showMarcUrl(link) {
+      return marcBaseUrl + link;
+    }
   </script>
   <script src="configuration.js" type="text/javascript"></script>
   <script src="selected-facets.js" type="text/javascript"></script>
@@ -24,7 +28,7 @@
 <div class="container">
   <!-- Content here -->
   <h1><i class="fa fa-book" aria-hidden="true"></i> QA catalog <span>for analysing library data</span></h1>
-  <ul class="nav nav-tabs">
+  <ul class="nav nav-tabs" id="myTab">
     <li class="nav-item">
       <a class="nav-link active" data-toggle="tab" role="tab" aria-selected="true"
          id="data-tab" href="#data" aria-controls="data">Data</a>
@@ -110,10 +114,12 @@
             }
             htmlRow.push('<th' + classAttr + '>' + fieldNames[field] + '</th>');
           }
-          var header = '<tr class="first"><th colspan="3"></th>'
-            + '<th colspan="2" class="with-border">records</th>'
-            + '<th colspan="5" class="with-border">occurences</th></tr>'
-            + '<tr class="second">' + htmlRow.join('') + '</tr>';
+          var header = '<tr class="first">'
+                     + '<th colspan="3"></th>'
+                     + '<th colspan="2" class="with-border">records</th>'
+                     + '<th colspan="5" class="with-border">occurences</th>'
+                     + '</tr>'
+                     + '<tr class="second">' + htmlRow.join('') + '</tr>';
           var previousPackage = '';
           var previousTag = '';
 
@@ -166,15 +172,17 @@
             rows.push('<tr>' + htmlRow.join('') + '</tr>');
           }
 
-          var table = '<table><thead>' + header + '</thead><tbody>' + rows.join('') + '</tbody></table>';
-          console.log(table);
+          var table = '<table>'
+                    + '<thead>' + header + '</thead>'
+                    + '<tbody>' + rows.join('') + '</tbody>'
+                    + '</table>';
           $('#completeness-table').html(table);
         });
       </script>
     </div>
     <div class="tab-pane" id="issues" role="tabpanel" aria-labelledby="issues-tab">
       <h2>Issues in MARC21 records</h2>
-      <div id="issues-table"></div>
+      <div id="issues-table-placeholder"></div>
       <script>
         $.get('read-issue-summary.php?db=' + db)
         .done(function(data) {
@@ -204,18 +212,25 @@
                 var content = rowData[field];
                 if (field == 'count') {
                   totalCount += parseInt(content);
-                  content = numberFormat.format(content);
-                }
-
-                if (field == 'url') {
+                  content = '<a href="#"'
+                          + ' data-type="' + type + '"'
+                          + ' data-path="' + rowData['path'] + '"'
+                          + ' data-message="' + rowData['message'] + '">'
+                          + numberFormat.format(content)
+                          + '</a>';
+                } else if (field == 'url') {
                   if (!content.match(/^http/)) {
                     content = showMarcUrl(content);
                   }
                   content = '<a href="' + content + '" target="_blank">'
                           + '<i class="fa fa-info" aria-hidden="true"></i></a>';
-                } else if (field == 'message' && content.match(/^ +$/)) {
-                  content = '"' + content + '"';
+                } else if (field == 'message') {
+                  if (content.match(/^ +$/)) {
+                    content = '"' + content + '"';
+                  }
+                } else if (field == 'path') {
                 }
+
                 htmlRow.push('<td class="' + field + '">' + content + '</td>');
               }
               var typeRow = '<tr class="t t-' + typeCounter + '">'
@@ -235,8 +250,34 @@
             rows = rows.concat(typeRows);
           }
 
-          var table = '<table><thead>' + header + '</thead><tbody>' + rows.join('') + '</tbody></table>';;
-          $('#issues-table').html(table);
+          var table = '<table id="issues-table">'
+                    + '<thead>' + header + '</thead>'
+                    + '<tbody>' + rows.join('') + '</tbody>'
+                    + '</table>';
+          $('#issues-table-placeholder').html(table);
+
+          $('#issues-table-placeholder tr.t td.count a').hover(
+            function() {
+              $(this).attr('title', 'show records records having this issue (max 10 records)');
+            },
+            function() {
+              $(this).find("span:last").remove();
+            }
+          );
+          $('#issues-table-placeholder tr.t td.count a').on('click', function(e) {
+            var query = {'db': db};
+            query.type = $(this).attr('data-type');
+            query.path = $(this).attr('data-path');
+            query.message = $(this).attr('data-message');
+            var issueDetailsUrl = 'read-issue-details.php'
+            $.get('read-issue-details.php', query)
+             .done(function(data) {
+               var query = 'id:("' + data.recordIds.join('" OR "') + '")';
+               $('#query').val(query);
+               $('#myTab a[href="#data"]').tab('show');
+               doSearch();
+             });
+          });
         });
       </script>
     </div>
@@ -336,56 +377,56 @@
     {{/if}}
 
     {{#if 710a_AddedCorporateName_ss}}
-    {{710a_AddedCorporateName_ss}}
-    {{#if 710d_AddedCorporateName_dates}}
-    {{710d_AddedCorporateName_dates}}
-    {{/if}}
-    <br/>
+      {{710a_AddedCorporateName_ss}}
+      {{#if 710d_AddedCorporateName_dates}}
+        {{710d_AddedCorporateName_dates}}
+      {{/if}}
+      <br/>
     {{/if}}
     {{#if 650a_Topic_topicalTerm_ss}}
-    <i class="fa fa-hashtag" aria-hidden="true" title="topical term"></i>
-    <a href="#" class="record-link" data="650a_Topic_topicalTerm_ss"
-    >{{650a_Topic_topicalTerm_ss}}</a><br/>
+      <i class="fa fa-hashtag" aria-hidden="true" title="topical term"></i>
+      <a href="#" class="record-link" data="650a_Topic_topicalTerm_ss"
+      >{{650a_Topic_topicalTerm_ss}}</a><br/>
     {{/if}}
     {{#if 650z_Topic_geographicSubdivision_ss}}
-    <i class="fa fa-map" aria-hidden="true" title="geographic subdivision"></i>
-    <a href="#" class="record-link" data="650z_Topic_geographicSubdivision_ss"
-    >{{650z_Topic_geographicSubdivision_ss}}</a><br/>
+      <i class="fa fa-map" aria-hidden="true" title="geographic subdivision"></i>
+      <a href="#" class="record-link" data="650z_Topic_geographicSubdivision_ss"
+      >{{650z_Topic_geographicSubdivision_ss}}</a><br/>
     {{/if}}
     {{#if 650v_Topic_formSubdivision_ss}}
-    <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-    <a href="#" class="record-link" data="650v_Topic_formSubdivision_ss"
-    >{{650v_Topic_formSubdivision_ss}}</a><br/>
+      <i class="fa fa-tag" aria-hidden="true" title="form"></i>
+      <a href="#" class="record-link" data="650v_Topic_formSubdivision_ss"
+      >{{650v_Topic_formSubdivision_ss}}</a><br/>
     {{/if}}
     {{#if 6500_Topic_authorityRecordControlNumber_ss}}
-    <a href="#" class="record-link" data="6500_Topic_authorityRecordControlNumber_ss"
-    >{{6500_Topic_authorityRecordControlNumber_ss}}</a><br/>
+      <a href="#" class="record-link" data="6500_Topic_authorityRecordControlNumber_ss"
+      >{{6500_Topic_authorityRecordControlNumber_ss}}</a><br/>
     {{/if}}
     {{#if 6510_Geographic_authorityRecordControlNumber_ss}}
-    <i class="fa fa-map" aria-hidden="true"></i>
-    <a href="#" class="record-link" data="6510_Geographic_authorityRecordControlNumber_ss"
-    >{{6510_Geographic_authorityRecordControlNumber_ss}}</a><br/>
+      <i class="fa fa-map" aria-hidden="true"></i>
+      <a href="#" class="record-link" data="6510_Geographic_authorityRecordControlNumber_ss"
+      >{{6510_Geographic_authorityRecordControlNumber_ss}}</a><br/>
     {{/if}}
     {{#if 6550_GenreForm_authorityRecordControlNumber_ss}}
-    <a href="#" class="record-link" data="6550_GenreForm_authorityRecordControlNumber_ss"
-    >{{6550_GenreForm_authorityRecordControlNumber_ss}}</a><br/>
+      <a href="#" class="record-link" data="6550_GenreForm_authorityRecordControlNumber_ss"
+      >{{6550_GenreForm_authorityRecordControlNumber_ss}}</a><br/>
     {{/if}}
 
     {{#if hasSimilarBooks}}
-    <div class="similarity">
+      <div class="similarity">
       <i class="fa fa-search" aria-hidden="true"></i>
       Search for similar items:
       {{#if 9129_WorkIdentifier_ss}}
-      works:
-      <a href="#" class="record-link" data="9129_WorkIdentifier_ss"
-      >{{9129_WorkIdentifier_ss}}</a>
+        works:
+        <a href="#" class="record-link" data="9129_WorkIdentifier_ss"
+        >{{9129_WorkIdentifier_ss}}</a>
       {{/if}}
       {{#if 9119_ManifestationIdentifier_ss}}
-      manifestations:
-      <a href="#" class="record-link" data="9119_ManifestationIdentifier_ss"
-      >{{9119_ManifestationIdentifier_ss}}</a>
+        manifestations:
+        <a href="#" class="record-link" data="9119_ManifestationIdentifier_ss"
+        >{{9119_ManifestationIdentifier_ss}}</a>
       {{/if}}
-    </div>
+      </div>
     {{/if}}
 
     <div class="details" id="details-{{id}}">
@@ -795,10 +836,6 @@
 
   function openType(t) {
     $('tr.t-' + t).toggle();
-  }
-
-  function showMarcUrl(link) {
-    return marcBaseUrl + link;
   }
 
   $(document).ready(function () {

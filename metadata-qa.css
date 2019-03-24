@@ -152,32 +152,32 @@ ul {
   border-right: 1px solid #cccccc;
 }
 
-#issues-table table tr td.type {
+table#issues-table tr td.type {
   text-align: left;
 }
 
-#issues-table table tr td.type span.type {
+table#issues-table tr td.type span.type {
   color: #37ba00;
   font-weight: bold;
 }
 
-#issues-table table {
+table#issues-table {
   width: 100%;
 }
 
-#issues-table table tr td.path {
+table#issues-table tr td.path {
   width: 400px;
 }
 
-#issues-table table tr td.count {
+table#issues-table tr td.count {
   text-align: right;
   width: 100px;
 }
 
-#issues-table table tr td.url {
+table#issues-table tr td.url {
   width: 20px;
 }
 
-#issues-table table tr.t {
+table#issues-table tr.t {
   display: none;
 }
