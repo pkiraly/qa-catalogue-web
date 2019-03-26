@@ -16,6 +16,7 @@
     if (urlParams.has('db'))
       db = urlParams.get('db');
     var marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
+    var solrProxy = 'solr-proxy.php';
 
     function showMarcUrl(link) {
       return marcBaseUrl + link;
@@ -531,12 +532,14 @@
 
   function buildUrl() {
 
-    var url = baseUrl
+    var url = solrProxy // baseUrl
       + '?q=' + query
       + '&' + parameters.join('&')
       + '&' + buildFacetParameters().join('&')
       + '&start=' + start
-      + '&rows=' + rows;
+      + '&rows=' + rows
+      + '&core=' + db
+    ;
 
     if (filters.length > 0)
       for (var i = 0; i < filters.length; i++)
