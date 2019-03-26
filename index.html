@@ -11,10 +11,13 @@
   <script src="//code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="metadata-qa.css">
   <script type="text/javascript">
-    var urlParams = new URLSearchParams(window.location.search);
     var db = 'cerl';
-    if (urlParams.has('db'))
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('db')) {
       db = urlParams.get('db');
+    } else {
+      db = window.location.pathname.replace(/\//g, '');
+    }
     var marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
     var solrProxy = 'solr-proxy.php';
 
