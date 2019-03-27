@@ -333,6 +333,7 @@
       {{/if}}
       <br/>
     {{/if}}
+
     {{#if hasPhysicalDescription}}
       {{#if 300a_PhysicalDescription_extent_ss}}
         {{300a_PhysicalDescription_extent_ss}}
@@ -342,6 +343,7 @@
       {{/if}}
       <br/>
     {{/if}}
+
     {{#if 490a_SeriesStatement_ss}}
       Series:
       <a href="#" class="record-link" data="490a_SeriesStatement_ss">{{490a_SeriesStatement_ss}}</a>
@@ -350,30 +352,38 @@
       {{/if}}
       <br/>
     {{/if}}
+
     {{#if 520a_Summary_ss}}
       {{520a_Summary_ss}}<br/>
     {{/if}}
+
     {{#if 505a_TableOfContents_ss}}
       {{505a_TableOfContents_ss}}<br/>
     {{/if}}
+
     {{#if hasMainPersonalName}}
       <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
       {{#if 100a_MainPersonalName_personalName_ss}}
-        <a href="#" class="record-link" data="100a_MainPersonalName_personalName_ss"
-        >{{100a_MainPersonalName_personalName_ss}}</a>
-      {{/if}}
-      {{#if 100d_MainPersonalName_dates_ss}}
-        {{100d_MainPersonalName_dates_ss}}
+        {{#each 100a_MainPersonalName_personalName_ss}}
+          <a href="#" class="record-link" data="100a_MainPersonalName_personalName_ss">{{this}}</a>
+          {{#if ../100d_MainPersonalName_dates_ss}}
+            {{lookup ../100d_MainPersonalName_dates_ss @index}}
+          {{/if}}
+          {{#unless @last}}, {{/unless}}
+        {{/each}}
       {{/if}}
       <br/>
     {{/if}}
+
     {{#if 700a_AddedPersonalName_personalName_ss}}
       <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
-      <a href="#" class="record-link" data="700a_AddedPersonalName_personalName_ss"
-      >{{700a_AddedPersonalName_personalName_ss}}</a>
-      {{#if 700d_AddedPersonalName_dates_ss}}
-        {{700d_AddedPersonalName_dates_ss}}
-      {{/if}}
+      {{#each 700a_AddedPersonalName_personalName_ss}}
+        <a href="#" class="record-link" data="700a_AddedPersonalName_personalName_ss">{{this}}</a>
+        {{#if ../700d_AddedPersonalName_dates_ss}}
+          {{lookup ../700d_AddedPersonalName_dates_ss @index}}
+        {{/if}}
+        {{#unless @last}}, {{/unless}}
+      {{/each}}
       <br/>
     {{/if}}
 
@@ -384,6 +394,7 @@
       {{/if}}
       <br/>
     {{/if}}
+
     {{#if 650a_Topic_topicalTerm_ss}}
       <i class="fa fa-hashtag" aria-hidden="true" title="topical term"></i>
       {{#each 650a_Topic_topicalTerm_ss}}
@@ -881,8 +892,8 @@
       setFacets();
     });
     // loadFacets();
-    console.log('main/facets: ', facets);
-    console.log('main/defaultFacets: ', defaultFacets);
+    // console.log('main/facets: ', facets);
+    // console.log('main/defaultFacets: ', defaultFacets);
     loadUrl(buildUrl());
   });
 </script>
