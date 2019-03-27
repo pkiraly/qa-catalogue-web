@@ -25,6 +25,7 @@ if (file_exists($elementsFile)) {
         error_log(count($header) . ' vs ' . count($values));
       if (count($header) != count($values)) {
         error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
+        error_log($line);
       }
       $record = (object)array_combine($header, $values);
       $max = max($max, $record->{'number-of-record'});
