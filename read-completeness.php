@@ -11,6 +11,9 @@ if (file_exists($elementsFile)) {
   // $keys = ['element','number-of-record',number-of-instances,min,max,mean,stddev,histogram]; // "sum",
   $lineNumber = 0;
   $header = [];
+
+  $fieldDefinitions = json_decode(file_get_contents('fieldmap.json'));
+
   foreach (file($elementsFile) as $line) {
     $lineNumber++;
     $values = str_getcsv($line);
@@ -33,6 +36,12 @@ if (file_exists($elementsFile)) {
         $histogram->$k = $v;
       }
       $record->histogram = $histogram;
+
+      list($tag, $subfield) = explode('$', $record->path);
+      if (isset($fieldDefinitions->fields->{$tag}->subfields->{$subfield}->solr)) {
+        $record->solr = $fieldDefinitions->fields->{$tag}->subfields->{$subfield}->solr . '_ss';
+      }
+
       $records[] = $record;
     }
   }
