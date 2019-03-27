@@ -34,11 +34,11 @@
   <h1><i class="fa fa-book" aria-hidden="true"></i> QA catalog <span>for analysing library data</span></h1>
   <ul class="nav nav-tabs" id="myTab">
     <li class="nav-item">
-      <a class="nav-link active" data-toggle="tab" role="tab" aria-selected="true"
+      <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
          id="data-tab" href="#data" aria-controls="data">Data</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
+      <a class="nav-link active" data-toggle="tab" role="tab" aria-selected="true"
          id="completeness-tab" href="#completeness" aria-controls="completeness">Completeness</a>
     </li>
     <li class="nav-item">
@@ -51,7 +51,7 @@
     </li>
   </ul>
   <div class="tab-content">
-    <div class="tab-pane active" id="data" role="tabpanel" aria-labelledby="data-tab">
+    <div class="tab-pane" id="data" role="tabpanel" aria-labelledby="data-tab">
       <div class="container" id="content">
         <div class="row">
           <div id="left" class="col-3">
@@ -99,7 +99,7 @@
         </div>
       </div>
     </div>
-    <div class="tab-pane" id="completeness" role="tabpanel" aria-labelledby="completeness-tab">
+    <div class="tab-pane active" id="completeness" role="tabpanel" aria-labelledby="completeness-tab">
       <h2>Completeness of MARC21 fields</h2>
       <div id="completeness-table"></div>
       <script>
@@ -345,7 +345,7 @@
     {{#if 490a_SeriesStatement_ss}}
       Series:
       <a href="#" class="record-link" data="490a_SeriesStatement_ss">{{490a_SeriesStatement_ss}}</a>
-      {{#if 490a_SeriesStatement_ss}}
+      {{#if 490v_SeriesStatement_volume_ss}}
         {{490v_SeriesStatement_volume_ss}}
       {{/if}}
       <br/>
@@ -386,22 +386,30 @@
     {{/if}}
     {{#if 650a_Topic_topicalTerm_ss}}
       <i class="fa fa-hashtag" aria-hidden="true" title="topical term"></i>
-      <a href="#" class="record-link" data="650a_Topic_topicalTerm_ss"
-      >{{650a_Topic_topicalTerm_ss}}</a><br/>
+      {{#each 650a_Topic_topicalTerm_ss}}
+        <a href="#" class="record-link" data="650a_Topic_topicalTerm_ss">{{this}}</a>{{#unless @last}}, {{/unless}}
+      {{/each}}
+      <br/>
     {{/if}}
     {{#if 650z_Topic_geographicSubdivision_ss}}
       <i class="fa fa-map" aria-hidden="true" title="geographic subdivision"></i>
-      <a href="#" class="record-link" data="650z_Topic_geographicSubdivision_ss"
-      >{{650z_Topic_geographicSubdivision_ss}}</a><br/>
+      {{#each 650a_Topic_topicalTerm_ss}}
+        <a href="#" class="record-link" data="650z_Topic_geographicSubdivision_ss">{{this}}</a>{{#unless @last}}, {{/unless}}
+      {{/each}}
+      <br/>
     {{/if}}
     {{#if 650v_Topic_formSubdivision_ss}}
       <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-      <a href="#" class="record-link" data="650v_Topic_formSubdivision_ss"
-      >{{650v_Topic_formSubdivision_ss}}</a><br/>
+      {{#each 650v_Topic_formSubdivision_ss}}
+        <a href="#" class="record-link" data="650v_Topic_formSubdivision_ss">{{this}}</a>{{#unless @last}}, {{/unless}}
+      {{/each}}
+      <br/>
     {{/if}}
     {{#if 6500_Topic_authorityRecordControlNumber_ss}}
-      <a href="#" class="record-link" data="6500_Topic_authorityRecordControlNumber_ss"
-      >{{6500_Topic_authorityRecordControlNumber_ss}}</a><br/>
+      {{#each 6500_Topic_authorityRecordControlNumber_ss}}
+        <a href="#" class="record-link" data="6500_Topic_authorityRecordControlNumber_ss">{{this}}</a>{{#unless @last}}, {{/unless}}
+      {{/each}}
+      <br/>
     {{/if}}
     {{#if 6510_Geographic_authorityRecordControlNumber_ss}}
       <i class="fa fa-map" aria-hidden="true"></i>
@@ -431,7 +439,12 @@
     {{/if}}
 
     <div class="details" id="details-{{id}}">
-      {{#list fields}}<span class="label">{{label}}:</span> {{value}}{{/list}}
+      {{#list fields}}
+        <span class="label">{{label}}:</span>
+        {{#each value as |v|}}
+          {{v}}{{#unless @last}} &mdash; {{/unless}}
+        {{/each}}
+      {{/list}}
     </div>
   </div>
 </script>
@@ -460,6 +473,7 @@
   var start = 0;
   var rows = 10;
   var filters = [];
+  var facetLimit = 10;
 
   var defaultFacets = [
     '041a_Language_ss',
@@ -476,7 +490,8 @@
     'wt=json',
     'json.nl=map',
     'json.wrf=?',
-    'facet=on'
+    'facet=on',
+    'facet.limit=' + facetLimit
     // 'facet.field=ManifestationIdentifier_ss',
     // 'facet.field=9129_WorkIdentifier_ss',
     // 'facet.field=041a_Language_ss',
@@ -618,8 +633,8 @@
     for (var label in doc) {
       var value = doc[label];
       if (Object.prototype.toString.call(value) === '[object Array]'
-        && value.length) {
-        value = value[0];
+          && value.length) {
+        value = value;
       }
 
       fields.push({'label': label, 'value': value});
@@ -627,18 +642,22 @@
     doc.fields = fields;
 
     doc.hasPublication = (
-      typeof doc['260a_Publication_place_ss'] !== 'undefined'
+         typeof doc['260a_Publication_place_ss'] !== 'undefined'
       || typeof doc['260b_Publication_agent_ss'] !== 'undefined'
-      || typeof doc['260c_Publication_date_ss'] !== 'undefined');
+      || typeof doc['260c_Publication_date_ss'] !== 'undefined'
+    );
     doc.hasPhysicalDescription = (
-      typeof doc['300a_PhysicalDescription_extent_ss'] !== 'undefined'
-      || typeof doc['300c_PhysicalDescription_dimensions_ss'] !== 'undefined');
+         typeof doc['300a_PhysicalDescription_extent_ss'] !== 'undefined'
+      || typeof doc['300c_PhysicalDescription_dimensions_ss'] !== 'undefined'
+    );
     doc.hasMainPersonalName = (
-      typeof doc['100a_MainPersonalName_personalName_ss'] !== 'undefined'
-      || typeof doc['100d_MainPersonalName_dates_ss'] !== 'undefined');
+         typeof doc['100a_MainPersonalName_personalName_ss'] !== 'undefined'
+      || typeof doc['100d_MainPersonalName_dates_ss'] !== 'undefined'
+    );
     doc.hasSimilarBooks = (
-      typeof doc['9129_WorkIdentifier_ss'] !== 'undefined'
-      || typeof doc['9119_ManifestationIdentifier_ss'] !== 'undefined');
+         typeof doc['9129_WorkIdentifier_ss'] !== 'undefined'
+      || typeof doc['9119_ManifestationIdentifier_ss'] !== 'undefined'
+    );
 
     $('#records').append(recordTemplate(doc));
   }
