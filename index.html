@@ -307,30 +307,50 @@
   <div class="record">
     <h2>
       {{#if 245a_Title_mainTitle_ss}}
-        {{245a_Title_mainTitle_ss}}
+        {{#each 245a_Title_mainTitle_ss}}
+          {{this}}{{#unless @last}}, {{/unless}}
+        {{/each}}
       {{/if}}
       {{#if 245b_Title_subtitle_ss}}
-        {{245b_Title_subtitle_ss}}
+        {{#each 245b_Title_subtitle_ss}}
+          {{this}}{{#unless @last}}, {{/unless}}
+        {{/each}}
       {{/if}}
       <a href="#" data="details-{{id}}"><i class="fa fa-book" aria-hidden="true"></i></a>
     </h2>
     {{#if 245c_Title_responsibilityStatement_ss}}
-      <i class="fa fa-pencil" aria-hidden="true"></i> {{245c_Title_responsibilityStatement_ss}}<br/>
+      <i class="fa fa-pencil" aria-hidden="true"></i>
+      {{#each 245c_Title_responsibilityStatement_ss}}
+        {{this}}{{#unless @last}}, {{/unless}}
+      {{/each}}
+      <br/>
     {{/if}}
     {{#if 250a_Edition_editionStatement_ss}}
-      {{250a_Edition_editionStatement_ss}}<br/>
+      {{#each 250a_Edition_editionStatement_ss}}
+        {{this}}{{#unless @last}}, {{/unless}}
+      {{/each}}
+      <br/>
     {{/if}}
     {{#if hasPublication}}
       <i class="fa fa-calendar" aria-hidden="true"></i>
       Published
       {{#if 260c_Publication_date_ss}}
-        in {{260c_Publication_date_ss}}
+        in
+        {{#each 260c_Publication_date_ss}}
+          {{this}}{{#unless @last}}, {{/unless}}
+        {{/each}}
       {{/if}}
       {{#if 260a_Publication_place_ss}}
-        in {{260a_Publication_place_ss}}
+        in
+        {{#each 260a_Publication_place_ss}}
+          {{this}}{{#unless @last}}, {{/unless}}
+        {{/each}}
       {{/if}}
       {{#if 260b_Publication_agent_ss}}
-        by {{260b_Publication_agent_ss}}
+        by
+        {{#each 260b_Publication_agent_ss}}
+          {{this}}{{#unless @last}}, {{/unless}}
+        {{/each}}
       {{/if}}
       <br/>
     {{/if}}
@@ -375,7 +395,10 @@
     {{/if}}
 
     {{#if 505a_TableOfContents_ss}}
-      {{505a_TableOfContents_ss}}<br/>
+      {{#each 505a_TableOfContents_ss}}
+        {{this}}{{#unless @last}}, {{/unless}}
+      {{/each}}
+      <br/>
     {{/if}}
 
     {{#if hasMainPersonalName}}
@@ -405,10 +428,13 @@
     {{/if}}
 
     {{#if 710a_AddedCorporateName_ss}}
-      {{710a_AddedCorporateName_ss}}
-      {{#if 710d_AddedCorporateName_dates}}
-        {{710d_AddedCorporateName_dates}}
-      {{/if}}
+      {{#each 710a_AddedCorporateName_ss}}
+        {{this}}
+        {{#if ../710d_AddedCorporateName_dates}}
+          {{lookup ../710d_AddedCorporateName_dates @index}}
+        {{/if}}
+        {{#unless @last}}, {{/unless}}
+      {{/each}}
       <br/>
     {{/if}}
 
