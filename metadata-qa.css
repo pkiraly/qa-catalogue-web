@@ -51,6 +51,7 @@ h3 {
 .record h2 {
   margin-bottom: 0;
   font-weight: 200;
+  font-size: 130%;
 }
 .record h2 .fa-book {
   color: #37ba00;

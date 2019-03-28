@@ -284,6 +284,7 @@
     </div>
     <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">
       <a href="#" id="set-facets">set facets</a>
+      <div id="set-facet-list"></div>
     </div>
   </div>
 </div>
@@ -336,16 +337,29 @@
 
     {{#if hasPhysicalDescription}}
       {{#if 300a_PhysicalDescription_extent_ss}}
-        {{300a_PhysicalDescription_extent_ss}}
+        {{#each 300a_PhysicalDescription_extent_ss}}
+          {{this}}{{#unless @last}}, {{/unless}}
+        {{/each}}
       {{/if}}
       {{#if 300c_PhysicalDescription_dimensions_ss}}
-        {{300c_PhysicalDescription_dimensions_ss}}
+        {{#each 300c_PhysicalDescription_dimensions_ss}}
+          {{this}}{{#unless @last}}, {{/unless}}
+        {{/each}}
       {{/if}}
       <br/>
     {{/if}}
 
     {{#if 490a_SeriesStatement_ss}}
       Series:
+      {{#each 490a_SeriesStatement_ss}}
+        <a href="#" class="record-link" data="{{this}}">{{this}}</a>{{#unless @last}}, {{/unless}}
+      {{/each}}
+      {{#if 490v_SeriesStatement_volume_ss}}
+        {{#each 490v_SeriesStatement_volume_ss}}
+          {{this}}{{#unless @last}}, {{/unless}}
+        {{/each}}
+      {{/if}}
+
       <a href="#" class="record-link" data="490a_SeriesStatement_ss">{{490a_SeriesStatement_ss}}</a>
       {{#if 490v_SeriesStatement_volume_ss}}
         {{490v_SeriesStatement_volume_ss}}
@@ -354,7 +368,10 @@
     {{/if}}
 
     {{#if 520a_Summary_ss}}
-      {{520a_Summary_ss}}<br/>
+      {{#each 520a_Summary_ss}}
+        {{this}}{{#unless @last}}, {{/unless}}
+      {{/each}}
+      <br/>
     {{/if}}
 
     {{#if 505a_TableOfContents_ss}}
@@ -674,7 +691,7 @@
   }
 
   function processFacet(facetName, facet) {
-    context = {
+    var context = {
       'facetName': getFacetLabel(facetName),
       'machineName': facetName,
       'facets': []
@@ -802,8 +819,8 @@
   }
 
   function setFacets() {
-    $('#records').html('<h3>Set facets</h3>');
-    $.getJSON('listFields.php', function(result, status) {
+    $('#set-facet-list').html('<h3>Set facets</h3>');
+    $.getJSON('listFields.php?db=' + db, function(result, status) {
       console.log('status: ' + status);
       var htmlForm = '<form id="facetselection">';
       for (item in result) {
@@ -821,7 +838,7 @@
       }
       htmlForm += '<input type="submit" value="save" id="save-facet-change" />';
       htmlForm += '</form>';
-      $('#records').append(htmlForm);
+      $('#set-facet-list').append(htmlForm);
 
       setFacetSelectionHandlers();
     });
