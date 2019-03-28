@@ -503,8 +503,8 @@
   </div>
 </script>
 
-<script id="filter-param-template" type="text/x-handlebars-template"
->fq={{field}}:"{{value}}"</script>
+<script id="filter-param-template" type="text/x-handlebars-template">fq={{field}}:"{{value}}"</script>
+<script id="filter-all-param-template" type="text/x-handlebars-template">fq={{field}}:*</script>
 
 <script id="list-filters-template" type="text/x-handlebars-template">
   {{#list filters}}<a href="#" data="{{param}}"><i class="fa fa-minus" aria-hidden="true"></i></a> {{label}}{{/list}}
@@ -580,6 +580,7 @@
   var recordTemplate      = Handlebars.compile($("#record-template").html());
   var listFacetTemplate   = Handlebars.compile($("#list-facet-template").html());
   var filterParamTemplate = Handlebars.compile($("#filter-param-template").html());
+  var filterAllParamTemplate = Handlebars.compile($("#filter-all-param-template").html());
   var filterTemplate      = Handlebars.compile($("#list-filters-template").html());
   // var prevNextTemplate    = Handlebars.compile($("#list-prev-next-template").html());
   var itemPrevNextTemplate= Handlebars.compile($("#item-prev-next-template").html());
@@ -916,7 +917,7 @@
 
   function searchForField(field) {
     // event.preventDefault();
-    var filterParam = filterParamTemplate({'field': field, 'value': '*'});
+    var filterParam = filterAllParamTemplate({'field': field});
     filters.push({
       'param': filterParam,
       'label': getFacetLabel(field) + ': *'
