@@ -159,7 +159,7 @@
                   var content = rowData[field].substr(3);
                   if (rowData['solr'] != undefined) {
                     var query = rowData['solr'] + ':*';
-                    content = '<a href="javascript:searchForField(\'' + query + '\')">' + content + '</a>';
+                    content = '<a href="javascript:searchForField(\'' + rowData['solr'] + '\')">' + content + '</a>';
                   }
                   htmlRow.push('<td class="' + field + '">' + content + '</td>');
                 } else {
@@ -914,10 +914,16 @@
     $('tr.t-' + t).toggle();
   }
 
-  function searchForField(query) {
-    $('#query').val(query);
+  function searchForField(field) {
+    event.preventDefault();
+    var filterParam = filterParamTemplate({'field': field, 'value': '*'});
+    filters.push({
+      'param': filterParam,
+      'label': getFacetLabel(field) + ': *'
+    });
+    start = 0;
+    loadUrl(buildUrl());
     $('#myTab a[href="#data"]').tab('show');
-    doSearch();
   }
 
   $(document).ready(function () {
