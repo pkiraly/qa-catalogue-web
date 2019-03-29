@@ -182,3 +182,13 @@ table#issues-table tr td.url {
 table#issues-table tr.t {
   display: none;
 }
+
+.marc-details table {
+  /* font-family: Courier; */
+  vertical-align: top;
+}
+
+.marc-details table tr td {
+  vertical-align: top;
+  font-size: 80%;
+}

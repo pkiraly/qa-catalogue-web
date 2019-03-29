@@ -493,12 +493,29 @@
     {{/if}}
 
     <div class="details" id="details-{{id}}">
-      {{#list fields}}
-        <span class="label">{{label}}:</span>
-        {{#each value as |v|}}
-          {{v}}{{#unless @last}} &mdash; {{/unless}}
-        {{/each}}
-      {{/list}}
+      <ul class="nav nav-tabs" id="record-views-{{id}}">
+        <li class="nav-item">
+          <a class="nav-link active" data-toggle="tab" role="tab" aria-selected="true"
+             id="marc-raw-tab-{{id}}" href="#marc-raw-{{id}}" aria-controls="completeness">MARC21</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
+             id="marc-human-tab-{{id}}" href="#marc-human-{{id}}" aria-controls="data">labels</a>
+        </li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="marc-raw-{{id}}" role="tabpanel" aria-labelledby="data-tab">
+          <div class="marc-details" id="marc-details-{{id}}"></div>
+        </div>
+        <div class="tab-pane" id="marc-human-{{id}}" role="tabpanel" aria-labelledby="data-tab">
+          {{#list fields}}
+            <span class="label">{{label}}:</span>
+            {{#each value as |v|}}
+              {{v}}{{#unless @last}} &mdash; {{/unless}}
+            {{/each}}
+          {{/list}}
+        </div>
+      </div>
     </div>
   </div>
 </script>
@@ -520,6 +537,17 @@
 
 <script id="strong-template" type="text/x-handlebars-template">
   <strong>{{item}}</strong>
+</script>
+
+<script id="ctr-field-template" type="text/x-handlebars-template">
+<tr><td>{{tag}}</td><td colspan="2"></td><td>{{value}}</td></tr>
+</script>
+
+<script id="data-field-template" type="text/x-handlebars-template">
+<tr><td>{{tag}}</td><td>{{value.ind1}}</td><td>{{value.ind2}}</td>
+{{#each value.subfields as |k v|}}
+  {{#if @first}}<td>${{v}}</td><td>{{k}}</td></tr>{{else}}<tr><td colspan="3"></td><td>${{v}}</td><td>{{k}}</td></tr>{{/if}}
+{{/each}}
 </script>
 
 <script type="text/javascript">
@@ -578,6 +606,9 @@
   });
 
   var recordTemplate      = Handlebars.compile($("#record-template").html());
+  // var marcTemplate        = Handlebars.compile($("#marc-template").html());
+  // var ctrFieldTemplate    = Handlebars.compile($("#ctr-field-template").html());
+  // var dataFieldTemplate   = Handlebars.compile($("#data-field-template").html());
   var listFacetTemplate   = Handlebars.compile($("#list-facet-template").html());
   var filterParamTemplate = Handlebars.compile($("#filter-param-template").html());
   var filterAllParamTemplate = Handlebars.compile($("#filter-all-param-template").html());
@@ -686,6 +717,9 @@
   function processRecord(doc) {
     fields = [];
     for (var label in doc) {
+      if (label == 'record_sni' || label == '_version_')
+        continue;
+
       var value = doc[label];
       if (Object.prototype.toString.call(value) === '[object Array]'
           && value.length) {
@@ -715,6 +749,51 @@
     );
 
     $('#records').append(recordTemplate(doc));
+    if (typeof doc['record_sni'] !== 'undefined')
+      createMarcView(doc.id, doc['record_sni']);
+  }
+
+  function createMarcView(id, jsonString) {
+    var marc = eval('(' + jsonString + ')');
+    var tags = sortTags(marc);
+
+    var rows = [];
+    for (tagId in tags) {
+      var tag = tags[tagId];
+      if (tag.match(/^00/) || tag == 'leader') {
+        rows.push([tag, '', '', '', marc[tag]]);
+      } else {
+        var value = marc[tag];
+        var firstRow = [tag, value.ind1, value.ind2];
+        var i = 0;
+        for (code in value.subfields) {
+          i++;
+          if (i == 1) {
+            firstRow.push('$' + code, value.subfields[code]);
+            rows.push(firstRow);
+          } else {
+            rows.push(['', '', '', '$' + code, value.subfields[code]]);
+          }
+        }
+      }
+    }
+    var trs = [];
+    for (i in rows) {
+      trs.push('<tr><td>' + rows[i].join('</td><td>') + '</td></tr>');
+    }
+    var marcTable = '<table>' + trs.join('') + '</table>';
+    $('#marc-details-' + id).html(marcTable)
+  }
+
+  function sortTags(marc) {
+    var tags = [];
+    for (tag in marc) {
+      if (tag != 'leader')
+        tags.push(tag);
+    }
+    tags.sort();
+    tags.unshift('leader');
+    return tags;
   }
 
   function processFacet(facetName, facet) {
@@ -771,8 +850,8 @@
     }
 
     $.getJSON(urlParam, function(result, status) {
-      // console.log('loaded url: ' + urlParam);
-      // console.log('status: ' + status);
+      console.log('loaded url: ' + urlParam);
+      console.log('status: ' + status);
       $('#numFound').html(result.response.numFound.toLocaleString('en-US'));
       $('#solr-url').html(urlParam);
 
