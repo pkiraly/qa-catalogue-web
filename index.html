@@ -32,6 +32,9 @@
 <div class="container">
   <!-- Content here -->
   <h1><i class="fa fa-book" aria-hidden="true"></i> QA catalog <span>for analysing library data</span></h1>
+
+  <!-- Nav tabs -->
+  <nav>
   <ul class="nav nav-tabs" id="myTab">
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
@@ -50,7 +53,10 @@
          id="settings-tab" href="#settings" aria-controls="settings">Settings</a>
     </li>
   </ul>
-  <div class="tab-content">
+  </nav>
+
+  <!-- Tab panes -->
+  <div class="tab-content" id="myTabContent">
     <div class="tab-pane" id="data" role="tabpanel" aria-labelledby="data-tab">
       <div class="container" id="content">
         <div class="row">
@@ -99,15 +105,18 @@
         </div>
       </div>
     </div>
-    <div class="tab-pane active" id="completeness" role="tabpanel" aria-labelledby="completeness-tab">
+    <div class="tab-pane active" id="completeness" role="tabpanel"
+         aria-labelledby="completeness-tab">
       <h2>Completeness of MARC21 fields</h2>
       <div id="completeness-table"></div>
       <script>
         $.get('read-completeness.php?db=' + db)
         .done(function(data) {
-          var fieldNames = ['path','label','','count','%','count','min','max','mean','stddev']; // ,'histogram'
+          var fieldNames = [
+            'path','label','','count','%','count','min','max','mean','stddev'
+          ]; // ,'histogram'
           var htmlRow = [];
-          for (field in fieldNames) {
+          for (var field in fieldNames) {
             var classAttr = '';
             if (field < 3) {
               classAttr = ' class="left"';
@@ -128,11 +137,11 @@
           var previousTag = '';
 
           var rows = [];
-          for (i in data.records) {
+          for (var i in data.records) {
             var rowData = data.records[i];
             var htmlRow = [];
             var percent = 0;
-            for (field in rowData) {
+            for (var field in rowData) {
               if (field == 'package') {
                 var currentPackage = rowData['package'];
                 if (currentPackage != previousPackage)
@@ -189,7 +198,7 @@
         .done(function(data) {
           var fieldNames = ['path', 'message', 'url', 'count']; // ,'histogram'
           var htmlRow = [];
-          for (field in fieldNames) {
+          for (var field in fieldNames) {
             var classAttr = '';
             var name = fieldNames[field] == 'message' ? 'value/explanation' : fieldNames[field];
             htmlRow.push('<th' + classAttr + '>' + name + '</th>');
@@ -199,17 +208,17 @@
 
           var rows = [];
           var typeCounter = 0;
-          for (typeId in data.types) {
+          for (var typeId in data.types) {
             var type = data.types[typeId];
             var typeRows = [];
             typeCounter++;
             var records = data.records[type];
             var totalCount = 0;
-            for (i in records) {
+            for (var i in records) {
               var rowData = records[i];
               var htmlRow = [];
               var percent = 0;
-              for (field in rowData) {
+              for (var field in rowData) {
                 var content = rowData[field];
                 if (field == 'count') {
                   totalCount += parseInt(content);
@@ -496,18 +505,22 @@
       <ul class="nav nav-tabs" id="record-views-{{id}}">
         <li class="nav-item">
           <a class="nav-link active" data-toggle="tab" role="tab" aria-selected="true"
-             id="marc-raw-tab-{{id}}" href="#marc-raw-{{id}}" aria-controls="completeness">MARC21</a>
+             id="marc-raw-tab-{{id}}" href="#marc-raw-{{id}}"
+             aria-controls="marc-raw-tab">MARC21</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
-             id="marc-human-tab-{{id}}" href="#marc-human-{{id}}" aria-controls="data">labels</a>
+             id="marc-human-tab-{{id}}" href="#marc-human-{{id}}"
+             aria-controls="marc-human-tab">labels</a>
         </li>
       </ul>
       <div class="tab-content">
-        <div class="tab-pane active" id="marc-raw-{{id}}" role="tabpanel" aria-labelledby="data-tab">
+        <div class="tab-pane active" id="marc-raw-{{id}}" role="tabpanel"
+             aria-labelledby="data-tab">
           <div class="marc-details" id="marc-details-{{id}}"></div>
         </div>
-        <div class="tab-pane" id="marc-human-{{id}}" role="tabpanel" aria-labelledby="data-tab">
+        <div class="tab-pane" id="marc-human-{{id}}" role="tabpanel"
+             aria-labelledby="data-tab">
           {{#list fields}}
             <span class="label">{{label}}:</span>
             {{#each value as |v|}}
@@ -625,7 +638,7 @@
 
   function buildFacetParameters() {
     var facetParameters = [];
-    for (i in facets) {
+    for (var i in facets) {
       facetParameters.push('facet.field=' + facets[i]);
     }
     return facetParameters;
@@ -672,7 +685,7 @@
     $('#prev-next').html('');
     $('#prev-next-footer').html('');
     var items = [];
-    var itemé
+    var item;
     if (start > 0) {
       for (var i = 1; i <= 3; i++) {
         item = start - (i * rows);
@@ -715,7 +728,7 @@
   }
 
   function processRecord(doc) {
-    fields = [];
+    var fields = [];
     for (var label in doc) {
       if (label == 'record_sni' || label == '_version_')
         continue;
@@ -758,7 +771,7 @@
     var tags = sortTags(marc);
 
     var rows = [];
-    for (tagId in tags) {
+    for (var tagId in tags) {
       var tag = tags[tagId];
       if (tag.match(/^00/) || tag == 'leader') {
         rows.push([tag, '', '', '', marc[tag]]);
@@ -766,7 +779,7 @@
         var value = marc[tag];
         var firstRow = [tag, value.ind1, value.ind2];
         var i = 0;
-        for (code in value.subfields) {
+        for (var code in value.subfields) {
           i++;
           if (i == 1) {
             firstRow.push('$' + code, value.subfields[code]);
@@ -778,7 +791,7 @@
       }
     }
     var trs = [];
-    for (i in rows) {
+    for (var i in rows) {
       trs.push('<tr><td>' + rows[i].join('</td><td>') + '</td></tr>');
     }
     var marcTable = '<table>' + trs.join('') + '</table>';
@@ -787,7 +800,7 @@
 
   function sortTags(marc) {
     var tags = [];
-    for (tag in marc) {
+    for (var tag in marc) {
       if (tag != 'leader')
         tags.push(tag);
     }
@@ -929,7 +942,7 @@
     $.getJSON('listFields.php?db=' + db, function(result, status) {
       console.log('status: ' + status);
       var htmlForm = '<form id="facetselection">';
-      for (item in result) {
+      for (var item in result) {
         var facet = result[item];
         var isInUse = jQuery.inArray(facet, facets) > -1;
         var checked = isInUse ? ' checked="checked"' : '';
@@ -1024,6 +1037,16 @@
     // console.log('main/facets: ', facets);
     // console.log('main/defaultFacets: ', defaultFacets);
     loadUrl(buildUrl());
+
+    $('#myTab a').on('click', function (e) {
+      e.preventDefault();
+      $('#myTabContent .tab-pane').each(function() {
+        if (!$(this).attr('id').match(/^marc-/)) {
+          $(this).removeClass('active');
+        }
+      });
+      $(this).tab('show');
+    })
   });
 </script>
 </body>
