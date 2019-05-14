@@ -192,3 +192,8 @@ table#issues-table tr.t {
   vertical-align: top;
   font-size: 80%;
 }
+
+/*
+div#myTabContent.tab-content div#issues.tab-pane.active div#issues-table-placeholder
+table#issues-table thead tr th
+ */

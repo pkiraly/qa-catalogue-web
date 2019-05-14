@@ -27,6 +27,7 @@
   </script>
   <script src="configuration.js" type="text/javascript"></script>
   <script src="selected-facets.js" type="text/javascript"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -47,6 +48,12 @@
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
          id="issues-tab" href="#issues" aria-controls="issues">Issue catalog</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
+         id="functions-tab" href="#functions" aria-controls="functions">
+        Functional analysis
+      </a>
     </li>
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
@@ -288,6 +295,147 @@
                doSearch();
              });
           });
+        });
+      </script>
+    </div>
+    <div class="tab-pane" id="functions" role="tabpanel" aria-labelledby="functions-tab">
+      <h2>Functional analysis</h2>
+
+      <div class="row"><label>Discovery functions</label></div>
+      <div class="row">
+        <div class="col-3">
+          <svg id="bar-chart-DiscoverySearch" class="bar-chart"></svg>
+          <p>Search</p>
+        </div>
+        <div class="col-3">
+          <svg id="bar-chart-DiscoveryIdentify" class="bar-chart"></svg>
+          <p>Identify</p>
+        </div>
+        <div class="col-3">
+          <svg id="bar-chart-DiscoverySelect" class="bar-chart"></svg>
+          <p>Select</p>
+        </div>
+        <div class="col-3">
+          <svg id="bar-chart-DiscoveryObtain" class="bar-chart"></svg>
+          <p>Obtain</p>
+        </div>
+      </div>
+      <div class="row"><label>Usage functions</label></div>
+      <div class="row">
+        <div class="col-3">
+          <svg id="bar-chart-UseRestrict" class="bar-chart"></svg>
+          <p>Restrict</p>
+        </div>
+        <div class="col-3">
+          <svg id="bar-chart-UseManage" class="bar-chart"></svg>
+          <p>Manage</p>
+        </div>
+        <div class="col-3">
+          <svg id="bar-chart-UseOperate" class="bar-chart"></svg>
+          <p>Operate</p>
+        </div>
+        <div class="col-3">
+          <svg id="bar-chart-UseInterpret" class="bar-chart"></svg>
+          <p>Interpret</p>
+        </div>
+      </div>
+      <div class="row"><label>Management functions</label></div>
+      <div class="row">
+        <div class="col-3">
+          <svg id="bar-chart-UseIdentify" class="bar-chart"></svg>
+          <p>Identify</p>
+        </div>
+        <div class="col-3">
+          <svg id="bar-chart-ManagementProcess" class="bar-chart"></svg>
+          <p>Process</p>
+        </div>
+        <div class="col-3">
+          <svg id="bar-chart-ManagementSort" class="bar-chart"></svg>
+          <p>Sort</p>
+        </div>
+        <div class="col-3">
+          <svg id="bar-chart-ManagementDisplay" class="bar-chart"></svg>
+          <p>Display</p>
+        </div>
+      </div>
+
+      <style>
+        .bar-chart {
+          height: 100px;
+          width: 270px;
+          border: 1px solid #37ba00;
+        }
+        .bar-chart g rect {
+          background-color: #37ba00;
+        }
+        #functions div.row label {
+          font-weight: bold;
+        }
+      </style>
+
+      <script type="application/javascript">
+        var height = 100,
+            width  = 270,
+            margin = ({top: 0, right: 0, bottom: 0, left: 0})
+        ;
+
+        var url = 'read-functional-analysis-histogram.php?db=' + db;
+        var datax = d3.csv(url).then(function(data) {
+          var filteredData = new Array(12);
+          var min = -1,
+              max = -1;
+          console.log(data.length);
+          for (var i in data) {
+            var item = data[i];
+            if (i == 'columns')
+              continue;
+
+            var frbrfunction = item.frbrfunction;
+            if (typeof filteredData[item.frbrfunction] === "undefined") {
+              filteredData[item.frbrfunction] = new Array();
+            }
+            filteredData[item.frbrfunction].push({
+              name: parseInt(item.score),
+              value: parseInt(item.count)
+            });
+            if (min == -1 || min > item.score) {
+              min = item.score;
+            }
+            if (max == -1 || max < item.score) {
+              max = item.score;
+            }
+          }
+          console.log(filteredData);
+          console.log('min: ' + min + ', max: ' + max);
+
+          var bandWidth = (width / (max - min)) - 1;
+
+          var scaleX = d3.scaleLinear()
+            .domain([min, max])
+            .range([margin.left, width - margin.right])
+
+          for (var frbrfunction in filteredData) {
+            var histogram = filteredData[frbrfunction];
+            var id = '#bar-chart-' + frbrfunction;
+
+            var scaleY = d3.scaleLinear()
+              .domain([0, d3.max(histogram, d => d.value)]).nice()
+              .range([height - margin.bottom, margin.top])
+
+            d3.select(id )
+              .append("g")
+              .attr("fill", "steelblue")
+              .selectAll("rect")
+              .data(histogram)
+              .enter().append("rect")
+              .attr("x", item => item.name * (bandWidth + 1)) //scaleX.bandwidth();
+              .attr("y", item => Math.floor(scaleY(item.value)))
+              .attr("height", item => (100 - Math.floor(scaleY(item.value))))
+              .attr("width", bandWidth) //scaleX.bandwidth();
+              .text(function(d) {
+                return d.value;
+              });
+          }
         });
       </script>
     </div>
