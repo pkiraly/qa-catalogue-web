@@ -62,6 +62,7 @@ function getFacetLabel($facet) {
 }
 
 function getMarcFields($doc) {
+  error_log('record_sni type: ' . gettype($doc->record_sni));
   $marc = json_decode($doc->record_sni[0]);
   error_log('marc type: ' . gettype($marc));
 
