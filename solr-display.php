@@ -132,7 +132,7 @@ function hasSimilarBooks($doc) {
  * Executes the Solr query and returns the JSON response.
  */
 function getSolrResponse() {
-  static $cores = ['cerl', 'cerl2', 'stanford', 'dnb', 'gent', 'szte'];
+  static $cores = ['cerl', 'cerl2', 'stanford', 'dnb', 'gent', 'szte', 'mokka'];
   if (isset($_SERVER['QUERY_STRING'])) {
     $query = $_SERVER['QUERY_STRING'];
 
