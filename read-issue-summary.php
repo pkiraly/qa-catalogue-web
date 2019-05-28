@@ -1,4 +1,6 @@
 <?php
+set_time_limit(0);
+
 require_once 'common-functions.php';
 $marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
 
