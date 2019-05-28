@@ -303,7 +303,7 @@
   function getFacetLabel(facet) {
     if (typeof facetLabels[facet] != "undefined")
       return facetLabels[facet];
-    return facet.replace(/_ss$/, '');
+    return facet.replace(/_ss$/, '').replace(/_/g, ' ');
   }
 
   function buildFacetParameters() {
