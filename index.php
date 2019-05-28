@@ -741,10 +741,10 @@
 
           var typeHeadRow = '<tr>'
             + '<td colspan="3" class="type"><span class="type">' + type + '</span>'
-            + ' (' + records.length + ' variants)'
+            + ' (' + data.typeCounter[type].variations + ' variants)'
             + ' <a href="javascript:openType(' + typeCounter + ')">[+]</a>'
             + '</td>'
-            + '<td class="count">' + numberFormat.format(totalCount) + '</td>'
+            + '<td class="count">' + numberFormat.format(data.typeCounter[type].count) + '</td>'
             + '</tr>';
           rows.push(typeHeadRow);
           rows = rows.concat(typeRows);
