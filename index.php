@@ -784,7 +784,6 @@
   function loadClassifications() {
     console.log('loadClassifications');
     $.getJSON('read-classifications.php?db=' + db, function(result, status) {
-      console.log(result);
       $('#classifications-content').html(result.byRecord);
       $('#classifications-content').append(result.byField);
       // setFacetSelectionHandlers();
