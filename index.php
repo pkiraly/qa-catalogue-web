@@ -778,18 +778,22 @@
     );
 
     $('#issues-table-placeholder tr.t td.count a').on('click', function (e) {
+      console.log('clicked');
       var query = {'db': db};
-      query.type = $(this).attr('data-type');
-      query.path = $(this).attr('data-path');
-      query.message = $(this).attr('data-message');
-      var issueDetailsUrl = 'read-issue-details.php'
-      $.get('read-issue-details.php', query)
-      .done(function (data) {
-        var query = 'id:("' + data.recordIds.join('" OR "') + '")';
-        $('#query').val(query);
-        $('#myTab a[href="#data"]').tab('show');
-        doSearch();
-      });
+      query.errorId = $(this).attr('data-id');
+      console.log(query);
+      // query.type = $(this).attr('data-type');
+      // query.path = $(this).attr('data-path');
+      // query.message = $(this).attr('data-message');
+      var issueDetailsUrl = 'read-issue-collector.php'
+      $.get(issueDetailsUrl, query)
+       .done(function (data) {
+         console.log(data);
+         var query = 'id:("' + data.recordIds.join('" OR "') + '")';
+         $('#query').val(query);
+         $('#myTab a[href="#data"]').tab('show');
+         doSearch();
+       });
     });
   }
 

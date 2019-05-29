@@ -24,7 +24,8 @@
               <a href="{showMarcUrl($rowData->url)}" target="_blank"><i class="fa fa-info" aria-hidden="true"></i></a>
             </td>
             <td class="count">
-              <a href="#" data-type="{$type}" data-path="{$rowData->path}" data-message="{$rowData->message}">{$rowData->count}</a>
+              <a href="#" data-id="{$rowData->id}" data-type="{$type}"
+                 data-path="{$rowData->path}" data-message="{$rowData->message}">{$rowData->count}</a>
             </td>
           </tr>
         {/if}

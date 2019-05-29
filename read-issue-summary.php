@@ -28,7 +28,7 @@ if (file_exists($elementsFile)) {
     $values = str_getcsv($line);
     if ($lineNumber == 1) {
       $header = $values;
-      $header[0] = 'path';
+      $header[1] = 'path';
       error_log('header: ' . json_encode($header));
     } else {
       if (count($header) != count($values)) {
@@ -41,7 +41,7 @@ if (file_exists($elementsFile)) {
       if (!isset($records[$type])) {
         $records[$type] = [];
       }
-      if ($db != 'mokka' || count($records[$type]) < 100) {
+      if (count($records[$type]) < 100) {
         $records[$type][] = $record;
       }
       if (!isset($typeCounter[$type])) {
