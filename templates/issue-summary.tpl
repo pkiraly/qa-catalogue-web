@@ -16,19 +16,16 @@
       {foreach $records[$type] item=rowData name=foo}
         {if $smarty.foreach.foo.index < 100}
           <tr class="t t-{$smarty.foreach.types.index}">
-            {foreach from=$rowData key=field item=content}
-              <td class="{$field}">
-                {if $field == 'path'}
-                  {$content}
-                {elseif $field == 'message'}
-                  {if preg_match('/^ +$/', $content)}"{$content}"{else}{$content}{/if}
-                {elseif $field == 'url'}
-                  <a href="{showMarcUrl($content)}" target="_blank"><i class="fa fa-info" aria-hidden="true"></i></a>
-                {elseif $field == 'count'}
-                  <a href="#" data-type="{$type}" data-path="{$rowData->path}" data-message="{$rowData->message}">{$content}</a>
-                {/if}
-              </td>
-            {/foreach}
+            <td class="path">{$rowData->path}</td>
+            <td class="message">
+              {if preg_match('/^ +$/', $rowData->message)}"{$rowData->message}"{else}{$rowData->message}{/if}
+            </td>
+            <td class="url">
+              <a href="{showMarcUrl($rowData->url)}" target="_blank"><i class="fa fa-info" aria-hidden="true"></i></a>
+            </td>
+            <td class="count">
+              <a href="#" data-type="{$type}" data-path="{$rowData->path}" data-message="{$rowData->message}">{$rowData->count}</a>
+            </td>
           </tr>
         {/if}
       {/foreach}
