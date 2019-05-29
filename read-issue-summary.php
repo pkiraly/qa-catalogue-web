@@ -100,5 +100,5 @@ if ($display == 1) {
 
 function showMarcUrl($content) {
   global $marcBaseUrl;
-  return $marcBaseUrl + $content;
+  return $marcBaseUrl . $content;
 }
