@@ -23,13 +23,7 @@
                 {elseif $field == 'message'}
                   {if preg_match('/^ +$/', $content)}"{$content}"{else}{$content}{/if}
                 {elseif $field == 'url'}
-                  {$content}
-                  {if !preg_match('/^http/', $content)}
-                    {assign var=url value=showMarcUrl($content)}
-                  {else}
-                    {assign var=url value=$content}
-                  {/if}
-                  <a href="{$url}" target="_blank"><i class="fa fa-info" aria-hidden="true"></i></a>
+                  <a href="{showMarcUrl($content)}" target="_blank"><i class="fa fa-info" aria-hidden="true"></i></a>
                 {elseif $field == 'count'}
                   <a href="#" data-type="{$type}" data-path="{$rowData->path}" data-message="{$rowData->message}">{$content}</a>
                 {/if}

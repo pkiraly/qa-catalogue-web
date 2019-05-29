@@ -100,5 +100,9 @@ if ($display == 1) {
 
 function showMarcUrl($content) {
   global $marcBaseUrl;
-  return $marcBaseUrl . $content;
+
+  if (preg_match('/^http/', $content))
+    $content = $marcBaseUrl . $content;
+
+  return $content;
 }
