@@ -7,15 +7,15 @@
     </tr>
   </thead>
   <tbody>
-    {foreach $types as $type}
+    {foreach $types item=type name=types}
       <tr class="type-header {$type}">
-        <td colspan="3">{$type} {count($records[$type])} variants</td>
-        <td>{$typeCounter[$type]->count}</td>
+        <td colspan="3" class="type"><span class="type">{$type}</span> ({count($records[$type])} variants)
+          <a href="javascript:openType('{$smarty.foreach.types.index}')">[+]</a></td>
+        <td class="count">{$typeCounter[$type]->count}</td>
       </tr>
       {foreach $records[$type] item=rowData name=foo}
         {if $smarty.foreach.foo.index < 100}
-          {assign var=typeCounter value=1}
-          <tr class="t t-{$typeCounter}">
+          <tr class="t t-{$smarty.foreach.types.index}">
             {foreach from=$rowData key=field item=content}
               <td class="{$field}">
                 {if $field == 'count'}
@@ -36,6 +36,11 @@
           </tr>
         {/if}
       {/foreach}
+      {if $typeCounter[$type]->count > 100}
+        <tr class="t t-{$smarty.foreach.types.index} text-centered {$type}">
+          <td colspan="4">more</td>
+        </tr>
+      {/if}
     {/foreach}
   </tbody>
 </table>

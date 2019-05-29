@@ -683,6 +683,14 @@
   }
 
   function loadIssues() {
+    $.get('read-issue-summary.php?db=' + db + '&display=1')
+      .done(function(data) {
+        $('#issues-table-placeholder').html(data);
+        loadIssueHandlers();
+      });
+  }
+
+  function loadIssuesDOM() {
     $.get('read-issue-summary.php?db=' + db)
       .done(function(data) {
         var fieldNames = ['path', 'message', 'url', 'count']; // ,'histogram'
@@ -755,28 +763,32 @@
           + '<tbody>' + rows.join('') + '</tbody>'
           + '</table>';
         $('#issues-table-placeholder').html(table);
+        loadIssueHandlers();
+      });
+  }
 
-        $('#issues-table-placeholder tr.t td.count a').hover(
-          function() {
-            $(this).attr('title', 'show records records having this issue (max 10 records)');
-          },
-          function() {
-            $(this).find("span:last").remove();
-          }
-        );
-        $('#issues-table-placeholder tr.t td.count a').on('click', function(e) {
-          var query = {'db': db};
-          query.type = $(this).attr('data-type');
-          query.path = $(this).attr('data-path');
-          query.message = $(this).attr('data-message');
-          var issueDetailsUrl = 'read-issue-details.php'
-          $.get('read-issue-details.php', query)
-          .done(function(data) {
-            var query = 'id:("' + data.recordIds.join('" OR "') + '")';
-            $('#query').val(query);
-            $('#myTab a[href="#data"]').tab('show');
-            doSearch();
-        });
+  function loadIssueHandlers() {
+    $('#issues-table-placeholder tr.t td.count a').hover(
+      function () {
+        $(this).attr('title', 'show records records having this issue (max 10 records)');
+      },
+      function () {
+        $(this).find("span:last").remove();
+      }
+    );
+
+    $('#issues-table-placeholder tr.t td.count a').on('click', function (e) {
+      var query = {'db': db};
+      query.type = $(this).attr('data-type');
+      query.path = $(this).attr('data-path');
+      query.message = $(this).attr('data-message');
+      var issueDetailsUrl = 'read-issue-details.php'
+      $.get('read-issue-details.php', query)
+      .done(function (data) {
+        var query = 'id:("' + data.recordIds.join('" OR "') + '")';
+        $('#query').val(query);
+        $('#myTab a[href="#data"]').tab('show');
+        doSearch();
       });
     });
   }
