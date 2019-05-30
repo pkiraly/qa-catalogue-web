@@ -9,33 +9,30 @@ $type = getOrDefault('type', '');
 $path = getOrDefault('path', '');
 $message = getOrDefault('message', '');
 
+// error_log()
+
 $configuration = parse_ini_file("configuration.cnf");
 
-$elementsFile = sprintf('%s/%s/issue-details.csv', $configuration['dir'], $db);
+$elementsFile = sprintf('%s/%s/issue-collector.csv', $configuration['dir'], $db);
 $recordIds = [];
 $types = [];
 $max = 0;
 if (file_exists($elementsFile)) {
-  // $keys = ['recordId', 'MarcPath', 'type', 'message', 'url']
+  // $keys = ['errorId', 'recordIds']
   $lineNumber = 0;
   $header = [];
   $in = fopen($elementsFile, "r");
   while (($line = fgets($in)) != false) {
     if (count($recordIds) < 10) {
       $lineNumber++;
-      $values = str_getcsv($line);
       if ($lineNumber == 1) {
-        $header = $values;
-        $header[1] = 'path';
+        $header = str_getcsv($line);
       } else {
-        if (count($header) != count($values)) {
-          error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
-        }
-        $record = (object)array_combine($header, $values);
-        if ($record->path == $path
-          && $record->type == $type
-          && $record->message == $message) {
-          $recordIds[] = $record->recordId;
+        if (preg_match('/^' . $errorId . ',/', $line)) {
+          $values = str_getcsv($line);
+          $record = (object)array_combine($header, $values);
+          $recordIds = explode(';', $record->recordIds);
+          break;
         }
       }
     }

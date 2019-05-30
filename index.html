@@ -1133,7 +1133,7 @@
       }).get().join(',');
       console.log(checkValues);
 
-      $.post("saveFacets.php", {facet: checkValues}, function(result){
+      $.post("saveFacets.php", {facet: checkValues, db: db}, function(result){
         console.log(result);
         $("#message").html("saved");
       });

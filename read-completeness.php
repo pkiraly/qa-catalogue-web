@@ -19,10 +19,7 @@ if (file_exists($elementsFile)) {
     $values = str_getcsv($line);
     if ($lineNumber == 1) {
       $header = $values;
-      error_log('header: ' . json_encode($header));
     } else {
-      if ($lineNumber == 2)
-        error_log(count($header) . ' vs ' . count($values));
       if (count($header) != count($values)) {
         error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
         error_log($line);
