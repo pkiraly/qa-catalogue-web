@@ -9,8 +9,6 @@ $type = getOrDefault('type', '');
 $path = getOrDefault('path', '');
 $message = getOrDefault('message', '');
 
-// error_log()
-
 $configuration = parse_ini_file("configuration.cnf");
 
 $elementsFile = sprintf('%s/%s/issue-details.csv', $configuration['dir'], $db);
@@ -29,10 +27,7 @@ if (file_exists($elementsFile)) {
       if ($lineNumber == 1) {
         $header = $values;
         $header[1] = 'path';
-        error_log('header: ' . json_encode($header));
       } else {
-        if ($lineNumber == 2)
-          error_log(count($header) . ' vs ' . count($values));
         if (count($header) != count($values)) {
           error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
         }

@@ -29,7 +29,6 @@ if (file_exists($elementsFile)) {
     if ($lineNumber == 1) {
       $header = $values;
       $header[1] = 'path';
-      error_log('header: ' . json_encode($header));
     } else {
       if (count($header) != count($values)) {
         error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));

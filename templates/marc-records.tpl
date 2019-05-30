@@ -4,7 +4,8 @@
     <h2>
       {include 'conditional-foreach.tpl' obj=$doc key='245a_Title_mainTitle_ss'}
       {include 'conditional-foreach.tpl' obj=$doc key='245b_Title_subtitle_ss'}
-      <a href="#" data="details-{$doc->id|regex_replace:"/ +$/":""}"><i class="fa fa-book" aria-hidden="true"></i></a>
+      <a href="#" class="record-details" data="details-{$doc->id|regex_replace:"/ +$/":""}" title="display details"><i class="fa fa-book" aria-hidden="true"></i></a>
+      <a href="{opacLink($doc->id)}" target="_blank" title="Display record in the library catalogue"><i class="fa fa-external-link" aria-hidden="true"></i></a>
     </h2>
     {include 'conditional-foreach.tpl' obj=$doc key='245c_Title_responsibilityStatement_ss'
       label='<i class="fa fa-pencil" aria-hidden="true"></i>' suffix='<br/>'}
@@ -28,7 +29,7 @@
     {if isset($doc->{'490a_SeriesStatement_ss'})}
       Series:
       {foreach $doc->{'490a_SeriesStatement_ss'} as $value}
-        <a href="#" class="record-link tag-490a" data="{$value}">{$value}</a>{if !$value@first}, {/if}
+        <a href="#" class="record-link tag-490a" data="{$value}">{$value}</a>{if !$value@last}, {/if}
       {/foreach}
       {include 'conditional-foreach.tpl' obj=$doc key='490v_SeriesStatement_volume_ss' tag='490v'}
       <br/>
@@ -45,7 +46,7 @@
           {if isset($doc->{'100d_MainPersonalName_dates_ss'})}
             {$doc->{'100d_MainPersonalName_dates_ss'}[$value@index]}
           {/if}
-          {if !$value@first}, {/if}
+          {if !$value@last}, {/if}
         {/foreach}
       {/if}
       <br/>
@@ -58,7 +59,7 @@
         {if isset($doc->{'700d_AddedPersonalName_dates_ss'})}
           {$doc->{'700d_AddedPersonalName_dates_ss'}[$value@index]}
         {/if}
-        {if !$value@first}, {/if}
+        {if !$value@last}, {/if}
       {/foreach}
       <br/>
     {/if}
@@ -69,7 +70,7 @@
         {if isset($doc->{'710d_AddedCorporateName_dates'})}
           {$doc->{'710d_AddedCorporateName_dates'}[$value@index]}
         {/if}
-        {if !$value@first}, {/if}
+        {if !$value@last}, {/if}
       {/foreach}
       <br/>
     {/if}
@@ -77,7 +78,7 @@
     {if isset($doc->{'650a_Topic_topicalTerm_ss'})}
       <i class="fa fa-hashtag" aria-hidden="true" title="topical term"></i>
       {foreach $doc->{'650a_Topic_topicalTerm_ss'} as $value}
-        <a href="#" class="record-link" data="650a_Topic_topicalTerm_ss">{$value}</a>{if !$value@first}, {/if}
+        <a href="#" class="record-link" data="650a_Topic_topicalTerm_ss">{$value}</a>{if !$value@last}, {/if}
       {/foreach}
       <br/>
     {/if}
@@ -85,7 +86,7 @@
     {if isset($doc->{'650z_Topic_geographicSubdivision_ss'})}
       <i class="fa fa-map" aria-hidden="true" title="geographic subdivision"></i>
       {foreach $doc->{'650z_Topic_geographicSubdivision_ss'} as $value}
-        <a href="#" class="record-link" data="650z_Topic_geographicSubdivision_ss">{$value}</a>{if !$value@first}, {/if}
+        <a href="#" class="record-link" data="650z_Topic_geographicSubdivision_ss">{$value}</a>{if !$value@last}, {/if}
       {/foreach}
       <br/>
     {/if}
@@ -93,14 +94,14 @@
     {if isset($doc->{'650v_Topic_formSubdivision_ss'})}
       <i class="fa fa-tag" aria-hidden="true" title="form"></i>
       {foreach $doc->{'650v_Topic_formSubdivision_ss'} as $value}
-        <a href="#" class="record-link" data="650v_Topic_formSubdivision_ss">{$value}</a>{if !$value@first}, {/if}
+        <a href="#" class="record-link" data="650v_Topic_formSubdivision_ss">{$value}</a>{if !$value@last}, {/if}
       {/foreach}
       <br/>
     {/if}
 
     {if isset($doc->{'6500_Topic_authorityRecordControlNumber_ss'})}
       {foreach $doc->{'6500_Topic_authorityRecordControlNumber_ss'} as $value}
-        <a href="#" class="record-link" data="6500_Topic_authorityRecordControlNumber_ss">{$value}</a>{if !$value@first}, {/if}
+        <a href="#" class="record-link" data="6500_Topic_authorityRecordControlNumber_ss">{$value}</a>{if !$value@last}, {/if}
       {/foreach}
       <br/>
     {/if}
@@ -108,7 +109,7 @@
     {if isset($doc->{'6510_Geographic_authorityRecordControlNumber_ss'})}
       <i class="fa fa-map" aria-hidden="true"></i>
       {foreach $doc->{'6510_Geographic_authorityRecordControlNumber_ss'} as $value}
-        <a href="#" class="record-link" data="6510_Geographic_authorityRecordControlNumber_ss">{$value}</a>{if !$value@first}, {/if}
+        <a href="#" class="record-link" data="6510_Geographic_authorityRecordControlNumber_ss">{$value}</a>{if !$value@last}, {/if}
       {/foreach}
       <br/>
     {/if}
@@ -116,7 +117,7 @@
     {if isset($doc->{'6550_GenreForm_authorityRecordControlNumber_ss'})}
       <i class="fa fa-map" aria-hidden="true"></i>
       {foreach $doc->{'6550_GenreForm_authorityRecordControlNumber_ss'} as $value}
-        <a href="#" class="record-link" data="6550_GenreForm_authorityRecordControlNumber_ss">{$value}</a>{if !$value@first}, {/if}
+        <a href="#" class="record-link" data="6550_GenreForm_authorityRecordControlNumber_ss">{$value}</a>{if !$value@last}, {/if}
       {/foreach}
       <br/>
     {/if}

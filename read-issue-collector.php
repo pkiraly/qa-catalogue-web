@@ -25,7 +25,6 @@ if (file_exists($elementsFile)) {
   while (($line = fgets($in)) != false) {
     if (count($recordIds) < 10) {
       $lineNumber++;
-      // $values = str_getcsv($line);
       if ($lineNumber == 1) {
         $header = str_getcsv($line);
       } else {

@@ -34,7 +34,11 @@
 <body>
 <div class="container">
   <!-- Content here -->
-  <h1><i class="fa fa-book" aria-hidden="true"></i> QA catalog <span>for analysing library data (.php)</span></h1>
+  <h1><i class="fa fa-cogs" aria-hidden="true"></i> QA catalogue <span>for analysing library data</span></h1>
+  <p>
+    <i class="fa fa-book" aria-hidden="true"></i>
+    <a href="http://www.ek.szte.hu/" target="_blank">A Szegedi Tudományegyetem Klebelsberg Kuno Könyvtára</a>
+  </p>
 
   <!-- Nav tabs -->
   <nav>
@@ -245,6 +249,7 @@
   var rows = 10;
   var filters = [];
   var facetLimit = 10;
+  var facetOffsetParameters = [];
 
   var defaultFacets = [
     '041a_Language_ss',
@@ -311,6 +316,19 @@
     for (var i in facets) {
       facetParameters.push('facet.field=' + facets[i]);
     }
+    if (facetParameters.length > 0) {
+      facetParameters.push('facet.mincount=1');
+    }
+    return facetParameters;
+  }
+
+  function buildFacetNavigationParameters() {
+    var facetParameters = [];
+    facetParameters.push('facet.mincount=1');
+    for (var i in facetOffsetParameters) {
+      facetParameters.push('facet.field=' + i);
+      facetParameters.push('f.' + i + '.facet.offset=' + facetOffsetParameters[i]);
+    }
     return facetParameters;
   }
 
@@ -322,6 +340,23 @@
       + '&' + buildFacetParameters().join('&')
       + '&start=' + start
       + '&rows=' + rows
+      + '&core=' + db
+    ;
+
+    if (filters.length > 0)
+      for (var i = 0; i < filters.length; i++)
+        url += '&' + filters[i].param;
+
+    return url;
+  }
+
+  function buildFacetNavigationUrl() {
+
+    var url = solrDisplay // solrProxy // baseUrl
+      + '?q=' + query
+      + '&' + parameters.join('&')
+      + '&' + buildFacetNavigationParameters().join('&')
+      + '&rows=0'
       + '&core=' + db
     ;
 
@@ -441,7 +476,7 @@
   }
 
   function setFacetClickBehaviour() {
-    $('div.facet-block ul a').click(function (e) {
+    $('div.facet-block ul a.facet-term').click(function (e) {
       var field = $(this).parent().parent().parent().attr('id');
       var value = $(this).html();
       var filterParam = filterParamTemplate({'field': field, 'value': value});
@@ -452,6 +487,36 @@
       start = 0;
       loadSolrResponse(buildUrl());
     });
+  }
+
+  function setFacetNavigationClickBehaviour() {
+    console.log('setFacetNavigationClickBehaviour');
+    $('div.facet-block ul a.facet-up').click(function (event) {
+      event.preventDefault();
+      console.log('facet-up->click()');
+      var field = $(this).attr('data-field');
+      var offset = parseInt($(this).attr('data-offset'));
+      facetOffsetParameters[field] = (offset > 10) ? offset - 10 : 0;
+      loadFacetNavigation(field);
+    });
+    $('div.facet-block ul a.facet-down').click(function (event) {
+      event.preventDefault();
+      console.log('facet-down->click()');
+      var field = $(this).attr('data-field');
+      var offset = parseInt($(this).attr('data-offset'));
+      facetOffsetParameters[field] = offset + 10;
+      loadFacetNavigation(field);
+    });
+  }
+
+  function loadFacetNavigation(field) {
+    var url = buildFacetNavigationUrl();
+    $.ajax(url)
+     .done(function(result) {
+       $('#' + field).html(result.facets);
+       setFacetClickBehaviour();
+       setFacetNavigationClickBehaviour();
+     });
   }
 
   function loadSolrResponse(urlParam) {
@@ -474,6 +539,7 @@
         showRecordDetails();
         $('#facet-list').html(result.facets);
         setFacetClickBehaviour();
+        setFacetNavigationClickBehaviour();
         $('#message').html('');
       })
       .fail(function() {
@@ -482,7 +548,7 @@
   }
 
   function showRecordDetails() {
-    $('.record h2 a').click(function (event) {
+    $('.record h2 a.record-details').click(function (event) {
       event.preventDefault();
       var detailsId = $(this).attr('data');
       console.log(detailsId);

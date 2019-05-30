@@ -18,16 +18,17 @@ $facetLabels = [
   '9119_ManifestationIdentifier_ss' => 'manifestation id'
 ];
 
+$core = $_GET['core'];
 $solrResponse = getSolrResponse();
+
 if (!is_null($solrResponse)) {
   $result = (object)[
     'numFound' => $solrResponse->response->numFound,
     'records' => getRecords($solrResponse),
-    'facets' => getFacets($solrResponse)
+    'facets' => getFacets($solrResponse),
   ];
 
   header('Content-Type: application/json');
-  // echo '?(' . json_encode($result) . ')';
   echo json_encode($result);
 }
 
@@ -41,15 +42,16 @@ function getRecords($solrResponse) {
   $smarty->registerPlugin("function", "hasSimilarBooks", "hasSimilarBooks");
   $smarty->registerPlugin("function", "getFields", "getFields");
   $smarty->registerPlugin("function", "getMarcFields", "getMarcFields");
+  $smarty->registerPlugin("function", "opacLink", "opacLink");
+
   return $smarty->fetch('marc-records.tpl');
 }
 
 function getFacets($solrResponse) {
   global $smarty;
 
-  error_log(json_encode($solrResponse->facet_counts->facet_fields));
-
   $smarty->assign('facets', $solrResponse->facet_counts->facet_fields);
+  $smarty->assign('params', $solrResponse->responseHeader->params);
   $smarty->registerPlugin("function", "getFacetLabel", "getFacetLabel");
   return $smarty->fetch('marc-facets.tpl');
 }
@@ -67,7 +69,6 @@ function getMarcFields($doc) {
   } else {
     $marc = json_decode($doc->record_sni[0]);
   }
-  error_log('marc type: ' . gettype($marc));
 
   $rows = [];
   foreach ($marc as $tag => $value) {
@@ -128,6 +129,12 @@ function hasSimilarBooks($doc) {
           || !empty($doc->{'9119_ManifestationIdentifier_ss'}));
 }
 
+function opacLink($id) {
+  global $core;
+  if ($core == 'szte')
+    return 'http://qulto.bibl.u-szeged.hu/record/-/record/' . trim($id);
+}
+
 /**
  * Executes the Solr query and returns the JSON response.
  */
@@ -136,7 +143,6 @@ function getSolrResponse() {
   if (isset($_SERVER['QUERY_STRING'])) {
     $query = $_SERVER['QUERY_STRING'];
 
-    error_log('$query: ' . $query);
     $params = ['indent=false'];
     $parts = explode('&', $query);
     foreach ($parts as $part) {
