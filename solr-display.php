@@ -133,6 +133,8 @@ function opacLink($id) {
   global $core;
   if ($core == 'szte')
     return 'http://qulto.bibl.u-szeged.hu/record/-/record/' . trim($id);
+  else if ($core == 'mokka')
+    return 'http://mokka.hu/web/guest/record/-/record/' . trim($id);
 }
 
 /**

@@ -2,6 +2,8 @@
 require_once 'common-functions.php';
 
 set_time_limit(300);
+ini_set('memory_limit', '1G'); // or you could use 1024M
+
 
 $db = getOrDefault('db', 'cerl');
 $errorId = getOrDefault('errorId', '');
