@@ -2,13 +2,25 @@
   {assign var="id" value=$doc->id|regex_replace:"/ +$/":""}
   <div class="record">
     <h2>
-      {include 'conditional-foreach.tpl' obj=$doc key='245a_Title_mainTitle_ss'}
-      {include 'conditional-foreach.tpl' obj=$doc key='245b_Title_subtitle_ss'}
+      {if isset($doc->{'245a_Title_mainTitle_ss'})}
+        {include 'conditional-foreach.tpl' obj=$doc key='245a_Title_mainTitle_ss'}
+        {include 'conditional-foreach.tpl' obj=$doc key='245b_Title_subtitle_ss'}
+      {elseif isset($doc->{'773t_PartOf_title_ss'})}
+        {include 'conditional-foreach.tpl' obj=$doc key='773t_PartOf_title_ss'}
+        {if isset($doc->{'245n_Title_partNumber_ss'})}
+          {include 'conditional-foreach.tpl' obj=$doc key='245n_Title_partNumber_ss'}
+        {/if}
+      {/if}
       <a href="#" class="record-details" data="details-{$doc->id|regex_replace:"/ +$/":""}" title="display details"><i class="fa fa-book" aria-hidden="true"></i></a>
       <a href="{opacLink($doc->id)}" target="_blank" title="Display record in the library catalogue"><i class="fa fa-external-link" aria-hidden="true"></i></a>
     </h2>
-    {include 'conditional-foreach.tpl' obj=$doc key='245c_Title_responsibilityStatement_ss'
-      label='<i class="fa fa-pencil" aria-hidden="true"></i>' suffix='<br/>'}
+    {if isset($doc->{'245c_Title_responsibilityStatement_ss'})}
+      {include 'conditional-foreach.tpl' obj=$doc key='245c_Title_responsibilityStatement_ss'
+        label='<i class="fa fa-pencil" aria-hidden="true"></i>' suffix='<br/>'}
+    {elseif isset($doc->{'773a_PartOf_ss'})}
+      {include 'conditional-foreach.tpl' obj=$doc key='773a_PartOf_ss'
+        label='<i class="fa fa-pencil" aria-hidden="true"></i>' suffix='<br/>'}
+    {/if}
     {include 'conditional-foreach.tpl' obj=$doc key='250a_Edition_editionStatement_ss'}
 
     {if hasPublication($doc)}
