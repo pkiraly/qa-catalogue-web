@@ -85,71 +85,86 @@ ul {
 .tab-content {
   margin-top: 10px;
 }
-#completeness-table table td {
+
+#completeness-group-table td {
+  padding: 0 5px 0 5px;
+}
+
+#completeness-group-table {
+  margin-bottom: 10px;
+}
+
+#completeness-field-table table td {
   width: 50px;
   text-align: right;
   vertical-align: top;
 }
-#completeness-table table td.path,
-#completeness-table table td.subfield {
+
+#completeness-field-table table td.path,
+#completeness-field-table table td.subfield {
   text-align: left;
 }
 
-#completeness-table table td.subfield {
+
+#completeness-field-table table td.subfield {
   width: 300px;
   text-overflow: ellipsis;
   font-size: 80%;
 }
 
-#completeness-table table td.histogram {
+#completeness-field-table table td.histogram {
   width: 400px;
 }
 
-#completeness-table table td.number-of-record {
+#completeness-field-table table td.number-of-record {
   width: 70px;
 }
 
-#completeness-table table td.chart {
+#completeness-group-table table td.chart,
+#completeness-field-table table td.chart
+{
   width: 200px;
 }
 
-#completeness-table table td.chart div {
+#completeness-group-table table td.chart div,
+#completeness-field-table table td.chart div
+{
   background-color: #37ba00;
   height: 15px;
   border-right: 1px solid maroon;
   border-bottom: 2px solid maroon;
 }
-#completeness-table table td.package {
+#completeness-field-table table td.package {
   text-align: left;
   color: #37ba00;
   font-weight: bold;
 }
-#completeness-table table td.tag {
+#completeness-field-table table td.tag {
   text-align: left;
   color: #37ba00;
 }
-#completeness-table table tr th,
-#completeness-table table tr td {
+#completeness-field-table table tr th,
+#completeness-field-table table tr td {
   padding: 1px;
 }
 
-#completeness-table table tr.first th.with-border {
+#completeness-field-table table tr.first th.with-border {
   text-align: center;
   border-bottom: 1px solid #cccccc;
 }
 
-#completeness-table table tr.second th {
+#completeness-field-table table tr.second th {
   text-align: center;
 }
 
-#completeness-table table tr.second th.left {
+#completeness-field-table table tr.second th.left {
   text-align: left;
 }
 
-#completeness-table table tr.second th.bordered-left {
+#completeness-field-table table tr.second th.bordered-left {
   border-left: 1px solid #cccccc;
 }
-#completeness-table table tr.second th.bordered-right {
+#completeness-field-table table tr.second th.bordered-right {
   border-right: 1px solid #cccccc;
 }
 

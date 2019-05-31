@@ -8,12 +8,13 @@ $configuration = parse_ini_file("configuration.cnf");
 $display = getOrDefault('display', 0);
 
 $countFile = sprintf('%s/%s/count.csv', $configuration['dir'], $db);
+$count = trim(file_get_contents($countFile));
 
-$elementsFile = sprintf('%s/%s/marc-elements.csv', $configuration['dir'], $db);
+$elementsFile = sprintf('%s/%s/packages.csv', $configuration['dir'], $db);
 $records = [];
 $max = 0;
 if (file_exists($elementsFile)) {
-  // $keys = ['element','number-of-record',number-of-instances,min,max,mean,stddev,histogram]; // "sum",
+  // name,label,count
   $lineNumber = 0;
   $header = [];
 
@@ -30,28 +31,11 @@ if (file_exists($elementsFile)) {
         error_log($line);
       }
       $record = (object)array_combine($header, $values);
-      $max = max($max, $record->{'number-of-record'});
-      $record->mean = sprintf('%.2f', $record->mean);
-      $record->stddev = sprintf('%.2f', $record->stddev);
-      $histogram = new stdClass();
-      foreach (explode('; ', $record->histogram) as $entry) {
-        list($k,$v) = explode('=', $entry);
-        $histogram->$k = $v;
+      $record->percent = $record->count * 100 / $count;
+      if (substr($record->name, 0, 4) == 'tags') {
+        $record->name = substr($record->name, 4);
+        $records[] = $record;
       }
-      $record->histogram = $histogram;
-
-      list($tag, $subfield) = explode('$', $record->path);
-      if (isset($fieldDefinitions->fields->{$tag}->subfields->{$subfield}->solr)) {
-        $record->solr = $fieldDefinitions->fields->{$tag}->subfields->{$subfield}->solr . '_ss';
-      } else {
-        if (isset($fieldDefinitions->fields->{$tag}->solr)) {
-          $record->solr = $tag . $subfield
-                        . '_' . $fieldDefinitions->fields->{$tag}->solr
-                        . '_' . $subfield . '_ss';
-        }
-      }
-
-      $records[] = $record;
     }
   }
 } else {
@@ -69,6 +53,6 @@ if ($display == 0) {
   $smarty->assign('records', $records);
   $smarty->assign('max', $max);
 
-  $smarty->display('completeness.tpl');
+  $smarty->display('packages.tpl');
 }
 

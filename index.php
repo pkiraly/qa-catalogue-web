@@ -135,8 +135,10 @@
     </div>
     <div class="tab-pane active" id="completeness" role="tabpanel"
          aria-labelledby="completeness-tab">
+      <h2>Completeness of MARC21 field groups</h2>
+      <div id="completeness-group-table"></div>
       <h2>Completeness of MARC21 fields</h2>
-      <div id="completeness-table"></div>
+      <div id="completeness-field-table"></div>
     </div>
     <div class="tab-pane" id="issues" role="tabpanel" aria-labelledby="issues-tab">
       <h2>Issues in MARC21 records</h2>
@@ -679,6 +681,17 @@
   }
 
   function loadCompleteness() {
+    $.get('read-packages.php?db=' + db + '&display=1')
+    .done(function(data) {
+      $('#completeness-group-table').html(data);
+    });
+    $.get('read-completeness.php?db=' + db + '&display=1')
+     .done(function(data) {
+       $('#completeness-field-table').html(data);
+     });
+  }
+
+  function loadCompletenessOld() {
     $.get('read-completeness.php?db=' + db)
       .done(function(data) {
         var fieldNames = [
@@ -755,7 +768,7 @@
           + '<thead>' + header + '</thead>'
           + '<tbody>' + rows.join('') + '</tbody>'
           + '</table>';
-        $('#completeness-table').html(table);
+        $('#completeness-field-table').html(table);
       });
   }
 
