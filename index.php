@@ -667,12 +667,14 @@
   function searchForField(field) {
     // event.preventDefault();
     var filterParam = filterAllParamTemplate({'field': field});
+    filters = [];
     filters.push({
       'param': filterParam,
       'label': getFacetLabel(field) + ': *'
     });
     start = 0;
     loadSolrResponse(buildUrl());
+    resetTabs();
     $('#myTab a[href="#data"]').tab('show');
   }
 
@@ -947,6 +949,14 @@
       });
   }
 
+  function resetTabs() {
+    $('#myTabContent .tab-pane').each(function() {
+      if (!$(this).attr('id').match(/^marc-/)) {
+        $(this).removeClass('active');
+      }
+    });
+  }
+
   $(document).ready(function () {
     console.log('document ready');
     itemsPerPage();
@@ -971,11 +981,7 @@
 
     $('#myTab a').on('click', function (e) {
       e.preventDefault();
-      $('#myTabContent .tab-pane').each(function() {
-        if (!$(this).attr('id').match(/^marc-/)) {
-          $(this).removeClass('active');
-        }
-      });
+      resetTabs();
       var id = $(this).attr('id');
       if (id == 'data-tab') {
         loadSolrResponse(buildUrl());
