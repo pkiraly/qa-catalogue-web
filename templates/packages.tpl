@@ -1,7 +1,7 @@
 <table>
   <thead>
     <tr>
-      <th>name</th>
+      <th>tags</th>
       <th>label</th>
       <th></th>
       <th class="text-right">count</th>
