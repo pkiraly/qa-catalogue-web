@@ -868,6 +868,7 @@
          console.log(data);
          var query = 'id:("' + data.recordIds.join('" OR "') + '")';
          $('#query').val(query);
+         resetTabs();
          $('#myTab a[href="#data"]').tab('show');
          doSearch();
        });
