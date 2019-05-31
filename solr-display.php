@@ -129,12 +129,22 @@ function hasSimilarBooks($doc) {
           || !empty($doc->{'9119_ManifestationIdentifier_ss'}));
 }
 
-function opacLink($id) {
+function opacLink($doc, $id) {
   global $core;
   if ($core == 'szte')
     return 'http://qulto.bibl.u-szeged.hu/record/-/record/' . trim($id);
   else if ($core == 'mokka')
     return 'http://mokka.hu/web/guest/record/-/record/' . trim($id);
+  else if ($core == 'cerl') {
+    $identifier = '';
+    foreach ($doc->{'035a_SystemControlNumber_ss'} as $tag35a) {
+      if (!preg_match('/OCoLC/', $tag35a)) {
+        $identifier = $tag35a;
+        break;
+      }
+    }
+    return 'http://hpb.cerl.org/record/' . $identifier;
+  }
 }
 
 /**

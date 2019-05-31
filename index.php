@@ -43,6 +43,8 @@
         document.write('<a href="http://www.ek.szte.hu/" target="_blank">A Szegedi Tudományegyetem Klebelsberg Kuno Könyvtára</a>');
       } else if (db == 'mokka') {
         document.write('<a href="http://mokka.hu/" target="_blank">mokka &mdash; Magyar Országos Közös Katalógus</a>');
+      } else if (db == 'cerl') {
+        document.write('<a href="https://www.cerl.org/resources/hpb/main/" target="_blank">The Heritage of the Printed Book Database</a>');
       }
     </script>
   </p>
