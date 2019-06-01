@@ -1,18 +1,25 @@
-<h3>How many records have classifications?</h3>
+<h3>records with classifications</h3>
 
-<table>
-  <thead>
-    <tr>
-      <th>Classification is available?</th>
-      <th>number of records</th>
-    </tr>
-  </thead>
-  <tbody>
-    {foreach $records as $record}
-      <tr>
-        <td>{$record->{'records-with-classification'}}</td>
-        <td class="text-right">{$record->count}</td>
-      </tr>
-    {/foreach}
-  </tbody>
-</table>
+<div class="row" style="width: 500px; margin: 0 0 0 0">
+  <div class="col-sm" style="margin: 0; padding: 0">
+    <span style="color: #37ba00">with</span>
+  </div>
+  <div class="col-sm text-right" style="margin: 0; padding: 0">
+    <span style="color: maroon">without</span>
+  </div>
+</div>
+
+<div style="width: 500px; background-color: maroon">
+  <div style="width: {ceil($withClassification->percent * 500)}px; background-color: #37ba00; height: 10px;">&nbsp;</div>
+</div>
+
+<div class="row" style="width: 500px; margin: 0 0 20px 0">
+  <div class="col-sm" style="margin: 0; padding: 0">
+    {$withClassification->count|number_format:0}
+    ({($withClassification->percent * 100)|number_format:2}%)
+  </div>
+  <div class="col-sm text-right" style="margin: 0; padding: 0">
+    {$withoutClassification->count|number_format:0}
+    ({($withoutClassification->percent * 100)|number_format:2}%)
+  </div>
+</div>

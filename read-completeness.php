@@ -8,6 +8,7 @@ $configuration = parse_ini_file("configuration.cnf");
 $display = getOrDefault('display', 0);
 
 $countFile = sprintf('%s/%s/count.csv', $configuration['dir'], $db);
+$count = trim(file_get_contents($countFile));
 
 $elementsFile = sprintf('%s/%s/marc-elements.csv', $configuration['dir'], $db);
 $records = [];
