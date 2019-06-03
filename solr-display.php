@@ -144,6 +144,8 @@ function opacLink($doc, $id) {
       }
     }
     return 'http://hpb.cerl.org/record/' . $identifier;
+  else if ($core == 'dnb')
+      return 'http://d-nb.info/' . trim($id);
   }
 }
 

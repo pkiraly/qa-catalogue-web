@@ -45,7 +45,10 @@
         document.write('<a href="http://mokka.hu/" target="_blank">mokka &mdash; Magyar Országos Közös Katalógus</a>');
       } else if (db == 'cerl') {
         document.write('<a href="https://www.cerl.org/resources/hpb/main/" target="_blank">The Heritage of the Printed Book Database</a>');
+      } else if (db == 'dnb') {
+        document.write('<a href="https://www.dnb.de/" target="_blank">Deutschen Nationalbibliothek</a>');
       }
+
     </script>
   </p>
 
