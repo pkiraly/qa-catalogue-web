@@ -47,7 +47,10 @@
         document.write('<a href="https://www.cerl.org/resources/hpb/main/" target="_blank">The Heritage of the Printed Book Database</a>');
       } else if (db == 'dnb') {
         document.write('<a href="https://www.dnb.de/" target="_blank">Deutsche Nationalbibliothek</a>');
+      } else if (db == 'gent') {
+        document.write('<a href="https://www.dnb.de/" target="_blank">Universiteitsbibliotheek Gent</a>');
       }
+
 
     </script>
   </p>
