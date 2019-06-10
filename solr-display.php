@@ -148,6 +148,8 @@ function opacLink($doc, $id) {
     return 'http://d-nb.info/' . trim($id);
   else if ($core == 'gent')
     return 'https://lib.ugent.be/catalog/rug01:' . trim($id);
+  else if ($core == 'loc')
+    return 'https://lccn.loc.gov/' . trim($id);
 }
 
 /**

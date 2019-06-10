@@ -49,9 +49,9 @@
         document.write('<a href="https://www.dnb.de/" target="_blank">Deutsche Nationalbibliothek</a>');
       } else if (db == 'gent') {
         document.write('<a href="https://www.dnb.de/" target="_blank">Universiteitsbibliotheek Gent</a>');
+      } else if (db == 'loc') {
+        document.write('<a href="https://catalog.loc.gov/" target="_blank">Library of Congress</a>');
       }
-
-
     </script>
   </p>
 
