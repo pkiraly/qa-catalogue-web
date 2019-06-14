@@ -1,6 +1,6 @@
 <?php
 require_once 'common-functions.php';
-static $cores = ['cerl', 'cerl2', 'stanford', 'dnb', 'gent', 'szte', 'mokka', 'loc'];
+static $cores = ['cerl', 'cerl2', 'stanford', 'dnb', 'gent', 'szte', 'mokka', 'loc', 'mtak'];
 
 $db = getPostedOrDefault('db', 'cerl');
 $facet = getPostedOrDefault('facet', '');

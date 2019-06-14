@@ -51,6 +51,8 @@
         document.write('<a href="https://www.dnb.de/" target="_blank">Universiteitsbibliotheek Gent</a>');
       } else if (db == 'loc') {
         document.write('<a href="https://catalog.loc.gov/" target="_blank">Library of Congress</a>');
+      } else if (db == 'mtak') {
+          document.write('<a href="https://mtak.hu/" target="_blank">Magyar Tudományos Akadémia Könyvtára</a>');
       }
     </script>
   </p>
