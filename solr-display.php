@@ -150,6 +150,8 @@ function opacLink($doc, $id) {
     return 'https://lib.ugent.be/catalog/rug01:' . trim($id);
   else if ($core == 'loc')
     return 'https://lccn.loc.gov/' . trim($id);
+  else if ($core == 'mtak')
+    return ' https://mta-primotc.hosted.exlibrisgroup.com/permalink/f/1s1uct8/36MTA' . trim($id);
 }
 
 /**
