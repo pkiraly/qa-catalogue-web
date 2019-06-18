@@ -41,7 +41,7 @@
     {if isset($doc->{'490a_SeriesStatement_ss'})}
       Series:
       {foreach $doc->{'490a_SeriesStatement_ss'} as $value}
-        <a href="#" class="record-link tag-490a" data="{$value}">{$value}</a>{if !$value@last}, {/if}
+        <a href="#" class="record-link tag-490a" data="490a_SeriesStatement_ss">{$value}</a>{if !$value@last}, {/if}
       {/foreach}
       {include 'conditional-foreach.tpl' obj=$doc key='490v_SeriesStatement_volume_ss' tag='490v'}
       <br/>
