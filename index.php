@@ -86,6 +86,12 @@
     </li>
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
+        id="terms-tab" href="#terms" aria-controls="terms">
+        Terms
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
          id="settings-tab" href="#settings" aria-controls="settings">Settings</a>
     </li>
   </ul>
@@ -230,6 +236,10 @@
     <div class="tab-pane" id="classifications" role="tabpanel" aria-labelledby="classifications-tab">
       <h2>Classifications</h2>
       <div id="classifications-content"></div>
+    </div>
+    <div class="tab-pane" id="terms" role="tabpanel" aria-labelledby="terms-tab">
+      <h2>Terms</h2>
+      <div id="terms-content"></div>
     </div>
     <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">
       <a href="#" id="set-facets">set facets</a>
@@ -902,7 +912,33 @@
       $('#classifications-content').html(result.byRecord);
       $('#classifications-content').append(result.byField);
       // setFacetSelectionHandlers();
+      $('a.term-link').click(function(event) {
+        event.preventDefault();
+        var facet = $(this).attr('data-facet');
+        var termQuery = $(this).attr('data-query');
+
+        var url = solrDisplay
+          + '?q=' + termQuery
+          + '&facet=on'
+          + '&facet.limit=100'
+          + '&facet.field=' + facet
+          + '&facet.mincount=1'
+          + '&core=' + db
+          + '&rows=0'
+          + '&wt=json'
+          + '&json.nl=map'
+        ;
+        console.log(url);
+        $.getJSON(url, function(result, status) {
+          $('#terms-content').html(result.facets);
+          $('#myTab a[href="#terms"]').tab('show');
+        });
+      });
     });
+  }
+
+  function loadTerms() {
+    console.log('loadTerms');
   }
 
   function loadFunctions() {
@@ -1015,6 +1051,8 @@
         loadFunctions();
       } else if (id == 'classifications-tab') {
         loadClassifications();
+      } else if (id == 'terms-tab') {
+        loadTerms();
       }
       $(this).tab('show');
     })
