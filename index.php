@@ -239,6 +239,7 @@
     </div>
     <div class="tab-pane" id="terms" role="tabpanel" aria-labelledby="terms-tab">
       <h2>Terms</h2>
+      <div id="terms-scheme" data-facet="" data-query=""></div>
       <div id="terms-content"></div>
     </div>
     <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">
@@ -271,8 +272,6 @@
 </script>
 
 <script type="text/javascript">
-  console.log('main js head');
-
   var query = '*:*';
   var start = 0;
   var rows = 10;
@@ -505,7 +504,8 @@
   }
 
   function setFacetClickBehaviour() {
-    $('div.facet-block ul a.facet-term').click(function (e) {
+    $('div#facets ul a.facet-term').click(function (e) {
+      console.log('facet-term->click()');
       var field = $(this).parent().parent().parent().attr('id');
       var value = $(this).html();
       var filterParam = filterParamTemplate({'field': field, 'value': value});
@@ -550,7 +550,6 @@
 
   function loadSolrResponse(urlParam) {
     $('#message').html('<i class="fa fa-spinner" aria-hidden="true"></i> loading...');
-    // console.log('loading url: ' + urlParam);
 
     if (filters.length > 0) {
       updateFilterBlock();
@@ -670,10 +669,8 @@
       var checkValues = $('input[name=facet]:checked').map(function() {
         return this.value;
       }).get().join(',');
-      console.log('checkValues: ' + checkValues);
 
       $.post("saveFacets.php", {facet: checkValues, db: db}, function(result){
-        console.log(result);
         $("#message").html("saved");
       });
       doSearch();
@@ -685,7 +682,6 @@
   }
 
   function searchForField(field) {
-    // event.preventDefault();
     var filterParam = filterAllParamTemplate({'field': field});
     filters = [];
     filters.push({
@@ -886,17 +882,11 @@
     );
 
     $('#issues-table-placeholder tr.t td.count a').on('click', function (e) {
-      console.log('clicked');
       var query = {'db': db};
       query.errorId = $(this).attr('data-id');
-      console.log(query);
-      // query.type = $(this).attr('data-type');
-      // query.path = $(this).attr('data-path');
-      // query.message = $(this).attr('data-message');
       var issueDetailsUrl = 'read-issue-collector.php'
       $.get(issueDetailsUrl, query)
        .done(function (data) {
-         console.log(data);
          var query = 'id:("' + data.recordIds.join('" OR "') + '")';
          $('#query').val(query);
          resetTabs();
@@ -907,17 +897,21 @@
   }
 
   function loadClassifications() {
-    console.log('loadClassifications');
     $.getJSON('read-classifications.php?db=' + db, function(result, status) {
       $('#classifications-content').html(result.byRecord);
       $('#classifications-content').append(result.byField);
-      // setFacetSelectionHandlers();
-      $('a.term-link').click(function(event) {
-        event.preventDefault();
-        var facet = $(this).attr('data-facet');
-        var termQuery = $(this).attr('data-query');
+      setClassificationLinkHandlers();
+    });
+  }
 
-        var url = solrDisplay
+  function setClassificationLinkHandlers() {
+    $('a.term-link').click(function(event) {
+      event.preventDefault();
+      var facet = $(this).attr('data-facet');
+      var termQuery = $(this).attr('data-query');
+      var scheme = $(this).attr('data-scheme');
+
+      var url = solrDisplay
           + '?q=' + termQuery
           + '&facet=on'
           + '&facet.limit=100'
@@ -927,14 +921,39 @@
           + '&rows=0'
           + '&wt=json'
           + '&json.nl=map'
-        ;
-        console.log(url);
-        $.getJSON(url, function(result, status) {
-          $('#terms-content').html(result.facets);
-          $('#myTab a[href="#terms"]').tab('show');
+      ;
+
+      $.getJSON(url, function(result, status) {
+        $('#terms-content').html(result.facets);
+        $('#terms-scheme').html(scheme);
+        $('#terms-scheme').attr('data-facet', facet);
+        $('#terms-scheme').attr('data-query', termQuery);
+        resetTabs();
+        $('#myTab a[href="#terms"]').tab('show');
+
+        $('#terms-content a.facet-term').click(function(event) {
+          var term = $(this).html();
+          var facet = $('#terms-scheme').attr('data-facet');
+          var fq = $('#terms-scheme').attr('data-query');
+          query = facet + ':%22' + term + '%22';
+          $('#query').val(query);
+          filters = [];
+          filters.push({
+            'param': 'fq=' + fq,
+            'label': clearFq(fq)
+          });
+          start = 0;
+          var url = buildUrl();
+          loadSolrResponse(url);
+          resetTabs();
+          $('#myTab a[href="#data"]').tab('show');
         });
       });
     });
+  }
+
+  function clearFq(fq) {
+    return fq.replace(/_ss:/g, ':').replace(/%22/g, '"').replace(/_/g, ' ').replace(/:/, ': ');
   }
 
   function loadTerms() {
@@ -1016,7 +1035,6 @@
   }
 
   $(document).ready(function () {
-    console.log('document ready');
     itemsPerPage();
 
     $('.fa-search').click(function (event) {
@@ -1031,10 +1049,6 @@
       setFacets();
     });
 
-    // console.log('main/facets: ', facets);
-    // console.log('main/defaultFacets: ', defaultFacets);
-    // console.log('loadSolrResponse');
-    // loadSolrResponse(buildUrl());
     loadCompleteness();
 
     $('#myTab a').on('click', function (e) {

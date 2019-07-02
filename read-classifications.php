@@ -75,6 +75,8 @@ function readByField($dir, $db) {
     '852' => 'Location',
   ];
 
+  $solrFieldMap = getSolrFieldMap();
+
   $byRecordsFile = sprintf('%s/%s/classifications-by-schema.csv', $dir, $db);
   if (!file_exists($byRecordsFile)) {
     $byRecordsFile = sprintf('%s/%s/classifications-by-field.csv', $dir, $db);
@@ -101,18 +103,20 @@ function readByField($dir, $db) {
           $record->facet = '072a_SubjectCategoryCode_ss';
           ind2Orsubfield2($record, '072ind2_SubjectCategoryCode_codeSource_ss', '0722_SubjectCategoryCode_source_ss');
         } else if ($record->field == '080') {
-          $record->facet = '080a_Udc_ss';
+          $record->facet = $solrFieldMap[$record->field . str_replace('$', '', $record->location)]; // '080a_Udc_ss';
           $record->q = '*:*';
         } else if ($record->field == '082') {
-          $record->facet = '082a_ClassificationDdc_ss';
+          $record->facet = $solrFieldMap[$record->field . str_replace('$', '', $record->location)]; // '082a_ClassificationDdc_ss';
           $record->q = '*:*';
         } else if ($record->field == '083') {
-          $record->facet = '083a_ClassificationAdditionalDdc_ss';
+          $record->facet = $solrFieldMap[$record->field . str_replace('$', '', $record->location)]; // '083a_ClassificationAdditionalDdc_ss';
           $record->q = '*:*';
         } else if ($record->field == '084') {
           $record->facet = '084a_Classification_classificationPortion_ss';
           $record->q = sprintf('%s:%%22%s%%22', '0842_Classification_source_ss', $record->scheme);
-        // TODO: 085
+        } else if ($record->field == '085') {
+          $record->facet = $solrFieldMap[$record->field . str_replace('$', '', $record->location)]; // '085b_SynthesizedClassificationNumber_baseNumber_ss';
+          $record->q = '*:*';
         } else if ($record->field == '086') {
           $record->facet = '086a_GovernmentDocumentClassification_ss';
           ind1Orsubfield2($record, '086ind1_GovernmentDocumentClassification_numberSource_ss', '0862_GovernmentDocumentClassification_source_ss');
@@ -186,3 +190,17 @@ function ind2Orsubfield2(&$record, $ind2, $subfield2) {
   }
 }
 
+function getSolrFieldMap() {
+  global $db;
+
+  $solrFieldMap = [];
+  $url = 'http://localhost:8983/solr/' . $db;
+  $all_fields = file_get_contents($url . '/select/?q=*:*&wt=csv&rows=0');
+  $fields = explode(',', $all_fields);
+  foreach ($fields as $field) {
+    $parts = explode('_', $field);
+    $solrFieldMap[$parts[0]] = $field;
+  }
+
+  return $solrFieldMap;
+}

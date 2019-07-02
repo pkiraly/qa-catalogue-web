@@ -5,7 +5,8 @@
     <tr>
       <th>Location</th>
       <th>Classification scheme</th>
-      <th>Number of instances</th>
+      <th>Instances</th>
+      <th>Records</th>
     </tr>
   </thead>
   <tbody>
@@ -20,12 +21,13 @@
         <td>{$record->location}</td>
         <td>
           {if (isset($record->facet) && isset($record->q))}
-            <a href="#" class="term-link" data-facet="{$record->facet}" data-query="{$record->q}">{$record->scheme}</a>
+            <a href="#" class="term-link" data-facet="{$record->facet}" data-query="{$record->q}" data-scheme="{$record->scheme}">{$record->scheme}</a>
           {else}
             {$record->scheme}
           {/if}
         </td>
         <td class="text-right">{$record->count|number_format}</td>
+        <td class="text-right">{$record->recordcount|number_format}</td>
       </tr>
       {assign var=previous value=$record->field}
     {/foreach}
