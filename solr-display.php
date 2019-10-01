@@ -151,7 +151,9 @@ function opacLink($doc, $id) {
   else if ($core == 'loc')
     return 'https://lccn.loc.gov/' . trim($id);
   else if ($core == 'mtak')
-    return ' https://mta-primotc.hosted.exlibrisgroup.com/permalink/f/1s1uct8/36MTA' . trim($id);
+    return 'https://mta-primotc.hosted.exlibrisgroup.com/permalink/f/1s1uct8/36MTA' . trim($id);
+  else if ($core == 'bayern')
+    return 'http://gateway-bayern.de/' . trim($id);
 }
 
 /**
