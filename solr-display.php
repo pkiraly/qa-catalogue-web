@@ -154,13 +154,25 @@ function opacLink($doc, $id) {
     return 'https://mta-primotc.hosted.exlibrisgroup.com/permalink/f/1s1uct8/36MTA' . trim($id);
   else if ($core == 'bayern')
     return 'http://gateway-bayern.de/' . trim($id);
+  else if ($core == 'bnpl') {
+    foreach ($doc->{'035a_SystemControlNumber_ss'} as $tag35a) {
+      if (!preg_match('/^99/', $tag35a)) {
+        $identifier = $tag35a;
+        break;
+      }
+    }
+    return sprintf(
+        'https://katalogi.bn.org.pl/discovery/fulldisplay?docid=alma%s&context=L&vid=48OMNIS_NLOP:48OMNIS_NLOP&search_scope=NLOP_IZ_NZ&tab=LibraryCatalog&lang=pl',
+        trim($identifier));
+
+  }
 }
 
 /**
  * Executes the Solr query and returns the JSON response.
  */
 function getSolrResponse() {
-  static $cores = ['cerl', 'cerl2', 'stanford', 'dnb', 'gent', 'szte', 'mokka', 'loc', 'mtak', 'bayern'];
+  static $cores = ['cerl', 'cerl2', 'stanford', 'dnb', 'gent', 'szte', 'mokka', 'loc', 'mtak', 'bayern', 'bnpl'];
   if (isset($_SERVER['QUERY_STRING'])) {
     $query = $_SERVER['QUERY_STRING'];
 

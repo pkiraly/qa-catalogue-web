@@ -20,8 +20,11 @@
       <tr>
         <td>{$record->location}</td>
         <td>
-          {if (isset($record->facet) && isset($record->q))}
+          {if (isset($record->facet2))}
+            <a href="#" class="term-link" data-facet="{$record->facet2}" data-query="*:*" data-scheme="{$record->scheme}">{$record->scheme}</a>
+          {elseif (isset($record->facet) && isset($record->q))}
             <a href="#" class="term-link" data-facet="{$record->facet}" data-query="{$record->q}" data-scheme="{$record->scheme}">{$record->scheme}</a>
+            ({$record->abbreviation})
           {else}
             {$record->scheme}
           {/if}

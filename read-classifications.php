@@ -96,12 +96,20 @@ function readByField($dir, $db) {
         if ($record->field == '052') {
           $record->facet = '052a_GeographicClassification_ss';
           ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
+          if ($record->abbreviation != '') {
+            $record->facet2 = '052a_GeographicClassification_' . $record->abbreviation . '_ss';
+          }
         } else if ($record->field == '055') {
           $record->facet = '055a_ClassificationLcc_ss';
           ind2Orsubfield2($record, '055ind2_ClassificationLcc_type_ss', '0552_ClassificationLcc_source_ss');
+          if ($record->abbreviation != '') {
+            $record->facet2 = '055a_ClassificationLcc_' . $record->abbreviation . '_ss';
+          }
         } else if ($record->field == '072') {
           $record->facet = '072a_SubjectCategoryCode_ss';
           ind2Orsubfield2($record, '072ind2_SubjectCategoryCode_codeSource_ss', '0722_SubjectCategoryCode_source_ss');
+          if ($record->abbreviation != '')
+            $record->facet2 = '072a_SubjectCategoryCode_' . $record->abbreviation . '_ss';
         } else if ($record->field == '080') {
           $record->facet = $solrFieldMap[$record->field . str_replace('$', '', $record->location)]; // '080a_Udc_ss';
           $record->q = '*:*';
@@ -114,40 +122,62 @@ function readByField($dir, $db) {
         } else if ($record->field == '084') {
           $record->facet = '084a_Classification_classificationPortion_ss';
           $record->q = sprintf('%s:%%22%s%%22', '0842_Classification_source_ss', $record->scheme);
+          if ($record->abbreviation != '')
+            $record->facet2 = '084a_Classification_classificationPortion_' . $record->abbreviation . '_ss';
         } else if ($record->field == '085') {
           $record->facet = $solrFieldMap[$record->field . str_replace('$', '', $record->location)]; // '085b_SynthesizedClassificationNumber_baseNumber_ss';
           $record->q = '*:*';
         } else if ($record->field == '086') {
           $record->facet = '086a_GovernmentDocumentClassification_ss';
           ind1Orsubfield2($record, '086ind1_GovernmentDocumentClassification_numberSource_ss', '0862_GovernmentDocumentClassification_source_ss');
+          if ($record->abbreviation != '')
+            $record->facet2 = '086a_GovernmentDocumentClassification_' . $record->abbreviation . '_ss';
         } else if ($record->field == '600') {
           $record->facet = '600a_PersonalNameSubject_personalName_ss';
           ind2Orsubfield2($record, '600ind2_PersonalNameSubject_thesaurus_ss', '6002_PersonalNameSubject_source_ss');
+          if ($record->abbreviation != '')
+            $record->facet2 = '600a_PersonalNameSubject_personalName_' . $record->abbreviation . '_ss';
         } else if ($record->field == '610') {
           $record->facet = '610a_CorporateNameSubject_ss';
           ind2Orsubfield2($record, '610ind2_CorporateNameSubject_thesaurus_ss', '6102_CorporateNameSubject_source_ss');
+          if ($record->abbreviation != '')
+            $record->facet2 = '610a_CorporateNameSubject_' . $record->abbreviation . '_ss';
         } else if ($record->field == '611') {
           $record->facet = '611a_SubjectAddedMeetingName_ss';
           ind2Orsubfield2($record, '611ind2_SubjectAddedMeetingName_thesaurus_ss', '6112_SubjectAddedMeetingName_source_ss');
+          if ($record->abbreviation != '')
+            $record->facet2 = '611a_SubjectAddedMeetingName_' . $record->abbreviation . '_ss';
         } else if ($record->field == '630') {
           $record->facet = '630a_SubjectAddedUniformTitle_ss';
           ind2Orsubfield2($record, '630ind2_SubjectAddedUniformTitle_thesaurus_ss', '6302_SubjectAddedUniformTitle_source_ss');
+          if ($record->abbreviation != '')
+            $record->facet2 = '630a_SubjectAddedUniformTitle_' . $record->abbreviation . '_ss';
         // TODO: 647
         } else if ($record->field == '648') {
           $record->facet = '648a_ChronologicalSubject_ss';
           ind2Orsubfield2($record, '648ind2_ChronologicalSubject_thesaurus_ss', '6482_ChronologicalSubject_source_ss');
+          if ($record->abbreviation != '')
+            $record->facet2 = '648a_ChronologicalSubject_' . $record->abbreviation . '_ss';
         } else if ($record->field == '650') {
           $record->facet = '650a_Topic_topicalTerm_ss';
           ind2Orsubfield2($record, '650ind2_Topic_thesaurus_ss', '6502_Topic_sourceOfHeading_ss');
+          if ($record->abbreviation != '')
+            $record->facet2 = '650a_Topic_topicalTerm_' . $record->abbreviation . '_ss';
         } else if ($record->field == '651') {
           $record->facet = '651a_Geographic_ss';
           ind2Orsubfield2($record, '651ind2_Geographic_thesaurus_ss', '6512_Geographic_source_ss');
+          if ($record->abbreviation != '')
+            $record->facet2 = '651a_Geographic_' . $record->abbreviation . '_ss';
         } else if ($record->field == '655') {
           $record->facet = '655a_GenreForm_ss';
           ind2Orsubfield2($record, '655ind2_GenreForm_thesaurus_ss', '6552_GenreForm_source_ss');
+          if ($record->abbreviation != '')
+            $record->facet2 = '655a_GenreForm_' . $record->abbreviation . '_ss';
         } else if ($record->field == '852') {
           $record->facet = '852a_852_location_ss';
           ind1Orsubfield2($record, '852ind1_852_shelvingScheme_ss', '852__852___ss');
+          if ($record->abbreviation != '')
+            $record->facet2 = '852a_Location_location_' . $record->abbreviation . '_ss';
         }
 
         $records[] = $record;
