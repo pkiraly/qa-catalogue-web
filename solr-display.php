@@ -156,7 +156,7 @@ function opacLink($doc, $id) {
     return 'http://gateway-bayern.de/' . trim($id);
   else if ($core == 'bnpl') {
     foreach ($doc->{'035a_SystemControlNumber_ss'} as $tag35a) {
-      if (!preg_match('/^99/', $tag35a)) {
+      if (preg_match('/^\d/', $tag35a)) {
         $identifier = $tag35a;
         break;
       }
