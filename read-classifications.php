@@ -81,6 +81,7 @@ function readByField($dir, $db) {
   if (!file_exists($byRecordsFile)) {
     $byRecordsFile = sprintf('%s/%s/classifications-by-field.csv', $dir, $db);
   }
+
   if (file_exists($byRecordsFile)) {
     $header = [];
     $records = [];
@@ -183,12 +184,54 @@ function readByField($dir, $db) {
         $records[] = $record;
       }
     }
-
     $smarty->assign('records', $records);
     $smarty->assign('fields', $fields);
+
+    $smarty->assign('hasSubfields', FALSE);
+    readSubfields($dir, $db, $smarty);
+
     return $smarty->fetch('classifications-by-field.tpl');
   }
   return NULL;
+}
+
+/**
+ * @param $dir
+ * @param $db
+ * @param Smarty $smarty
+ * @return object
+ */
+function readSubfields($dir, $db, Smarty &$smarty) {
+  $bySubfieldsFile = sprintf('%s/%s/classifications-by-schema-subfields.csv', $dir, $db);
+  if (file_exists($bySubfieldsFile)) {
+    $header = [];
+    $subfields = [];
+    $in = fopen($bySubfieldsFile, "r");
+    while (($line = fgets($in)) != false) {
+      $values = str_getcsv($line);
+      if (empty($header)) {
+        $header = $values;
+      } else {
+        $record = (object)array_combine($header, $values);
+        $record->subfields = explode(';', $record->subfields);
+        $items = [];
+        foreach ($record->subfields as $subfield) {
+          if ($subfield == ' ')
+            $subfield = '_';
+          $subfield = '$' . $subfield;
+          $items[] = $subfield;
+        }
+        $record->subfields = $items;
+        error_log(json_encode($record));
+        if (!isset($subfields[$record->id])) {
+          $subfields[$record->id] = [];
+        }
+        $subfields[$record->id][] = $record;
+      }
+    }
+    $smarty->assign('hasSubfields', TRUE);
+    $smarty->assign('subfields', $subfields);
+  }
 }
 
 function ind1Orsubfield2(&$record, $ind1, $subfield2) {

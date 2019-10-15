@@ -212,3 +212,43 @@ table#issues-table tr.t {
 div#myTabContent.tab-content div#issues.tab-pane.active div#issues-table-placeholder
 table#issues-table thead tr th
  */
+
+div#classifications-content table tbody tr td {
+  vertical-align: top;
+}
+
+div.classification-subfields {
+  display: none;
+  width: 100%;
+  min-width: 100%;
+}
+
+div.classification-subfields table {
+  width: 100%;
+  min-width: 100%;
+}
+
+div.classification-subfields table th.count {
+  width: 100px;
+  min-width: 100px;
+  max-width: 100px;
+  text-align: right;
+}
+
+div.classification-subfields table td.count {
+  text-align: right;
+}
+
+div#classifications-content th.scheme {
+  text-align: center;
+}
+
+div#classifications-content th.instances {
+  width: 100px;
+  text-align: right;
+}
+
+div#classifications-content th.records {
+  width: 100px;
+  text-align: right;
+}
