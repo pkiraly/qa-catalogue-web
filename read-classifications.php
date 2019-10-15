@@ -187,8 +187,8 @@ function readByField($dir, $db) {
     $smarty->assign('records', $records);
     $smarty->assign('fields', $fields);
 
-    $smarty->assign('hasSubfields', FALSE);
     readSubfields($dir, $db, $smarty);
+    readElements($dir, $db, $smarty);
 
     return $smarty->fetch('classifications-by-field.tpl');
   }
@@ -206,6 +206,7 @@ function readSubfields($dir, $db, Smarty &$smarty) {
   if (file_exists($bySubfieldsFile)) {
     $header = [];
     $subfields = [];
+    $subfieldsById = [];
     $in = fopen($bySubfieldsFile, "r");
     while (($line = fgets($in)) != false) {
       $values = str_getcsv($line);
@@ -220,17 +221,69 @@ function readSubfields($dir, $db, Smarty &$smarty) {
             $subfield = '_';
           $subfield = '$' . $subfield;
           $items[] = $subfield;
+          if (preg_match('/\+$/', $subfield))
+            $subfield = str_replace('+', '', $subfield);
+          if (!isset($subfieldsById[$record->id]))
+            $subfieldsById[$record->id] = [];
+          if (!in_array($subfield, $subfieldsById[$record->id]))
+            $subfieldsById[$record->id][] = $subfield;
         }
         $record->subfields = $items;
-        error_log(json_encode($record));
         if (!isset($subfields[$record->id])) {
           $subfields[$record->id] = [];
         }
         $subfields[$record->id][] = $record;
       }
     }
-    $smarty->assign('hasSubfields', TRUE);
     $smarty->assign('subfields', $subfields);
+    $smarty->assign('hasSubfields', TRUE);
+
+    foreach ($subfieldsById as $id => $subfields) {
+      sort($subfields);
+      $nums = [];
+      $alpha = [];
+      foreach ($subfields as $subfield) {
+        if (preg_match('/\d$/', $subfield)) {
+          $nums[] = $subfield;
+        } else {
+          $alpha[] = $subfield;
+        }
+      }
+      $subfields = array_merge($alpha, $nums);
+      $subfieldsById[$id] = $subfields;
+    }
+
+    $smarty->assign('subfieldsById', $subfieldsById);
+  } else {
+    $smarty->assign('hasSubfields', FALSE);
+  }
+}
+
+/**
+ * @param $dir
+ * @param $db
+ * @param Smarty $smarty
+ * @return object
+ */
+function readElements($dir, $db, Smarty &$smarty) {
+  $elementsFile = sprintf('%s/%s/marc-elements.csv', $dir, $db);
+  if (file_exists($elementsFile)) {
+    $header = [];
+    $elements = [];
+    $in = fopen($elementsFile, "r");
+    while (($line = fgets($in)) != false) {
+      $values = str_getcsv($line);
+      if (empty($header)) {
+        $header = $values;
+      } else {
+        $record = (object)array_combine($header, $values);
+        $elements[$record->path] = $record->subfield;
+      }
+    }
+    $smarty->assign('hasElements', TRUE);
+    $smarty->assign('elements', $elements);
+  } else {
+    $smarty->assign('hasElements', FALSE);
   }
 }
 

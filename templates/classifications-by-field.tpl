@@ -14,7 +14,7 @@
     {foreach $records as $record}
       {if $previous != $record->field}
         <tr>
-          <td colspan="3"><h4>{$record->field} &mdash; {$fields[$record->field]}</h4></td>
+          <td colspan="4"><h4>{$record->field} &mdash; {$fields[$record->field]}</h4></td>
         </tr>
       {/if}
       <tr>
@@ -48,6 +48,13 @@
                   {/foreach}
                 </tbody>
               </table>
+              <p>notes:</p>
+              <ul>
+                {foreach $subfieldsById[$record->id] as $item}
+                  {assign var="key" value="{$record->field}{$item}"}
+                  <li>{$item}: {if isset($elements[$key])}{$elements[$key]}{else}&mdash;{/if}</li>
+                {/foreach}
+              </ul>
               <ul>
                 <li>+ sign denotes multiple instances</li>
                 <li>_ sign denotes space character</li>
