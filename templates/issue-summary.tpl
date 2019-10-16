@@ -25,7 +25,7 @@
             </td>
             <td class="count">
               <a href="#" data-id="{$rowData->id}" data-type="{$type}"
-                 data-path="{$rowData->path}" data-message="{$rowData->message}">{$rowData->count}</a>
+                 data-path="{$rowData->path}" data-message="{$rowData->message}">{$rowData->count|number_format}</a>
             </td>
           </tr>
         {/if}

@@ -41,7 +41,7 @@
         </td>
         <td class="subfield">{$record->subfield}</td>
         <td class="chart"><div style="width: {ceil($percent * 200)}px;">&nbsp;</div></td>
-        <td class="number-of-record">{$record->{'number-of-record'}}</td>
+        <td class="number-of-record">{$record->{'number-of-record'}|number_format}</td>
         <td class="percent-of-record">{$percent|number_format:2}%</td>
         <td class="number-of-instances">{$record->{'number-of-instances'}}</td>
         <td class="min">{$record->min}</td>
