@@ -85,7 +85,7 @@
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
          id="classifications-tab" href="#classifications" aria-controls="classifications">
-        Classifications
+        Subject analysis
       </a>
     </li>
     <li class="nav-item">
@@ -238,7 +238,7 @@
       </style>
     </div>
     <div class="tab-pane" id="classifications" role="tabpanel" aria-labelledby="classifications-tab">
-      <h2>Classifications</h2>
+      <h2>Subject analysis</h2>
       <div id="classifications-content"></div>
     </div>
     <div class="tab-pane" id="terms" role="tabpanel" aria-labelledby="terms-tab">
