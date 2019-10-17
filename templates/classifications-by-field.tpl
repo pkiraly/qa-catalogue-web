@@ -1,10 +1,10 @@
-<h3>Classification schemes</h3>
+<h3>Classification/subject headings schemes</h3>
 
 <table id="classification">
   <thead>
     <tr>
       <th class="location">Location</th>
-      <th class="scheme">Classification scheme</th>
+      <th class="scheme">Classification/subject headings scheme</th>
       <th class="instances">Instances</th>
       <th class="records">Records</th>
     </tr>
