@@ -57,7 +57,7 @@
                 {foreach $subfieldsById[$record->id] as $item}
                   {assign var="key" value="{$record->field}{$item}"}
                   <li>{$item}:
-                    {if isset($elements[$key] && $elements[$key] != '')}
+                    {if isset($elements[$key]) && $elements[$key] != ''}
                       {$elements[$key]}
                     {else}
                       &mdash; (not defined in MARC21)
