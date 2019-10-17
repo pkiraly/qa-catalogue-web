@@ -44,7 +44,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {foreach $subfields[$record->id] as $item}
+                  {foreach $subfields[$record->id]['list'] as $item}
                     <tr>
                       <td>{join(', ', $item->subfields)}</td>
                       <td class="count">{$item->count|number_format}</td>
