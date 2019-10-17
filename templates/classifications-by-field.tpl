@@ -59,6 +59,8 @@
                   <li>{$item}:
                     {if isset($elements[$key]) && $elements[$key] != ''}
                       {$elements[$key]}
+                    {elseif $item == '$9'}
+                      &mdash; (locally defined subfield)
                     {else}
                       &mdash; (not defined in MARC21)
                     {/if}
