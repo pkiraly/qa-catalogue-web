@@ -60,9 +60,9 @@
                     {if isset($elements[$key]) && $elements[$key] != ''}
                       {$elements[$key]}
                     {elseif $item == '$9'}
-                      &mdash; (locally defined subfield)
+                      &mdash; <span>(locally defined subfield)</span>
                     {else}
-                      &mdash; (not defined in MARC21)
+                      &mdash; <span>(not defined in MARC21)</span>
                     {/if}
                   </li>
                 {/foreach}

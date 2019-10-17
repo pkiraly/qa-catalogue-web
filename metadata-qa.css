@@ -261,3 +261,7 @@ div.classification-subfields ul li {
   margin-left: 20px;
   list-style-type: square;
 }
+
+div.classification-subfields ul li span {
+  color: #999999;
+}
