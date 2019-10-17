@@ -157,6 +157,10 @@ function readByField($dir, $db) {
           $record->facet2exists = in_array($record->facet2, $solrFields);
         }
 
+        if (preg_match('/(^ |  +| $)/', $record->scheme)) {
+          $record->scheme = '"' . str_replace(' ', '&nbsp;', $record->scheme) . '"';
+        }
+
         $records[] = $record;
       }
     }
