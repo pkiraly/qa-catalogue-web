@@ -228,7 +228,7 @@ function readSubfields($dir, $db, Smarty &$smarty) {
             $subfieldsById[$record->id][] = $subfield;
         }
         $record->subfields = $items;
-        if (!isset($subfields['list'][$record->id])) {
+        if (!isset($subfields[$record->id])) {
           $subfields[$record->id] = ['list' => [], 'has-plus' => FALSE, 'has-space' => FALSE];
         }
         $subfields[$record->id]['list'][] = $record;
