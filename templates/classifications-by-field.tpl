@@ -56,7 +56,13 @@
               <ul>
                 {foreach $subfieldsById[$record->id] as $item}
                   {assign var="key" value="{$record->field}{$item}"}
-                  <li>{$item}: {if isset($elements[$key])}{$elements[$key]}{else}&mdash;{/if}</li>
+                  <li>{$item}:
+                    {if isset($elements[$key] && $elements[$key] != '')}
+                      {$elements[$key]}
+                    {else}
+                      &mdash; (not defined in MARC21)
+                    {/if}
+                  </li>
                 {/foreach}
               </ul>
               {if $subfields[$record->id]['has-plus'] || $subfields[$record->id]['has-space']}
