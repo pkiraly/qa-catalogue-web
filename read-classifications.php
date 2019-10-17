@@ -209,23 +209,34 @@ function readSubfields($dir, $db, Smarty &$smarty) {
         $record = (object)array_combine($header, $values);
         $record->subfields = explode(';', $record->subfields);
         $items = [];
+        $hasPlus = FALSE;
+        $hasSpace = FALSE;
         foreach ($record->subfields as $subfield) {
-          if ($subfield == ' ')
+          if ($subfield == ' ') {
             $subfield = '_';
+            $hasSpace = TRUE;
+          }
           $subfield = '$' . $subfield;
           $items[] = $subfield;
-          if (preg_match('/\+$/', $subfield))
+          if (preg_match('/\+$/', $subfield)) {
+            $hasPlus = TRUE;
             $subfield = str_replace('+', '', $subfield);
+          }
           if (!isset($subfieldsById[$record->id]))
             $subfieldsById[$record->id] = [];
           if (!in_array($subfield, $subfieldsById[$record->id]))
             $subfieldsById[$record->id][] = $subfield;
         }
         $record->subfields = $items;
-        if (!isset($subfields[$record->id])) {
-          $subfields[$record->id] = [];
+        if (!isset($subfields['list'][$record->id])) {
+          $subfields[$record->id] = ['list' => [], 'has-plus' => FALSE, 'has-space' => FALSE];
         }
-        $subfields[$record->id][] = $record;
+        $subfields[$record->id]['list'][] = $record;
+        if ($hasPlus)
+          $subfields[$record->id]['has-plus'] = TRUE;
+        if ($hasSpace)
+          $subfields[$record->id]['has-space'] = TRUE;
+
       }
     }
     $smarty->assign('subfields', $subfields);

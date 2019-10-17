@@ -59,10 +59,16 @@
                   <li>{$item}: {if isset($elements[$key])}{$elements[$key]}{else}&mdash;{/if}</li>
                 {/foreach}
               </ul>
-              <ul>
-                <li>+ sign denotes multiple instances</li>
-                <li>_ sign denotes space character</li>
-              </ul>
+              {if $subfieldsById[$record->id]['has-plus'] || $subfieldsById[$record->id]['has-space']}
+                <ul>
+                  {if $subfieldsById[$record->id]['has-plus']}
+                    <li>+ sign denotes multiple instances</li>
+                  {/if}
+                  {if $subfieldsById[$record->id]['has-space']}
+                    <li>_ sign denotes space character</li>
+                  {/if}
+                </ul>
+              {/if}
             </div>
           {/if}
         </td>
