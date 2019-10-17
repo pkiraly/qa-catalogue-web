@@ -221,7 +221,6 @@ div.classification-subfields {
   display: none;
   width: 100%;
   min-width: 100%;
-  border-left: 1px dotted #cccccc;
 }
 
 div.classification-subfields table {
@@ -256,4 +255,9 @@ div#classifications-content th.records {
 
 div.classification-subfields p {
   margin: 10px;
+}
+
+div.classification-subfields ul li {
+  margin-left: 20px;
+  list-style-type: square;
 }
