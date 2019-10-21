@@ -34,13 +34,13 @@
         </tr>
         {assign var=previousTag value="{$record->tag}"}
       {/if}
-      {assign var=percent value="{$record->{'number-of-record'} / $max}"}
+      {assign var=percent value="{$record->{'number-of-record'} * 100 / $max}"}
       <tr>
         <td class="path">
           <a href="javascript:searchForField('{$record->solr}')">{$record->path|substr:3}</a>
         </td>
         <td class="subfield">{$record->subfield}</td>
-        <td class="chart"><div style="width: {ceil($percent * 200)}px;">&nbsp;</div></td>
+        <td class="chart"><div style="width: {ceil($percent * 2)}px;">&nbsp;</div></td>
         <td class="number-of-record">{$record->{'number-of-record'}|number_format}</td>
         <td class="percent-of-record">{$percent|number_format:2}%</td>
         <td class="number-of-instances">{$record->{'number-of-instances'}}</td>
