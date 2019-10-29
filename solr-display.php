@@ -166,8 +166,12 @@ function opacLink($doc, $id) {
         trim($identifier));
 
   } else if ($core == 'nfi') {
-    // https://kansalliskirjasto.finna.fi/Search/Results?hiddenFilters[]=%23%3A%28%28building%3A0%2FNLF%2F%29+OR+%28building%3A1%2Fhelka%2F339%2F%29%29+NOT+%28building%3A1%2FNLF%2Farto%2F%29&sort=relevance&bool0%5B%5D=AND&lookfor0%5B%5D=The+creation+and+development+of+social+welfare+in+the+Nordic+countries&type0%5B%5D=Title&lookfor0%5B%5D=&type0%5B%5D=AllFields&join=AND&limit=20
-    // return 'http://gateway-bayern.de/' . trim($id);
+    // return 'https://melinda.kansalliskirjasto.fi/byid/' . trim($id);
+    return 'https://kansalliskirjasto.finna.fi/Search/Results?bool0[]=OR&lookfor0[]=ctrlnum%3A%22FCC'
+      . trim($id)
+      . '%22&lookfor0[]=ctrlnum%3A%22(FI-MELINDA)'
+      . trim($id)
+      . '%22';
   }
 }
 
