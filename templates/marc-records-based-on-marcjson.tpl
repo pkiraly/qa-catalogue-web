@@ -33,7 +33,7 @@
       {foreach $fieldInstances as $field}
         {if isset($field->subfields->a)}
           <span class="250a_Edition_editionStatement_ss">{$field->subfields->a}</span>
-        {/fi}
+        {/if}
       {/foreach}
       <br/>
     {/if}
