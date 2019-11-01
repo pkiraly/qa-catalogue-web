@@ -187,7 +187,7 @@
         <div class="tab-pane" id="marc-human-{$id}" role="tabpanel"
              aria-labelledby="data-tab">
           <ul>
-            {foreach getFields($doc) as $field}
+            {foreach getAllSolrFields($doc) as $field}
               <li>
                 <span class="label">{$field->label}:</span>
                 {foreach $field->value as $value}

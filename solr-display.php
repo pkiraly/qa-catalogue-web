@@ -40,11 +40,15 @@ function getRecords($solrResponse) {
   $smarty->registerPlugin("function", "hasPhysicalDescription", "hasPhysicalDescription");
   $smarty->registerPlugin("function", "hasMainPersonalName", "hasMainPersonalName");
   $smarty->registerPlugin("function", "hasSimilarBooks", "hasSimilarBooks");
-  $smarty->registerPlugin("function", "getFields", "getFields");
+  $smarty->registerPlugin("function", "getAllSolrFields", "getAllSolrFields");
   $smarty->registerPlugin("function", "getMarcFields", "getMarcFields");
   $smarty->registerPlugin("function", "opacLink", "opacLink");
+  $smarty->registerPlugin("function", "getRecord", "getRecord");
+  $smarty->registerPlugin("function", "getField", "getField");
+  $smarty->registerPlugin("function", "getFields", "getFields");
+  $smarty->registerPlugin("function", "getSubfields", "getSubfields");
 
-  return $smarty->fetch('marc-records.tpl');
+  return $smarty->fetch('marc-records-based-on-marcjson.tpl');
 }
 
 function getFacets($solrResponse) {
@@ -96,7 +100,7 @@ function getMarcFields($doc) {
   return $rows;
 }
 
-function getFields($doc) {
+function getAllSolrFields($doc) {
   $fields = [];
   foreach ($doc as $label => $value) {
     if ($label == 'record_sni' || $label == '_version_') {
@@ -110,8 +114,36 @@ function getFields($doc) {
 
 function hasPublication($doc) {
   return (!empty($doc->{'260a_Publication_place_ss'})
-         || !empty($doc->{'260b_Publication_agent_ss'})
-         || !empty($doc->{'260c_Publication_date_ss'}));
+    || !empty($doc->{'260b_Publication_agent_ss'})
+    || !empty($doc->{'260c_Publication_date_ss'}));
+}
+
+function getRecord($doc) {
+  return json_decode($doc->record_sni);
+}
+
+function getField($record, $fieldName) {
+  if (isset($record->{$fieldName}))
+    return $record->{$fieldName}[0];
+  return null;
+}
+
+function getFields($record, $fieldName) {
+  if (isset($record->{$fieldName}))
+    return $record->{$fieldName};
+  return null;
+}
+
+function getSubfields($record, $fieldName, $subfield) {
+  $subfields = [];
+  if (isset($record->{$fieldName})) {
+    foreach($record->{$fieldName} as $field) {
+      if (isset($field->subfields->{$subfield})) {
+        $subfields[] = $field->subfields->{$subfield};
+      }
+    }
+  }
+  return $subfields;
 }
 
 function hasPhysicalDescription($doc) {

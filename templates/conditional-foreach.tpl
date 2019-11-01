@@ -4,7 +4,12 @@
 {if isset($var)}
   {if isset($label)}{$label}{/if}
   {foreach $var as $value}
-    {if isset($tag)}<span class="tag-{$tag}">{/if}{$value}{if isset($tag)}</span>{/if}{if !$value@first}, {/if}
+    {if isset($tag)}
+        {if gettype($tag) != 'string'}{json_encode($tag)}{/if}
+      <span class="tag-{$tag}">{$value}</span>{if !$value@first}, {/if}
+    {else}
+      {$value}{if !$value@first}, {/if}
+    {/if}
   {/foreach}
   {if isset($suffix)}{$suffix}{/if}
 {/if}
