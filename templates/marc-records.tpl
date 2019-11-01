@@ -200,7 +200,6 @@
         <div class="tab-pane" id="marc-issue-{$id}" role="tabpanel"
              aria-labelledby="data-tab">
           <p>Retrieving issues detected in this MARC record (if any). It might take for a while.</p>
-
         </div>
       </div>
     </div>
