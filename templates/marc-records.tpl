@@ -11,7 +11,7 @@
           {include 'conditional-foreach.tpl' obj=$doc key='245n_Title_partNumber_ss'}
         {/if}
       {/if}
-      <a href="#" class="record-details" data="details-{$doc->id|regex_replace:"/ +$/":""}" title="display details"><i class="fa fa-book" aria-hidden="true"></i></a>
+      <a href="#" class="record-details" data="details-{$id}" title="display details"><i class="fa fa-book" aria-hidden="true"></i></a>
       <a href="{opacLink($doc, $doc->id)}" target="_blank" title="Display record in the library catalogue"><i class="fa fa-external-link" aria-hidden="true"></i></a>
     </h2>
     {if isset($doc->{'245c_Title_responsibilityStatement_ss'})}
@@ -149,17 +149,22 @@
       </div>
     {/if}
 
-    <div class="details" id="details-{$doc->id|regex_replace:"/ +$/":""}">
-      <ul class="nav nav-tabs" id="record-views-{$doc->id|regex_replace:"/ +$/":""}">
+    <div class="details" id="details-{$id}">
+      <ul class="nav nav-tabs" id="record-views-{$id}">
         <li class="nav-item">
           <a class="nav-link active" data-toggle="tab" role="tab" aria-selected="true"
-             id="marc-raw-tab-{$doc->id|regex_replace:"/ +$/":""}" href="#marc-raw-{$doc->id|regex_replace:"/ +$/":""}"
+             id="marc-raw-tab-{$id}" href="#marc-raw-{$id}"
              aria-controls="marc-raw-tab">MARC21</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
-             id="marc-human-tab-{$doc->id|regex_replace:"/ +$/":""}" href="#marc-human-{$doc->id|regex_replace:"/ +$/":""}"
+             id="marc-human-tab-{$id}" href="#marc-human-{$id}"
              aria-controls="marc-human-tab">labels</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
+             id="marc-issue-tab-{$id}" href="#marc-issue-{$id}"
+             aria-controls="marc-issue-tab" data-id="{$id}">isues</a>
         </li>
       </ul>
       <div class="tab-content">
@@ -191,6 +196,11 @@
               </li>
             {/foreach}
           </ul>
+        </div>
+        <div class="tab-pane" id="marc-issue-{$id}" role="tabpanel"
+             aria-labelledby="data-tab">
+          <p>Retrieving issues detected in this MARC record (if any). It might take for a while.</p>
+
         </div>
       </div>
     </div>

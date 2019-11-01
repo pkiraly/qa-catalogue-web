@@ -37,7 +37,11 @@
       {assign var=percent value="{$record->{'number-of-record'} * 100 / $max}"}
       <tr>
         <td class="path">
-          <a href="javascript:searchForField('{$record->solr}')">{$record->path|substr:3}</a>
+          {if isset($record->solr)}
+            <a href="javascript:searchForField('{$record->solr}')">{$record->path|substr:3}</a>
+          {else}
+            {$record->path|substr:3}
+          {/if}
         </td>
         <td class="subfield">{$record->subfield}</td>
         <td class="chart"><div style="width: {ceil($percent * 2)}px;">&nbsp;</div></td>

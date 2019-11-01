@@ -442,7 +442,7 @@
       if (index != -1) {
         filters.splice(index, 1);
         start = 0;
-        loadSolrResponse(buildUrl());
+        loadDataTab(buildUrl());
       }
     })
   }
@@ -472,12 +472,12 @@
     $('#prev-next a').click(function (event) {
       event.preventDefault();
       start = $(this).attr('data');
-      loadSolrResponse(buildUrl());
+      loadDataTab(buildUrl());
     });
     $('#prev-next-footer a').click(function (event) {
       event.preventDefault();
       start = $(this).attr('data');
-      loadSolrResponse(buildUrl());
+      loadDataTab(buildUrl());
     });
   }
 
@@ -547,7 +547,7 @@
         'label': getFacetLabel(field) + ': ' + value
       });
       start = 0;
-      loadSolrResponse(buildUrl());
+      loadDataTab(buildUrl());
     });
   }
 
@@ -581,7 +581,7 @@
      });
   }
 
-  function loadSolrResponse(urlParam) {
+  function loadDataTab(urlParam) {
     $('#message').html('<i class="fa fa-spinner" aria-hidden="true"></i> loading...');
 
     if (filters.length > 0) {
@@ -602,6 +602,17 @@
         setFacetClickBehaviour();
         setFacetNavigationClickBehaviour();
         $('#message').html('');
+        $('a[aria-controls="marc-issue-tab"]').click(function (e) {
+          var id = $(this).attr('data-id');
+          console.log('id: ' + id);
+          var url = 'read-record-issues.php?db=' + db + '&id=' + id + '&display=1';
+          console.log('getting url: ' + url);
+          $.ajax(url)
+            .done(function(result) {
+              console.log('retrieving url: ' + url);
+              $('#marc-issue-' + id).html(result);
+            });
+        });
       })
       .fail(function() {
         alert("error");
@@ -626,14 +637,14 @@
         'label': getFacetLabel(field) + ': ' + value
       });
       start = 0;
-      loadSolrResponse(buildUrl());
+      loadDataTab(buildUrl());
     });
   }
 
   function doSearch() {
     query = $('#query').val();
     start = 0;
-    loadSolrResponse(buildUrl());
+    loadDataTab(buildUrl());
   }
 
   function itemsPerPage() {
@@ -653,7 +664,7 @@
       start = 0;
       rows = $(this).attr('data');
       itemsPerPage();
-      loadSolrResponse(buildUrl());
+      loadDataTab(buildUrl());
     });
   }
 
@@ -722,7 +733,7 @@
       'label': getFacetLabel(field) + ': *'
     });
     start = 0;
-    loadSolrResponse(buildUrl());
+    loadDataTab(buildUrl());
     resetTabs();
     $('#myTab a[href="#data"]').tab('show');
   }
@@ -977,7 +988,7 @@
           });
           start = 0;
           var url = buildUrl();
-          loadSolrResponse(url);
+          loadDataTab(url);
           resetTabs();
           $('#myTab a[href="#data"]').tab('show');
         });
@@ -1089,7 +1100,7 @@
       resetTabs();
       var id = $(this).attr('id');
       if (id == 'data-tab') {
-        loadSolrResponse(buildUrl());
+        loadDataTab(buildUrl());
       } else if (id == 'completeness-tab') {
         loadCompleteness();
       } else if (id == 'issues-tab') {
@@ -1102,7 +1113,7 @@
         loadTerms();
       }
       $(this).tab('show');
-    })
+    });
   });
 </script>
 </body>

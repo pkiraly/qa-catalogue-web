@@ -172,6 +172,10 @@ table#issues-table tr td.type {
   text-align: left;
 }
 
+table#issues-table thead tr th.count {
+  text-align: right;
+}
+
 table#issues-table tr td.type span.type {
   color: #37ba00;
   font-weight: bold;
