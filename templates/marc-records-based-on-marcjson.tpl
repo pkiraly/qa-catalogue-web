@@ -95,6 +95,7 @@
     {* 100a_MainPersonalName_personalName_ss *}
     {if hasMainPersonalName($doc)}
       {assign var="tag100s" value=getFields($record, '100')}
+      <em>Main personal names</em><br>
       {if !is_null($tag100s)}
         {foreach $tag100s as $field}
           <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
@@ -116,6 +117,7 @@
 
     {if isset($doc->{'700a_AddedPersonalName_personalName_ss'})}
       {assign var="tag700s" value=getFields($record, '700')}
+      <em>Additional personal names</em><br>
       {foreach $tag700s as $field}
         <span class="700">
           <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
@@ -144,6 +146,7 @@
     {* 710a_AddedCorporateName_ss *}
     {assign var="fieldInstances" value=getFields($record, '710')}
     {if !is_null($fieldInstances)}
+      <em>Corporate names</em><br>
       {foreach $fieldInstances as $field}
         <span class="710">
           {$field->subfields->a}
@@ -161,6 +164,7 @@
 
     {assign var="fieldInstances" value=getFields($record, '650')}
     {if !is_null($fieldInstances)}
+      <em>Topics</em><br>
       {foreach $fieldInstances as $field}
         {* 650a_Topic_topicalTerm_ss *}
         <span class="650">
@@ -199,6 +203,7 @@
     {* 6510_Geographic_authorityRecordControlNumber_ss *}
     {assign var="fieldInstances" value=getFields($record, '651')}
     {if !is_null($fieldInstances)}
+      <em>Geographic names</em><br>
       {foreach $fieldInstances as $field}
         <span class="651">
           {if isset($field->subfields->a)}
@@ -221,6 +226,7 @@
     {* 6550_GenreForm_authorityRecordControlNumber_ss *}
     {assign var="fieldInstances" value=getFields($record, '655')}
     {if !is_null($fieldInstances)}
+      <em>Genres</em><br>
       {foreach $fieldInstances as $field}
         <span class="655">
           {if isset($field->subfields->a)}
