@@ -157,7 +157,6 @@
         </span>
         <br/>
       {/foreach}
-      <br/>
     {/if}
 
     {assign var="fieldInstances" value=getFields($record, '650')}
