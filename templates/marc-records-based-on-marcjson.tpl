@@ -94,6 +94,37 @@
       {/foreach}
     {/if}
 
+    {* Host Item Entry *}
+    {assign var="fieldInstances" value=getFields($record, '773')}
+    {if !is_null($fieldInstances)}
+      {foreach $fieldInstances as $field}
+        <span class="773">
+          {if isset($field->subfields->a)}
+            <span class="main-entry">{$field->subfields->a}</span>
+          {/if}
+          {if isset($field->subfields->b)}
+            <span class="edition">{$field->subfields->b}</span>
+          {/if}
+          {if isset($field->subfields->d)}
+            <span class="place-publisher-dates">{$field->subfields->d}</span>
+          {/if}
+          {if isset($field->subfields->t)}
+            <span class="title">{$field->subfields->t}</span>
+          {/if}
+          {if isset($field->subfields->x)}
+            <span class="issn">{$field->subfields->x}</span>
+          {/if}
+          {if isset($field->subfields->g)}
+            <span class="related-parts">{$field->subfields->g}</span>
+          {/if}
+          {if isset($field->subfields->w)}
+            <span class="record-control-number">{$field->subfields->w}</span>
+          {/if}
+        </span>
+        <br/>
+      {/foreach}
+    {/if}
+
     {* 100a_MainPersonalName_personalName_ss *}
     {if hasMainPersonalName($doc)}
       {assign var="tag100s" value=getFields($record, '100')}
@@ -348,7 +379,7 @@
       {/if}
 
     {* TODO: 647 *}
-        {* TODO: 648 *}
+    {* TODO: 648 *}
 
     {assign var="fieldInstances" value=getFields($record, '650')}
     {if !is_null($fieldInstances)}
@@ -411,6 +442,19 @@
       {/foreach}
     {/if}
 
+    {assign var="fieldInstances" value=getFields($record, '653')}
+    {if !is_null($fieldInstances)}
+      <em>Uncontrolled Index Term</em><br>
+      {foreach $fieldInstances as $field}
+        <span class="653">
+          {if isset($field->subfields->a)}
+            <a href="#" class="record-link" data="653a">{$field->subfields->a}</a>
+          {/if}
+        </span>
+        <br/>
+      {/foreach}
+    {/if}
+
     {* 6550_GenreForm_authorityRecordControlNumber_ss *}
     {assign var="fieldInstances" value=getFields($record, '655')}
     {if !is_null($fieldInstances)}
@@ -421,8 +465,12 @@
             <a href="#" class="record-link" data="655a">{$field->subfields->a}</a>
           {/if}
 
+          {if isset($field->subfields->v)}
+            form: <span class="form">{$field->subfields->v}</span>
+          {/if}
+
           {if isset($field->subfields->{'2'})}
-            vocabulary: {$field->subfields->{'2'}}</a>
+            vocabulary: <span class="source">{$field->subfields->{'2'}}</span>
           {/if}
 
           {if isset($field->subfields->{'0'})}
