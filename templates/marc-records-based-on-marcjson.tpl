@@ -28,10 +28,12 @@
     {/if}
 
     {* 250a_Edition_editionStatement_ss *}
-    {assign var="fieldInstances" value=getField($record, '250')}
+    {assign var="fieldInstances" value=getFields($record, '250')}
     {if !is_null($fieldInstances)}
       {foreach $fieldInstances as $field}
-        <span class="250a_Edition_editionStatement_ss">{$field->subfields->a}</span>
+        {if isset($field->subfields->a)}
+          <span class="250a_Edition_editionStatement_ss">{$field->subfields->a}</span>
+        {/fi}
       {/foreach}
       <br/>
     {/if}
