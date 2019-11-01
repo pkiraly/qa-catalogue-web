@@ -266,10 +266,18 @@
 
         <p>
           Credits<br/>
-          I would like to thank the experts I have consulted: Rudolf Ungváry (retired, Hungarian National Library, HU),
-          Gerard Coen (DANS and ISKO-NL, NL), Andreas Ledl (BARTOC and Uni Basel, CH), Anna Kasprzik (ZBW, DE),
-          Jakob Voß (GBV, DE), Uma Balakrishnan (GBV, DE), Yann Y. Nicolas (ABES, FR),
-          Michael Franke-Maier (Freie Universität Berlin, DE), Gerhard Lauer (Uni Basel, CH).
+          Thanks for Johann Rolschewski and Phú for their help in collecting the list of published library catalog,
+          Jakob Voß for the Avram specification and for his help in exporting MARC schema to Avram, Carsten Klee
+          for the MARCspec. I would like to thank the early users of the software, Patrick Hochstenbach (Gent),
+          Osma Suominen and Tuomo Virolainen (FNL), Kokas Károly and Bernátsky László (SZTE), Sören Auer and Berrit
+          Genat (TIB), Shelley Doljack, Darsi L Rueda, and Philip E. Schreur (Stanford), Marian Lefferts (CERL),
+          Alex Jahnke and Maike Kittelmann (SUB) who provided data, suggestions or other kinds of feedback, Justin
+          Christoffersen for language assistance. Special thanks to Reinhold Heuvelmann (DNB) for terminological and
+          language suggestions.<br/>
+          I would like to thank the experts I have consulted regarding to subject analysis: Rudolf Ungváry
+          (retired, Hungarian National Library, HU), Gerard Coen (DANS and ISKO-NL, NL), Andreas Ledl (BARTOC and Uni
+          Basel, CH), Anna Kasprzik (ZBW, DE), Jakob Voß (GBV, DE), Uma Balakrishnan (GBV, DE),
+          Yann Y. Nicolas (ABES, FR), Michael Franke-Maier (Freie Universität Berlin, DE), Gerhard Lauer (Uni Basel, CH).
         </p>
 
         <p>This is an open source project. You can find the code at:</p>
