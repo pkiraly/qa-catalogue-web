@@ -68,7 +68,7 @@
       <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
       {foreach $doc->{'700a_AddedPersonalName_personalName_ss'} as $value}
         <a href="#" class="record-link" data="700a_AddedPersonalName_personalName_ss">{$value}</a>
-        {if isset($doc->{'700d_AddedPersonalName_dates_ss'})}
+        {if isset($doc->{'700d_AddedPersonalName_dates_ss'}) && isset($doc->{'700d_AddedPersonalName_dates_ss'}[$value@index])}
           {$doc->{'700d_AddedPersonalName_dates_ss'}[$value@index]}
         {/if}
         {if !$value@last}, {/if}
