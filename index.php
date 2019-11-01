@@ -257,12 +257,18 @@
       <div id="set-facet-list"></div>
     </div>
     <div class="tab-pane" id="about" role="tabpanel" aria-labelledby="about-tab">
-      <div>
+      <div id="about-tab">
         <p>
           This experimental website is part of a research project called Measuring Metadata Quality
           conducted by Péter Király. You can read more about the research at
           <a href="https://pkiraly.github.io" target="_blank">pkiraly.github.io</a>.
         </p>
+
+        <p>This is an open source project. You can find the code at:</p>
+        <ul>
+          <li><a href="https://github.com/pkiraly/metadata-qa-marc" target="_blank">Backend (Java)</a></li>
+          <li><a href="https://github.com/pkiraly/metadata-qa-marc-web" target="_blank">Frontend (PHP)</a></li>
+        </ul>
 
         <p><em>Credits</em></p>
         <p>Thanks for Johann Rolschewski and Phú for their help in collecting the list of published library catalog,
@@ -277,12 +283,6 @@
           (retired, Hungarian National Library, HU), Gerard Coen (DANS and ISKO-NL, NL), Andreas Ledl (BARTOC and Uni
           Basel, CH), Anna Kasprzik (ZBW, DE), Jakob Voß (GBV, DE), Uma Balakrishnan (GBV, DE),
           Yann Y. Nicolas (ABES, FR), Michael Franke-Maier (Freie Universität Berlin, DE), Gerhard Lauer (Uni Basel, CH).</p>
-
-        <p>This is an open source project. You can find the code at:</p>
-        <ul>
-          <li><a href="https://github.com/pkiraly/metadata-qa-marc" target="_blank">Backend (Java)</a></li>
-          <li><a href="https://github.com/pkiraly/metadata-qa-marc-web" target="_blank">Frontend (PHP)</a></li>
-        </ul>
       </div>
     </div>
   </div>
