@@ -623,7 +623,7 @@
         });
       })
       .fail(function() {
-        alert("error");
+        conslote.error("error: can not access " + urlParam);
       });
   }
 
