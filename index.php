@@ -623,7 +623,7 @@
         });
       })
       .fail(function() {
-        conslote.error("error: can not access " + urlParam);
+        console.error("error: can not access " + urlParam);
       });
   }
 
