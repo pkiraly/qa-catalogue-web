@@ -274,3 +274,17 @@ div#about-tab ul li {
   margin-left: 20px;
   list-style-type: square;
 }
+
+fieldset {
+  border: 0;
+  border-left: 1px solid #37ba00;
+  margin: 0 0 5px 0;
+  padding: 0 0 5px 5px;
+}
+
+fieldset legend {
+  font-size: 100%;
+  color: #37ba00;
+  margin: 0;
+  padding: 0 0 0 5px;
+}
