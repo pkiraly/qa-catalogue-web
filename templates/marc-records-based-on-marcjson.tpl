@@ -130,6 +130,12 @@
           {if isset($field->subfields->d)}
             <span class="dates">{$field->subfields->d}</span>
           {/if}
+          {if isset($field->subfields->e)}
+            <span class="relator">{$field->subfields->e}</span>
+          {/if}
+          {if isset($field->subfields->{'0'})}
+            (authority: <a href="#" class="record-link" data="7000">{$field->subfields->{'0'}}</a>)
+          {/if}
         </span>
         <br/>
       {/foreach}
@@ -143,10 +149,13 @@
           {$field->subfields->a}
           {* 710d_AddedCorporateName_dates *}
           {if isset($field->subfields->d)}
-            {$field->subfields->d}
+            <span class="dates">{$field->subfields->d}</span>
+          {/if}
+          {if isset($field->subfields->e)}
+            <span class="relator">{$field->subfields->e}</span>
           {/if}
         </span>
-        {if !$field@last}, {/if}
+        <br/>
       {/foreach}
       <br/>
     {/if}
