@@ -125,75 +125,13 @@
       {/foreach}
     {/if}
 
-    {* 100a_MainPersonalName_personalName_ss *}
-    {if hasMainPersonalName($doc)}
-      {assign var="tag100s" value=getFields($record, '100')}
-      <em>Main personal names</em><br>
-      {if !is_null($tag100s)}
-        {foreach $tag100s as $field}
-          <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
-          <a href="#" class="record-link" data="100a_MainPersonalName_personalName_ss">{$field->subfields->a}</a>
-          {if isset($field->subfields->b)}
-            <span class="numeration">{$field->subfields->b}</span>
-          {/if}
-          {if isset($field->subfields->c)}
-            <span class="titles">{$field->subfields->c}</span>
-          {/if}
-          {* 100d_MainPersonalName_dates_ss *}
-          {if isset($field->subfields->d)}
-            <span class="dates">{$field->subfields->d}</span>
-          {/if}
-          <br/>
-        {/foreach}
-      {/if}
-    {/if}
+    {* Main personal names *}
+    {include 'marc/100.tpl'}
+    {* Additional personal names *}
+    {include 'marc/700.tpl'}
+    {* Additional Corporate names *}
+    {include 'marc/710.tpl'}
 
-    {if isset($doc->{'700a_AddedPersonalName_personalName_ss'})}
-      {assign var="tag700s" value=getFields($record, '700')}
-      <em>Additional personal names</em><br>
-      {foreach $tag700s as $field}
-        <span class="700">
-          <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
-          <a href="#" class="record-link" data="700a_AddedPersonalName_personalName_ss">{$field->subfields->a}</a>
-          {if isset($field->subfields->b)}
-            <span class="numeration">{$field->subfields->b}</span>
-          {/if}
-          {if isset($field->subfields->c)}
-            <span class="titles">{$field->subfields->c}</span>
-          {/if}
-          {* 700d_AddedPersonalName_dates_ss *}
-          {if isset($field->subfields->d)}
-            <span class="dates">{$field->subfields->d}</span>
-          {/if}
-          {if isset($field->subfields->e)}
-            <span class="relator">{$field->subfields->e}</span>
-          {/if}
-          {if isset($field->subfields->{'0'})}
-            (authority: <a href="#" class="record-link" data="7000">{$field->subfields->{'0'}}</a>)
-          {/if}
-        </span>
-        <br/>
-      {/foreach}
-    {/if}
-
-    {* 710a_AddedCorporateName_ss *}
-    {assign var="fieldInstances" value=getFields($record, '710')}
-    {if !is_null($fieldInstances)}
-      <em>Corporate names</em><br>
-      {foreach $fieldInstances as $field}
-        <span class="710">
-          {$field->subfields->a}
-          {* 710d_AddedCorporateName_dates *}
-          {if isset($field->subfields->d)}
-            <span class="dates">{$field->subfields->d}</span>
-          {/if}
-          {if isset($field->subfields->e)}
-            <span class="relator">{$field->subfields->e}</span>
-          {/if}
-        </span>
-        <br/>
-      {/foreach}
-    {/if}
 
     <fieldset>
       <legend>Subjects</legend>
