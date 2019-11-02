@@ -125,299 +125,39 @@
       {/foreach}
     {/if}
 
-    {* Main personal names *}
-    {include 'marc/100.tpl'}
-    {* Additional personal names *}
-    {include 'marc/700.tpl'}
-    {* Additional Corporate names *}
-    {include 'marc/710.tpl'}
-
+    <fieldset>
+      <legend>Authority names</legend>
+      {* Main personal names *}
+      {include 'marc/100.tpl'}
+      {* TODO: 110 *}
+      {* Additional personal names *}
+      {include 'marc/700.tpl'}
+      {* Additional Corporate names *}
+      {include 'marc/710.tpl'}
+    </fieldset>
 
     <fieldset>
       <legend>Subjects</legend>
-    {assign var="fieldInstances" value=getFields($record, '080')}
-    {if !is_null($fieldInstances)}
-      <em>Universal Decimal Classification</em><br>
-      {foreach $fieldInstances as $field}
-        <span class="080">
-          {*  Personal name *}
-          {if isset($field->subfields->a)}
-            <i class="fa fa-hashtag" aria-hidden="true" title="udc"></i>
-            <a href="#" class="record-link" data="080a">{$field->subfields->a}</a>
-          {/if}
-
-          {if isset($field->subfields->b)}
-            <a href="#" class="item-number" data="080b">{$field->subfields->b}</a>
-          {/if}
-
-          {if isset($field->subfields->x)}
-            <a href="#" class="common-auxiliary-subdivision" data="080x">{$field->subfields->x}</a>
-          {/if}
-
-          {if isset($field->subfields->{'2'})}
-            <a href="#" class="edition" data="0802">{$field->subfields->{'2'}}</a>
-          {/if}
-        </span>
-        <br/>
-      {/foreach}
-    {/if}
-
-    {assign var="fieldInstances" value=getFields($record, '600')}
-    {if !is_null($fieldInstances)}
-      <em>Personal names as subjects</em><br>
-      {foreach $fieldInstances as $field}
-        <span class="600">
-          {*  Personal name *}
-          {if isset($field->subfields->a)}
-            <i class="fa fa-hashtag" aria-hidden="true" title="topical term"></i>
-            <a href="#" class="record-link" data="600a">{$field->subfields->a}</a>
-          {/if}
-
-          {*  Numeration *}
-          {if isset($field->subfields->b)}
-            <span class="numeration" data="650b">{$field->subfields->b}</span>
-          {/if}
-
-          {*  Numeration *}
-          {if isset($field->subfields->c)}
-            <span class="titles" data="650c">{$field->subfields->c}</span>
-          {/if}
-
-          {*  Numeration *}
-          {if isset($field->subfields->d)}
-            <span class="dates" data="650d">{$field->subfields->d}</span>
-          {/if}
-
-          {if isset($field->subfields->{'2'})}
-            vocabulary: {$field->subfields->{'2'}}</a>
-          {/if}
-
-          {* 6500_Topic_authorityRecordControlNumber_ss *}
-          {if isset($field->subfields->{'0'})}
-            (authority: <a href="#" class="record-link" data="6500">{$field->subfields->{'0'}}</a>)
-          {/if}
-        </span>
-        <br/>
-      {/foreach}
-    {/if}
-
-    {assign var="fieldInstances" value=getFields($record, '610')}
-    {if !is_null($fieldInstances)}
-      <em>Corporate names as subjects</em><br>
-      {foreach $fieldInstances as $field}
-        <span class="600">
-          {*  Personal name *}
-          {if isset($field->subfields->a)}
-            <i class="fa fa-hashtag" aria-hidden="true" title="topical term"></i>
-            <a href="#" class="record-link" data="610a">{$field->subfields->a}</a>
-          {/if}
-
-          {if isset($field->subfields->b)}
-            <span class="numeration" data="610b">{$field->subfields->b}</span>
-          {/if}
-
-          {if isset($field->subfields->c)}
-            <span class="titles" data="610c">{$field->subfields->c}</span>
-          {/if}
-
-          {if isset($field->subfields->d)}
-            <span class="dates" data="610d">{$field->subfields->d}</span>
-          {/if}
-
-          {if isset($field->subfields->{'2'})}
-            vocabulary: {$field->subfields->{'2'}}</a>
-          {/if}
-
-          {* 6500_Topic_authorityRecordControlNumber_ss *}
-          {if isset($field->subfields->{'0'})}
-            (authority: <a href="#" class="record-link" data="6100">{$field->subfields->{'0'}}</a>)
-          {/if}
-        </span>
-        <br/>
-      {/foreach}
-    {/if}
-
-    {assign var="fieldInstances" value=getFields($record, '611')}
-    {if !is_null($fieldInstances)}
-      <em>Meeting names as subjects</em><br>
-      {foreach $fieldInstances as $field}
-        <span class="611">
-          {* Personal name *}
-          {if isset($field->subfields->a)}
-            <i class="fa fa-hashtag" aria-hidden="true" title="meeting name"></i>
-            <a href="#" class="record-link" data="611a">{$field->subfields->a}</a>
-          {/if}
-
-          {if isset($field->subfields->b)}
-            <span class="numeration" data="611b">{$field->subfields->b}</span>
-          {/if}
-
-          {if isset($field->subfields->c)}
-            <span class="location" data="611c">{$field->subfields->c}</span>
-          {/if}
-
-          {if isset($field->subfields->d)}
-            <span class="dates" data="611d">{$field->subfields->d}</span>
-          {/if}
-
-          {if isset($field->subfields->{'2'})}
-            vocabulary: {$field->subfields->{'2'}}</a>
-          {/if}
-
-          {* 6500_Topic_authorityRecordControlNumber_ss *}
-          {if isset($field->subfields->{'0'})}
-            (authority: <a href="#" class="record-link" data="6110">{$field->subfields->{'0'}}</a>)
-          {/if}
-        </span>
-        <br/>
-      {/foreach}
-    {/if}
-
-    {* TODO: 630 *}
-    {assign var="fieldInstances" value=getFields($record, '630')}
-    {if !is_null($fieldInstances)}
-      <em>Uniform title as subjects</em><br>
-        {foreach $fieldInstances as $field}
-          <span class="630">
-            {if isset($field->subfields->a)}
-              <i class="fa fa-hashtag" aria-hidden="true" title="uniform title"></i>
-              <a href="#" class="record-link" data="630a">{$field->subfields->a}</a>
-            {/if}
-
-            {if isset($field->subfields->n)}
-              <span class="number-of-part" data="630n">{$field->subfields->n}</span>
-            {/if}
-
-            {if isset($field->subfields->p)}
-              <span class="name-of-part" data="630p">{$field->subfields->p}</span>
-            {/if}
-
-            {if isset($field->subfields->l)}
-              <span class="language" data="630l">{$field->subfields->l}</span>
-            {/if}
-
-            {if isset($field->subfields->d)}
-              <span class="dates" data="630d">{$field->subfields->d}</span>
-            {/if}
-
-            {if isset($field->subfields->t)}
-              <span class="work-title" data="630t">{$field->subfields->t}</span>
-            {/if}
-
-            {if isset($field->subfields->{'2'})}
-              vocabulary: {$field->subfields->{'2'}}</a>
-            {/if}
-
-            {if isset($field->subfields->{'0'})}
-              (authority: <a href="#" class="record-link" data="6300">{$field->subfields->{'0'}}</a>)
-            {/if}
-          </span>
-          <br/>
-        {/foreach}
-      {/if}
-
-    {* TODO: 647 *}
-    {* TODO: 648 *}
-
-    {assign var="fieldInstances" value=getFields($record, '650')}
-    {if !is_null($fieldInstances)}
-      <em>Topics</em><br>
-      {foreach $fieldInstances as $field}
-        {* 650a_Topic_topicalTerm_ss *}
-        <span class="650">
-          {if isset($field->subfields->a)}
-            <i class="fa fa-hashtag" aria-hidden="true" title="topical term"></i>
-            <a href="#" class="record-link" data="650a_Topic_topicalTerm_ss">{$field->subfields->a}</a>
-          {/if}
-
-          {* 650z_Topic_geographicSubdivision_ss *}
-          {if isset($field->subfields->z)}
-            geo:
-            <i class="fa fa-map" aria-hidden="true" title="geographic subdivision"></i>
-            <a href="#" class="record-link" data="650z_Topic_geographicSubdivision_ss">{$field->subfields->z}</a>
-          {/if}
-
-          {* 650v_Topic_formSubdivision_ss *}
-          {if isset($field->subfields->v)}
-            form:
-            <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-            <a href="#" class="record-link" data="650v_Topic_formSubdivision_ss">{$field->subfields->v}</a>
-          {/if}
-
-          {if isset($field->subfields->{'2'})}
-            vocabulary: {$field->subfields->{'2'}}</a>
-          {/if}
-
-          {* 6500_Topic_authorityRecordControlNumber_ss *}
-          {if isset($field->subfields->{'0'})}
-            (authority: <a href="#" class="record-link" data="650v_Topic_formSubdivision_ss">{$field->subfields->{'0'}}</a>)
-          {/if}
-        </span>
-        <br/>
-      {/foreach}
-    {/if}
-
-    {* 6510_Geographic_authorityRecordControlNumber_ss *}
-    {assign var="fieldInstances" value=getFields($record, '651')}
-    {if !is_null($fieldInstances)}
-      <em>Geographic names</em><br>
-      {foreach $fieldInstances as $field}
-        <span class="651">
-          {if isset($field->subfields->a)}
-            <i class="fa fa-map" aria-hidden="true" title="geographic term"></i>
-            <a href="#" class="record-link" data="650a">{$field->subfields->a}</a>
-          {/if}
-
-          {if isset($field->subfields->{'2'})}
-            vocabulary: {$field->subfields->{'2'}}</a>
-          {/if}
-
-          {if isset($field->subfields->{'0'})}
-            (authority: <a href="#" class="record-link" data="6510_Geographic_authorityRecordControlNumber_ss">{$field->subfields->{'0'}}</a>)
-          {/if}
-        </span>
-        <br/>
-      {/foreach}
-    {/if}
-
-    {assign var="fieldInstances" value=getFields($record, '653')}
-    {if !is_null($fieldInstances)}
-      <em>Uncontrolled Index Term</em><br>
-      {foreach $fieldInstances as $field}
-        <span class="653">
-          {if isset($field->subfields->a)}
-            <a href="#" class="record-link" data="653a">{$field->subfields->a}</a>
-          {/if}
-        </span>
-        <br/>
-      {/foreach}
-    {/if}
-
-    {* 6550_GenreForm_authorityRecordControlNumber_ss *}
-    {assign var="fieldInstances" value=getFields($record, '655')}
-    {if !is_null($fieldInstances)}
-      <em>Genres</em><br>
-      {foreach $fieldInstances as $field}
-        <span class="655">
-          {if isset($field->subfields->a)}
-            <a href="#" class="record-link" data="655a">{$field->subfields->a}</a>
-          {/if}
-
-          {if isset($field->subfields->v)}
-            form: <span class="form">{$field->subfields->v}</span>
-          {/if}
-
-          {if isset($field->subfields->{'2'})}
-            vocabulary: <span class="source">{$field->subfields->{'2'}}</span>
-          {/if}
-
-          {if isset($field->subfields->{'0'})}
-            (<a href="#" class="record-link" data="6550_GenreForm_authorityRecordControlNumber_ss">{$field->subfields->{'0'}}</a>)
-          {/if}
-        </span>
-        <br/>
-      {/foreach}
-    {/if}
+      {* UDC *}
+      {include 'marc/080.tpl'}
+      {* Personal names as subjects *}
+      {include 'marc/600.tpl'}
+      {* Corporate names as subjects *}
+      {include 'marc/610.tpl'}
+      {* Meeting names as subjects *}
+      {include 'marc/611.tpl'}
+      {* Uniform title as subjects *}
+      {include 'marc/630.tpl'}
+      {* TODO: 647 *}
+      {* TODO: 648 *}
+      {* Topics *}
+      {include 'marc/650.tpl'}
+      {* Geographic names *}
+      {include 'marc/651.tpl'}
+      {* Uncontrolled Index Term *}
+      {include 'marc/653.tpl'}
+      {* Genres *}
+      {include 'marc/655.tpl'}
     </fieldset>
 
     {if hasSimilarBooks($doc)}
