@@ -1,7 +1,7 @@
 {assign var="fieldInstances" value=getFields($record, '080')}
 {if !is_null($fieldInstances)}
 <tr>
-  <td><em>Universal Decimal Classification</em></td>
+  <td><em>Universal Decimal Classification</em>:</td>
   <td>
   {foreach $fieldInstances as $field}
     <span class="080">
