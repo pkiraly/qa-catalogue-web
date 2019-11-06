@@ -132,8 +132,10 @@
         <legend>Authority names</legend>
         {* Main personal names *}
         {include 'marc/100.tpl'}
-        {* TODO: 110 *}
-        {* TODO: 111 *}
+        {* Main corporate names *}
+        {include 'marc/110.tpl'}
+        {* Main meeting names *}
+        {include 'marc/111.tpl'}
         {* Additional personal names *}
         {include 'marc/700.tpl'}
         {* Additional Corporate names *}
