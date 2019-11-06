@@ -156,26 +156,28 @@
     {if hasSubjectHeadings($record)}
       <fieldset>
         <legend>Subjects</legend>
-        {* UDC *}
-        {include 'marc/080.tpl'}
-        {* Personal names as subjects *}
-        {include 'marc/600.tpl'}
-        {* Corporate names as subjects *}
-        {include 'marc/610.tpl'}
-        {* Meeting names as subjects *}
-        {include 'marc/611.tpl'}
-        {* Uniform title as subjects *}
-        {include 'marc/630.tpl'}
-        {* TODO: 647 *}
-        {* TODO: 648 *}
-        {* Topics *}
-        {include 'marc/650.tpl'}
-        {* Geographic names *}
-        {include 'marc/651.tpl'}
-        {* Uncontrolled Index Term *}
-        {include 'marc/653.tpl'}
-        {* Genres *}
-        {include 'marc/655.tpl'}
+        <table class="subject-headings">
+          {* UDC *}
+          {include 'marc/080.tpl'}
+          {* Personal names as subjects *}
+          {include 'marc/600.tpl'}
+          {* Corporate names as subjects *}
+          {include 'marc/610.tpl'}
+          {* Meeting names as subjects *}
+          {include 'marc/611.tpl'}
+          {* Uniform title as subjects *}
+          {include 'marc/630.tpl'}
+          {* TODO: 647 *}
+          {* TODO: 648 *}
+          {* Topics *}
+          {include 'marc/650.tpl'}
+          {* Geographic names *}
+          {include 'marc/651.tpl'}
+          {* Uncontrolled Index Term *}
+          {include 'marc/653.tpl'}
+          {* Genres *}
+          {include 'marc/655.tpl'}
+        </table>
       </fieldset>
     {/if}
 

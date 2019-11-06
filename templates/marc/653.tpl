@@ -1,6 +1,8 @@
 {assign var="fieldInstances" value=getFields($record, '653')}
 {if !is_null($fieldInstances)}
-  <em>Uncontrolled Index Term</em><br>
+<tr>
+  <td><em>Uncontrolled Index Term</em></td>
+  <td>
     {foreach $fieldInstances as $field}
       <span class="653">
           {if isset($field->subfields->a)}
@@ -9,4 +11,6 @@
         </span>
       <br/>
     {/foreach}
+  </td>
+</tr>
 {/if}

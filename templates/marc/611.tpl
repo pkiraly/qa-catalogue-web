@@ -1,6 +1,8 @@
 {assign var="fieldInstances" value=getFields($record, '611')}
 {if !is_null($fieldInstances)}
-  <em>Meeting names as subjects</em><br>
+<tr>
+  <td><em>Meeting names</em></td>
+  <td>
     {foreach $fieldInstances as $field}
       <span class="611">
           {* Personal name *}
@@ -32,4 +34,6 @@
         </span>
       <br/>
     {/foreach}
+  </td>
+</tr>
 {/if}

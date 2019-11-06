@@ -1,7 +1,9 @@
 {* 6510_Geographic_authorityRecordControlNumber_ss *}
 {assign var="fieldInstances" value=getFields($record, '651')}
 {if !is_null($fieldInstances)}
-  <em>Geographic names</em><br>
+<tr>
+  <td><em>Geographic names</em></td>
+  <td>
     {foreach $fieldInstances as $field}
       <span class="651">
           {if isset($field->subfields->a)}
@@ -19,4 +21,6 @@
         </span>
       <br/>
     {/foreach}
+  </td>
+</tr>
 {/if}

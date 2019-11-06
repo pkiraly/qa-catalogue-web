@@ -1,6 +1,8 @@
 {assign var="fieldInstances" value=getFields($record, '630')}
 {if !is_null($fieldInstances)}
-  <em>Uniform title as subjects</em><br>
+<tr>
+  <td><em>Uniform title</em></td>
+  <td>
     {foreach $fieldInstances as $field}
       <span class="630">
             {if isset($field->subfields->a)}
@@ -38,4 +40,6 @@
           </span>
       <br/>
     {/foreach}
+  </td>
+</tr>
 {/if}

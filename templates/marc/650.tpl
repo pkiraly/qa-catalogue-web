@@ -1,6 +1,8 @@
 {assign var="fieldInstances" value=getFields($record, '650')}
 {if !is_null($fieldInstances)}
-  <em>Topics</em><br>
+<tr>
+  <td><em>Topics</em></td>
+  <td>
     {foreach $fieldInstances as $field}
         {* 650a_Topic_topicalTerm_ss *}
       <span class="650">
@@ -34,4 +36,6 @@
         </span>
       <br/>
     {/foreach}
+  </td>
+</tr>
 {/if}

@@ -1,7 +1,9 @@
 {* 6550_GenreForm_authorityRecordControlNumber_ss *}
 {assign var="fieldInstances" value=getFields($record, '655')}
 {if !is_null($fieldInstances)}
-  <em>Genres</em><br>
+<tr>
+  <td><em>Genres</em></td>
+  <td>
   {foreach $fieldInstances as $field}
     <span class="655">
       {if isset($field->subfields->a)}
@@ -24,4 +26,6 @@
     </span>
     <br/>
   {/foreach}
+  </td>
+</tr>
 {/if}
