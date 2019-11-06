@@ -4,7 +4,7 @@
   <em>Additional Corporate names</em><br>
   {foreach $fieldInstances as $field}
     <span class="710">
-      {$field->subfields->a}
+      <a href="#" class="record-link" data="710a_AddedCorporateName_ss">{$field->subfields->a}</a>
       {* 710d_AddedCorporateName_dates *}
       {if isset($field->subfields->d)}
         <span class="dates">{$field->subfields->d}</span>
