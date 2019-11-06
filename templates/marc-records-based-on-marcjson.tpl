@@ -159,6 +159,7 @@
       <fieldset>
         <legend>Subjects</legend>
         <table class="subject-headings">
+          {* TODO: 052, 072, 082, 083, 084, 085, 086 *}
           {* UDC *}
           {include 'marc/080.tpl'}
           {* Personal names as subjects *}
@@ -169,8 +170,10 @@
           {include 'marc/611.tpl'}
           {* Uniform title as subjects *}
           {include 'marc/630.tpl'}
-          {* TODO: 647 *}
-          {* TODO: 648 *}
+          {* named event *}
+          {include 'marc/647.tpl'}
+          {* chronological term *}
+          {include 'marc/648.tpl'}
           {* Topics *}
           {include 'marc/650.tpl'}
           {* Geographic names *}

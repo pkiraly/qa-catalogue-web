@@ -1,7 +1,7 @@
 {assign var="fieldInstances" value=getFields($record, '610')}
 {if !is_null($fieldInstances)}
 <tr>
-  <td><em>Corporate names as subjects</em></td>
+  <td><em>corporate names</em>:</td>
   <td>
   <em>Corporate names as subjects</em><br>
     {foreach $fieldInstances as $field}
