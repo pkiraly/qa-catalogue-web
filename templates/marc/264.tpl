@@ -2,7 +2,6 @@
    https://www.loc.gov/marc/bibliographic/bd264.html *}
 {assign var="fieldInstances" value=getFields($record, '264')}
 {if !is_null($fieldInstances)}
-  <em>Dates of Publication</em>
   {foreach $fieldInstances as $field}
     <span class="264">
       {* 264a_ProvisionActivity_place_ss *}
