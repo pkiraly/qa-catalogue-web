@@ -52,6 +52,8 @@
       <br/>
     {/if}
 
+    {include 'marc/264.tpl'}
+
     {if hasPhysicalDescription($doc)}
       {assign var="tag300" value=getField($record, '300')}
       {* 300a_PhysicalDescription_extent_ss *}
