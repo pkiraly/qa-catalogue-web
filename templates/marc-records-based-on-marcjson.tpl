@@ -132,7 +132,7 @@
     {if hasAuthorityNames($record) || hasSubjectHeadings($record)}
       <table class="authority-names">
       {if hasAuthorityNames($record)}
-        <tr><td colspan="2">Authority names</td></tr>
+        <tr><td colspan="2" class="heading">Authority names</td></tr>
         {* Main personal names *}
         {include 'marc/100.tpl'}
         {* Main corporate names *}
@@ -154,7 +154,7 @@
       {/if}
 
       {if hasSubjectHeadings($record)}
-        <tr><td colspan="2">Subjects</td></tr>
+        <tr><td colspan="2" class="heading">Subjects</td></tr>
         {* TODO: 052, 072, 082, 083, 084, 085, 086 *}
         {* UDC *}
         {include 'marc/080.tpl'}

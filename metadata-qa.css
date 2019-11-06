@@ -293,3 +293,8 @@ table.authority-names tr td,
 table.subject-headings tr td {
   vertical-align: top;
 }
+
+table.authority-names tr td.heading {
+  color: #cccccc;
+  border-bottom: 1px solid #cccccc;
+}
