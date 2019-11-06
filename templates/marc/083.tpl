@@ -1,12 +1,12 @@
 {* Additional Dewey Decimal Classification Number
    http://www.loc.gov/marc/bibliographic/bd083.html *}
-{assign var="fieldInstances" value=getFields($record, '082')}
+{assign var="fieldInstances" value=getFields($record, '083')}
 {if !is_null($fieldInstances)}
 <tr>
   <td><em>additional DDC</em>:</td>
   <td>
   {foreach $fieldInstances as $field}
-    <span class="082">
+    <span class="083">
       {*  Classification number *}
       {if isset($field->subfields->a)}
         <i class="fa fa-hashtag" aria-hidden="true" title="Classification number"></i>
