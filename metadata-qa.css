@@ -288,3 +288,7 @@ fieldset legend {
   margin: 0;
   padding: 0 0 0 5px;
 }
+
+table.authority-names tr td {
+  vertical-align: top;
+}

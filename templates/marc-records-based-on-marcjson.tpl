@@ -132,7 +132,7 @@
     {if hasAuthorityNames($record)}
       <fieldset>
         <legend>Authority names</legend>
-        <table>
+        <table class="authority-names">
           {* Main personal names *}
           {include 'marc/100.tpl'}
           {* Main corporate names *}
