@@ -22,7 +22,7 @@
       {/if}
 
       {if isset($field->subfields->q)}
-        <span class="agency" data="072x" title="Assigning agency">{$field->subfields->q}</span>
+        <span class="agency" data="082q_ClassificationDdc_source_ss" title="Assigning agency">{$field->subfields->q}</span>
       {/if}
 
       {if isset($field->subfields->{'2'})}

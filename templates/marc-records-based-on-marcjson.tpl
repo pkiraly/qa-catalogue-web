@@ -162,6 +162,8 @@
         {include 'marc/080.tpl'}
         {* Dewey Decimal Classification *}
         {include 'marc/082.tpl'}
+        {* Additional Dewey Decimal Classification *}
+        {include 'marc/083.tpl'}
         {* Personal names as subjects *}
         {include 'marc/600.tpl'}
         {* Corporate names as subjects *}
