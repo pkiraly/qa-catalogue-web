@@ -142,13 +142,15 @@
           {* Main meeting names *}
           {include 'marc/130.tpl'}
           {* Additional personal names *}
-          {* TODO: 730 *}
           {include 'marc/700.tpl'}
-          {* Additional Corporate names *}
+          {* Additional corporate names *}
           {include 'marc/710.tpl'}
-          {* TODO: 711 *}
-          {* TODO: 720 *}
-          {* TODO: 730 *}
+          {* Additional meeting names *}
+          {include 'marc/711.tpl'}
+          {* uncontrolled name *}
+          {include 'marc/720.tpl'}
+          {* Additional uniform title *}
+          {include 'marc/730.tpl'}
         </table>
       </fieldset>
     {/if}

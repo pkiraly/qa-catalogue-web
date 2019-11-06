@@ -1,7 +1,7 @@
 {assign var="fieldInstances" value=getFields($record, '700')}
 {if !is_null($fieldInstances)}
 <tr>
-  <td><em>Additional personal names</em></td>
+  <td><em>additional personal names</em>:</td>
   <td>
   {foreach $fieldInstances as $field}
     <span class="700">
