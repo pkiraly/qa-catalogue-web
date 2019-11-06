@@ -129,64 +129,61 @@
       {/foreach}
     {/if}
 
-    {if hasAuthorityNames($record)}
-      <fieldset>
-        <legend>Authority names</legend>
-        <table class="authority-names">
-          {* Main personal names *}
-          {include 'marc/100.tpl'}
-          {* Main corporate names *}
-          {include 'marc/110.tpl'}
-          {* Main meeting names *}
-          {include 'marc/111.tpl'}
-          {* Main meeting names *}
-          {include 'marc/130.tpl'}
-          {* Additional personal names *}
-          {include 'marc/700.tpl'}
-          {* Additional corporate names *}
-          {include 'marc/710.tpl'}
-          {* Additional meeting names *}
-          {include 'marc/711.tpl'}
-          {* uncontrolled name *}
-          {include 'marc/720.tpl'}
-          {* Additional uniform title *}
-          {include 'marc/730.tpl'}
-        </table>
-      </fieldset>
+    {if hasAuthorityNames($record) || hasSubjectHeadings($record)}
+      <table class="authority-names">
+      {if hasAuthorityNames($record)}
+        <tr><td colspan="2">Authority names</td></tr>
+        {* Main personal names *}
+        {include 'marc/100.tpl'}
+        {* Main corporate names *}
+        {include 'marc/110.tpl'}
+        {* Main meeting names *}
+        {include 'marc/111.tpl'}
+        {* Main meeting names *}
+        {include 'marc/130.tpl'}
+        {* Additional personal names *}
+        {include 'marc/700.tpl'}
+        {* Additional corporate names *}
+        {include 'marc/710.tpl'}
+        {* Additional meeting names *}
+        {include 'marc/711.tpl'}
+        {* uncontrolled name *}
+        {include 'marc/720.tpl'}
+        {* Additional uniform title *}
+        {include 'marc/730.tpl'}
+      {/if}
+
+      {if hasSubjectHeadings($record)}
+        <tr><td colspan="2">Subjects</td></tr>
+        {* TODO: 052, 072, 082, 083, 084, 085, 086 *}
+        {* UDC *}
+        {include 'marc/080.tpl'}
+        {* Personal names as subjects *}
+        {include 'marc/600.tpl'}
+        {* Corporate names as subjects *}
+        {include 'marc/610.tpl'}
+        {* Meeting names as subjects *}
+        {include 'marc/611.tpl'}
+        {* Uniform title as subjects *}
+        {include 'marc/630.tpl'}
+        {* named event *}
+        {include 'marc/647.tpl'}
+        {* chronological term *}
+        {include 'marc/648.tpl'}
+        {* Topics *}
+        {include 'marc/650.tpl'}
+        {* Geographic names *}
+        {include 'marc/651.tpl'}
+        {* Uncontrolled Index Term *}
+        {include 'marc/653.tpl'}
+        {* Genres *}
+        {include 'marc/655.tpl'}
+      {/if}
+      </table>
     {/if}
 
-    {if hasSubjectHeadings($record)}
-      <fieldset>
-        <legend>Subjects</legend>
-        <table class="subject-headings">
-          {* TODO: 052, 072, 082, 083, 084, 085, 086 *}
-          {* UDC *}
-          {include 'marc/080.tpl'}
-          {* Personal names as subjects *}
-          {include 'marc/600.tpl'}
-          {* Corporate names as subjects *}
-          {include 'marc/610.tpl'}
-          {* Meeting names as subjects *}
-          {include 'marc/611.tpl'}
-          {* Uniform title as subjects *}
-          {include 'marc/630.tpl'}
-          {* named event *}
-          {include 'marc/647.tpl'}
-          {* chronological term *}
-          {include 'marc/648.tpl'}
-          {* Topics *}
-          {include 'marc/650.tpl'}
-          {* Geographic names *}
-          {include 'marc/651.tpl'}
-          {* Uncontrolled Index Term *}
-          {include 'marc/653.tpl'}
-          {* Genres *}
-          {include 'marc/655.tpl'}
-        </table>
-      </fieldset>
-    {/if}
 
-    {if hasSimilarBooks($doc)}
+      {if hasSimilarBooks($doc)}
       <div class="similarity">
         <i class="fa fa-search" aria-hidden="true"></i>
         Search for similar items:
