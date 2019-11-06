@@ -1,7 +1,9 @@
 {* Main Entry - Uniform Title, https://www.loc.gov/marc/bibliographic/bd130.html *}
 {assign var="fieldInstances" value=getFields($record, '130')}
 {if !is_null($fieldInstances)}
-  <em>uniform title</em><br>
+<tr>
+  <td><em>uniform title</em></td>
+  <td>
   {foreach $fieldInstances as $field}
     <span class="130">
       <i class="fa fa-user" aria-hidden="true" title="title"></i>
@@ -64,4 +66,6 @@
     </span>
     <br/>
   {/foreach}
+  </td>
+</tr>
 {/if}

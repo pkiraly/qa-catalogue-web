@@ -132,22 +132,24 @@
     {if hasAuthorityNames($record)}
       <fieldset>
         <legend>Authority names</legend>
-        {* Main personal names *}
-        {include 'marc/100.tpl'}
-        {* Main corporate names *}
-        {include 'marc/110.tpl'}
-        {* Main meeting names *}
-        {include 'marc/111.tpl'}
-        {* Main meeting names *}
-        {include 'marc/130.tpl'}
-        {* Additional personal names *}
-        {* TODO: 730 *}
-        {include 'marc/700.tpl'}
-        {* Additional Corporate names *}
-        {include 'marc/710.tpl'}
-        {* TODO: 711 *}
-        {* TODO: 720 *}
-        {* TODO: 730 *}
+        <table>
+          {* Main personal names *}
+          {include 'marc/100.tpl'}
+          {* Main corporate names *}
+          {include 'marc/110.tpl'}
+          {* Main meeting names *}
+          {include 'marc/111.tpl'}
+          {* Main meeting names *}
+          {include 'marc/130.tpl'}
+          {* Additional personal names *}
+          {* TODO: 730 *}
+          {include 'marc/700.tpl'}
+          {* Additional Corporate names *}
+          {include 'marc/710.tpl'}
+          {* TODO: 711 *}
+          {* TODO: 720 *}
+          {* TODO: 730 *}
+        </table>
       </fieldset>
     {/if}
 

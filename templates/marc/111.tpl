@@ -1,7 +1,9 @@
 {* Main Entry-Meeting Name, https://www.loc.gov/marc/bibliographic/bd111.html *}
 {assign var="fieldInstances" value=getFields($record, '111')}
 {if !is_null($fieldInstances)}
-  <em>Main corporate names</em><br>
+<tr>
+  <td><em>Main corporate names</em></td>
+  <td>
   {foreach $fieldInstances as $field}
     <span class="111">
       <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
@@ -37,4 +39,6 @@
     </span>
     <br/>
   {/foreach}
+  </td>
+</tr>
 {/if}

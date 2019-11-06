@@ -1,7 +1,9 @@
 {* 710a_AddedCorporateName_ss *}
 {assign var="fieldInstances" value=getFields($record, '710')}
 {if !is_null($fieldInstances)}
-  <em>Additional Corporate names</em><br>
+<tr>
+  <td><em>Additional Corporate names</em></td>
+  <td>
   {foreach $fieldInstances as $field}
     <span class="710">
       <a href="#" class="record-link" data="710a_AddedCorporateName_ss">{$field->subfields->a}</a>
@@ -15,4 +17,6 @@
     </span>
     <br/>
   {/foreach}
+  </td>
+</tr>
 {/if}

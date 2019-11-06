@@ -1,7 +1,9 @@
 {* Main Entry-Corporate Name, https://www.loc.gov/marc/bibliographic/bd110.html *}
 {assign var="fieldInstances" value=getFields($record, '110')}
 {if !is_null($fieldInstances)}
-  <em>Main corporate names</em><br>
+<tr>
+  <td><em>Main corporate names</em></td>
+  <td>
   {foreach $fieldInstances as $field}
     <span class="110">
       <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
@@ -25,4 +27,6 @@
     </span>
     <br/>
   {/foreach}
+  </td>
+</tr>
 {/if}
