@@ -3,7 +3,7 @@
 {assign var="fieldInstances" value=getFields($record, '082')}
 {if !is_null($fieldInstances)}
 <tr>
-  <td><em>Dewey Decimal Classification</em>:</td>
+  <td><em>additional DDC</em>:</td>
   <td>
   {foreach $fieldInstances as $field}
     <span class="082">

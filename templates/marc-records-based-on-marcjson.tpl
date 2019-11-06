@@ -155,7 +155,7 @@
 
       {if hasSubjectHeadings($record)}
         <tr><td colspan="2" class="heading">Subjects</td></tr>
-        {* TODO: 052, 083, 084, 085, 086 *}
+        {* TODO: 052, 084, 085, 086 *}
         {* subject category code *}
         {include 'marc/072.tpl'}
         {* UDC *}
