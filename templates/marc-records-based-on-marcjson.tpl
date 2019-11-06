@@ -76,7 +76,10 @@
       <br/>
     {/if}
 
-    {* 520a_Summary_ss *}
+    {include 'marc/362.tpl'}
+
+
+      {* 520a_Summary_ss *}
     {assign var="tag520s" value=getFields($record, '520')}
     {if !is_null($tag520s)}
       <!-- 520a_Summary_ss -->
@@ -125,44 +128,48 @@
       {/foreach}
     {/if}
 
-    <fieldset>
-      <legend>Authority names</legend>
-      {* Main personal names *}
-      {include 'marc/100.tpl'}
-      {* TODO: 110 *}
-      {* TODO: 111 *}
-      {* Additional personal names *}
-      {include 'marc/700.tpl'}
-      {* Additional Corporate names *}
-      {include 'marc/710.tpl'}
-      {* TODO: 711 *}
-      {* TODO: 720 *}
-      {* TODO: 730 *}
-    </fieldset>
+    {if hasAuthorityNames($record)}
+      <fieldset>
+        <legend>Authority names</legend>
+        {* Main personal names *}
+        {include 'marc/100.tpl'}
+        {* TODO: 110 *}
+        {* TODO: 111 *}
+        {* Additional personal names *}
+        {include 'marc/700.tpl'}
+        {* Additional Corporate names *}
+        {include 'marc/710.tpl'}
+        {* TODO: 711 *}
+        {* TODO: 720 *}
+        {* TODO: 730 *}
+      </fieldset>
+    {/if}
 
-    <fieldset>
-      <legend>Subjects</legend>
-      {* UDC *}
-      {include 'marc/080.tpl'}
-      {* Personal names as subjects *}
-      {include 'marc/600.tpl'}
-      {* Corporate names as subjects *}
-      {include 'marc/610.tpl'}
-      {* Meeting names as subjects *}
-      {include 'marc/611.tpl'}
-      {* Uniform title as subjects *}
-      {include 'marc/630.tpl'}
-      {* TODO: 647 *}
-      {* TODO: 648 *}
-      {* Topics *}
-      {include 'marc/650.tpl'}
-      {* Geographic names *}
-      {include 'marc/651.tpl'}
-      {* Uncontrolled Index Term *}
-      {include 'marc/653.tpl'}
-      {* Genres *}
-      {include 'marc/655.tpl'}
-    </fieldset>
+    {if hasSubjectHeadings($record)}
+      <fieldset>
+        <legend>Subjects</legend>
+        {* UDC *}
+        {include 'marc/080.tpl'}
+        {* Personal names as subjects *}
+        {include 'marc/600.tpl'}
+        {* Corporate names as subjects *}
+        {include 'marc/610.tpl'}
+        {* Meeting names as subjects *}
+        {include 'marc/611.tpl'}
+        {* Uniform title as subjects *}
+        {include 'marc/630.tpl'}
+        {* TODO: 647 *}
+        {* TODO: 648 *}
+        {* Topics *}
+        {include 'marc/650.tpl'}
+        {* Geographic names *}
+        {include 'marc/651.tpl'}
+        {* Uncontrolled Index Term *}
+        {include 'marc/653.tpl'}
+        {* Genres *}
+        {include 'marc/655.tpl'}
+      </fieldset>
+    {/if}
 
     {if hasSimilarBooks($doc)}
       <div class="similarity">

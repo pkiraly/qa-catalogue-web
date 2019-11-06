@@ -47,6 +47,8 @@ function getRecords($solrResponse) {
   $smarty->registerPlugin("function", "getField", "getField");
   $smarty->registerPlugin("function", "getFields", "getFields");
   $smarty->registerPlugin("function", "getSubfields", "getSubfields");
+  $smarty->registerPlugin("function", "hasAuthorityNames", "hasAuthorityNames");
+  $smarty->registerPlugin("function", "hasSubjectHeadings", "hasSubjectHeadings");
 
   return $smarty->fetch('marc-records-based-on-marcjson.tpl');
 }
@@ -144,6 +146,30 @@ function getSubfields($record, $fieldName, $subfield) {
     }
   }
   return $subfields;
+}
+
+function hasAuthorityNames($record) {
+  $fields = ['100', '101', '111', '700', '710', '711', '720', '730'];
+  $hasAuthorityNames = false;
+  foreach ($fields as $fieldName) {
+    if (isset($record->{$fieldName})) {
+      $hasAuthorityNames = true;
+      break;
+    }
+  }
+  return $hasAuthorityNames;
+}
+
+function hasSubjectHeadings($record) {
+  $fields = ['080', '600', '610', '611', '630', '647', '648', '650', '651', '653', '655'];
+  $hasSubjectHeadings = false;
+  foreach ($fields as $fieldName) {
+    if (isset($record->{$fieldName})) {
+      $hasSubjectHeadings = true;
+      break;
+    }
+  }
+  return $hasSubjectHeadings;
 }
 
 function hasPhysicalDescription($doc) {
