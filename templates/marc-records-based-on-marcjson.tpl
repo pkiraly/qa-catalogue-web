@@ -155,7 +155,7 @@
 
       {if hasSubjectHeadings($record)}
         <tr><td colspan="2" class="heading">Subjects</td></tr>
-        {* TODO: 052, 084, 085, 086 *}
+        {* TODO: 052, 085 *}
         {* subject category code *}
         {include 'marc/072.tpl'}
         {* UDC *}
@@ -164,6 +164,10 @@
         {include 'marc/082.tpl'}
         {* Additional Dewey Decimal Classification *}
         {include 'marc/083.tpl'}
+        {* other classifications *}
+        {include 'marc/084.tpl'}
+        {* government document classifications *}
+        {include 'marc/086.tpl'}
         {* Personal names as subjects *}
         {include 'marc/600.tpl'}
         {* Corporate names as subjects *}
