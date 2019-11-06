@@ -3,7 +3,7 @@
 {if !is_null($fieldInstances)}
   <em>Main corporate names</em><br>
   {foreach $fieldInstances as $field}
-    <span class="100">
+    <span class="110">
       <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
       <a href="#" class="record-link" data="110a_MainCorporateName_ss">{$field->subfields->a}</a>
       {* 110b_MainCorporateName_subordinateUnit_ss *}

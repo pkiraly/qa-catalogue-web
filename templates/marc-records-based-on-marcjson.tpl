@@ -138,6 +138,8 @@
         {include 'marc/110.tpl'}
         {* Main meeting names *}
         {include 'marc/111.tpl'}
+        {* Main meeting names *}
+        {include 'marc/130.tpl'}
         {* Additional personal names *}
         {* TODO: 730 *}
         {include 'marc/700.tpl'}

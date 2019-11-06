@@ -1,9 +1,9 @@
 {* Main Entry-Meeting Name, https://www.loc.gov/marc/bibliographic/bd111.html *}
-{assign var="fieldInstances" value=getFields($record, '110')}
+{assign var="fieldInstances" value=getFields($record, '111')}
 {if !is_null($fieldInstances)}
   <em>Main corporate names</em><br>
   {foreach $fieldInstances as $field}
-    <span class="100">
+    <span class="111">
       <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
       <a href="#" class="record-link" data="111a_MainMeetingName_ss">{$field->subfields->a}</a>
       {*  *}
