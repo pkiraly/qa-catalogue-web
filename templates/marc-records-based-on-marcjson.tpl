@@ -78,8 +78,7 @@
 
     {include 'marc/362.tpl'}
 
-
-      {* 520a_Summary_ss *}
+    {* 520a_Summary_ss *}
     {assign var="tag520s" value=getFields($record, '520')}
     {if !is_null($tag520s)}
       <!-- 520a_Summary_ss -->
