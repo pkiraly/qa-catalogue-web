@@ -4,6 +4,7 @@
 {if !is_null($fieldInstances)}
   Series:
   {foreach $fieldInstances as $field}
+    #
     {if isset($field->subfields->a)}
       {foreach $field->subfields->a as $value}
         <a href="#" class="record-link tag-490a" data="490a_SeriesStatement_ss"
