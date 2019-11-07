@@ -19,13 +19,17 @@
     {/if}
 
     {if isset($field->subfields->v)}
-      <a href="#" class="subarea" data="490v_SeriesStatement_volume_ss"
-         title="Volume/sequential designation">{$field->subfields->v}</a>
+      {foreach $field->subfields->v as $value}
+        <a href="#" class="subarea" data="490v_SeriesStatement_volume_ss"
+         title="Volume/sequential designation">{$value}</a>{if !$value@last}, {/if}
+      {/foreach}
     {/if}
 
     {if isset($field->subfields->x)}
-      <span class="issn" data="490x"
-         title="International Standard Serial Number">{$field->subfields->x}</span>
+      {foreach $field->subfields->x as $value}
+        <span class="issn" data="490x"
+         title="International Standard Serial Number">{$value}</span>{if !$value@last}, {/if}
+      {/foreach}
     {/if}
 
     {if isset($field->subfields->{'3'})}
