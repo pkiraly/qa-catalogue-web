@@ -12,8 +12,8 @@
     {/if}
 
     {if isset($field->subfields->l)}
-      <a href="#" class="subarea" data="490l"
-         title="Library of Congress call number">{$field->subfields->l}</a>
+      <span class="subarea" data="490l"
+         title="Library of Congress call number">{$field->subfields->l}</span>
     {/if}
 
     {if isset($field->subfields->v)}
@@ -22,12 +22,12 @@
     {/if}
 
     {if isset($field->subfields->x)}
-      <a href="#" class="issn" data="490x"
-         title="International Standard Serial Number">{$field->subfields->x}</a>
+      <span class="issn" data="490x"
+         title="International Standard Serial Number">{$field->subfields->x}</span>
     {/if}
 
     {if isset($field->subfields->{'3'})}
-      <a href="#" class="issn" data="4903"
+      <a href="#" class="issn" data="4903_SeriesStatement_materialsSpecified_ss"
          title="Materials specified">{$field->subfields->{'3'}}</a>
     {/if}
   {/foreach}
