@@ -65,19 +65,10 @@
       <br/>
     {/if}
 
-    {* TODO: iterate over each tag 490 *}
-    {* 490a_SeriesStatement_ss *}
-    {assign var="tag490" value=getField($record, '490')}
-    {if isset($tag490->subfields->a)}
-      Series:
-      {foreach getSubfields($record, '490', 'a') as $value}
-        <a href="#" class="record-link tag-490a" data="490a_SeriesStatement_ss">{$value}</a>{if !$value@last}, {/if}
-      {/foreach}
-      {* 490v_SeriesStatement_volume_ss *}
-      {include 'conditional-foreach.tpl' obj=$tag490->subfields key='v' tag='490v'}
-      <br/>
-    {/if}
+    {* Series Statement *}
+    {include 'marc/490.tpl'}
 
+    {* Dates of Publication *}
     {include 'marc/362.tpl'}
 
     {* 520a_Summary_ss *}
@@ -155,7 +146,8 @@
 
       {if hasSubjectHeadings($record)}
         <tr><td colspan="2" class="heading">Subjects</td></tr>
-        {* TODO: 052 *}
+        {* geographic classification *}
+        {include 'marc/052.tpl'}
         {* subject category code *}
         {include 'marc/072.tpl'}
         {* UDC *}
@@ -194,8 +186,7 @@
       </table>
     {/if}
 
-
-      {if hasSimilarBooks($doc)}
+    {if hasSimilarBooks($doc)}
       <div class="similarity">
         <i class="fa fa-search" aria-hidden="true"></i>
         Search for similar items:
