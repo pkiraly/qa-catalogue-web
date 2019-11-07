@@ -3,8 +3,9 @@
 {assign var="fieldInstances" value=getFields($record, '490')}
 {if !is_null($fieldInstances)}
   Series:
+    <ul>
   {foreach $fieldInstances as $field}
-    #
+    <li>
     {if isset($field->subfields->a)}
       {foreach $field->subfields->a as $value}
         <a href="#" class="record-link tag-490a" data="490a_SeriesStatement_ss"
@@ -31,6 +32,7 @@
       <a href="#" class="issn" data="4903_SeriesStatement_materialsSpecified_ss"
          title="Materials specified">{$field->subfields->{'3'}}</a>
     {/if}
+    </li>
   {/foreach}
-  <br/>
+  </ul>
 {/if}
