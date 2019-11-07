@@ -3,7 +3,7 @@
 {assign var="fieldInstances" value=getFields($record, '490')}
 {if !is_null($fieldInstances)}
   Series:
-    <ul>
+  <ul>
   {foreach $fieldInstances as $field}
     <li>
     {if isset($field->subfields->a)}

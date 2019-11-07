@@ -298,3 +298,7 @@ table.authority-names tr td.heading {
   color: #cccccc;
   border-bottom: 1px solid #cccccc;
 }
+
+div.record ul {
+  margin-bottom: 0;
+}
