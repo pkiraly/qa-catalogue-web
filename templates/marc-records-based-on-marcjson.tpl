@@ -146,6 +146,7 @@
 
       {if hasSubjectHeadings($record)}
         <tr><td colspan="2" class="heading">Subjects</td></tr>
+        {* TODO: 055, 654, 656, 657, 658, 662 *}
         {* geographic classification *}
         {include 'marc/052.tpl'}
         {* subject category code *}
