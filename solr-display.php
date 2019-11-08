@@ -149,7 +149,11 @@ function getSubfields($record, $fieldName, $subfield) {
 }
 
 function hasAuthorityNames($record) {
-  $fields = ['100', '101', '111', '130', '700', '710', '711', '720', '730'];
+  $fields = [
+    '100', '110', '111', '130',
+    '700', '710', '711', '720', '730', '740', '751', '752', '753', '754',
+    '800', '810', '811', '830',
+  ];
   $hasAuthorityNames = false;
   foreach ($fields as $fieldName) {
     if (isset($record->{$fieldName})) {

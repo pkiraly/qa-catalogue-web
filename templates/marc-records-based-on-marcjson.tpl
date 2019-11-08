@@ -124,6 +124,7 @@
       <table class="authority-names">
       {if hasAuthorityNames($record)}
         <tr><td colspan="2" class="heading">Authority names</td></tr>
+        {* TODO: 740, 751, 752, 753, 754, 800, 810, 811, 830 *}
         {* Main personal names *}
         {include 'marc/100.tpl'}
         {* Main corporate names *}
