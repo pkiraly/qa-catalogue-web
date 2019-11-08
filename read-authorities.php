@@ -17,26 +17,8 @@ echo json_encode($result);
 function readHistogram($dir, $db) {
   global $smarty, $countFile;
 
-  $count = trim(file_get_contents($countFile));
   $byRecordsFile = sprintf('%s/%s/authorities-histogram.csv', $dir, $db);
   if (file_exists($byRecordsFile)) {
-    $header = [];
-    $records = [];
-    $withClassification = NULL;
-    $withoutClassification = NULL;
-    $in = fopen($byRecordsFile, "r");
-    while (($line = fgets($in)) != false) {
-      $values = str_getcsv($line);
-      if (empty($header)) {
-        $header = $values;
-      } else {
-        $record = (object)array_combine($header, $values);
-        $record->percent = $record->frequency / $count;
-        $records[] = $record;
-      }
-    }
-
-    $smarty->assign('records', $records);
     $smarty->assign('db', $db);
     return $smarty->fetch('authorities-histogram.tpl');
   }

@@ -1,4 +1,4 @@
-<h3>Classification/subject headings schemes</h3>
+<h3>Authority schemes</h3>
 
 <table id="classification">
   <thead>

@@ -21,17 +21,17 @@
   }
 </style>
 
-<svg class="authorities-histogram-chart" width="960" height="300"></svg>
+<svg class="classifications-histogram-chart" width="960" height="300"></svg>
 <ul>
   <li>y: number of records</li>
-  <li>x: number of authority names in one record</li>
+  <li>x: number of subjects in one record</li>
 </ul>
 <script>
 // $()
 var db = '{$db}';
-var authoritiesHistogramUrl = 'readCsv.php?db='+ db + '&file=authorities-histogram';
+var classificationsHistogramUrl = 'readCsv.php?db='+ db + '&file=classifications-histogram';
 {literal}
-var svg = d3.select("svg.authorities-histogram-chart"),
+var svg = d3.select("svg.classifications-histogram-chart"),
   margin = {top: 20, right: 20, bottom: 30, left: 60},
   width = +svg.attr("width") - margin.left - margin.right,
   height = +svg.attr("height") - margin.top - margin.bottom;
@@ -42,9 +42,9 @@ var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
 var g = svg.append("g")
 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.csv(authoritiesHistogramUrl)
+d3.csv(classificationsHistogramUrl)
   .then((data) => {
-    console.log('OK');
+    console.log('OK: ' . classificationsHistogramUrl);
 
     return data.map((d) => {
       console.log(d);

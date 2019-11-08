@@ -9,9 +9,21 @@ $countFile = sprintf('%s/%s/count.csv', $configuration['dir'], $db);
 $result = new stdClass();
 $result->byRecord = readByRecords($configuration['dir'], $db);
 $result->byField = readByField($configuration['dir'], $db);
+$result->histogram = readHistogram($configuration['dir'], $db);
 
 header('Content-Type: application/json');
 echo json_encode($result);
+
+function readHistogram($dir, $db) {
+  global $smarty, $countFile;
+
+  $byRecordsFile = sprintf('%s/%s/classifications-histogram.csv', $dir, $db);
+  if (file_exists($byRecordsFile)) {
+    $smarty->assign('db', $db);
+    return $smarty->fetch('classifications-histogram.tpl');
+  }
+  return null;
+}
 
 function readByRecords($dir, $db) {
   global $smarty, $countFile;

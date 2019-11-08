@@ -959,6 +959,7 @@
   function loadClassifications() {
     $.getJSON('read-classifications.php?db=' + db, function(result, status) {
       $('#classifications-content').html(result.byRecord);
+      $('#classifications-content').append(result.histogram);
       $('#classifications-content').append(result.byField);
       setClassificationLinkHandlers();
     });
