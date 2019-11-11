@@ -107,9 +107,10 @@ function readByField($dir, $db) {
         $record = (object)array_combine($header, $values);
         if (!isset($record->field))
           error_log('empty? ' . $line);
-        if ($record->field == '052') {
-          createFacets($record, '052a_GeographicClassification');
-          ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
+        if ($record->field == '100') {
+          createFacets($record, '100a_MainPersonalName_personalName');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
+          $record->q = '*:*';
         } else if ($record->field == '055') {
           createFacets($record, '055a_ClassificationLcc');
           ind2Orsubfield2($record, '055ind2_ClassificationLcc_type_ss', '0552_ClassificationLcc_source_ss');
@@ -247,7 +248,6 @@ function readSubfields($dir, $db, Smarty &$smarty) {
           $subfields[$record->id]['has-plus'] = TRUE;
         if ($hasSpace)
           $subfields[$record->id]['has-space'] = TRUE;
-
       }
     }
     $smarty->assign('subfields', $subfields);

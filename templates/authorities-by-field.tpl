@@ -12,7 +12,7 @@
   <tbody>
     {assign var=previous value=""}
     {foreach $records as $record}
-      {if $previous != $record->field}
+      {if $previous != $record->id}
         <tr>
           <td colspan="4"><h4>{$record->field} &mdash; {$fields[$record->field]}</h4></td>
         </tr>
@@ -30,7 +30,7 @@
             <a href="#" class="term-link facet" data-facet="{$record->facet}" data-query="{$record->q}" data-scheme="{$record->scheme}">{$record->scheme}</a>
             {if strlen($record->abbreviation) > 0}({$record->abbreviation}){/if}
           {else}
-            {$record->scheme}
+            {if $record->scheme == 'undetectable'}not specified{else}{$record->scheme}{/if}
           {/if}
           <i class="fa fa-chevron-down"  data-id="classification-subfields-{$record->id}" aria-hidden="true" title="show subfields"></i>
           {if $hasSubfields && isset($record->id) && isset($subfields[$record->id])}
@@ -83,7 +83,7 @@
         <td class="text-right">{$record->instancecount|number_format}</td>
         <td class="text-right">{$record->recordcount|number_format}</td>
       </tr>
-      {assign var=previous value=$record->field}
+      {assign var=previous value=$record->id}
     {/foreach}
   </tbody>
 </table>
