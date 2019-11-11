@@ -32,7 +32,7 @@ var db = '{$db}';
 var classificationsHistogramUrl = 'read-histogram.php?db='+ db + '&file=classifications-histogram';
 {literal}
 var svg = d3.select("svg.classifications-histogram-chart"),
-  margin = {top: 20, right: 20, bottom: 30, left: 60},
+  margin = {top: 20, right: 20, bottom: 40, left: 60},
   width = +svg.attr("width") - margin.left - margin.right,
   height = +svg.attr("height") - margin.top - margin.bottom;
 
@@ -44,8 +44,6 @@ var g = svg.append("g")
 
 d3.csv(classificationsHistogramUrl)
   .then((data) => {
-    console.log('OK: ' . classificationsHistogramUrl);
-
     return data.map((d) => {
       console.log(d);
       d.frequency = +d.frequency;
@@ -59,7 +57,11 @@ d3.csv(classificationsHistogramUrl)
     g.append("g")
       .attr("class", "axis axis--x")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+        .attr("transform", "translate(-10,0)rotate(-45)")
+        .style("text-anchor", "end")
+    ;
 
     g.append("g")
       .attr("class", "axis axis--y")

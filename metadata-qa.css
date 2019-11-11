@@ -207,7 +207,9 @@ table#issues-table tr.t {
   vertical-align: top;
 }
 
-.marc-details table tr td {
+.marc-details table tr td,
+.marc-leader  table tr td,
+.marc-leader  p {
   vertical-align: top;
   font-size: 80%;
 }

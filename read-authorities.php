@@ -5,6 +5,7 @@ $smarty = createSmarty('templates');
 $db = getOrDefault('db', 'cerl');
 $configuration = parse_ini_file("configuration.cnf");
 $countFile = sprintf('%s/%s/count.csv', $configuration['dir'], $db);
+$solrFields = getSolrFields($db);
 
 $result = new stdClass();
 $result->byRecord = readByRecords($configuration['dir'], $db);
@@ -63,9 +64,7 @@ function readByRecords($dir, $db) {
 }
 
 function readByField($dir, $db) {
-  global $smarty;
-
-  $solrFields = getSolrFields($db);
+  global $smarty, $solrFields;
 
   $fields = [
     '100' => 'Main Entry - Personal Name',
@@ -384,6 +383,7 @@ function getSolrFields() {
   $url = 'http://localhost:8983/solr/' . $db;
   $all_fields = file_get_contents($url . '/select/?q=*:*&wt=csv&rows=0');
   $fields = explode(',', $all_fields);
+
   return $fields;
 }
 

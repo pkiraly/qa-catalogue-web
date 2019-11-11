@@ -211,6 +211,11 @@
              aria-controls="marc-raw-tab">MARC21</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
+             id="marc-leader-tab-{$id}" href="#marc-leader-{$id}"
+             aria-controls="marc-leader-tab">Leader explained</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
              id="marc-human-tab-{$id}" href="#marc-human-{$id}"
              aria-controls="marc-human-tab">labels</a>
@@ -237,6 +242,10 @@
               </table>
             {/if}
           </div>
+        </div>
+        <div class="tab-pane marc-leader" id="marc-leader-{$id}" role="tabpanel"
+             aria-labelledby="data-tab">
+          {include 'marc/leader.tpl'}
         </div>
         <div class="tab-pane" id="marc-human-{$id}" role="tabpanel"
              aria-labelledby="data-tab">

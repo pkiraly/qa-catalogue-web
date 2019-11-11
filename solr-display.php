@@ -49,6 +49,8 @@ function getRecords($solrResponse) {
   $smarty->registerPlugin("function", "getSubfields", "getSubfields");
   $smarty->registerPlugin("function", "hasAuthorityNames", "hasAuthorityNames");
   $smarty->registerPlugin("function", "hasSubjectHeadings", "hasSubjectHeadings");
+  $smarty->registerPlugin("function", "getLeader", "getLeader");
+  $smarty->registerPlugin("function", "getLeaderByPosition", "getLeaderByPosition");
 
   return $smarty->fetch('marc-records-based-on-marcjson.tpl');
 }
@@ -133,6 +135,25 @@ function getField($record, $fieldName) {
 function getFields($record, $fieldName) {
   if (isset($record->{$fieldName}))
     return $record->{$fieldName};
+  return null;
+}
+
+function getLeaderByPosition($doc, $start, $end = NULL) {
+  $leader = getLeader($doc, 'Leader_ss');
+  if ($leader != null) {
+    $length = ($end == null) ? 1 : $end - $start;
+    $part = substr($leader, $start, $length);
+    if ($part == ' ') {
+      $part = '" "';
+    }
+    return $part;
+  }
+  return null;
+}
+
+function getLeader($doc, $fieldName) {
+  if (isset($doc->{$fieldName}))
+    return $doc->{$fieldName}[0];
   return null;
 }
 
