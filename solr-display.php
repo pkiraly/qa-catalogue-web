@@ -245,7 +245,7 @@ function getSolrResponse() {
   if (isset($_SERVER['QUERY_STRING'])) {
     $query = $_SERVER['QUERY_STRING'];
 
-    $params = ['indent=false'];
+    $params = [];
     $parts = explode('&', $query);
     foreach ($parts as $part) {
       if ($part == '')
@@ -255,10 +255,14 @@ function getSolrResponse() {
       if ($k == 'core' || $k == '_'  || $k == 'json.wrf' || $v == '') { //
         continue;
       }
+      if ($k == 'q') {
+        error_log($v);
+      }
       if (!preg_match('/%/', $v))
         $v = urlencode($v);
       $params[] = $k . '=' . $v;
     }
+    $params[] = 'indent=false';
 
     $core = $_GET['core'];
     if (!isset($core) || !in_array($core, $cores)) {
@@ -267,8 +271,22 @@ function getSolrResponse() {
 
     $url = 'http://localhost:8983/solr/' . $core . '/select?' . join('&', $params);
     $response = json_decode(file_get_contents($url));
+    // $response = json_decode(curl_get_file_contents($url));
 
     return $response;
   }
   return NULL;
+}
+
+function curl_get_file_contents($URL) {
+  $c = curl_init();
+  curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($c, CURLOPT_URL, $URL);
+  $contents = curl_exec($c);
+  curl_close($c);
+
+  if ($contents)
+    return $contents;
+
+  return FALSE;
 }

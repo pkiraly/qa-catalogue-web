@@ -5,10 +5,10 @@
   <td>
     {foreach $fieldInstances as $field}
       <span class="653">
-          {if isset($field->subfields->a)}
-            <a href="#" class="record-link" data="653a">{$field->subfields->a}</a>
-          {/if}
-        </span>
+        {if isset($field->subfields->a)}
+          <a href="#" class="record-link" data="653a_UncontrolledIndexTerm_ss">{$field->subfields->a}</a>
+        {/if}
+      </span>
       <br/>
     {/foreach}
   </td>

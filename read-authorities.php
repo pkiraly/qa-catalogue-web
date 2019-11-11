@@ -111,58 +111,78 @@ function readByField($dir, $db) {
           createFacets($record, '100a_MainPersonalName_personalName');
           // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
           $record->q = '*:*';
-        } else if ($record->field == '055') {
-          createFacets($record, '055a_ClassificationLcc');
-          ind2Orsubfield2($record, '055ind2_ClassificationLcc_type_ss', '0552_ClassificationLcc_source_ss');
-        } else if ($record->field == '072') {
-          createFacets($record, '072a_SubjectCategoryCode');
-          ind2Orsubfield2($record, '072ind2_SubjectCategoryCode_codeSource_ss', '0722_SubjectCategoryCode_source_ss');
-        } else if ($record->field == '080') {
-          $record->facet = $solrFieldMap[$record->field . str_replace('$', '', $record->location)]; // '080a_Udc_ss';
+        } else if ($record->field == '110') {
+          createFacets($record, '110a_MainCorporateName');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
           $record->q = '*:*';
-        } else if ($record->field == '082') {
-          $record->facet = $solrFieldMap[$record->field . str_replace('$', '', $record->location)]; // '082a_ClassificationDdc_ss';
+        } else if ($record->field == '111') {
+          createFacets($record, '111a_MainMeetingName');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
           $record->q = '*:*';
-        } else if ($record->field == '083') {
-          $record->facet = $solrFieldMap[$record->field . str_replace('$', '', $record->location)]; // '083a_ClassificationAdditionalDdc_ss';
+        } else if ($record->field == '130') {
+          createFacets($record, '130a_MainUniformTitle');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
           $record->q = '*:*';
-        } else if ($record->field == '084') {
-          createFacets($record, '084a_Classification_classificationPortion');
-          $record->q = sprintf('%s:%%22%s%%22', '0842_Classification_source_ss', $record->scheme);
-        } else if ($record->field == '085') {
-          $record->facet = $solrFieldMap[$record->field . str_replace('$', '', $record->location)]; // '085b_SynthesizedClassificationNumber_baseNumber_ss';
+        } else if ($record->field == '700') {
+          createFacets($record, '700a_AddedPersonalName_personalName');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
           $record->q = '*:*';
-        } else if ($record->field == '086') {
-          createFacets($record, '086a_GovernmentDocumentClassification');
-          ind1Orsubfield2($record, '086ind1_GovernmentDocumentClassification_numberSource_ss', '0862_GovernmentDocumentClassification_source_ss');
-        } else if ($record->field == '600') {
-          createFacets($record, '600a_PersonalNameSubject_personalName');
-          ind2Orsubfield2($record, '600ind2_PersonalNameSubject_thesaurus_ss', '6002_PersonalNameSubject_source_ss');
-        } else if ($record->field == '610') {
-          createFacets($record, '610a_CorporateNameSubject');
-          ind2Orsubfield2($record, '610ind2_CorporateNameSubject_thesaurus_ss', '6102_CorporateNameSubject_source_ss');
-        } else if ($record->field == '611') {
-          createFacets($record, '611a_SubjectAddedMeetingName');
-          ind2Orsubfield2($record, '611ind2_SubjectAddedMeetingName_thesaurus_ss', '6112_SubjectAddedMeetingName_source_ss');
-        } else if ($record->field == '630') {
-          createFacets($record, '630a_SubjectAddedUniformTitle');
-          ind2Orsubfield2($record, '630ind2_SubjectAddedUniformTitle_thesaurus_ss', '6302_SubjectAddedUniformTitle_source_ss');
-        // TODO: 647
-        } else if ($record->field == '648') {
-          createFacets($record, '648a_ChronologicalSubject');
-          ind2Orsubfield2($record, '648ind2_ChronologicalSubject_thesaurus_ss', '6482_ChronologicalSubject_source_ss');
-        } else if ($record->field == '650') {
-          createFacets($record, '650a_Topic_topicalTerm');
-          ind2Orsubfield2($record, '650ind2_Topic_thesaurus_ss', '6502_Topic_sourceOfHeading_ss');
-        } else if ($record->field == '651') {
-          createFacets($record, '651a_Geographic');
-          ind2Orsubfield2($record, '651ind2_Geographic_thesaurus_ss', '6512_Geographic_source_ss');
-        } else if ($record->field == '655') {
-          createFacets($record, '655a_GenreForm');
-          ind2Orsubfield2($record, '655ind2_GenreForm_thesaurus_ss', '6552_GenreForm_source_ss');
-        } else if ($record->field == '852') {
-          createFacets($record, '852a_Location_location');
-          ind1Orsubfield2($record, '852ind1_852_shelvingScheme_ss', '852__852___ss');
+        } else if ($record->field == '710') {
+          createFacets($record, '710a_AddedCorporateName');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
+          $record->q = '*:*';
+        } else if ($record->field == '711') {
+          createFacets($record, '711a_AddedMeetingName');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
+          $record->q = '*:*';
+        } else if ($record->field == '720') {
+          createFacets($record, '130a_MainUniformTitle');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
+          $record->q = '*:*';
+        } else if ($record->field == '730') {
+          createFacets($record, '730a_AddedUniformTitle');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
+          $record->q = '*:*';
+        } else if ($record->field == '740') {
+          createFacets($record, '740a_AddedUncontrolledRelatedOrAnalyticalTitle');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
+          $record->q = '*:*';
+        } else if ($record->field == '751') {
+          createFacets($record, '751a_AddedGeographicName');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
+          $record->q = '*:*';
+        } else if ($record->field == '752') {
+          createFacets($record, '130a_MainUniformTitle');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
+          $record->q = '*:*';
+        } else if ($record->field == '753') {
+          createFacets($record, '130a_MainUniformTitle');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
+          $record->q = '*:*';
+        } else if ($record->field == '754') {
+          createFacets($record, '130a_MainUniformTitle');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
+          $record->q = '*:*';
+        } else if ($record->field == '800') {
+          createFacets($record, '100a_MainPersonalName_personalName');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
+          $record->q = '*:*';
+        } else if ($record->field == '810') {
+          createFacets($record, '110a_MainCorporateName');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
+          $record->q = '*:*';
+        } else if ($record->field == '811') {
+          createFacets($record, '111a_MainMeetingName');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
+          $record->q = '*:*';
+        } else if ($record->field == '820') {
+          createFacets($record, '130a_MainUniformTitle');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
+          $record->q = '*:*';
+        } else if ($record->field == '830') {
+          createFacets($record, '830a_SeriesAddedUniformTitle');
+          // ind1Orsubfield2($record, '052ind1_GeographicClassification_codeSource_ss', '0522_GeographicClassification_source_ss');
+          $record->q = '*:*';
         }
 
         if (isset($record->facet2) && $record->facet2 != '') {
@@ -172,6 +192,9 @@ function readByField($dir, $db) {
         if (preg_match('/(^ |  +| $)/', $record->scheme)) {
           $record->scheme = '"' . str_replace(' ', '&nbsp;', $record->scheme) . '"';
         }
+
+        if ($record->scheme == 'undetectable')
+          $record->scheme = 'source not specified';
 
         $records[] = $record;
       }
@@ -192,12 +215,19 @@ function readByField($dir, $db) {
  * @param $base
  */
 function createFacets(&$record, $base) {
+  global $solrFields;
+
   $record->facet = $base . '_ss';
 
-  if (isset($record->abbreviation4solr) && $record->abbreviation4solr != '')
+  if (isset($record->abbreviation4solr)
+      && $record->abbreviation4solr != ''
+      && in_array($record->abbreviation4solr, $solrFields)) {
     $record->facet2 = $base . '_' . $record->abbreviation4solr . '_ss';
-  elseif (isset($record->abbreviation) && $record->abbreviation != '')
+  } elseif (isset($record->abbreviation)
+            && $record->abbreviation != ''
+            && in_array($record->abbreviation, $solrFields)) {
     $record->facet2 = $base . '_' . $record->abbreviation . '_ss';
+  }
 }
 
 /**

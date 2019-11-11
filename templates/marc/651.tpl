@@ -8,7 +8,7 @@
       <span class="651">
           {if isset($field->subfields->a)}
             <i class="fa fa-map" aria-hidden="true" title="geographic term"></i>
-            <a href="#" class="record-link" data="650a">{$field->subfields->a}</a>
+            <a href="#" class="record-link" data="651a_Geographic_ss">{$field->subfields->a}</a>
           {/if}
 
           {if isset($field->subfields->{'2'})}

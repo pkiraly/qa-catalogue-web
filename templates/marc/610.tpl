@@ -8,20 +8,20 @@
       <span class="600">
           {*  Personal name *}
           {if isset($field->subfields->a)}
-            <i class="fa fa-hashtag" aria-hidden="true" title="topical term"></i>
-            <a href="#" class="record-link" data="610a">{$field->subfields->a}</a>
+            <i class="fa fa-hashtag" aria-hidden="true" title="corporate"></i>
+            <a href="#" class="record-link" data="610a_CorporateNameSubject_ss">{$field->subfields->a}</a>
           {/if}
 
           {if isset($field->subfields->b)}
-            <span class="numeration" data="610b">{$field->subfields->b}</span>
+            <span class="numeration" data="610b_CorporateNameSubject_subordinateUnit_ss">{$field->subfields->b}</span>
           {/if}
 
           {if isset($field->subfields->c)}
-            <span class="titles" data="610c">{$field->subfields->c}</span>
+            <span class="titles" data="610c_CorporateNameSubject_locationOfMeeting_ss">{$field->subfields->c}</span>
           {/if}
 
           {if isset($field->subfields->d)}
-            <span class="dates" data="610d">{$field->subfields->d}</span>
+            <span class="dates" data="610d_CorporateNameSubject_dates_ss">{$field->subfields->d}</span>
           {/if}
 
           {if isset($field->subfields->{'2'})}

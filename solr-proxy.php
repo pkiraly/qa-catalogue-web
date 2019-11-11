@@ -9,8 +9,8 @@ function solr_proxy_main() {
   static $cores = ['cerl', 'cerl2', 'stanford', 'dnb', 'gent', 'szte', 'mokka', 'loc', 'mtak', 'bayern', 'bnpl', 'nfi'];
   if (isset($_SERVER['QUERY_STRING'])) {
     $query = $_SERVER['QUERY_STRING'];
-    $params = ['indent=false'];
     $parts = explode('&', $query);
+    $params = [];
     foreach ($parts as $part) {
       list($k, $v) = explode('=', $part);
       if ($k == 'core' || $k == '_' || $v == '') { //  || $k == 'json.wrf'
@@ -18,6 +18,7 @@ function solr_proxy_main() {
       }
       $params[] = $k . '=' . urlencode($v);
     }
+    $params[] = 'indent=false';
 
     $core = $_GET['core'];
     if (!isset($core) || !in_array($core, $cores)) {

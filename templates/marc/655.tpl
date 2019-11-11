@@ -7,7 +7,7 @@
   {foreach $fieldInstances as $field}
     <span class="655">
       {if isset($field->subfields->a)}
-        <a href="#" class="record-link" data="655a">{$field->subfields->a}</a>
+        <a href="#" class="record-link" data="655a_GenreForm_ss">{$field->subfields->a}</a>
       {/if}
 
       {if isset($field->subfields->v)}

@@ -44,10 +44,7 @@ var g = svg.append("g")
 
 d3.csv(authoritiesHistogramUrl)
   .then((data) => {
-    console.log('OK');
-
     return data.map((d) => {
-      console.log(d);
       d.frequency = +d.frequency;
       return d;
     });

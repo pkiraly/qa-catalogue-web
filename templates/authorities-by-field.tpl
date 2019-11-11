@@ -27,8 +27,8 @@
               {$record->scheme}
             {/if}
           {elseif (isset($record->facet) && isset($record->q))}
-            <a href="#" class="term-link facet" data-facet="{$record->facet}" data-query="{$record->q}" data-scheme="{$record->scheme}">{$record->scheme}</a>
-            {if strlen($record->abbreviation) > 0}({$record->abbreviation}){/if}
+            <a href="#" class="term-link facet" data-facet="{$record->facet}"
+               data-query="{$record->q}" data-scheme="{$record->scheme}">{$record->scheme}</a>
           {else}
             {if $record->scheme == 'undetectable'}not specified{else}{$record->scheme}{/if}
           {/if}

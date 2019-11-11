@@ -489,11 +489,13 @@
       event.preventDefault();
       start = $(this).attr('data');
       loadDataTab(buildUrl());
+      scroll(0, 0);
     });
     $('#prev-next-footer a').click(function (event) {
       event.preventDefault();
       start = $(this).attr('data');
       loadDataTab(buildUrl());
+      scroll(0, 0);
     });
   }
 
@@ -1001,6 +1003,8 @@
         $('#terms-scheme').attr('data-query', termQuery);
         resetTabs();
         $('#myTab a[href="#terms"]').tab('show');
+        console.log('window.scrollTo');
+        scroll(0, 0);
 
         $('#terms-content a.facet-term').click(function(event) {
           var term = $(this).html();
@@ -1049,6 +1053,7 @@
         $('#terms-scheme').attr('data-query', termQuery);
         resetTabs();
         $('#myTab a[href="#terms"]').tab('show');
+        scroll(0, 0);
 
         $('#terms-content a.facet-term').click(function(event) {
           var term = $(this).html();
