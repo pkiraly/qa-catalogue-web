@@ -313,3 +313,19 @@ div.record ul {
   margin: 1px;
   color: white;
 }
+
+div.tooltip {
+  color: white;
+  position: absolute;
+  text-align: left;
+  width: 120px;
+  height: 32px;
+  padding: 2px;
+  font: 10px sans-serif;
+  background: rgba(0,0,0,.8);
+  border: 2px solid black;
+  pointer-events: none;
+  background-color: black;
+  color: white;
+  border-radius: 5px;
+}

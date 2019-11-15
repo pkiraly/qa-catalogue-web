@@ -40,12 +40,17 @@ var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
   y = d3.scaleLinear().rangeRound([height, 0]);
 
 var g = svg.append("g")
-.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var tooltipClassifications = d3.select("body")
+  .append("div")
+  .style("opacity", 0)
+  .attr("class", "tooltip")
+  .attr("id", "tooltip-classifications")
 
 d3.csv(classificationsHistogramUrl)
   .then((data) => {
     return data.map((d) => {
-      console.log(d);
       d.frequency = +d.frequency;
       return d;
     });
@@ -73,14 +78,61 @@ d3.csv(classificationsHistogramUrl)
       .attr("text-anchor", "end")
       .text("Frequency");
 
+    var showTooltip = function(d) {
+      tooltipClassifications
+        .transition()
+        .duration(200)
+        .style("opacity", .9)
+
+      var msg = d.frequency.toLocaleString('en-US') + " records with<br/>"
+               + d.count + ' classifications';
+      tooltipClassifications
+        .html(msg)
+        .style("left", getXCoord() + "px")
+        .style("top", getYCoord() + "px")
+    }
+
+    var moveTooltip = function(d) {
+      tooltipClassifications
+        .style("left", getXCoord() + "px")
+        .style("top", getYCoord() + "px")
+    }
+
+    var getXCoord = function() {
+      return d3.event.pageX + 10;
+    }
+
+    var getYCoord = function() {
+      return d3.event.pageY - 28;
+    }
+
+    var hideTooltip = function(d) {
+      tooltipClassifications
+        .transition()
+        .duration(100)
+        .style("opacity", 0)
+    }
+
     g.selectAll(".bar")
       .data(data)
       .enter().append("rect")
       .attr("class", "bar")
       .attr("x", function(d) { return x(d.count); })
-      .attr("y", function(d) { return y(d.frequency); })
+      .attr("y", function(d) {
+        return y(d.frequency);
+      })
       .attr("width", x.bandwidth())
-      .attr("height", function(d) { return height - y(d.frequency); });
+      .attr("height", function(d) {
+        return height - y(d.frequency);
+      })
+      .on("mouseover", showTooltip)
+      .on("mousemove", moveTooltip)
+      .on("mouseleave", hideTooltip);
+
+    g.selectAll('.tick text')
+      .data(data)
+      .on('mouseover', showTooltip)
+      .on('mouseout', hideTooltip);
   })
   .catch((error) => {
     console.log('error happened');

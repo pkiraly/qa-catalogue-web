@@ -1,12 +1,20 @@
 <?php
 require_once 'common-functions.php';
 $db = getOrDefault('db', 'cerl');
-$filename = getOrDefault('file', '', ['authorities-histogram', 'classifications-histogram']);
+$allowable_histograms = [
+  'authorities-histogram' => ['name' => 'count', 'limit' => 30],
+  'classifications-histogram' => ['name' => 'count', 'limit' => 30],
+  'serial-histogram' => ['name' => 'score', 'limit' => 40]
+];
+$filename = getOrDefault('file', '', array_keys($allowable_histograms));
+
 
 if ($filename != '') {
   $configuration = parse_ini_file("configuration.cnf");
   $dir = $configuration['dir'];
   $absoluteFilePath = sprintf('%s/%s/%s.csv', $dir, $db, $filename);
+  $limit = $allowable_histograms[$filename]['limit'];
+  $field_name = $allowable_histograms[$filename]['name'];
   if (file_exists($absoluteFilePath)) {
     $content = '';
     $max = 0;
@@ -19,8 +27,8 @@ if ($filename != '') {
         $content .= $line;
       } else {
         $record = (object)array_combine($header, $values);
-        $max = $record->count;
-        if ($record->count >= 30) {
+        $max = $record->{$field_name};
+        if ($record->{$field_name} >= $limit) {
           $lastBucket += $record->frequency;
         } else {
           $content .= $line;
@@ -30,7 +38,7 @@ if ($filename != '') {
     if ($lastBucket != 0) {
       $content .= sprintf(
         "%s,%d\n",
-        (($max > 30) ? 30 . '-' . $max : $max),
+        (($max > $limit) ? $limit . '-' . $max : $max),
         $lastBucket
       );
     }

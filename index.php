@@ -98,6 +98,12 @@
     </li>
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
+         id="serials-tab" href="#serials" aria-controls="serials">
+        Serials
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
         id="terms-tab" href="#terms" aria-controls="terms">
         Terms
       </a>
@@ -261,6 +267,23 @@
       <h2>Terms</h2>
       <div id="terms-scheme" data-facet="" data-query=""></div>
       <div id="terms-content"></div>
+    </div>
+    <div class="tab-pane" id="serials" role="tabpanel" aria-labelledby="serials-tab">
+      <h2>Serials analysis</h2>
+      <p>These scores are calculated for each continuing resources (type of record (LDR/6) is
+        language material ('a') and bibliographic level (LDR/7) is serial component part ('b'),
+        integrating resource ('i') or serial ('s')).</p>
+      <p>The calculation is based on a slightly modified version of the method published
+        by Jamie Carlstone in the following paper:</p>
+
+      <blockquote>
+        Jamie Carlstone (2017) Scoring the Quality of E-Serials MARC Records Using Java,
+      Serials Review, 43:3-4, pp. 271-277,
+      DOI: <a href="https://doi.org/10.1080/00987913.2017.1350525" target="_blank">10.1080/00987913.2017.1350525</a>
+      URL: <a href="https://www.tandfonline.com/doi/full/10.1080/00987913.2017.1350525" target="_blank">https://www.tandfonline.com/doi/full/10.1080/00987913.2017.1350525</a>
+      </blockquote>
+
+      <div id="serials-content"></div>
     </div>
     <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">
       <a href="#" id="set-facets">set facets</a>
@@ -976,6 +999,14 @@
     });
   }
 
+  function loadSerials() {
+    $.getJSON('read-serials.php?db=' + db, function(result, status) {
+      // $('#serials-content').html(result.byRecord);
+      $('#serials-content').html(result.histogram);
+      // $('#serials-content').append(result.byField);
+      // setAuthoritiesLinkHandlers();
+    });
+  }
 
   function setClassificationLinkHandlers() {
     $('a.term-link').click(function(event) {
@@ -1191,6 +1222,8 @@
         loadClassifications();
       } else if (id == 'authorities-tab') {
         loadAuthorities();
+      } else if (id == 'serials-tab') {
+        loadSerials();
       } else if (id == 'terms-tab') {
         loadTerms();
       }

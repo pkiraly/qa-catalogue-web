@@ -42,6 +42,12 @@ var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
 var g = svg.append("g")
            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+var tooltipAuthorities = d3.select("body")
+  .append("div")
+  .style("opacity", 0)
+  .attr("class", "tooltip")
+  .attr("id", "tooltip-authorities")
+
 d3.csv(authoritiesHistogramUrl)
   .then((data) => {
     return data.map((d) => {
@@ -72,6 +78,41 @@ d3.csv(authoritiesHistogramUrl)
       .attr("text-anchor", "end")
       .text("Frequency");
 
+    var showTooltipAuthorities = function(d) {
+      tooltipAuthorities
+      .transition()
+      .duration(200)
+      .style("opacity", .9)
+
+      var msg = d.frequency.toLocaleString('en-US') + " records with<br/>"
+              + d.count + ' classifications';
+      tooltipAuthorities
+      .html(msg)
+      .style("left", getXCoord() + "px")
+      .style("top", getYCoord() + "px")
+    }
+
+    var moveTooltipAuthorities = function(d) {
+      tooltipAuthorities
+      .style("left", getXCoord() + "px")
+      .style("top", getYCoord() + "px")
+    }
+
+    var getXCoord = function() {
+      return d3.event.pageX + 10;
+    }
+
+    var getYCoord = function() {
+      return d3.event.pageY - 28;
+    }
+
+    var hideTooltipAuthorities = function(d) {
+      tooltipAuthorities
+      .transition()
+      .duration(100)
+      .style("opacity", 0)
+    }
+
     g.selectAll(".bar")
       .data(data)
       .enter().append("rect")
@@ -79,7 +120,19 @@ d3.csv(authoritiesHistogramUrl)
       .attr("x", function(d) { return x(d.count); })
       .attr("y", function(d) { return y(d.frequency); })
       .attr("width", x.bandwidth())
-      .attr("height", function(d) { return height - y(d.frequency); });
+      .attr("height", function(d) { return height - y(d.frequency); })
+      .on("mouseover", showTooltipAuthorities)
+      .on("mousemove", moveTooltipAuthorities)
+      .on("mouseleave", hideTooltipAuthorities)
+    ;
+
+    g.selectAll('.tick text')
+      .data(data)
+      .on('mouseover', showTooltipAuthorities)
+      .on("mousemove", moveTooltipAuthorities)
+      .on("mouseleave", hideTooltipAuthorities)
+    ;
+
   })
   .catch((error) => {
     console.log('error happened');
