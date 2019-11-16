@@ -4,10 +4,24 @@ $db = getOrDefault('db', 'cerl');
 $allowable_histograms = [
   'authorities-histogram' => ['name' => 'count', 'limit' => 30],
   'classifications-histogram' => ['name' => 'count', 'limit' => 30],
-  'serial-histogram' => ['name' => 'score', 'limit' => 40]
+  'serial-histogram' => ['name' => 'score', 'limit' => 40],
+  'tt-completeness-histogram-total' => ['name' => 'count', 'limit' => 40],
 ];
-$filename = getOrDefault('file', '', array_keys($allowable_histograms));
 
+$tt_completeness_suffixes = [
+  'transformed', 'isbn', 'authors', 'alternative-titles', 'edition', 'contributors',
+  'series', 'toc', 'date-008', 'date-26x', 'lc-nlm', 'lo-c', 'mesh', 'fast', 'gnd',
+  'other', 'online', 'language-of-resource', 'country-of-publication',
+  'no-language-or-english', 'rda'
+];
+
+foreach ($tt_completeness_suffixes as $suffix) {
+  $allowable_histograms['tt-completeness-histogram-' . $suffix] = [
+    'name' => 'count', 'limit' => 10
+  ];
+}
+
+$filename = getOrDefault('file', '', array_keys($allowable_histograms));
 
 if ($filename != '') {
   $configuration = parse_ini_file("configuration.cnf");

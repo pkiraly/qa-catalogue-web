@@ -76,12 +76,12 @@
     </li>
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
-         id="issues-tab" href="#issues" aria-controls="issues">Issue catalog</a>
+         id="issues-tab" href="#issues" aria-controls="issues">Issues</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
          id="functions-tab" href="#functions" aria-controls="functions">
-        Functional analysis
+        Functions
       </a>
     </li>
     <li class="nav-item">
@@ -100,6 +100,12 @@
       <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
          id="serials-tab" href="#serials" aria-controls="serials">
         Serials
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
+         id="tt-completeness-tab" href="#tt-completeness" aria-controls="tt-completeness">
+        TT completeness
       </a>
     </li>
     <li class="nav-item">
@@ -277,13 +283,25 @@
         by Jamie Carlstone in the following paper:</p>
 
       <blockquote>
-        Jamie Carlstone (2017) Scoring the Quality of E-Serials MARC Records Using Java,
+        Jamie Carlstone (2017) <em>Scoring the Quality of E-Serials MARC Records Using Java</em>,
       Serials Review, 43:3-4, pp. 271-277,
       DOI: <a href="https://doi.org/10.1080/00987913.2017.1350525" target="_blank">10.1080/00987913.2017.1350525</a>
       URL: <a href="https://www.tandfonline.com/doi/full/10.1080/00987913.2017.1350525" target="_blank">https://www.tandfonline.com/doi/full/10.1080/00987913.2017.1350525</a>
       </blockquote>
 
       <div id="serials-content"></div>
+    </div>
+    <div class="tab-pane" id="tt-completeness" role="tabpanel" aria-labelledby="tt-completeness-tab">
+      <h2>Thomson-Traill completeness</h2>
+      <p>These scores are the implementation of the following paper:</p>
+
+      <p>Kelly Thompson and Stacie Traill (2017)
+        <em>Implementation of the scoring algorithm described in Leveraging Python to improve ebook
+          metadata selection, ingest, and management</em>, Code4Lib Journal, Issue 38, 2017-10-18.
+        <a href="http://journal.code4lib.org/articles/12828" target="_blank">http://journal.code4lib.org/articles/12828</a>
+      <p>Their approach to calculate the quality of ebook records comming from different data
+        sources.</p>
+      <div id="tt-completeness-content"></div>
     </div>
     <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">
       <a href="#" id="set-facets">set facets</a>
@@ -1008,6 +1026,15 @@
     });
   }
 
+  function loadTtCompleteness() {
+    $.getJSON('read-tt-completeness.php?db=' + db, function(result, status) {
+      // $('#serials-content').html(result.byRecord);
+      $('#tt-completeness-content').html(result.histogram);
+      // $('#tt-completeness-content').append(result.byField);
+      // setAuthoritiesLinkHandlers();
+    });
+  }
+
   function setClassificationLinkHandlers() {
     $('a.term-link').click(function(event) {
       event.preventDefault();
@@ -1224,6 +1251,8 @@
         loadAuthorities();
       } else if (id == 'serials-tab') {
         loadSerials();
+      } else if (id == 'tt-completeness-tab') {
+        loadTtCompleteness();
       } else if (id == 'terms-tab') {
         loadTerms();
       }
