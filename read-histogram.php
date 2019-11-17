@@ -9,10 +9,11 @@ $allowable_histograms = [
 ];
 
 $tt_completeness_suffixes = [
-  'transformed', 'isbn', 'authors', 'alternative-titles', 'edition', 'contributors',
-  'series', 'toc', 'date-008', 'date-26x', 'lc-nlm', 'lo-c', 'mesh', 'fast', 'gnd',
-  'other', 'online', 'language-of-resource', 'country-of-publication',
-  'no-language-or-english', 'rda'
+  'isbn', 'authors', 'alternative-titles', 'edition', 'contributors', 'series',
+  'toc-and-abstract', 'date-008', 'date-26x', 'classification-lc-nlm',
+  'classification-loc', 'classification-mesh', 'classification-fast',
+  'classification-gnd', 'classification-other', 'online', 'language-of-resource',
+  'country-of-publication', 'no-language-or-english', 'rda'
 ];
 
 foreach ($tt_completeness_suffixes as $suffix) {

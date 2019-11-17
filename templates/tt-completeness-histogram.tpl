@@ -106,32 +106,38 @@ the summary of these criteria scores.
       <td>1 point for each field up to 10 total points</td>
     </tr>
     <tr>
-      <td><a href="#tt-component-14">14.</a> Subject Headings: Other</td>
+      <td><a href="#tt-component-14">14.</a> Subject Headings: GND<br/>
+        (This was not part of the original algorithm)</td>
+      <td>600, 610, 611, 630, 650, 651 second indicator 7, $2 fast</td>
+      <td>1 point for each field up to 10 total points</td>
+    </tr>
+    <tr>
+      <td><a href="#tt-component-15">15.</a> Subject Headings: Other</td>
       <td>600, 610, 611, 630, 650, 651, 653 if above criteria are not met</td>
       <td>1 point for each field up to 5 total points</td>
     </tr>
     <tr>
-      <td><a href="#tt-component-15">15.</a> Description</td>
+      <td><a href="#tt-component-16">16.</a> Description</td>
       <td>008/23=o and 300$a “online resource”</td>
       <td>2 points if both elements exist; 1 point if either exists</td>
     </tr>
     <tr>
-      <td><a href="#tt-component-16">16.</a> Language of Resource</td>
+      <td><a href="#tt-component-17">17.</a> Language of Resource</td>
       <td>008/35-37</td>
       <td>1 point if likely language code exists</td>
     </tr>
     <tr>
-      <td><a href="#tt-component-17">17.</a> Country of Publication Code</td>
+      <td><a href="#tt-component-18">18.</a> Country of Publication Code</td>
       <td>008/15-17</td>
       <td>1 point if likely country code exists</td>
     </tr>
     <tr>
-      <td><a href="#tt-component-18">18.</a> Language of Cataloging</td>
+      <td><a href="#tt-component-19">19.</a> Language of Cataloging</td>
       <td>040$b</td>
       <td>1 point if either no language is specified, or if English is specified</td>
     </tr>
     <tr>
-      <td><a href="#tt-component-19">19.</a> Descriptive cataloging standard</td>
+      <td><a href="#tt-component-20">20.</a> Descriptive cataloging standard</td>
       <td>040$e</td>
       <td>1 point if value is “rda”</td>
     </tr>
@@ -139,19 +145,19 @@ the summary of these criteria scores.
   </table>
 <table>
 
-<h3>detailed information</h3>
+<h3>components</h3>
 
-<p>The individual components</p>
+<p>The histograms of the individual components:</p>
 
-{foreach $names as $index => $name}
+{foreach $fields as $index => $field}
   {if $index % 3 == 0}
       <tr>
   {/if}
     <td>
-      <p id="tt-component-{$index+1}">{$index+1}. {$name->name}</p>
-      <svg class="tt-completeness-histogram-chart-{$name->transformed}" width="320" height="200"></svg>
+      <p id="tt-component-{$index+1}">{$index+1}. {$field->name}</p>
+      <svg class="tt-completeness-histogram-chart-{$field->transformed}" width="320" height="200"></svg>
     </td>
-  {if $index % 3 == 2 || $index == count($names) - 1}
+  {if $index % 3 == 2 || $index == count($fields) - 1}
     </tr>
   {/if}
 {/foreach}
@@ -160,7 +166,7 @@ the summary of these criteria scores.
 <script>
 // $()
 var db = '{$db}';
-var names = {json_encode($names)};
+var fields = {json_encode($fields)};
 {literal}
 
 var tooltipSerial = d3.select("body")
@@ -170,21 +176,19 @@ var tooltipSerial = d3.select("body")
   .attr("id", "tooltip-serial")
 
 showHistogram('total');
-for (i in names) {
-  var field = names[i];
-  console.log(field);
+for (var i in fields) {
+  var field = fields[i];
   showHistogram(field.transformed);
 }
 
 function showHistogram(field) {
   var histogramDataUrl = 'read-histogram.php?db='+ db + '&file=tt-completeness-histogram-' + field;
   var histogramSvgClass = "tt-completeness-histogram-chart-" + field;
-  console.log('histogramDataUrl: ' + histogramDataUrl);
-  console.log('histogramSvgClass: ' + histogramSvgClass);
   displayHistogram(histogramDataUrl, histogramSvgClass);
 }
 
 function displayHistogram(histogramDataUrl, histogramSvgClass) {
+  console.log(histogramDataUrl);
   var svg = d3.select("svg." + histogramSvgClass),
     margin = {top: 20, right: 20, bottom: 40, left: 60},
     width = +svg.attr("width") - margin.left - margin.right,

@@ -105,7 +105,7 @@
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
          id="tt-completeness-tab" href="#tt-completeness" aria-controls="tt-completeness">
-        TT completeness
+        T&mdash;T completeness
       </a>
     </li>
     <li class="nav-item">
@@ -292,7 +292,7 @@
       <div id="serials-content"></div>
     </div>
     <div class="tab-pane" id="tt-completeness" role="tabpanel" aria-labelledby="tt-completeness-tab">
-      <h2>Thomson-Traill completeness</h2>
+      <h2>Thompson&mdash;Traill completeness</h2>
       <p>These scores are the implementation of the following paper:</p>
 
       <p>Kelly Thompson and Stacie Traill (2017)

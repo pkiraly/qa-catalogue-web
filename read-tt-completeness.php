@@ -18,7 +18,7 @@ echo json_encode($result);
 function readHistogram($dir, $db) {
   global $smarty, $countFile;
 
-  $byRecordsFile = sprintf('%s/%s/tt-completeness-names.csv', $dir, $db);
+  $byRecordsFile = sprintf('%s/%s/tt-completeness-fields.csv', $dir, $db);
   if (file_exists($byRecordsFile)) {
     $header = [];
     $records = [];
@@ -29,12 +29,12 @@ function readHistogram($dir, $db) {
         $header = $values;
       } else {
         $record = (object)array_combine($header, $values);
-        if ($record->transformed != 'total')
+        if ($record->name != 'id' && $record->name != 'total')
           $records[] = $record;
       }
     }
     $smarty->assign('db', $db);
-    $smarty->assign('names', $records);
+    $smarty->assign('fields', $records);
     return $smarty->fetch('tt-completeness-histogram.tpl');
   }
   return null;
