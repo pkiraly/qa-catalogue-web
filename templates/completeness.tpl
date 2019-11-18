@@ -1,7 +1,7 @@
 <table>
   <thead>
     <tr class="first">
-      <th colspan="3"></th>
+      <th colspan="4"></th>
       <th colspan="2" class="with-border">records</th>
       <th colspan="5" class="with-border">occurences</th>
     </tr>
@@ -9,6 +9,7 @@
       <th class="left">path</th>
       <th class="left">label</th>
       <th class="left"></th>
+      <th>terms</th>
       <th class="bordered-left">count</th>
       <th>%</th>
       <th>count</th>
@@ -45,6 +46,12 @@
         </td>
         <td class="subfield">{$record->subfield}</td>
         <td class="chart"><div style="width: {ceil($percent * 2)}px;">&nbsp;</div></td>
+        <td class="terms">
+          {if isset($record->solr)}
+            <a href="#" class="term-link facet2" data-facet="{$record->solr}" data-query="*:*"
+               data-scheme="{$record->solr}"><i class="fa fa-list-ol"></i></a>
+          {/if}
+        </td>
         <td class="number-of-record">{$record->{'number-of-record'}|number_format}</td>
         <td class="percent-of-record">{$percent|number_format:2}%</td>
         <td class="number-of-instances">{$record->{'number-of-instances'}}</td>
