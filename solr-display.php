@@ -255,6 +255,8 @@ function opacLink($doc, $id) {
       . '%22&lookfor0[]=ctrlnum%3A%22(FI-MELINDA)'
       . trim($id)
       . '%22';
+  } else if ($core == 'gbv') {
+    // https://kxp.k10plus.de/DB=2.1/PPNSET?PPN=1669734900
   }
 }
 
@@ -262,7 +264,11 @@ function opacLink($doc, $id) {
  * Executes the Solr query and returns the JSON response.
  */
 function getSolrResponse() {
-  static $cores = ['cerl', 'cerl2', 'stanford', 'dnb', 'gent', 'szte', 'mokka', 'loc', 'mtak', 'bayern', 'bnpl', 'nfi'];
+  static $cores = [
+    'cerl', 'cerl2', 'stanford', 'dnb', 'gent', 'szte', 'mokka', 'loc', 'mtak', 'bayern',
+    'bnpl', 'nfi', 'gbv'
+  ];
+
   if (isset($_SERVER['QUERY_STRING'])) {
     $query = $_SERVER['QUERY_STRING'];
 

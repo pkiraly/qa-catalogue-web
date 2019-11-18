@@ -6,7 +6,10 @@ solr_proxy_main();
  * Executes the Solr query and returns the JSON response.
  */
 function solr_proxy_main() {
-  static $cores = ['cerl', 'cerl2', 'stanford', 'dnb', 'gent', 'szte', 'mokka', 'loc', 'mtak', 'bayern', 'bnpl', 'nfi'];
+  static $cores = [
+    'cerl', 'cerl2', 'stanford', 'dnb', 'gent', 'szte', 'mokka', 'loc', 'mtak', 'bayern',
+    'bnpl', 'nfi', 'gbv'
+  ];
   if (isset($_SERVER['QUERY_STRING'])) {
     $query = $_SERVER['QUERY_STRING'];
     $parts = explode('&', $query);

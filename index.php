@@ -59,6 +59,8 @@
           document.write('<a href="https://bn.org.pl/" target="_blank">Biblioteka Narodowa (Polish National Library)</a>');
       } else if (db == 'nfi') {
         document.write('<a href="https://www.kansalliskirjasto.fi/en" target="_blank">Kansallis Kirjasto/National Biblioteket (The National Library of Finnland)</a>');
+      } else if (db == 'gbv') {
+        document.write('<a href="http://www.gbv.de/" target="_blank">Verbundzentrale des Gemeinsamen Bibliotheksverbundes</a>');
       }
     </script>
   </p>
