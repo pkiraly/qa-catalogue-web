@@ -18,8 +18,22 @@ echo json_encode($result);
 function readHistogram($dir, $db) {
   global $smarty, $countFile;
 
-  $byRecordsFile = sprintf('%s/%s/serial-histogram.csv', $dir, $db);
+  $byRecordsFile = sprintf('%s/%s/serial-score-fields.csv', $dir, $db);
   if (file_exists($byRecordsFile)) {
+    $header = [];
+    $records = [];
+    $in = fopen($byRecordsFile, "r");
+    while (($line = fgets($in)) != false) {
+      $values = str_getcsv($line);
+      if (empty($header)) {
+        $header = $values;
+      } else {
+        $record = (object)array_combine($header, $values);
+        if ($record->name != 'id' && $record->name != 'total')
+          $records[] = $record;
+      }
+    }
+    $smarty->assign('fields', $records);
     $smarty->assign('db', $db);
     return $smarty->fetch('serial-histogram.tpl');
   }

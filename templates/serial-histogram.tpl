@@ -21,7 +21,7 @@
   }
 </style>
 
-<svg class="serial-histogram-chart" width="960" height="300"></svg>
+<svg class="serial-histogram-chart-total" width="960" height="300"></svg>
 <ul>
   <li>y: number of records</li>
   <li>x: number of authority names in one record</li>
@@ -109,117 +109,50 @@ these criteria scores.
     </tr>
   </tbody>
 </table>
+
+<h3>components</h3>
+
+<p>The histograms of the individual components:</p>
+
+<table>
+{foreach $fields as $index => $field}
+  {if $index % 3 == 0}
+    <tr>
+  {/if}
+  <td>
+    <p id="serial-histogram-{$index+1}">{$index+1}. {$field->name}</p>
+    <svg class="serial-histogram-chart-{$field->transformed}" width="320" height="200"></svg>
+  </td>
+  {if $index % 3 == 2 || $index == count($fields) - 1}
+    </tr>
+  {/if}
+{/foreach}
+</table>
+
+<script src="js/histogram.js" type="text/javascript"></script>
 <script>
 // $()
 var db = '{$db}';
-var authoritiesHistogramUrl = 'read-histogram.php?db='+ db + '&file=serial-histogram';
+var fields = {json_encode($fields)};
+// var authoritiesHistogramUrl = 'read-histogram.php?db='+ db + '&file=serial-histogram';
 {literal}
-var svg = d3.select("svg.serial-histogram-chart"),
-  margin = {top: 20, right: 20, bottom: 40, left: 60},
-  width = +svg.attr("width") - margin.left - margin.right,
-  height = +svg.attr("height") - margin.top - margin.bottom;
-
-var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
-    y = d3.scaleLinear().rangeRound([height, 0]);
-
-var g = svg.append("g")
-           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
 var tooltipSerial = d3.select("body")
   .append("div")
   .style("opacity", 0)
   .attr("class", "tooltip")
   .attr("id", "tooltip-serial")
 
-d3.csv(authoritiesHistogramUrl)
-  .then((data) => {
-    return data.map((d) => {
-      d.frequency = +d.frequency;
-      return d;
-    });
-  })
-  .then((data) => {
-    x.domain(data.map(function(d) { return d.score; }));
-    y.domain([0, d3.max(data, function(d) { return d.frequency + 1; })]);
+showHistogram('total');
+for (var i in fields) {
+  var field = fields[i];
+  showHistogram(field.transformed);
+}
 
-    g.append("g")
-      .attr("class", "axis axis--x")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x))
-      .selectAll("text")
-        .attr("transform", "translate(-10,0)rotate(-45)")
-        .style("text-anchor", "end")
-    ;
+function showHistogram(field) {
+  var histogramDataUrl = 'read-histogram.php?db='+ db + '&file=serial-score-histogram-' + field;
+  var histogramSvgClass = "serial-histogram-chart-" + field;
+  displayHistogram(histogramDataUrl, histogramSvgClass);
+}
 
-    g.append("g")
-      .attr("class", "axis axis--y")
-      .call(d3.axisLeft(y).ticks(10))
-      .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", "0.71em")
-      .attr("text-anchor", "end")
-      .text("Frequency");
-
-    var showTooltipSerial = function(d) {
-      tooltipSerial
-      .transition()
-      .duration(200)
-      .style("opacity", .9)
-
-      var msg = d.frequency.toLocaleString('en-US') + " records with<br/>"
-              + d.score + ' score';
-      tooltipSerial
-      .html(msg)
-      .style("left", getXCoord() + "px")
-      .style("top", getYCoord() + "px")
-    }
-
-    var moveTooltipSerial = function(d) {
-      tooltipSerial
-      .style("left", getXCoord() + "px")
-      .style("top", getYCoord() + "px")
-    }
-
-    var hideTooltipSerial = function(d) {
-      tooltipSerial
-      .transition()
-      .duration(100)
-      .style("opacity", 0)
-    }
-
-    var getXCoord = function() {
-      return d3.event.pageX + 10;
-    }
-
-    var getYCoord = function() {
-      return d3.event.pageY - 28;
-    }
-
-    g.selectAll(".bar")
-      .data(data)
-      .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", function(d) { return x(d.score); })
-      .attr("y", function(d) { return y(d.frequency); })
-      .attr("width", x.bandwidth())
-      .attr("height", function(d) { return height - y(d.frequency); })
-      .on("mouseover", showTooltipSerial)
-      .on("mousemove", moveTooltipSerial)
-      .on("mouseleave", hideTooltipSerial)
-    ;
-
-    g.selectAll('.tick text')
-      .data(data)
-      .on('mouseover', showTooltipSerial)
-      .on("mousemove", moveTooltipSerial)
-      .on("mouseleave", hideTooltipSerial)
-    ;
-
-  })
-  .catch((error) => {
-    console.log('error happened');
-    throw error;
-  });
 {/literal}
 </script>

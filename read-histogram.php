@@ -6,6 +6,7 @@ $allowable_histograms = [
   'classifications-histogram' => ['name' => 'count', 'limit' => 30],
   'serial-histogram' => ['name' => 'score', 'limit' => 40],
   'tt-completeness-histogram-total' => ['name' => 'count', 'limit' => 40],
+  'serial-score-histogram-total' => ['name' => 'count', 'limit' => 40],
 ];
 
 $tt_completeness_suffixes = [
@@ -18,6 +19,18 @@ $tt_completeness_suffixes = [
 
 foreach ($tt_completeness_suffixes as $suffix) {
   $allowable_histograms['tt-completeness-histogram-' . $suffix] = [
+    'name' => 'count', 'limit' => 10
+  ];
+}
+
+$serial_score_suffixes = [
+  'date1-unknown', 'country-unknown', 'language', 'auth', 'enc-full', 'enc-mlk7',
+  '006', '260', '264', '310', '336', '362', '588', 'no-subject', 'has-subject',
+  'pcc', 'date1-0', 'abbreviated'
+];
+
+foreach ($serial_score_suffixes as $suffix) {
+  $allowable_histograms['serial-score-histogram-' . $suffix] = [
     'name' => 'count', 'limit' => 10
   ];
 }

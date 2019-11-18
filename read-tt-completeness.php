@@ -33,8 +33,8 @@ function readHistogram($dir, $db) {
           $records[] = $record;
       }
     }
-    $smarty->assign('db', $db);
     $smarty->assign('fields', $records);
+    $smarty->assign('db', $db);
     return $smarty->fetch('tt-completeness-histogram.tpl');
   }
   return null;
