@@ -256,7 +256,7 @@ function opacLink($doc, $id) {
       . trim($id)
       . '%22';
   } else if ($core == 'gbv') {
-    // https://kxp.k10plus.de/DB=2.1/PPNSET?PPN=1669734900
+    return sprintf('https://kxp.k10plus.de/DB=2.1/PPNSET?PPN=%s', trim($id));
   }
 }
 
