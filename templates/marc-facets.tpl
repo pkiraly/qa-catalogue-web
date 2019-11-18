@@ -8,7 +8,9 @@
       {assign var=offset value=0}
     {/if}
     <ul>
-      {foreach $values as $term => $count}<li><a href="#" class="facet-term">{$term}</a> ({$count})</li>{/foreach}
+      {foreach $values as $term => $count}
+        <li><a href="#" class="facet-term">{$term}</a> ({$count|number_format})</li>
+      {/foreach}
       {if count(get_object_vars($values)) >= 10 || $offset > 0}
         <li>
           {if $offset > 0}

@@ -54,7 +54,7 @@
         </td>
         <td class="number-of-record">{$record->{'number-of-record'}|number_format}</td>
         <td class="percent-of-record">{$percent|number_format:2}%</td>
-        <td class="number-of-instances">{$record->{'number-of-instances'}}</td>
+        <td class="number-of-instances">{$record->{'number-of-instances'}|number_format}</td>
         <td class="min">{$record->min}</td>
         <td class="max">{$record->max}</td>
         <td class="mean">{$record->mean}</td>
