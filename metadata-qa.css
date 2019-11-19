@@ -53,9 +53,13 @@ h3 {
   font-weight: 200;
   font-size: 130%;
 }
-.record h2 .fa-book {
+.record h2 a .fa {
   color: #37ba00;
 }
+.record h2 a .fa-info-circle {
+  margin-left: 20px;
+}
+
 .record .label {
   color: #cccccc;
 }

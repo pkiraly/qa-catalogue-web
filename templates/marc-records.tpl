@@ -164,7 +164,7 @@
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
              id="marc-issue-tab-{$id}" href="#marc-issue-{$id}"
-             aria-controls="marc-issue-tab" data-id="{$id}">isues</a>
+             aria-controls="marc-issue-tab" data-id="{$id}">issues</a>
         </li>
       </ul>
       <div class="tab-content">

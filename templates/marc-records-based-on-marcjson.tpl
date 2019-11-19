@@ -1,10 +1,12 @@
 {foreach $docs as $doc}
   {assign var="record" value=getRecord($doc)}
   {assign var="id" value=$doc->id|regex_replace:"/ +$/":""}
+  {assign var="type" value=getFirstField($doc, 'type_ss')}
   <div class="record">
     <h2>
       {assign var="tag245" value=getField($record, '245')}
       {assign var="tag773" value=getField($record, '773')}
+      <i class="fa fa-{type2icon($type)}" title="type: {$type}"></i>
       {if isset($tag245->subfields->a) || isset($tag245->subfields->b)}
         {include 'conditional-foreach.tpl' obj=$tag245->subfields key='a'}
         {include 'conditional-foreach.tpl' obj=$tag245->subfields key='b'}
@@ -14,7 +16,7 @@
           {include 'conditional-foreach.tpl' obj=$tag245->subfields key='n'}
         {/if}
       {/if}
-      <a href="#" class="record-details" data="details-{$id}" title="display details"><i class="fa fa-book" aria-hidden="true"></i></a>
+      <a href="#" class="record-details" data="details-{$id}" title="display details"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
       <a href="{opacLink($doc, $doc->id)}" target="_blank" title="Display record in the library catalogue"><i class="fa fa-external-link" aria-hidden="true"></i></a>
     </h2>
     {* 245c_Title_responsibilityStatement_ss *}
@@ -228,7 +230,7 @@
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
              id="marc-issue-tab-{$id}" href="#marc-issue-{$id}"
-             aria-controls="marc-issue-tab" data-id="{$id}">isues</a>
+             aria-controls="marc-issue-tab" data-id="{$id}">issues</a>
         </li>
       </ul>
       <div class="tab-content">

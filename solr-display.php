@@ -53,10 +53,23 @@ function getRecords($solrResponse) {
   $smarty->registerPlugin("function", "getLeaderByPosition", "getLeaderByPosition");
   $smarty->registerPlugin("function", "get008ByPosition", "get008ByPosition");
   $smarty->registerPlugin("function", "formatMarcDate", "formatMarcDate");
+  $smarty->registerPlugin("function", "type2icon", "type2icon");
 
   return $smarty->fetch('marc-records-based-on-marcjson.tpl');
 }
 
+function type2icon($type) {
+  switch ($type) {
+    case 'Books': $icon = 'book'; break;
+    case 'Maps': $icon = 'map'; break;
+    case 'Computer Files': $icon = 'save'; break;
+    case 'Music': $icon = 'music'; break;
+    case 'Continuing Resources': $icon = 'clone'; break;
+    case 'Visual Materials': $icon = 'image'; break;
+    case 'Mixed Materials': $icon = 'archive'; break;
+  }
+  return $icon;
+}
 function getFacets($solrResponse) {
   global $smarty;
 
