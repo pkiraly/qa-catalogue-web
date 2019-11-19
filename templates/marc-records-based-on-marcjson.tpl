@@ -216,6 +216,11 @@
              aria-controls="marc-leader-tab">Leader explained</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
+             id="marc-008-tab-{$id}" href="#marc-008-{$id}"
+             aria-controls="marc-008-tab">008 explained</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
              id="marc-human-tab-{$id}" href="#marc-human-{$id}"
              aria-controls="marc-human-tab">labels</a>
@@ -246,6 +251,10 @@
         <div class="tab-pane marc-leader" id="marc-leader-{$id}" role="tabpanel"
              aria-labelledby="data-tab">
           {include 'marc/leader.tpl'}
+        </div>
+        <div class="tab-pane marc-008" id="marc-008-{$id}" role="tabpanel"
+             aria-labelledby="data-tab">
+          {include 'marc/008.tpl'}
         </div>
         <div class="tab-pane" id="marc-human-{$id}" role="tabpanel"
              aria-labelledby="data-tab">

@@ -49,8 +49,10 @@ function getRecords($solrResponse) {
   $smarty->registerPlugin("function", "getSubfields", "getSubfields");
   $smarty->registerPlugin("function", "hasAuthorityNames", "hasAuthorityNames");
   $smarty->registerPlugin("function", "hasSubjectHeadings", "hasSubjectHeadings");
-  $smarty->registerPlugin("function", "getLeader", "getLeader");
+  $smarty->registerPlugin("function", "getFirstField", "getFirstField");
   $smarty->registerPlugin("function", "getLeaderByPosition", "getLeaderByPosition");
+  $smarty->registerPlugin("function", "get008ByPosition", "get008ByPosition");
+  $smarty->registerPlugin("function", "formatMarcDate", "formatMarcDate");
 
   return $smarty->fetch('marc-records-based-on-marcjson.tpl');
 }
@@ -139,7 +141,7 @@ function getFields($record, $fieldName) {
 }
 
 function getLeaderByPosition($doc, $start, $end = NULL) {
-  $leader = getLeader($doc, 'Leader_ss');
+  $leader = getFirstField($doc, 'Leader_ss');
   if ($leader != null) {
     $length = ($end == null) ? 1 : $end - $start;
     $part = substr($leader, $start, $length);
@@ -151,10 +153,28 @@ function getLeaderByPosition($doc, $start, $end = NULL) {
   return null;
 }
 
-function getLeader($doc, $fieldName) {
-  if (isset($doc->{$fieldName}))
-    return $doc->{$fieldName}[0];
+function get008ByPosition($doc, $start, $end = NULL) {
+  $field = getFirstField($doc, '008_GeneralInformation_ss');
+  if ($field != null) {
+    $length = ($end == null) ? 1 : $end - $start;
+    $part = substr($field, $start, $length);
+    if ($part == ' ') {
+      $part = '" "';
+    }
+    return $part;
+  }
   return null;
+}
+
+function getFirstField($doc, $fieldName, $withSpaceReplace = FALSE) {
+  $value = null;
+  if (isset($doc->{$fieldName})) {
+    $value = $doc->{$fieldName}[0];
+    if ($withSpaceReplace) {
+      $value = str_replace(" ", "&nbsp;", $value);
+    }
+  }
+  return $value;
 }
 
 function getSubfields($record, $fieldName, $subfield) {
@@ -167,6 +187,15 @@ function getSubfields($record, $fieldName, $subfield) {
     }
   }
   return $subfields;
+}
+
+function formatMarcDate($date) {
+  $y = substr($date, 0, 2);
+  $m = substr($date, 2, 2);
+  $d = substr($date, 4);
+  $y = preg_match('/^[01]/', $y) ? '20' . $y : '19' . y;
+  $date = sprintf("%s-%s-%s", $y, $m, $d);
+  return $date;
 }
 
 function hasAuthorityNames($record) {
