@@ -16,6 +16,7 @@ $elementsFile = sprintf('%s/%s/issue-summary.csv', $configuration['dir'], $db);
 $records = [];
 $types = [];
 $max = 0;
+$total = 0;
 if (file_exists($elementsFile)) {
   // $keys = ['path', 'type', 'message', 'url', 'count']; // "sum",
   // control subfield: invalid value
@@ -45,11 +46,13 @@ if (file_exists($elementsFile)) {
       }
       if (!isset($typeCounter[$type])) {
         $typeCounter[$type] = (object)[
-          'count' => 0,
+          'instances' => 0,
+          'records' => 0,
           'variations' => 0
         ];
       }
-      $typeCounter[$type]->count += $record->count;
+      $typeCounter[$type]->instances += $record->instances;
+      $typeCounter[$type]->records += $record->records;
       $typeCounter[$type]->variations++;
     }
   }
@@ -63,19 +66,23 @@ if (file_exists($elementsFile)) {
     }
     $mainTypes[$mainType][] = $type;
   }
-  $orderedMainTypes = ['record', 'control subfield', 'field', 'indicator', 'subfield'];
-  $typesOrdered = [];
-  foreach ($orderedMainTypes as $mainType) {
-    if (isset($mainTypes[$mainType])) {
-      asort($mainTypes[$mainType]);
-      $typesOrdered = array_merge($typesOrdered, $mainTypes[$mainType]);
+  $orderedCategories = ['record', 'control subfield', 'field', 'indicator', 'subfield'];
+  $categories = [];
+  foreach ($orderedCategories as $category) {
+    if (isset($mainTypes[$category])) {
+      asort($mainTypes[$category]);
+      $categories[$category] = $mainTypes[$category];
     }
   }
 
   if ($display == 1) {
     $smarty->assign('records', $records);
-    $smarty->assign('types', $typesOrdered);
-    $smarty->assign('fieldNames', ['path', 'message', 'url', 'count']);
+    $smarty->assign('categories', $categories);
+    $smarty->assign('topStatistics', readTotal());
+    $smarty->assign('total', $total);
+    $smarty->assign('typeStatistics', readTypes());
+    $smarty->assign('categoryStatistics', readCategories());
+    $smarty->assign('fieldNames', ['path', 'message', 'url', 'instances', 'records']);
     $smarty->assign('typeCounter', $typeCounter);
     $smarty->registerPlugin("function", "showMarcUrl", "showMarcUrl");
     $html = $smarty->fetch('issue-summary.tpl');
@@ -104,4 +111,48 @@ function showMarcUrl($content) {
     $content = $marcBaseUrl . $content;
 
   return $content;
+}
+
+function readCategories() {
+  return readIssueCsv('issue-by-category.csv', 'category');
+}
+
+function readTypes() {
+  return readIssueCsv('issue-by-type.csv', 'type');
+}
+
+function readTotal() {
+  global $total;
+  $statistics = readIssueCsv('issue-total.csv', 'type');
+  foreach ($statistics as $item) {
+    $total += $item->records;
+  }
+  foreach ($statistics as &$item) {
+    $item->percent = ($item->records / $total) * 100;
+  }
+  return $statistics;
+}
+
+function readIssueCsv($filename, $keyField) {
+  global $configuration, $db;
+  $elementsFile = sprintf('%s/%s/%s', $configuration['dir'], $db, $filename);
+  $records = [];
+  if (file_exists($elementsFile)) {
+    $header = null;
+    foreach (file($elementsFile) as $line) {
+      $values = str_getcsv($line);
+      if (is_null($header)) {
+        $header = $values;
+      } else {
+        if (count($header) != count($values)) {
+          error_log(count($header) . ' vs ' . count($values));
+        }
+        $record = (object)array_combine($header, $values);
+        $key = $record->{$keyField};
+        unset($record->{$keyField});
+        $records[$key] = $record;
+      }
+    }
+  }
+  return $records;
 }

@@ -185,6 +185,15 @@ table#issues-table tr td.type span.type {
   font-weight: bold;
 }
 
+table#issues-table tr td.category span.category {
+  font-weight: bold;
+}
+
+table#issues-table tr.category-header td {
+  padding-top: 5px;
+  border-bottom: 1px solid black;
+}
+
 table#issues-table {
   width: 100%;
 }
@@ -337,3 +346,11 @@ div.tooltip {
   color: white;
   border-radius: 5px;
 }
+
+table tr td {
+  vertical-align: top;
+}
+
+#issues-table tr.t td {border-bottom: 1px solid #eee}
+
+/* #issues-table tr.t.odd {background: #eee} */
