@@ -181,6 +181,7 @@ function readByField($dir, $db) {
         $records[] = $record;
       }
     }
+    // id,field,location,scheme,abbreviation,abbreviation4solr,recordcount,instancecount
     $smarty->assign('records', $records);
     $smarty->assign('fields', $fields);
 

@@ -599,7 +599,6 @@
 
   function setFacetClickBehaviour() {
     $('div#facets ul a.facet-term').click(function (e) {
-      console.log('facet-term->click()');
       var field = $(this).parent().parent().parent().attr('id');
       var value = $(this).html();
       var filterParam = filterParamTemplate({'field': field, 'value': value});
@@ -613,10 +612,8 @@
   }
 
   function setFacetNavigationClickBehaviour() {
-    console.log('setFacetNavigationClickBehaviour');
     $('div.facet-block ul a.facet-up').click(function (event) {
       event.preventDefault();
-      console.log('facet-up->click()');
       var field = $(this).attr('data-field');
       var offset = parseInt($(this).attr('data-offset'));
       facetOffsetParameters[field] = (offset > 10) ? offset - 10 : 0;
@@ -624,7 +621,6 @@
     });
     $('div.facet-block ul a.facet-down').click(function (event) {
       event.preventDefault();
-      console.log('facet-down->click()');
       var field = $(this).attr('data-field');
       var offset = parseInt($(this).attr('data-offset'));
       facetOffsetParameters[field] = offset + 10;
@@ -665,12 +661,9 @@
         $('#message').html('');
         $('a[aria-controls="marc-issue-tab"]').click(function (e) {
           var id = $(this).attr('data-id');
-          console.log('id: ' + id);
           var url = 'read-record-issues.php?db=' + db + '&id=' + id + '&display=1';
-          console.log('getting url: ' + url);
           $.ajax(url)
             .done(function(result) {
-              console.log('retrieving url: ' + url);
               $('#marc-issue-' + id).html(result);
             });
         });
@@ -684,7 +677,6 @@
     $('.record h2 a.record-details').click(function (event) {
       event.preventDefault();
       var detailsId = $(this).attr('data');
-      console.log(detailsId);
       $('#' + detailsId).toggle();
     });
 
@@ -795,8 +787,7 @@
     });
     start = 0;
     loadDataTab(buildUrl());
-    resetTabs();
-    $('#myTab a[href="#data"]').tab('show');
+    showTab('data');
   }
 
   function loadCompleteness() {
@@ -995,8 +986,7 @@
        .done(function (data) {
          var query = 'id:("' + data.recordIds.join('" OR "') + '")';
          $('#query').val(query);
-         resetTabs();
-         $('#myTab a[href="#data"]').tab('show');
+         showTab('data');
          doSearch();
        });
     });
@@ -1062,9 +1052,7 @@
         $('#terms-scheme').html(scheme);
         $('#terms-scheme').attr('data-facet', facet);
         $('#terms-scheme').attr('data-query', termQuery);
-        resetTabs();
-        $('#myTab a[href="#terms"]').tab('show');
-        console.log('window.scrollTo');
+        showTab('terms');
         scroll(0, 0);
 
         $('#terms-content a.facet-term').click(function(event) {
@@ -1081,8 +1069,7 @@
           start = 0;
           var url = buildUrl();
           loadDataTab(url);
-          resetTabs();
-          $('#myTab a[href="#data"]').tab('show');
+          showTab('data');
         });
       });
     });
@@ -1112,8 +1099,7 @@
         $('#terms-scheme').html(scheme);
         $('#terms-scheme').attr('data-facet', facet);
         $('#terms-scheme').attr('data-query', termQuery);
-        resetTabs();
-        $('#myTab a[href="#terms"]').tab('show');
+        showTab('terms');
         scroll(0, 0);
 
         $('#terms-content a.facet-term').click(function(event) {
@@ -1130,8 +1116,7 @@
           start = 0;
           var url = buildUrl();
           loadDataTab(url);
-          resetTabs();
-          $('#myTab a[href="#data"]').tab('show');
+          showTab('data');
         });
       });
     });
@@ -1157,13 +1142,12 @@
       ;
 
       $.getJSON(url, function(result, status) {
+        showTab('terms');
+        scroll(0, 0);
         $('#terms-content').html(result.facets);
         $('#terms-scheme').html(scheme);
         $('#terms-scheme').attr('data-facet', facet);
         $('#terms-scheme').attr('data-query', termQuery);
-        resetTabs();
-        $('#myTab a[href="#terms"]').tab('show');
-        scroll(0, 0);
 
         $('#terms-content a.facet-term').click(function(event) {
           var term = $(this).html();
@@ -1179,8 +1163,7 @@
           start = 0;
           var url = buildUrl();
           loadDataTab(url);
-          resetTabs();
-          $('#myTab a[href="#data"]').tab('show');
+          showTab('data');
         });
       });
     });
@@ -1266,6 +1249,17 @@
         $(this).removeClass('active');
       }
     });
+  }
+
+  function showTab(id) {
+    $('#myTabContent .tab-pane').each(function() {
+      if ($(this).attr('id') == id) {
+        $(this).addClass('active');
+      } else {
+        $(this).removeClass('active');
+      }
+    });
+    $('#myTab a[href="#' + id + '"]').tab('show');
   }
 
   $(document).ready(function () {

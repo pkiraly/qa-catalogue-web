@@ -206,7 +206,7 @@ function formatMarcDate($date) {
   $y = substr($date, 0, 2);
   $m = substr($date, 2, 2);
   $d = substr($date, 4);
-  $y = preg_match('/^[01]/', $y) ? '20' . $y : '19' . y;
+  $y = preg_match('/^[01]/', $y) ? '20' . $y : '19' . $y;
   $date = sprintf("%s-%s-%s", $y, $m, $d);
   return $date;
 }

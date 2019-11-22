@@ -33,68 +33,42 @@ if (!file_exists($elementsFile)) {
       $values = str_getcsv($line);
       if ($lineNumber == 1) {
         $header = $values;
-        $header[1] = 'path';
       } else {
         if (count($header) != count($values)) {
           error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
         }
         $record = (object)array_combine($header, $values);
-        // error_log(gettype($record->recordId) . ' vs ' . gettype($id));
         if ($record->recordId == $id) {
-          $type = $record->type;
-          unset($record->type);
-          unset($record->recordId);
-          $record->url = str_replace('https://www.loc.gov/marc/bibliographic/', '', $record->url);
-          if (!isset($issues[$type])) {
-            $issues[$type] = [];
+          $errors = [];
+          $rawErrors = explode(';', $record->details);
+          foreach ($rawErrors as $rawError) {
+            list($errorId, $count) = explode(':', $rawError);
+            $errors[$errorId] = $count;
           }
-          $issues[$type][] = $record;
-          if (!isset($typeCounter[$type])) {
-            $typeCounter[$type] = (object)[
-              'count' => 0,
-              'variations' => 0
-            ];
+          $issueDefinitions = getIssueDefinitions(array_keys($errors));
+          foreach ($issueDefinitions as $id => &$issue) {
+            $issue->count = $errors[$errorId];
+            if (!isset($issues[$issue->type])) {
+              $issues[$issue->type] = [];
+              $typeCounter[$issue->type] = 0;
+            }
+            $issues[$issue->type][] = $issue;
+            $typeCounter[$issue->type] += $issue->count;
           }
-          $typeCounter[$type]->count++;
-          $typeCounter[$type]->variations++;
-          $already_found = true;
-        } else {
-          if ($already_found)
-            break;
+          break;
         }
       }
     }
     fclose($handle);
-  } else {
-    // error opening the file.
   }
 
   $types = array_keys($issues);
-  /*
-  $mainTypes = [];
-  foreach ($types as $type) {
-    list($mainType, $subtype) = explode(': ', $type);
-    if (!isset($mainTypes[$mainType])) {
-      $mainTypes[$mainType] = [];
-    }
-    $mainTypes[$mainType][] = $type;
-  }
-  $orderedMainTypes = ['record', 'control subfield', 'field', 'indicator', 'subfield'];
-  $typesOrdered = [];
-  foreach ($orderedMainTypes as $mainType) {
-    if (isset($mainTypes[$mainType])) {
-      asort($mainTypes[$mainType]);
-      $typesOrdered = array_merge($typesOrdered, $mainTypes[$mainType]);
-    }
-  }
-  */
 }
 
 if ($display == 1) {
   $smarty = createSmarty('templates');
   $smarty->assign('issues', $issues);
   $smarty->assign('types', $types);
-  // $smarty->assign('types', $typesOrdered);
   $smarty->assign('fieldNames', ['path', 'message', 'url', 'count']);
   $smarty->assign('typeCounter', $typeCounter);
   $smarty->registerPlugin("function", "showMarcUrl", "showMarcUrl");
@@ -104,7 +78,6 @@ if ($display == 1) {
   header("Content-type: application/json");
   echo json_encode([
     'issues' => $issues,
-    // 'types' => $typesOrdered,
     'types' => $types,
     'typeCounter' => $typeCounter
   ]);
@@ -117,4 +90,32 @@ function showMarcUrl($content) {
     $content = $marcBaseUrl . $content;
 
   return $content;
+}
+
+function getIssueDefinitions($ids) {
+  global $configuration, $db;
+
+  $issues = [];
+  $file = sprintf('%s/%s/issue-summary.csv', $configuration['dir'], $db);
+  if (file_exists($file)) {
+    $header = [];
+    $handle = fopen($file, "r");
+    if ($handle) {
+      while (($line = fgets($handle)) !== false) {
+        $values = str_getcsv($line);
+        if (empty($header)) {
+          $header = $values;
+          $header[1] = 'path';
+        } else {
+          $record = (object)array_combine($header, $values);
+          if (in_array($record->id, $ids)) {
+            $key = $record->id;
+            unset($record->id);
+            $issues[$key] = $record;
+          }
+        }
+      }
+    }
+  }
+  return $issues;
 }

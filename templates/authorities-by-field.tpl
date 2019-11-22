@@ -56,7 +56,8 @@
               <ul>
                 {foreach $subfieldsById[$record->id] as $item}
                   {assign var="key" value="{$record->field}{$item}"}
-                  <li>{$item}:
+                  <li>
+                    <a href="#completeness-{$record->field}{$item}" class="completeness" data-field="{$record->field}{$item}">{$item}</a>:
                     {if isset($elements[$key]) && $elements[$key] != ''}
                       {$elements[$key]}
                     {elseif $item == '$9'}
@@ -104,5 +105,9 @@ $('table#classification i').click(function (event) {
     $(this).removeClass(up);
     $(this).addClass(down);
   }
+});
+$('a.completeness').click(function () {
+  showTab('completeness');
+  setCompletenessLinkHandlers();
 });
 </script>

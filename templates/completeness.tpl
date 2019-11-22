@@ -37,7 +37,7 @@
       {/if}
       {assign var=percent value="{$record->{'number-of-record'} * 100 / $max}"}
       <tr>
-        <td class="path">
+        <td class="path" id="completeness-{$record->path}">
           {if isset($record->solr)}
             <a href="javascript:searchForField('{$record->solr}')">{$record->path|substr:3}</a>
           {else}
