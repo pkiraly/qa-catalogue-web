@@ -354,3 +354,24 @@ table tr td {
 #issues-table tr.t td {border-bottom: 1px solid #eee}
 
 /* #issues-table tr.t.odd {background: #eee} */
+
+#functions p.title {
+  margin-bottom: 0;
+}
+
+#functions p.explanation {
+  font-size: 80%;
+  line-height: 1;
+}
+
+#functions .bar-chart {
+  height: 100px;
+  width: 270px;
+  border: 1px solid #37ba00;
+}
+#functions .bar-chart g rect {
+  background-color: #37ba00;
+}
+#functions div.row label {
+  font-weight: bold;
+}

@@ -195,73 +195,101 @@
       <div class="row">
         <div class="col-3">
           <svg id="bar-chart-DiscoverySearch" class="bar-chart"></svg>
-          <p>Search</p>
+          <p class="title">Search</p>
+          <p class="explanation">Search for a resource corresponding to stated criteria (i.e., to search either a
+            single entity or a set of entities using an attribute or relationship of the entity as the search criteria).</p>
         </div>
         <div class="col-3">
           <svg id="bar-chart-DiscoveryIdentify" class="bar-chart"></svg>
-          <p>Identify</p>
+          <p class="title">Identify</p>
+          <p class="explanation">Identify a resource (i.e., to confirm that the entity described or located corresponds
+            to the entity sought, or to distinguish between two or more entities with similar characteristics).</p>
         </div>
         <div class="col-3">
           <svg id="bar-chart-DiscoverySelect" class="bar-chart"></svg>
-          <p>Select</p>
+          <p class="title">Select</p>
+          <p class="explanation">Select a resource that is appropriate to the user’s needs (i.e., to choose an entity
+            that meets the user’s requirements with respect to content, physical format, etc., or to reject an entity
+            as being inappropriate to the user’s needs).</p>
         </div>
         <div class="col-3">
           <svg id="bar-chart-DiscoveryObtain" class="bar-chart"></svg>
-          <p>Obtain</p>
+          <p class="title">Obtain</p>
+          <p class="explanation">Access a resource either physically or electronically through an online connection to
+            a remote computer, and/or acquire a resource through purchase, licence, loan, etc.</p>
         </div>
       </div>
       <div class="row"><label>Usage functions</label></div>
       <div class="row">
         <div class="col-3">
           <svg id="bar-chart-UseRestrict" class="bar-chart"></svg>
-          <p>Restrict</p>
+          <p class="title">Restrict</p>
+          <p class="explanation">Control access to or use of a resource (i.e., to restrict access to and/or use of an
+            entity on the basis of proprietary rights, administrative policy, etc.).</p>
         </div>
         <div class="col-3">
           <svg id="bar-chart-UseManage" class="bar-chart"></svg>
-          <p>Manage</p>
+          <p class="title">Manage</p>
+          <p class="explanation">Manage a resource in the course of acquisition, circulation, preservation, etc.</p>
         </div>
         <div class="col-3">
           <svg id="bar-chart-UseOperate" class="bar-chart"></svg>
-          <p>Operate</p>
+          <p class="title">Operate</p>
+          <p class="explanation">Operate a resource (i.e., to open, display, play, activate, run, etc. an entity that
+            requires specialized equipment, software, etc. for its operation).</p>
         </div>
         <div class="col-3">
           <svg id="bar-chart-UseInterpret" class="bar-chart"></svg>
-          <p>Interpret</p>
+          <p class="title">Interpret</p>
+          <p class="explanation">Interpret or assess the information contained in a resource.</p>
         </div>
       </div>
       <div class="row"><label>Management functions</label></div>
       <div class="row">
         <div class="col-3">
           <svg id="bar-chart-ManagementIdentify" class="bar-chart"></svg>
-          <p>Identify</p>
+          <p class="title">Identify</p>
+          <p class="explanation">Identify a record, segment, field, or data element (i.e., to differentiate one logical
+            data component from another).</p>
         </div>
         <div class="col-3">
           <svg id="bar-chart-ManagementProcess" class="bar-chart"></svg>
-          <p>Process</p>
+          <p class="title">Process</p>
+          <p class="explanation">Process a record, segment, field, or data element (i.e., to add, delete, replace,
+            output, etc. a logical data component by means of an automated process).</p>
         </div>
         <div class="col-3">
           <svg id="bar-chart-ManagementSort" class="bar-chart"></svg>
-          <p>Sort</p>
+          <p class="title">Sort</p>
+          <p class="explanation">Sort a field for purposes of alphabetic or numeric arrangement.</p>
         </div>
         <div class="col-3">
           <svg id="bar-chart-ManagementDisplay" class="bar-chart"></svg>
-          <p>Display</p>
+          <p class="title">Display</p>
+          <p class="explanation">Display a field or data element (i.e., to display a field or data element with the
+            appropriate print constant or as a tracing).</p>
         </div>
       </div>
 
-      <style>
-        .bar-chart {
-          height: 100px;
-          width: 270px;
-          border: 1px solid #37ba00;
-        }
-        .bar-chart g rect {
-          background-color: #37ba00;
-        }
-        #functions div.row label {
-          font-weight: bold;
-        }
-      </style>
+      <p>The Funtional Requirements for Bibliographic Records (FRBR) document's main part defines
+        the primary and secondary entities which became famous as FRBR models. Years later Tom Delsey created a mapping
+        [1] between the 12 functions and the individual MARC elements. This page shows how these functions are supported
+        by the records. The horizontal axis show the strength of the support: something on the left means that support
+        is low so only small portion of the fields support a function are available in the records, something on the
+        right means the support is strength. The bars represents a range of values. The vertical axis shows the number
+        of records having values in the same range.</p>
+
+      <p>It is experimental because it turned out, that the the mapping covers about 2000 elements (fields, subfields,
+        indicatiors etc.), however on an average record there are max several hundred elements, which results that even
+        in the best record has about 10-15% of the totality of the elements supporting a given function. So the tool
+        doesn't shows you exact numbers, and the scale is not 0-100 but 0-[best score] which is different for every
+        catalogue.</p>
+
+      <blockquote>[1] Delsey, T. Functional analysis of the marc 21 bibliographic and holdings formats. Tech. rep.,
+        Library of Congress, 2002. Prepared for the Network Development and MARC Standards Office Library of Congress.
+        Second Revision: September 17, 2003.
+        <a href="https://www.loc.gov/marc/marc-functional-analysis/original_source/analysis.pdf"
+           target="_blank">https://www.loc.gov/marc/marc-functional-analysis/original_source/analysis.pdf</a>.
     </div>
     <div class="tab-pane" id="classifications" role="tabpanel" aria-labelledby="classifications-tab">
       <h2>Subject analysis</h2>
