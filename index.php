@@ -271,13 +271,23 @@
         </div>
       </div>
 
-      <p>The Funtional Requirements for Bibliographic Records (FRBR) document's main part defines
-        the primary and secondary entities which became famous as FRBR models. Years later Tom Delsey created a mapping
-        [1] between the 12 functions and the individual MARC elements. This page shows how these functions are supported
-        by the records. The horizontal axis show the strength of the support: something on the left means that support
-        is low so only small portion of the fields support a function are available in the records, something on the
-        right means the support is strength. The bars represents a range of values. The vertical axis shows the number
-        of records having values in the same range.</p>
+      <p>The Funtional Requirements for Bibliographic Records (FRBR) document's main part defines the primary and
+        secondary entities which became famous as FRBR models. Years later Tom Delsey created a mapping
+        between the 12 functions and the individual MARC elements.</p>
+
+      <blockquote>
+        Tom Delsey (2002)
+        <em>Functional analysis of the marc 21 bibliographic and holdings formats.</em> Tech. report,
+        Library of Congress, 2002. Prepared for the Network Development and MARC Standards Office Library of Congress.
+        Second Revision: September 17, 2003.
+        <a href="https://www.loc.gov/marc/marc-functional-analysis/original_source/analysis.pdf"
+           target="_blank">https://www.loc.gov/marc/marc-functional-analysis/original_source/analysis.pdf</a>.
+      </blockquote>
+
+      <p>This page shows how these functions are supported by the records. The horizontal axis show the strength of
+        the support: something on the left means that support is low so only small portion of the fields support a
+        function are available in the records, something on the right means the support is strength. The bars
+        represents a range of values. The vertical axis shows the number of records having values in the same range.</p>
 
       <p>It is experimental because it turned out, that the the mapping covers about 2000 elements (fields, subfields,
         indicatiors etc.), however on an average record there are max several hundred elements, which results that even
@@ -285,11 +295,6 @@
         doesn't shows you exact numbers, and the scale is not 0-100 but 0-[best score] which is different for every
         catalogue.</p>
 
-      <blockquote>[1] Delsey, T. Functional analysis of the marc 21 bibliographic and holdings formats. Tech. rep.,
-        Library of Congress, 2002. Prepared for the Network Development and MARC Standards Office Library of Congress.
-        Second Revision: September 17, 2003.
-        <a href="https://www.loc.gov/marc/marc-functional-analysis/original_source/analysis.pdf"
-           target="_blank">https://www.loc.gov/marc/marc-functional-analysis/original_source/analysis.pdf</a>.
     </div>
     <div class="tab-pane" id="classifications" role="tabpanel" aria-labelledby="classifications-tab">
       <h2>Subject analysis</h2>
@@ -325,10 +330,12 @@
       <h2>Thompson&mdash;Traill completeness</h2>
       <p>These scores are the implementation of the following paper:</p>
 
-      <p>Kelly Thompson and Stacie Traill (2017)
+      <blockquote>
+        Kelly Thompson and Stacie Traill (2017)
         <em>Implementation of the scoring algorithm described in Leveraging Python to improve ebook
           metadata selection, ingest, and management</em>, Code4Lib Journal, Issue 38, 2017-10-18.
         <a href="http://journal.code4lib.org/articles/12828" target="_blank">http://journal.code4lib.org/articles/12828</a>
+      </blockquote>
       <p>Their approach to calculate the quality of ebook records comming from different data
         sources.</p>
       <div id="tt-completeness-content"></div>

@@ -375,3 +375,7 @@ table tr td {
 #functions div.row label {
   font-weight: bold;
 }
+
+blockquote {
+  margin: 20px;
+}
