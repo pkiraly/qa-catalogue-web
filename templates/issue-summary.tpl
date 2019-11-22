@@ -14,11 +14,11 @@
 <div class="row" style="width: 500px; margin: 0 0 20px 0">
   <div class="col-sm" style="margin: 0; padding: 0">
     {$topStatistics[0]->records|number_format:0}
-    ({($topStatistics[0]->percent * 100)|number_format:2}%)
+    ({$topStatistics[0]->percent|number_format:2}%)
   </div>
   <div class="col-sm text-right" style="margin: 0; padding: 0">
     {$topStatistics[1]->records|number_format:0}
-    ({($topStatistics[1]->percent * 100)|number_format:2}%)
+    ({$topStatistics[1]->percent|number_format:2}%)
   </div>
 </div>
 
