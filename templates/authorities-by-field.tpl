@@ -46,7 +46,13 @@
                 <tbody>
                   {foreach $subfields[$record->id]['list'] as $item}
                     <tr>
-                      <td>{join(', ', $item->subfields)}</td>
+                      <td>
+                        {foreach $item->subfields as $subfield}
+                          {assign var="sub" value={substr($subfield, 0, 2)}}
+                          <a href="#completeness-{$record->field}{$sub}" class="completeness" data-field="{$record->field}{$sub}"
+                          >{$subfield}</a>{if !$subfield@last}, {/if}
+                        {/foreach}
+                      </td>
                       <td class="count">{$item->count|number_format}</td>
                     </tr>
                   {/foreach}
