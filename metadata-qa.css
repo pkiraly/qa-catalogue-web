@@ -240,25 +240,29 @@ div#classifications-content table tbody tr td {
   vertical-align: top;
 }
 
-div.classification-subfields {
+div.classification-subfields,
+div.authority-subfields{
   display: none;
   width: 100%;
   min-width: 100%;
 }
 
-div.classification-subfields table {
+div.classification-subfields table,
+div.authority-subfields table {
   width: 100%;
   min-width: 100%;
 }
 
-div.classification-subfields table th.count {
+div.classification-subfields table th.count,
+div.authority-subfields table th.count {
   width: 100px;
   min-width: 100px;
   max-width: 100px;
   text-align: right;
 }
 
-div.classification-subfields table td.count {
+div.classification-subfields table td.count,
+div.authority-subfields table td.count {
   text-align: right;
 }
 
@@ -276,16 +280,19 @@ div#classifications-content th.records {
   text-align: right;
 }
 
-div.classification-subfields p {
+div.classification-subfields p,
+div.authority-subfields p {
   margin: 10px;
 }
 
-div.classification-subfields ul li {
+div.classification-subfields ul li,
+div.authority-subfields ul li {
   margin-left: 20px;
   list-style-type: square;
 }
 
-div.classification-subfields ul li span {
+div.classification-subfields ul li span,
+div.authority-subfields ul li span {
   color: #999999;
 }
 
@@ -378,4 +385,9 @@ table tr td {
 
 blockquote {
   margin: 20px;
+}
+
+div#completeness-field-table table tr td.number-of-instances {
+  margin-left: 5px;
+  padding-left: 5px;
 }

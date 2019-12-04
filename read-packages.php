@@ -32,10 +32,16 @@ if (file_exists($elementsFile)) {
       }
       $record = (object)array_combine($header, $values);
       $record->percent = $record->count * 100 / $count;
-      if (substr($record->name, 0, 4) == 'tags') {
-        $record->name = substr($record->name, 4);
-        $records[] = $record;
+      if ($record->label == '') {
+        $record->iscoretag = false;
       }
+      if (isset($record->iscoretag) && $record->iscoretag === "true") {
+        $record->iscoretag = true;
+      } else {
+        $record->iscoretag = false;
+      }
+      $records[] = $record;
+
     }
   }
 } else {

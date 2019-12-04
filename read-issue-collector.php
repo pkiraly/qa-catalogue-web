@@ -34,6 +34,7 @@ if (file_exists($elementsFile)) {
           $values = str_getcsv($line);
           $record = (object)array_combine($header, $values);
           $recordIds = explode(';', $record->recordIds);
+          $recordIds = array_slice($recordIds, 0, 10);
           break;
         }
       }

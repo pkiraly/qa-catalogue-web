@@ -32,9 +32,9 @@
           {else}
             {if $record->scheme == 'undetectable'}not specified{else}{$record->scheme}{/if}
           {/if}
-          <i class="fa fa-chevron-down"  data-id="classification-subfields-{$record->id}" aria-hidden="true" title="show subfields"></i>
+          <i class="fa fa-chevron-down"  data-id="authority-subfields-{$record->id}" aria-hidden="true" title="show subfields"></i>
           {if $hasSubfields && isset($record->id) && isset($subfields[$record->id])}
-            <div id="classification-subfields-{$record->id}" class="classification-subfields">
+            <div id="authority-subfields-{$record->id}" class="authority-subfields">
               <p>Which subfields are available in the individual instances of this field?</p>
               <table>
                 <thead>

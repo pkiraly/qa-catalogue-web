@@ -1,22 +1,36 @@
 <table>
+  <colgroup>
+    <col>
+    <col>
+    <col>
+    <col>
+    <col>
+    <col style="border-right: 1px solid #cccccc;">
+    <col>
+    <col>
+    <col>
+    <col>
+    <col>
+  </colgroup>
   <thead>
     <tr class="first">
-      <th colspan="4"></th>
+      <th colspan="3"></th>
+      <th></th>
       <th colspan="2" class="with-border">records</th>
       <th colspan="5" class="with-border">occurences</th>
     </tr>
     <tr class="second">
-      <th class="left">path</th>
-      <th class="left">label</th>
-      <th class="left"></th>
-      <th>terms</th>
-      <th class="bordered-left">count</th>
-      <th>%</th>
-      <th>count</th>
-      <th>min</th>
-      <th>max</th>
-      <th>mean</th>
-      <th class="bordered-right">stddev</th>
+      <th class="left path">path</th>
+      <th class="left subfield">label</th>
+      <th class="left chart"></th>
+      <th class="terms">terms</th>
+      <th class="number-of-record">count</th>
+      <th class="percent-of-record">%</th>
+      <th class="number-of-instances">count</th>
+      <th class="min">min</th>
+      <th class="max">max</th>
+      <th class="mean">mean</th>
+      <th class="stddev">stddev</th>
     </tr>
   </thead>
   <tbody>
@@ -25,13 +39,13 @@
     {foreach $records as $record}
       {if $previousPackage != $record->package}
         <tr>
-          <td colspan="5" class="package">{$record->package}</td>
+          <td colspan="4" class="package">{$record->package}</td>
         </tr>
         {assign var=previousPackage value="{$record->package}"}
       {/if}
       {if $previousTag != $record->tag}
         <tr>
-          <td colspan="5" class="tag">{$record->path|substr:0:3} &mdash; {$record->tag}</td>
+          <td colspan="4" class="tag">{$record->path|substr:0:3} &mdash; {$record->tag}</td>
         </tr>
         {assign var=previousTag value="{$record->tag}"}
       {/if}

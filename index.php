@@ -277,7 +277,7 @@
 
       <blockquote>
         Tom Delsey (2002)
-        <em>Functional analysis of the marc 21 bibliographic and holdings formats.</em> Tech. report,
+        <em>Functional analysis of the MARC 21 bibliographic and holdings formats.</em> Tech. report,
         Library of Congress, 2002. Prepared for the Network Development and MARC Standards Office Library of Congress.
         Second Revision: September 17, 2003.
         <a href="https://www.loc.gov/marc/marc-functional-analysis/original_source/analysis.pdf"

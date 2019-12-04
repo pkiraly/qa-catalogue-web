@@ -65,6 +65,8 @@ if (file_exists($elementsFile)) {
       $mainTypes[$mainType] = [];
     }
     $mainTypes[$mainType][] = $type;
+    uasort($records[$type], 'issueCmp');
+    error_log(json_encode($records[$type]));
   }
   $orderedCategories = ['record', 'control subfield', 'field', 'indicator', 'subfield'];
   $categories = [];
@@ -99,7 +101,7 @@ if ($display == 1) {
   header("Content-type: application/json");
   echo json_encode([
     'records' => $records,
-    'types' => $typesOrdered,
+    // 'types' => $typesOrdered,
     'typeCounter' => $typeCounter
   ]);
 }
@@ -125,7 +127,9 @@ function readTotal() {
   global $total;
   $statistics = readIssueCsv('issue-total.csv', 'type');
   foreach ($statistics as $item) {
-    $total += $item->records;
+    if ($item->type != 2) {
+      $total += $item->records;
+    }
   }
   foreach ($statistics as &$item) {
     $item->percent = ($item->records / $total) * 100;
@@ -149,10 +153,25 @@ function readIssueCsv($filename, $keyField) {
         }
         $record = (object)array_combine($header, $values);
         $key = $record->{$keyField};
-        unset($record->{$keyField});
+        // unset($record->{$keyField});
         $records[$key] = $record;
       }
     }
   }
   return $records;
+}
+
+function issueCmp($a, $b) {
+  $res = cmp($b->records, $a->records);
+  if ($res == 0) {
+    $res = cmp($a->path, $b->path);
+  }
+  return $res;
+}
+
+function cmp($a, $b) {
+  if ($a == $b) {
+    return 0;
+  }
+  return ($a < $b) ? -1 : 1;
 }

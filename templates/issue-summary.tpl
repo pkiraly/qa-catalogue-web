@@ -22,6 +22,31 @@
   </div>
 </div>
 
+<p>excluding undefined field issues</p>
+<div class="row" style="width: 500px; margin: 0 0 0 0">
+  <div class="col-sm" style="margin: 0; padding: 0">
+    <span style="color: #37ba00">records without issues</span>
+  </div>
+  <div class="col-sm text-right" style="margin: 0; padding: 0">
+    <span style="color: maroon">with</span>
+  </div>
+</div>
+
+<div style="width: 500px; background-color: maroon">
+  <div style="width: {ceil((100 - $topStatistics[2]->percent) * 5)}px; background-color: #37ba00; height: 10px;">&nbsp;</div>
+</div>
+
+<div class="row" style="width: 500px; margin: 0 0 20px 0">
+  <div class="col-sm" style="margin: 0; padding: 0">
+    {$total - $topStatistics[2]->records|number_format:0}
+    ({(100 - $topStatistics[2]->percent)|number_format:2}%)
+  </div>
+  <div class="col-sm text-right" style="margin: 0; padding: 0">
+    {$topStatistics[2]->records|number_format:0}
+    ({$topStatistics[2]->percent|number_format:2}%)
+  </div>
+</div>
+
 <table id="issues-table">
   <thead>
     <tr>
@@ -58,11 +83,11 @@
             <td class="url">
               <a href="{showMarcUrl($rowData->url)}" target="_blank"><i class="fa fa-info" aria-hidden="true"></i></a>
             </td>
-            <td class="count">
+            <td class="count instances">
               <a href="#" data-id="{$rowData->id}" data-type="{$type}" data-path="{$rowData->path}"
                  data-message="{$rowData->message}">{$rowData->instances|number_format}</a>
             </td>
-            <td class="count">
+            <td class="count records">
               <a href="#" data-id="{$rowData->id}" data-type="{$type}" data-path="{$rowData->path}"
                  data-message="{$rowData->message}">{$rowData->records|number_format}</a>
             </td>
