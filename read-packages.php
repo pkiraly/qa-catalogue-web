@@ -11,6 +11,7 @@ $countFile = sprintf('%s/%s/count.csv', $configuration['dir'], $db);
 $count = trim(file_get_contents($countFile));
 
 $elementsFile = sprintf('%s/%s/packages.csv', $configuration['dir'], $db);
+$hasNonCoreTags = FALSE;
 $records = [];
 $max = 0;
 if (file_exists($elementsFile)) {
@@ -38,10 +39,10 @@ if (file_exists($elementsFile)) {
       if (isset($record->iscoretag) && $record->iscoretag === "true") {
         $record->iscoretag = true;
       } else {
+        $hasNonCoreTags = TRUE;
         $record->iscoretag = false;
       }
       $records[] = $record;
-
     }
   }
 } else {
@@ -58,7 +59,7 @@ if ($display == 0) {
 } else {
   $smarty->assign('records', $records);
   $smarty->assign('max', $max);
-
+  $smarty->assign('hasNonCoreTags', $hasNonCoreTags);
   $smarty->display('packages.tpl');
 }
 
