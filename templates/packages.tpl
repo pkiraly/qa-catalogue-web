@@ -22,7 +22,7 @@
     {/foreach}
     {if $hasNonCoreTags}
       <tr>
-        <td colspan="5"><h4>Tags defined in extensions of MARC</h4></td>
+        <td colspan="5"><h4>Fields defined in extensions of MARC</h4></td>
       </tr>
       {foreach $records as $record}
         {if isset($record->iscoretag) && !$record->iscoretag}
