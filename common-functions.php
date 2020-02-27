@@ -19,8 +19,9 @@ function getPostedOrDefault($key, $default_value = NULL, $allowed_values = []) {
 }
 
 function createSmarty($templateDir) {
-  define('APPLICATION', 'szte');
-  define('APPLICATION_DIR', $_SERVER['DOCUMENT_ROOT'] . '/' . APPLICATION);
+  // define('APPLICATION', 'szte');
+  // define('APPLICATION_DIR', $_SERVER['DOCUMENT_ROOT'] . '/' . APPLICATION);
+  define('APPLICATION_DIR', __DIR__);
   define('SMARTY_DIR', APPLICATION_DIR . '/libs/smarty-3.1.33/libs/');
   define('_SMARTY', APPLICATION_DIR . '/libs/_smarty/');
   require_once(SMARTY_DIR . 'Smarty.class.php');
