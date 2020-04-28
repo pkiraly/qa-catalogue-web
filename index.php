@@ -347,7 +347,7 @@
       <div id="tt-completeness-content"></div>
     </div>
     <div class="tab-pane" id="pareto" role="tabpanel" aria-labelledby="pareto-tab">
-      <h2>Frequency distribution</h2>
+      <h2>Field frequency distribution</h2>
 
       <p>These charts show how the field frequency patterns. Each chart shows a line which is the function of
         field frequency: on the x axis you can see the subfields ordered by the frequency (how many time a given
