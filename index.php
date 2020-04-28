@@ -48,7 +48,7 @@
       } else if (db == 'dnb') {
         document.write('<a href="https://www.dnb.de/" target="_blank">Deutsche Nationalbibliothek</a>');
       } else if (db == 'gent') {
-        document.write('<a href="https://www.dnb.de/" target="_blank">Universiteitsbibliotheek Gent</a>');
+        document.write('<a href="https://lib.ugent.be/" target="_blank">Universiteitsbibliotheek Gent</a>');
       } else if (db == 'loc') {
         document.write('<a href="https://catalog.loc.gov/" target="_blank">Library of Congress</a>');
       } else if (db == 'mtak') {
@@ -114,6 +114,12 @@
       <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
         id="terms-tab" href="#terms" aria-controls="terms">
         Terms
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
+         id="pareto-tab" href="#pareto" aria-controls="pareto">
+        Pareto
       </a>
     </li>
     <li class="nav-item">
@@ -339,6 +345,18 @@
       <p>Their approach to calculate the quality of ebook records comming from different data
         sources.</p>
       <div id="tt-completeness-content"></div>
+    </div>
+    <div class="tab-pane" id="pareto" role="tabpanel" aria-labelledby="pareto-tab">
+      <h2>Frequency distribution</h2>
+
+      <p>These charts show how the field frequency patterns. Each chart shows a line which is the function of
+        field frequency: on the x axis you can see the subfields ordered by the frequency (how many time a given
+        subfield occured in the whole catalogue). They are ordered by frequency from the most frequent top 1%
+        to the least frequent 1% subfields.
+        The Y axis represents the cumulative occurrence (from 0% to 100%).
+      </p>
+
+      <div id="pareto-content"></div>
     </div>
     <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">
       <a href="#" id="set-facets">set facets</a>
@@ -1063,6 +1081,12 @@
     });
   }
 
+  function loadPareto() {
+    $.getJSON('read-pareto.php?db=' + db, function(result, status) {
+      $('#pareto-content').html(result.histogram);
+    });
+  }
+
   function setClassificationLinkHandlers() {
     $('a.term-link').click(function(event) {
       event.preventDefault();
@@ -1334,6 +1358,8 @@
         loadSerials();
       } else if (id == 'tt-completeness-tab') {
         loadTtCompleteness();
+      } else if (id == 'pareto-tab') {
+        loadPareto();
       } else if (id == 'terms-tab') {
         loadTerms();
       }

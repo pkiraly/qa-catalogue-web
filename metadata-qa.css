@@ -391,3 +391,7 @@ div#completeness-field-table table tr td.number-of-instances {
   margin-left: 5px;
   padding-left: 5px;
 }
+
+.nav-link {
+  padding: .25rem .5rem;
+}
