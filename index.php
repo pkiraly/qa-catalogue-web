@@ -1314,7 +1314,7 @@
                         .attr("fill", "currentColor")
                         .attr("font-weight", "bold")
                         .attr("text-anchor", "end")
-                        .text(data.name))
+                        .text(data.x))
             //.selectAll("text")
             //.attr("transform", "translate(-10,0)rotate(-45)")
             //.style("text-anchor", "end")
