@@ -23,6 +23,7 @@ function displayHistogram(histogramDataUrl, histogramSvgClass) {
       x.domain(data.map(function(d) { return d.count; }));
       y.domain([0, d3.max(data, function(d) { return d.frequency + 1; })]);
 
+      // ticks on x axis
       g.append("g")
         .attr("class", "axis axis--x")
         .attr("transform", "translate(0," + height + ")")
@@ -32,6 +33,7 @@ function displayHistogram(histogramDataUrl, histogramSvgClass) {
         .style("text-anchor", "end")
       ;
 
+      // ticks on y axis
       g.append("g")
         .attr("class", "axis axis--y")
         .call(d3.axisLeft(y).ticks(10))

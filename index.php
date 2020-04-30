@@ -1285,8 +1285,8 @@
               .domain([0, d3.max(histogram, d => d.value)]).nice()
               .range([height - margin.bottom, margin.top])
 
-          d3.select(id )
-            .append("g")
+          var svg = d3.select(id);
+          svg.append("g")
             .attr("fill", "steelblue")
             .selectAll("rect")
             .data(histogram)
@@ -1298,6 +1298,16 @@
             .text(function(d) {
               return d.value;
             });
+
+          svg.append("g")
+            .attr("class", "axis axis--x")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x))
+            .selectAll("text")
+            .attr("transform", "translate(-10,0)rotate(-45)")
+            .style("text-anchor", "end")
+          ;
+
         }
       });
   }
