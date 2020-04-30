@@ -1288,6 +1288,7 @@
               .range([height - margin.bottom, margin.top])
 
           var svg = d3.select(id);
+
           svg.append("g")
             .attr("fill", "steelblue")
             .selectAll("rect")
@@ -1304,10 +1305,17 @@
           svg.append("g")
             .attr("class", "axis axis--x")
             .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x))
-            .selectAll("text")
-            .attr("transform", "translate(-10,0)rotate(-45)")
-            .style("text-anchor", "end")
+            .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0))
+            .call(g => g.append("text")
+                        .attr("x", width - margin.right)
+                        .attr("y", -4)
+                        .attr("fill", "currentColor")
+                        .attr("font-weight", "bold")
+                        .attr("text-anchor", "end")
+                        .text(data.x))
+            //.selectAll("text")
+            //.attr("transform", "translate(-10,0)rotate(-45)")
+            //.style("text-anchor", "end")
           ;
 
         }

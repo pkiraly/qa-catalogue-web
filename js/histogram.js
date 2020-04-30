@@ -20,8 +20,8 @@ function displayHistogram(histogramDataUrl, histogramSvgClass) {
       });
     })
     .then((data) => {
-      x.domain(data.map(function(d) { return d.count; }));
-      y.domain([0, d3.max(data, function(d) { return d.frequency + 1; })]);
+      x.domain(data.map(function(d) {return d.count;}));
+      y.domain([0, d3.max(data, function(d) {return d.frequency + 1;})]);
 
       // ticks on x axis
       g.append("g")
