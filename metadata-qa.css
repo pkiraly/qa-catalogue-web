@@ -372,9 +372,11 @@ table tr td {
 }
 
 #functions .bar-chart {
-  height: 100px;
+  /*
+  height: 200px;
   width: 270px;
   border: 1px solid #37ba00;
+  */
 }
 #functions .bar-chart g rect {
   background-color: #37ba00;
