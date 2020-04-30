@@ -1239,7 +1239,7 @@
   function loadFunctions() {
     var height = 100,
         width  = 270,
-        margin = ({top: 0, right: 0, bottom: 0, left: 0})
+        margin = ({top: 0, right: 0, bottom: 10, left: 10})
     ;
 
     var url = 'read-functional-analysis-histogram.php?db=' + db;
@@ -1306,7 +1306,7 @@
 
           svg.append("g")
             .attr("class", "axis axis--x")
-            .attr("transform", "translate(0," + height + ")")
+            .attr("transform", `translate(0,${height - margin.bottom})`)
             .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0))
             .call(g => g.append("text")
                         .attr("x", width - margin.right)
@@ -1314,7 +1314,7 @@
                         .attr("fill", "currentColor")
                         .attr("font-weight", "bold")
                         .attr("text-anchor", "end")
-                        .text(histogram.name))
+                        .text(data.name))
             //.selectAll("text")
             //.attr("transform", "translate(-10,0)rotate(-45)")
             //.style("text-anchor", "end")
