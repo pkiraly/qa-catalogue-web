@@ -1270,7 +1270,9 @@
           }
         }
 
-        var bandWidth = (width / (max - min)) - 1;
+        var bandWidth = (width / (max - min)) - 1,
+            x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+            y = d3.scaleLinear().rangeRound([height, 0]);
 
         var scaleX = d3.scaleLinear()
             .domain([min, max])
