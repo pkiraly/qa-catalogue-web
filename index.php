@@ -1287,6 +1287,8 @@
               .domain([0, d3.max(histogram, d => d.value)]).nice()
               .range([height - margin.bottom, margin.top])
 
+          console.log(id)
+          console.log(histogram)
           var svg = d3.select(id);
 
           svg.append("g")
@@ -1312,7 +1314,7 @@
                         .attr("fill", "currentColor")
                         .attr("font-weight", "bold")
                         .attr("text-anchor", "end")
-                        .text(data.x))
+                        .text(histogram.name))
             //.selectAll("text")
             //.attr("transform", "translate(-10,0)rotate(-45)")
             //.style("text-anchor", "end")
