@@ -1,6 +1,6 @@
 <?php
 require_once 'common-functions.php';
-$db = getOrDefault('db', 'cerl');
+$db = getOrDefault('db', 'metadata-qa');
 $allowable_histograms = [
   'authorities-histogram' => ['name' => 'count', 'limit' => 30],
   'classifications-histogram' => ['name' => 'count', 'limit' => 30],

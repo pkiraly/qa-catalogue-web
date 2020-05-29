@@ -4,7 +4,7 @@ require_once 'common-functions.php';
 
 $marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
 
-$db = getOrDefault('db', 'cerl');
+$db = getOrDefault('db', 'metadata-qa');
 $id = getOrDefault('id', null);
 $display = getOrDefault('display', 0);
 

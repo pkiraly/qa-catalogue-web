@@ -6,7 +6,7 @@ $marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
 
 $smarty = createSmarty('templates');
 
-$db = getOrDefault('db', 'cerl');
+$db = getOrDefault('db', 'metadata-qa');
 $display = getOrDefault('display', 0);
 
 $configuration = parse_ini_file("configuration.cnf");

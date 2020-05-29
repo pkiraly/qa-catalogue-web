@@ -1,7 +1,7 @@
 <?php
 require_once 'common-functions.php';
 
-$db = getOrDefault('db', 'cerl');
+$db = getOrDefault('db', 'metadata-qa');
 
 $configuration = parse_ini_file("configuration.cnf");
 

@@ -2,7 +2,7 @@
 require_once 'common-functions.php';
 $smarty = createSmarty('templates');
 
-$db = getOrDefault('db', 'cerl');
+$db = getOrDefault('db', 'metadata-qa');
 $configuration = parse_ini_file("configuration.cnf");
 $countFile = sprintf('%s/%s/count.csv', $configuration['dir'], $db);
 

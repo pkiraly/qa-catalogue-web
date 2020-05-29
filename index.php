@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="metadata-qa.css">
   <script type="text/javascript">
 
-    var db = 'cerl';
+    var db = 'metadata-qa';
     var urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('db')) {
       db = urlParams.get('db');
@@ -1362,9 +1362,7 @@
             .attr("x", d => {
               return margin.left + (d.score * bandWidth) - (bandWidth * 0.2);
             })
-            .attr("y", d => {
-              return y(d.percent);
-            })
+            .attr("y", d => y(d.percent))
             .attr("height", d => y(0) - y(d.percent))
             .attr("width", bandWidth);
 

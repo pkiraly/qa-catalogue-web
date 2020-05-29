@@ -307,7 +307,7 @@ function opacLink($doc, $id) {
  */
 function getSolrResponse() {
   static $cores = [
-    'cerl', 'cerl2', 'stanford', 'dnb', 'gent', 'szte', 'mokka', 'loc', 'mtak', 'bayern',
+    'metadata-qa', 'cerl', 'stanford', 'dnb', 'gent', 'szte', 'mokka', 'loc', 'mtak', 'bayern',
     'bnpl', 'nfi', 'gbv'
   ];
 
@@ -335,7 +335,7 @@ function getSolrResponse() {
 
     $core = $_GET['core'];
     if (!isset($core) || !in_array($core, $cores)) {
-      $core = 'cerl';
+      $core = 'metadata-qa';
     }
 
     $url = 'http://localhost:8983/solr/' . $core . '/select?' . join('&', $params);

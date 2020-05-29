@@ -3,7 +3,7 @@ require_once 'common-functions.php';
 
 set_time_limit(300);
 
-$db = getOrDefault('db', 'cerl');
+$db = getOrDefault('db', 'metadata-qa');
 $errorId = getOrDefault('errorId', '');
 $type = getOrDefault('type', '');
 $path = getOrDefault('path', '');

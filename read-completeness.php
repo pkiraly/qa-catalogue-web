@@ -3,7 +3,7 @@
 require_once 'common-functions.php';
 $smarty = createSmarty('templates');
 
-$db = getOrDefault('db', 'cerl');
+$db = getOrDefault('db', 'metadata-qa');
 $configuration = parse_ini_file("configuration.cnf");
 $display = getOrDefault('display', 0);
 

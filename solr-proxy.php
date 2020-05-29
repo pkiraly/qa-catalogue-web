@@ -7,7 +7,7 @@ solr_proxy_main();
  */
 function solr_proxy_main() {
   static $cores = [
-    'cerl', 'cerl2', 'stanford', 'dnb', 'gent', 'szte', 'mokka', 'loc', 'mtak', 'bayern',
+    'metadata-qa', 'cerl', 'stanford', 'dnb', 'gent', 'szte', 'mokka', 'loc', 'mtak', 'bayern',
     'bnpl', 'nfi', 'gbv'
   ];
   if (isset($_SERVER['QUERY_STRING'])) {
@@ -25,7 +25,7 @@ function solr_proxy_main() {
 
     $core = $_GET['core'];
     if (!isset($core) || !in_array($core, $cores)) {
-      $core = 'cerl';
+      $core = 'metadata-qa';
     }
 
     $url = 'http://localhost:8983/solr/' . $core . '/select?' . join('&', $params);

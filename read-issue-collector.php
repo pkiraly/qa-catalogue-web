@@ -5,7 +5,7 @@ set_time_limit(300);
 ini_set('memory_limit', '1G'); // or you could use 1024M
 
 
-$db = getOrDefault('db', 'cerl');
+$db = getOrDefault('db', 'metadata-qa');
 $errorId = getOrDefault('errorId', '');
 $type = getOrDefault('type', '');
 $path = getOrDefault('path', '');
