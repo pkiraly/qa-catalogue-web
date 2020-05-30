@@ -1,5 +1,6 @@
 <?php
 
+$configuration = parse_ini_file("configuration.cnf");
 include_once 'common-functions.php';
 $smarty = createSmarty('templates');
 
@@ -255,12 +256,17 @@ function hasSimilarBooks($doc) {
 }
 
 function opacLink($doc, $id) {
-  global $core;
-  if ($core == 'szte')
+  global $core, $configuration;
+
+  $catalogue = $core == 'metadata-qa' && isset($configuration['catalogue'])
+    ? $configuration['catalogue']
+    : $core;
+
+  if ($catalogue == 'szte')
     return 'http://qulto.bibl.u-szeged.hu/record/-/record/' . trim($id);
-  else if ($core == 'mokka')
+  else if ($catalogue == 'mokka')
     return 'http://mokka.hu/web/guest/record/-/record/' . trim($id);
-  else if ($core == 'cerl') {
+  else if ($catalogue == 'cerl') {
     $identifier = '';
     foreach ($doc->{'035a_SystemControlNumber_ss'} as $tag35a) {
       if (!preg_match('/OCoLC/', $tag35a)) {
@@ -269,17 +275,17 @@ function opacLink($doc, $id) {
       }
     }
     return 'http://hpb.cerl.org/record/' . $identifier;
-  } else if ($core == 'dnb')
+  } else if ($catalogue == 'dnb')
     return 'http://d-nb.info/' . trim($id);
-  else if ($core == 'gent')
+  else if ($catalogue == 'gent')
     return 'https://lib.ugent.be/catalog/rug01:' . trim($id);
-  else if ($core == 'loc')
+  else if ($catalogue == 'loc')
     return 'https://lccn.loc.gov/' . trim($id);
-  else if ($core == 'mtak')
+  else if ($catalogue == 'mtak')
     return 'https://mta-primotc.hosted.exlibrisgroup.com/permalink/f/1s1uct8/36MTA' . trim($id);
-  else if ($core == 'bayern')
+  else if ($catalogue == 'bayern')
     return 'http://gateway-bayern.de/' . trim($id);
-  else if ($core == 'bnpl') {
+  else if ($catalogue == 'bnpl') {
     foreach ($doc->{'035a_SystemControlNumber_ss'} as $tag35a) {
       if (preg_match('/^\d/', $tag35a)) {
         $identifier = $tag35a;
@@ -290,16 +296,18 @@ function opacLink($doc, $id) {
         'https://katalogi.bn.org.pl/discovery/fulldisplay?docid=alma%s&context=L&vid=48OMNIS_NLOP:48OMNIS_NLOP&search_scope=NLOP_IZ_NZ&tab=LibraryCatalog&lang=pl',
         trim($identifier));
 
-  } else if ($core == 'nfi') {
+  } else if ($catalogue == 'nfi') {
     // return 'https://melinda.kansalliskirjasto.fi/byid/' . trim($id);
     return 'https://kansalliskirjasto.finna.fi/Search/Results?bool0[]=OR&lookfor0[]=ctrlnum%3A%22FCC'
       . trim($id)
       . '%22&lookfor0[]=ctrlnum%3A%22(FI-MELINDA)'
       . trim($id)
       . '%22';
-  } else if ($core == 'gbv') {
+  } else if ($catalogue == 'gbv') {
     return sprintf('https://kxp.k10plus.de/DB=2.1/PPNSET?PPN=%s', trim($id));
   }
+
+  return '';
 }
 
 /**

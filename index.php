@@ -39,27 +39,31 @@
   <p>
     <i class="fa fa-book" aria-hidden="true"></i>
     <script type="text/javascript">
-      if (db == 'szte') {
+      var cat = db;
+      if (db == 'metadata-qa' && typeof catalogue !== "undefined")
+        cat = catalogue;
+
+      if (cat == 'szte') {
         document.write('<a href="http://www.ek.szte.hu/" target="_blank">A Szegedi Tudományegyetem Klebelsberg Kuno Könyvtára</a>');
-      } else if (db == 'mokka') {
+      } else if (cat == 'mokka') {
         document.write('<a href="http://mokka.hu/" target="_blank">mokka &mdash; Magyar Országos Közös Katalógus</a>');
-      } else if (db == 'cerl') {
+      } else if (cat == 'cerl') {
         document.write('<a href="https://www.cerl.org/resources/hpb/main/" target="_blank">The Heritage of the Printed Book Database</a>');
-      } else if (db == 'dnb') {
+      } else if (cat == 'dnb') {
         document.write('<a href="https://www.dnb.de/" target="_blank">Deutsche Nationalbibliothek</a>');
-      } else if (db == 'gent') {
+      } else if (cat == 'gent') {
         document.write('<a href="https://lib.ugent.be/" target="_blank">Universiteitsbibliotheek Gent</a>');
-      } else if (db == 'loc') {
+      } else if (cat == 'loc') {
         document.write('<a href="https://catalog.loc.gov/" target="_blank">Library of Congress</a>');
-      } else if (db == 'mtak') {
+      } else if (cat == 'mtak') {
         document.write('<a href="https://mtak.hu/" target="_blank">Magyar Tudományos Akadémia Könyvtára</a>');
-      } else if (db == 'bayern') {
+      } else if (cat == 'bayern') {
         document.write('<a href="https://www.bib-bvb.de/" target="_blank">Verbundkatalog B3Kat des Bibliotheksverbundes Bayern (BVB) und des Kooperativen Bibliotheksverbundes Berlin-Brandenburg (KOBV)</a>');
-      } else if (db == 'bnpl') {
+      } else if (cat == 'bnpl') {
         document.write('<a href="https://bn.org.pl/" target="_blank">Biblioteka Narodowa (Polish National Library)</a>');
-      } else if (db == 'nfi') {
+      } else if (cat == 'nfi') {
         document.write('<a href="https://www.kansalliskirjasto.fi/en" target="_blank">Kansallis Kirjasto/National Biblioteket (The National Library of Finnland)</a>');
-      } else if (db == 'gbv') {
+      } else if (cat == 'gbv') {
         document.write('<a href="http://www.gbv.de/" target="_blank">Verbundzentrale des Gemeinsamen Bibliotheksverbundes</a>');
       }
     </script>
