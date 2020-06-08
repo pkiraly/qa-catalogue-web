@@ -1,0 +1,1 @@
+var selectedFacets = ['041a_Language_ss'];
