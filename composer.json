@@ -27,6 +27,7 @@
         "symfony/translation": "5.1.*",
         "symfony/twig-pack": "*",
         "symfony/validator": "5.1.*",
+        "symfony/var-dumper": "5.1.*",
         "symfony/web-link": "5.1.*",
         "symfony/yaml": "5.1.*"
     },

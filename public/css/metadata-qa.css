@@ -215,6 +215,10 @@ table#issues-table tr.t {
   display: none;
 }
 
+.tab-pane {
+  display: block;
+}
+
 .marc-details table {
   /* font-family: Courier; */
   vertical-align: top;

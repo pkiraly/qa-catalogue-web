@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <p>number of records: {{ number|number_format }}</p>
+  <h2>Completeness of MARC21 field groups</h2>
+  <div id="completeness-group-table">
+    {% include('completeness/packages.html.twig') %}
+  </div>
+
+  <h2>Completeness of MARC21 fields</h2>
+  <div id="completeness-field-table">
+    {% include('completeness/completeness.html.twig') %}
+  </div>
+{% endblock %}

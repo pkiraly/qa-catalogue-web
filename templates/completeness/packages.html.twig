@@ -1,0 +1,40 @@
+<table>
+  <thead>
+    <tr>
+      <th>tags</th>
+      <th>label</th>
+      <th></th>
+      <th class="text-right">count</th>
+      <th class="text-right">percent</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for record in packageStatistics.records %}
+      {% if record.iscoretag is not defined or record.iscoretag %}
+        <tr>
+          <td>{{ record.name }}</td>
+          <td>{% if record.label != 'null' %}{{ record.label }}{% endif %}</td>
+          <td class="chart"><div style="width: {{ (record.percent * 2)|round }}px;">&nbsp;</div></td>
+          <td class="text-right">{{ record.count|number_format }}</td>
+          <td class="text-right">{{ record.percent|number_format(2) }}%</td>
+        </tr>
+      {% endif %}
+    {% endfor %}
+    {% if packageStatistics.hasNonCoreTags  %}
+      <tr>
+        <td colspan="5"><h4>Fields defined in extensions of MARC</h4></td>
+      </tr>
+      {% for record in packageStatistics.records %}
+        {% if record.iscoretag is defined and not record.iscoretag %}
+          <tr>
+            <td>{{ record.name }}</td>
+            <td>{% if record.label != 'null' %}{{ record.label }}{% endif %}</td>
+            <td class="chart"><div style="width: {{ (record.percent * 2)|round }}px;">&nbsp;</div></td>
+            <td class="text-right">{{ record.count|number_format }}</td>
+            <td class="text-right">{{ record.percent|number_format(2) }}%</td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </tbody>
+</table>
