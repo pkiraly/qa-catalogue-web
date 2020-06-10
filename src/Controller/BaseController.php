@@ -1,10 +1,9 @@
 <?php
 
-
 namespace App\Controller;
 
-
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 class BaseController extends AbstractController
 {
@@ -40,4 +39,18 @@ class BaseController extends AbstractController
     return sprintf('%s/%s', $this->commons['dir'], $this->commons['db']);
   }
 
+  protected function getOrDefault(Request $request, $key, $default_value, $allowed_values) {
+    $value = $request->query->get($key);
+    if (is_null($value) || !in_array($value, $allowed_values)) {
+      $value = $default_value;
+    }
+    return $value;
+  }
+
+  protected function getSolrFields() {
+    $url = 'http://localhost:8983/solr/' . $this->commons['db'];
+    $all_fields = file_get_contents($url . '/select/?q=*:*&wt=csv&rows=0');
+    $fields = explode(',', $all_fields);
+    return $fields;
+  }
 }

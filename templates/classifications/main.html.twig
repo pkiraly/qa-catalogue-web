@@ -2,5 +2,21 @@
 
 {% block body %}
   <h2>Subject analysis</h2>
-  <div id="classifications-content"></div>
+  <div id="classifications-content">
+
+    {% include('classifications/classifications-by-records.html.twig') %}
+
+    {% if has_histogram %}
+      {% include('classifications/classifications-histogram.html.twig') %}
+    {% endif %}
+
+    {% include('classifications/classifications-by-field.html.twig') %}
+
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  {% if has_histogram %}
+    {% include('classifications/classifications-histogram.js.twig') %}
+  {% endif %}
 {% endblock %}

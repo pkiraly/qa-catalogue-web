@@ -1,0 +1,118 @@
+<h3>Classification/subject headings schemes</h3>
+
+<table id="classification">
+  <thead>
+    <tr>
+      <th class="location">Location</th>
+      <th class="scheme">Classification/subject headings scheme</th>
+      <th class="instances">Instances</th>
+      <th class="records">Records</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% set previous = "" %}
+    {% for record in byField.records %}
+      {% if previous != record.field %}
+        <tr>
+          <td colspan="4"><h4>{{ record.field }} &mdash; {{ byField.fields[record.field] }}</h4></td>
+        </tr>
+      {% endif %}
+      <tr>
+        <td>{{ record.location }}</td>
+        <td>
+          {% if record.facet2 is defined %}
+            {% if record.facet2exists %}
+              <a href="#" class="term-link facet2" data-facet="{{ record.facet2 }}" data-query="*:*" data-scheme="{{ record.scheme }}">{{ record.scheme }}</a>
+            {% else %}
+              {{ record.scheme }}
+            {% endif %}
+          {% elseif (record.facet is defined) and (record.q is defined) %}
+            <a href="#" class="term-link facet" data-facet="{{ record.facet }}" data-query="{{ record.q }}" data-scheme="{{ record.scheme }}">{{ record.scheme }}</a>
+            {% if record.abbreviation is not empty %}({{ record.abbreviation }}){% endif %}
+          {% else %}
+            {{ record.scheme }}
+          {% endif %}
+          <i class="fa fa-chevron-down" data-id="classification-subfields-{{ record.id }}" aria-hidden="true" title="show subfields"></i>
+          {% if byField.hasSubfields and record.id is defined and byField.subfields[record.id] is defined %}
+            <div id="classification-subfields-{{ record.id }}" class="classification-subfields">
+              <p>Which subfields are available in the individual instances of this field?</p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>subfields</th>
+                    <th class="count">count</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in byField.subfields[record.id]['list'] %}
+                    <tr>
+                      <td>
+                        {% for subfield in item.subfields %}
+                          {% set sub=(subfield|slice(0, 2)) %}
+                          <a href="#completeness-{( record.field }}{{ sub }}" class="completeness" data-field="{{ record.field }}{{ sub }}"
+                          >{{ subfield}}</a>{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                      </td>
+                      <td class="count">{{ item.count|number_format }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <p>notes:</p>
+              <ul>
+                {% for item in byField.subfieldsById[record.id] %}
+                  {% set key=(record.field ~ item) %}
+                  <li>
+                    <a href="#completeness-{{ record.field }}{{ item }}" class="completeness" data-field="{{ record.field }}{{ item }}">{{ item }}</a>:
+                    {% if (elements[key] is defined) and elements[key] != '' %}
+                      {{ elements[key] }}
+                    {% elseif item == '$9' %}
+                      &mdash; <span>(locally defined subfield)</span>
+                    {% else %}
+                      &mdash; <span>(not defined in MARC21)</span>
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+              {% if byField.subfields[record.id]['has-plus'] or byField.subfields[record.id]['has-space'] %}
+                <ul>
+                  {% if byField.subfields[record.id]['has-plus'] %}
+                    <li>+ sign denotes multiple instances</li>
+                  {% endif %}
+                  {% if byField.subfields[record.id]['has-space'] %}
+                    <li>_ sign denotes space character</li>
+                  {% endif %}
+                </ul>
+              {% endif %}
+            </div>
+          {% endif %}
+        </td>
+        <td class="text-right">{{ record.instancecount|number_format }}</td>
+        <td class="text-right">{{ record.recordcount|number_format }}</td>
+      </tr>
+      {% set previous=record.field %}
+    {% endfor %}
+  </tbody>
+</table>
+
+<script>
+// $()
+$('table#classification i').click(function (event) {
+  event.preventDefault();
+  var id = '#' + $(this).attr('data-id');
+  $(id).toggle();
+  var up = 'fa-chevron-up';
+  var down = 'fa-chevron-down';
+  if ($(this).hasClass(down)) {
+    $(this).removeClass(down);
+    $(this).addClass(up);
+  } else {
+    $(this).removeClass(up);
+    $(this).addClass(down);
+  }
+});
+$('a.completeness').click(function () {
+  showTab('completeness');
+  setCompletenessLinkHandlers();
+});
+</script>

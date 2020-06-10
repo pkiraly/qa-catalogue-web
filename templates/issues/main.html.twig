@@ -2,5 +2,141 @@
 
 {% block body %}
   <h2>Issues in MARC21 records</h2>
-  <div id="issues-table-placeholder"></div>
+
+  <div id="issues-table-placeholder">
+    <div class="row" style="width: 500px; margin: 0 0 0 0">
+      <div class="col-sm" style="margin: 0; padding: 0">
+        <span style="color: #37ba00">records without issues</span>
+      </div>
+      <div class="col-sm text-right" style="margin: 0; padding: 0">
+        <span style="color: maroon">with</span>
+      </div>
+    </div>
+
+    <div style="width: 500px; background-color: maroon">
+      <div style="width: {{ (topStatistics.all.percent * 5)|round }}px; background-color: #37ba00; height: 10px;">&nbsp;</div>
+    </div>
+
+    <div class="row" style="width: 500px; margin: 0 0 20px 0">
+      <div class="col-sm" style="margin: 0; padding: 0">
+        {{ topStatistics.all.records|number_format(0) }}
+        ({{ topStatistics.all.percent|number_format(2) }}%)
+      </div>
+      <div class="col-sm text-right" style="margin: 0; padding: 0">
+        {{ (total - topStatistics.all.records)|number_format(0) }}
+        ({{ (100 - topStatistics.all.percent)|number_format(2) }}%)
+      </div>
+    </div>
+
+    <p>excluding undefined field issues</p>
+    <div class="row" style="width: 500px; margin: 0 0 0 0">
+      <div class="col-sm" style="margin: 0; padding: 0">
+        <span style="color: #37ba00">records without issues</span>
+      </div>
+      <div class="col-sm text-right" style="margin: 0; padding: 0">
+        <span style="color: maroon">with</span>
+      </div>
+    </div>
+
+    <div style="width: 500px; background-color: maroon">
+      <div style="width: {{ ((100 - topStatistics.core.percent) * 5)|round }}px; background-color: #37ba00; height: 10px;">&nbsp;</div>
+    </div>
+
+    <div class="row" style="width: 500px; margin: 0 0 20px 0">
+      <div class="col-sm" style="margin: 0; padding: 0">
+        {{ (total - topStatistics.core.records)|number_format(0) }}
+        ({{ (100 - topStatistics.core.percent)|number_format(2) }}%)
+      </div>
+      <div class="col-sm text-right" style="margin: 0; padding: 0">
+        {{ topStatistics.core.records|number_format(0) }}
+        ({{ topStatistics.core.percent|number_format(2) }}%)
+      </div>
+    </div>
+
+    <table id="issues-table">
+      <thead>
+        <tr>
+          {% for field in fieldNames %}
+            <th {% if field == 'instances' or field == 'records' %}class="text-right"{% endif %}>
+              {% if field == 'message' %}
+                value/explanation
+              {% else %}
+                {{ field }}
+              {% endif %}
+            </th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {# foreach $categories key=category item=types name=categories #}
+        {% for category, types in categories %}
+          <tr class="category-header {{ category }}">
+            <td colspan="3" class="category">
+              <span class="category">{{ category }}</span> level issues
+            </td>
+            <td class="count">{{ categoryStatistics[category].instances|number_format }}</td>
+            <td class="count">{{ categoryStatistics[category].records|number_format }}</td>
+          </tr>
+          {# foreach $types item=type name=types #}
+          {% for type in types %}
+            <tr class="type-header {{ type }}">
+              <td colspan="3" class="type">
+                <span class="type">{{ type }}</span> ({{ typeCounter[type].variations }} variants)
+                <a href="javascript:openType('{{ loop.parent.loop.index }}-{{ loop.index }}')">[+]</a>
+              </td>
+              <td class="count">{{ typeStatistics[type].instances|number_format }}</td>
+              <td class="count">{{ typeStatistics[type].records|number_format }}</td>
+            </tr>
+            {% for rowData in records[type] %}{# name=foo #}
+              {% if loop.index < 100 %}
+                <tr class="t t-{{ loop.parent.loop.parent.loop.index }}-{{ loop.parent.loop.index }} {% if loop.index % 2 == 1 %}odd{% endif %}">
+                  <td class="path">{{ rowData.path }}</td>
+                  <td class="message">{%
+                      if rowData.message matches '/^ +$/'
+                     %}"{{ rowData.message }}"{%
+                      else
+                    %}{{ rowData.message }}{%
+                      endif
+                  %}</td>
+                  <td class="url">
+                    <a href="{{ rowData.url }}" target="_blank"><i class="fa fa-info" aria-hidden="true"></i></a>
+                  </td>
+                  <td class="count instances">
+                    <a href="{{ path('search', {'error-id': rowData.id}) }}">{{ rowData.instances|number_format }}</a>
+                  </td>
+                  <td class="count records">
+                    <a href="{{ path('search', {'error-id': rowData.id}) }}">{{ rowData.records|number_format }}</a>
+                  </td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+            {% if typeCounter[type].variations > 100 %}
+              <tr class="t t-{{ loop.index }} text-centered {{ type }}">
+                <td colspan="4">more</td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  <script type="application/javascript">
+    function openType(t) {
+      $('tr.t-' + t).toggle();
+    }
+
+    $(document).ready(function () {
+      $('#issues-table-placeholder tr.t td.count a').hover(
+        function () {
+          $(this).attr('title', 'show records records having this issue (max 10 records)');
+        },
+        function () {
+          $(this).find("span:last").remove();
+        }
+      );
+    });
+  </script>
 {% endblock %}
