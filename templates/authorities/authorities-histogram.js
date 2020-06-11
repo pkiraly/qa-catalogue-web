@@ -1,36 +1,8 @@
-<h3>histogram</h3>
-
-<style>
-  .bar {
-    fill: steelblue;
-  }
-
-  .axis text {
-    font: 10px sans-serif;
-  }
-
-  .axis path,
-  .axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-  }
-
-  .x.axis path {
-    display: none;
-  }
-</style>
-
-<svg class="authorities-histogram-chart" width="960" height="300"></svg>
-<ul>
-  <li>y: number of records</li>
-  <li>x: number of authority names in one record</li>
-</ul>
-<script>
+<script type="application/javascript">
 // $()
-var db = '{$db}';
-var authoritiesHistogramUrl = 'read-histogram.php?db='+ db + '&file=authorities-histogram';
-{literal}
+// var db = '{$db}';
+var authoritiesHistogramUrl = '/histogram/?file=authorities-histogram';
+
 var svg = d3.select("svg.authorities-histogram-chart"),
   margin = {top: 20, right: 20, bottom: 40, left: 60},
   width = +svg.attr("width") - margin.left - margin.right,
@@ -137,6 +109,5 @@ d3.csv(authoritiesHistogramUrl)
   .catch((error) => {
     console.log('error happened');
     throw error;
-  });
-{/literal}
+  })
 </script>

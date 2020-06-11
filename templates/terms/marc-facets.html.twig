@@ -9,7 +9,9 @@
     {% endif %}
     <ul>
       {% for term, count in values %}
-        <li><a href="{{ path('search', {query: facet ~ ':"' ~ term ~ '"' }) }}" class="facet-term">{{ term }}</a> ({{ count|number_format }})</li>
+        <li><a href="{{ path('search', {
+                query: facet ~ ':"' ~ term ~ '"',
+                fq: termQuery }) }}" class="facet-term">{{ term }}</a> ({{ count|number_format }})</li>
       {% endfor %}
       {% if values|length >= 10 or offset > 0 %}
         <li>

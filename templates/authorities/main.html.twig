@@ -2,5 +2,23 @@
 
 {% block body %}
   <h2>Authority analysis</h2>
-  <div id="authorities-content"></div>
+  <div id="authorities-content">
+
+    {% include('authorities/authorities-by-records.html.twig') %}
+
+    {% if has_histogram %}
+      {% include('authorities/authorities-histogram.html.twig') %}
+    {% endif %}
+
+    {% include('authorities/authorities-by-field.html.twig') %}
+
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  {% if has_histogram %}
+    {% include('authorities/authorities-histogram.js') %}
+  {% endif %}
+  {% include('authorities/authorities-by-field.js') %}
+  {# <script src="/js/feff23b961.js"></script> #}
 {% endblock %}

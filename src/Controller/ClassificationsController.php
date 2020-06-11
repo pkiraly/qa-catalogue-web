@@ -62,8 +62,6 @@ class ClassificationsController extends BaseController
   }
 
   private function readByField() {
-    global $smarty;
-
     $solrFields = $this->getSolrFields();
 
     $fields = [
@@ -227,7 +225,6 @@ class ClassificationsController extends BaseController
     return $facet;
   }
 
-
   /**
    * @param $dir
    * @param $db
@@ -363,6 +360,4 @@ class ClassificationsController extends BaseController
       }
     }
   }
-
-
 }

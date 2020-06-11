@@ -1,4 +1,4 @@
-<h3>Classification/subject headings schemes</h3>
+<h3>Authority schemes</h3>
 
 <table id="classification">
   <thead>
@@ -32,9 +32,9 @@
           {% else %}
             {{ record.scheme }}
           {% endif %}
-          <i class="fa fa-chevron-down" data-id="classification-subfields-{{ record.id }}" aria-hidden="true" title="show subfields"></i>
+          <i class="fa fa-chevron-down" data-id="authority-subfields-{{ record.id }}" aria-hidden="true" title="show subfields"></i>
           {% if byField.hasSubfields and record.id is defined and byField.subfields[record.id] is defined %}
-            <div id="classification-subfields-{{ record.id }}" class="classification-subfields">
+            <div id="authority-subfields-{{ record.id }}" class="authority-subfields">
               <p>Which subfields are available in the individual instances of this field?</p>
               <table>
                 <thead>
@@ -90,6 +90,7 @@
         <td class="text-right">{{ record.recordcount|number_format }}</td>
       </tr>
       {% set previous=record.field %}
+      {# assign var=previous value=$record->id #}
     {% endfor %}
   </tbody>
 </table>
