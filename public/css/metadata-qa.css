@@ -401,3 +401,7 @@ div#completeness-field-table table tr td.number-of-instances {
 .nav-link {
   padding: .25rem .5rem;
 }
+
+table#classification i {
+  cursor: pointer;
+}

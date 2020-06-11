@@ -6,22 +6,31 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SearchController extends BaseController
 {
+
   /**
    * @Route("/search", name="search")
    */
   public function run(Request $request) {
     $errorId = $request->query->get('error-id');
+    $filters = null;
     if (!is_null($errorId) && preg_match('/^\d+$/', $errorId)) {
       $ids = $this->getRecordIdsByErrorId($errorId);
       $query = join(' OR ', $ids);
     } else {
-      $query = $request->query->get('query');
+      $field = $this->getOrDefault($request, 'field', '', []);
+      if ($field != '') {
+        $query = '*:*';
+        $filters = $this->byfield($field);
+      } else {
+        $query = $request->query->get('query');
+      }
     }
 
     $this->selectTab('search');
     return $this->render('search/main.html.twig', [
       'commons' => $this->commons,
-      'number' => $query,
+      'query' => $query,
+      'filters' => $filters
     ]);
   }
 
@@ -58,5 +67,14 @@ class SearchController extends BaseController
     }
 
     return $recordIds;
+  }
+
+  private function byfield($field) {
+    $filters = [];
+    $filters[] = [
+      'param' => ['field' => $field],
+      'label' => $this->getFacetLabel($field) . ': *'
+    ];
+    return $filters;
   }
 }

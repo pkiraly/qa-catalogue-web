@@ -2,6 +2,15 @@
 
 {% block body %}
   <h2>Terms</h2>
-  <div id="terms-scheme" data-facet="" data-query=""></div>
-  <div id="terms-content"></div>
+  <ul>
+    <li>facet: <tt>{{ facet }}</tt></li>
+    <li>termQuery: <tt>{{ termQuery }}</tt></li>
+    <li>scheme: <tt>{{ scheme }}</tt></li>
+    <li>url: <tt>{{ url }}</tt></li>
+  </ul>
+  <div id="terms-scheme" data-facet="{{ facet }}" data-query="{{ termQuery }}">{{ scheme }}</div>
+
+  <div id="terms-content">
+    {% include('terms/marc-facets.html.twig') %}
+  </div>
 {% endblock %}

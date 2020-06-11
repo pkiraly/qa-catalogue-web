@@ -51,9 +51,9 @@
       {% endif %}
       {% set percent=(record.number_of_records * 100 / dataElementStatistics.max) %}
       <tr>
-        <td class="path" id="completeness-{$record->path}">
-          {% if record.solr is defined  %}
-            <a href="javascript:searchForField('{{ record.solr }}')">{{ record.path|slice(3) }}</a>
+        <td class="path" id="tag-{{ record.path }}">
+          {% if record.solr is defined  %}{# javascript:searchForField(field) #}
+            <a href="{{ path('search', {field: record.solr}) }}">{{ record.path|slice(3) }}</a>
           {% else %}
             {{ record.path|slice(3) }}
           {% endif %}
@@ -61,9 +61,8 @@
         <td class="subfield">{{ record.subfield }}</td>
         <td class="chart"><div style="width: {{ (percent * 2)|round }}px;">&nbsp;</div></td>
         <td class="terms">
-          {% if record.solr is defined %}
-            <a href="#" class="term-link facet2" data-facet="{{ record.solr }}" data-query="*:*"
-               data-scheme="{{ record.solr }}"><i class="fa fa-list-ol"></i></a>
+          {% if record.solr is defined %}{# setCompletenessLinkHandlers #}
+            <a href="{{ path('terms', {facet: record.solr, termQuery: '*:*', scheme: record.solr}) }}" class="term-link facet2"><i class="fa fa-list-ol"></i></a>
           {% endif %}
         </td>
         <td class="number-of-record">{{ record.number_of_records|number_format }}</td>
