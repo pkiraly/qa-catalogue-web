@@ -1,0 +1,31 @@
+{% for facetName, values in facets %}
+<div id="{{ facetName }}" class="facet-block">
+  <h4>{{ getFacetLabel(facetName) }}</h4>
+  {% set offsetName="f.{{ facetName }}.facet.offset" %}
+  {% if params.offsetName is defined %}
+    {% set offset=params.offsetName %}
+  {% else %}
+    {% set offset=0 %}
+  {% endif %}
+  <ul>
+    {% for term, count in values %}
+      <li><a href="#" class="facet-term">{{ term }}</a> ({{ count|number_format }})</li>
+    {% endfor %}
+    {% if values|length >= 10 or offset > 0 %}
+      <li>
+        {% if offset > 0 %}
+          <a class="facet-up" href="#" data-field="{{ facetName }}" data-offset="{{ offset }}">
+            <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i>
+          </a>
+        {% endif %}
+        more
+        {% if values|length >= 10 %}
+          <a class="facet-down" href="#" data-field="{{ facetName }}" data-offset="{{ offset }}">
+            <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
+          </a>
+        {% endif %}
+      </li>
+    {% endif %}
+  </ul>
+</div>
+{% endfor %}
