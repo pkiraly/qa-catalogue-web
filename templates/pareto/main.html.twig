@@ -10,5 +10,9 @@
     The Y axis represents the cumulative occurrence (from 0% to 100%).
   </p>
 
-  <div id="pareto-content"></div>
+  <div id="pareto-content">
+    {% for index, file in files %}
+      <p><img src="/img/{{ commons.db }}/{{ file }}" width="1000"/></p>
+    {% endfor %}
+  </div>
 {% endblock %}
