@@ -1,0 +1,23 @@
+{% if obj is defined and key is defined %}
+  {% if obj[key] is defined %}
+    {% set var=obj[key] %}
+  {% elseif to_array(obj)[key] is defined %}
+    {% set var=to_array(obj)[key] %}
+  {% endif %}
+{% endif %}
+{% if var is defined %}
+  {% if label is defined %}{{ label }}{% endif %}
+  {% if gettype(var) == 'string' %}
+    <span class="tag-{{ var }}">{{ var }}</span>
+  {% else %}}
+    {% for value in var %}
+      {% if tag is defined %}
+        {% if gettype(tag) != 'string' %}{{ json_encode(tag) }}{% endif %}
+        <span class="tag-{{ tag }}">{{ value }}</span>{% if not loop.first %}, {% endif %}
+      {% else %}
+        {{ value }}{% if not loop.first %}, {% endif %}
+      {% endif %}
+    {% endfor %}
+    {% if suffix is defined %}{{ suffix }}{% endif %}
+  {% endif %}
+{% endif %}

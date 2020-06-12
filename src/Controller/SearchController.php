@@ -59,6 +59,7 @@ class SearchController extends BaseController
       'numFound' => $solrResponse->response->numFound,
       // 'records' => getRecords($solrResponse),
       // 'facets' => $this->getFacets($solrResponse), // 'marc-facets.tpl'
+      'docs' => $solrResponse->response->docs, // 'marc-records-based-on-marcjson.tpl'
       'facets' => $solrResponse->facet_counts->facet_fields,
       'params' => $solrResponse->responseHeader->params
     ]);
