@@ -3,7 +3,7 @@ namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 
-class ClassificationsController extends BaseController
+class ClassificationsController extends BaseContextualController
 {
   /**
    * @Route("/classifications")
@@ -12,6 +12,7 @@ class ClassificationsController extends BaseController
     $this->selectTab('classifications');
     return $this->render('classifications/main.html.twig', [
       'commons' => $this->commons,
+      'prefix' => 'classification',
       'byRecord' => $this->readByRecords(),
       'byField' => $this->readByField(),
       'has_histogram' => $this->readHistogram()
@@ -298,35 +299,6 @@ class ClassificationsController extends BaseController
       $data['subfieldsById'] = $subfieldsById;
     } else {
       $data['hasSubfields'] = FALSE;
-    }
-
-    return $data;
-  }
-
-  /**
-   * Reads marc-elements.csv file
-   * @return object
-   */
-  private function readElements() {
-    $data = [];
-    $elementsFile = $this->getDir() . '/marc-elements.csv';
-    if (file_exists($elementsFile)) {
-      $header = [];
-      $elements = [];
-      $in = fopen($elementsFile, "r");
-      while (($line = fgets($in)) != false) {
-        $values = str_getcsv($line);
-        if (empty($header)) {
-          $header = $values;
-        } else {
-          $record = (object)array_combine($header, $values);
-          $elements[$record->path] = $record->subfield;
-        }
-      }
-      $data['hasElements'] = TRUE;
-      $data['elements'] = $elements;
-    } else {
-      $data['hasElements'] = FALSE;
     }
 
     return $data;

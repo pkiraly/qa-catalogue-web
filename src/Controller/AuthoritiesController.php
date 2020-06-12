@@ -3,7 +3,7 @@ namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 
-class AuthoritiesController extends BaseController
+class AuthoritiesController extends BaseContextualController
 {
   private $solrFields;
 
@@ -16,6 +16,7 @@ class AuthoritiesController extends BaseController
     return $this->render('authorities/main.html.twig', [
       'commons' => $this->commons,
       'number' => $number,
+      'prefix' => 'authority',
       'byRecord' => $this->readByRecords(),  // authorities-by-records.tpl
       'byField' => $this->readByField(),     // authorities-by-field.tpl
       'has_histogram' => $this->readHistogram(), // authorities-histogram.tpl
@@ -280,33 +281,5 @@ class AuthoritiesController extends BaseController
     return $data;
   }
 
-  /**
-   * Reads marc-elements.csv file
-   * @return object
-   */
-  private function readElements() {
-    $data = [];
-    $elementsFile = $this->getDir() . '/marc-elements.csv';
-    if (file_exists($elementsFile)) {
-      $header = [];
-      $elements = [];
-      $in = fopen($elementsFile, "r");
-      while (($line = fgets($in)) != false) {
-        $values = str_getcsv($line);
-        if (empty($header)) {
-          $header = $values;
-        } else {
-          $record = (object)array_combine($header, $values);
-          $elements[$record->path] = $record->subfield;
-        }
-      }
-      $data['hasElements'] = TRUE;
-      $data['elements'] = $elements;
-    } else {
-      $data['hasElements'] = FALSE;
-    }
-
-    return $data;
-  }
 
 }

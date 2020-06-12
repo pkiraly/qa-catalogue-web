@@ -10,7 +10,8 @@
       {% include('authorities/authorities-histogram.html.twig') %}
     {% endif %}
 
-    {% include('authorities/authorities-by-field.html.twig') %}
+    <h3>Authority schemes</h3>
+    {% include('common-contextual/contextual-by-field.html.twig') %}
 
   </div>
 {% endblock %}
@@ -21,4 +22,8 @@
   {% endif %}
   {% include('authorities/authorities-by-field.js') %}
   {# <script src="/js/feff23b961.js"></script> #}
+{% endblock %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="/css/common-histogram.css"/>
 {% endblock %}
