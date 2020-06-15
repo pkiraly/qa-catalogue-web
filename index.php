@@ -67,6 +67,7 @@
         document.write('<a href="http://www.gbv.de/" target="_blank">Verbundzentrale des Gemeinsamen Bibliotheksverbundes</a>');
       }
     </script>
+    &nbsp; &nbsp; <span class="last-update-info">(last data update: <span id="last-update"></span>)</span>
   </p>
 
   <!-- Nav tabs -->
@@ -1397,6 +1398,13 @@
     $('#myTab a[href="#' + id + '"]').tab('show');
   }
 
+  function loadLastUpdate() {
+    var url = 'read-last-update.php?db=' + db;
+    $.getJSON(url, function(result, status) {
+      $('#last-update').html(result.lastUpdate);
+    });
+  }
+
   $(document).ready(function () {
     itemsPerPage();
 
@@ -1412,6 +1420,7 @@
       setFacets();
     });
 
+    loadLastUpdate();
     loadCompleteness();
 
     $('#myTab a').on('click', function (e) {
