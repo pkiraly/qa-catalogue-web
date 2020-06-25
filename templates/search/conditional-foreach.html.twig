@@ -6,7 +6,7 @@
   {% endif %}
 {% endif %}
 {% if var is defined %}
-  {% if label is defined %}{{ label }}{% endif %}
+  {% if label is defined %}{{ label|raw }}{% endif %}
   {% if gettype(var) == 'string' %}
     <span class="tag-{{ var }}">{{ var }}</span>
   {% else %}}
@@ -18,6 +18,6 @@
         {{ value }}{% if not loop.first %}, {% endif %}
       {% endif %}
     {% endfor %}
-    {% if suffix is defined %}{{ suffix }}{% endif %}
+    {% if suffix is defined %}{{ suffix|raw }}{% endif %}
   {% endif %}
 {% endif %}

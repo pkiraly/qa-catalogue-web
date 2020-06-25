@@ -41,6 +41,10 @@ class BaseController extends AbstractController
     'dir' => '/home/kiru/bin/marc/_output/'
   ];
 
+  public function getDb() {
+    return $this->commons['db'];
+  }
+
   protected function selectTab($tab) {
     if (isset($this->commons['tabs'][$tab])) {
       $this->commons['tabs'][$tab]['class'] = 'active';

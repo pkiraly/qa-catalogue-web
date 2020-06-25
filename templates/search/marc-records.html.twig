@@ -1,6 +1,6 @@
 {% for doc in docs %}
   {% set record=getRecord(doc) %}
-  {{ dump(record) }}
+  {#{ dump(record) }#}
   {% set id=doc.id|trim %}
   {% set type=getFirstField(doc, 'type_ss') %}
   <div class="record">
@@ -18,8 +18,61 @@
         {% endif %}
       {% endif %}
       <a href="#" class="record-details" data="details-{{ id }}" title="display details"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
-      <a href="{opacLink($doc, $doc->id)}" target="_blank" title="Display record in the library catalogue"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+      <a href="{{ opacLink(doc, id) }}" target="_blank" title="Display record in the library catalogue"><i class="fa fa-external-link" aria-hidden="true"></i></a>
     </h2>
+
+    {% if attribute(tag245.subfields, 'c') is defined %}
+      {% include 'search/conditional-foreach.html.twig' with {obj:tag245.subfields, key:'c',
+        label:'<i class="fa fa-pencil" aria-hidden="true"></i>', suffix:'<br/>'} %}
+    {% elseif attribute(tag773.subfields, 'a') is defined %}
+      {% include 'search/conditional-foreach.html.twig' with {obj:tag773.subfields, key:'a',
+        label:'<i class="fa fa-pencil" aria-hidden="true"></i>', suffix:'<br/>'} %}
+    {% endif %}
+
+    {% set tag250=getField(record, '250') %}
+    {% if attribute(tag250, 'subfields') is defined %}
+      {% include 'search/conditional-foreach.html.twig' with {obj:tag250.subfields, key:'a'} %}
+    {% endif %}
+
+    {# 260 Publication #}
+    {% if hasPublication(doc) %}
+      {% set tag260=getField(record, '260') %}
+      <i class="fa fa-calendar" aria-hidden="true"></i>
+      Published
+      {# date #}
+      {% include 'search/conditional-foreach.html.twig' with {obj:tag260.subfields, key:'c', label:'in', tag:'260c'} %}
+      {# place #}
+      {% include 'search/conditional-foreach.html.twig' with {obj:tag260.subfields, key:'a', label:'in', tag:'260a'} %}
+      {# agent #}
+      {% include 'search/conditional-foreach.html.twig' with {obj:tag260.subfields, key:'b', label:'by', tag:'260b'} %}
+      <br/>
+    {% endif %}
+
+    {# PhysicalDescription #}
+    {% if hasPhysicalDescription(doc) %}
+      {% set tag300=getField(record, '300') %}
+      {# extent #}
+      {% include 'search/conditional-foreach.html.twig' with {obj:tag300.subfields, key:'a', tag:'300a'} %}
+      {# dimensions #}
+      {% include 'search/conditional-foreach.html.twig' with {obj:tag300.subfields, key:'c', tag:'300c'} %}
+      <br/>
+    {% endif %}
+
+    {# SeriesStatement #}
+    {% set tag490=getField(record, '490') %}
+    {% if tag490 != null %}
+      {% if attribute(tag490.subfields, 'a') is defined %}
+        Series:
+        {% for tag490 in record.490 %}
+          <a href="#" class="record-link tag-490a" data="490a_SeriesStatement_ss">{{ attribute(tag490.subfields, 'a') }}</a>
+          {% if attribute(tag490.subfields, 'v') is defined %}
+            {{ attribute(tag490.subfields, 'v') }}
+          {% endif %}
+          {% if not loop.last %}, {% endif %}
+        {% endfor %}
+        <br/>
+      {% endif %}
+    {% endif %}
 
     <div class="details" id="details-{{ id }}">
       <ul class="nav nav-tabs" id="record-views-{{ id }}">
