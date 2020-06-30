@@ -81,12 +81,13 @@ class SearchController extends BaseController
   }
 
   private function buildSolrUrl() {
+    error_log('query: ' . $this->query);
     $params = [
-      'q=' . $this->query,
+      'q=' . $this->encodeQuery($this->query),
       'start=' . $this->start,
       'rows=' . $this->rows,
     ];
-    error_log('status 1: ' . count($params));
+    error_log('query: ' . $params[0]);
 
     $params = array_merge($params, $this->defaultSolrParameters);
     error_log('status 2: ' . count($params));
@@ -94,17 +95,12 @@ class SearchController extends BaseController
     if (!empty($this->fq))
       foreach ($this->fq as $fq)
         $params[] = 'fq=' . $fq;
-    error_log('status 3: ' . count($params));
 
     // $params += $parameters;
-    error_log('before: ' . count($params));
     $params = array_merge($params, $this->buildFacetParameters());
-    error_log('after: ' . count($params));
-    error_log('status 4: ' . count($params));
 
     if (!empty($this->filters))
       $params = array_merge($params, $this->filters);
-    error_log('status 5: ' . count($params));
 
     return $this->getSolrBaseUrl() . '/select?' . join('&', $params);
   }
@@ -175,5 +171,12 @@ class SearchController extends BaseController
       'label' => $this->getFacetLabel($field) . ': *'
     ];
     return $filters;
+  }
+
+  private function encodeQuery($input) {
+    $clean = html_entity_decode($input, ENT_QUOTES);
+    $input = urlencode($clean);
+    // $input = str_replace(' ', '%20', html_entity_decode($input, ENT_QUOTES));
+    return $input;
   }
 }

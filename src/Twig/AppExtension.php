@@ -23,6 +23,10 @@ class AppExtension extends AbstractExtension
       new TwigFunction('opacLink', [$this, 'opacLink']),
       new TwigFunction('hasPublication', [$this, 'hasPublication']),
       new TwigFunction('hasPhysicalDescription', [$this, 'hasPhysicalDescription']),
+      new TwigFunction('hasMainPersonalName', [$this, 'hasMainPersonalName']),
+      new TwigFunction('hasSimilarBooks', [$this, 'hasSimilarBooks']),
+      new TwigFunction('getMarcFields', [$this, 'getMarcFields']),
+      new TwigFunction('getAllSolrFields', [$this, 'getAllSolrFields']),
     ];
   }
 
@@ -56,6 +60,11 @@ class AppExtension extends AbstractExtension
     if (isset($record->{$fieldName}))
       return $record->{$fieldName}[0];
     return null;
+  }
+
+  function hasMainPersonalName($doc) {
+    return (!empty($doc->{'100a_MainPersonalName_personalName_ss'})
+      || !empty($doc->{'100d_MainPersonalName_dates_ss'}));
   }
 
   public function getFirstField($doc, $fieldName, $withSpaceReplace = FALSE) {
@@ -136,6 +145,56 @@ class AppExtension extends AbstractExtension
     }
 
     return '';
+  }
+
+  function hasSimilarBooks($doc) {
+    return (!empty($doc->{'9129_WorkIdentifier_ss'})
+      || !empty($doc->{'9119_ManifestationIdentifier_ss'}));
+  }
+
+  function getMarcFields($doc) {
+    if (is_string($doc->record_sni)) {
+      $marc = json_decode($doc->record_sni);
+    } else {
+      $marc = json_decode($doc->record_sni[0]);
+    }
+
+    $rows = [];
+    foreach ($marc as $tag => $value) {
+      if (preg_match('/^00/', $tag)) {
+        $rows[] = [$tag, '', '', '', $value];
+      } else if ($tag == 'leader') {
+        $rows[] = ['LDR', '', '', '', $value];
+      } else {
+        foreach ($value as $instance) {
+          $firstRow = [$tag, $instance->ind1, $instance->ind2];
+          $i = 0;
+          foreach ($instance->subfields as $code => $s_value) {
+            $i++;
+            if ($i == 1) {
+              $firstRow[] = '$' . $code;
+              $firstRow[] = $s_value;
+              $rows[] = $firstRow;
+            } else {
+              $rows[] = ['', '', '', '$' . $code, $s_value];
+            }
+          }
+        }
+      }
+    }
+    return $rows;
+  }
+
+  function getAllSolrFields($doc) {
+    $fields = [];
+    foreach ($doc as $label => $value) {
+      if ($label == 'record_sni' || $label == '_version_') {
+        continue;
+      }
+
+      $fields[] = (object)['label' => $label, 'value' => $value];
+    }
+    return $fields;
   }
 
 }

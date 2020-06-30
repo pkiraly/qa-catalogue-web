@@ -1,0 +1,7 @@
+{% if attribute(tag.subfields, code) is iterable %}
+  {% for subfield in attribute(tag.subfields, code) %}
+    {{ subfield }}{% if not loop.last %}, {% endif %}
+  {% endfor %}
+{% else %}
+  {{ attribute(tag.subfields, code) }}
+{% endif %}

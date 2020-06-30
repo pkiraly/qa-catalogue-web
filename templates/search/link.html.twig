@@ -1,0 +1,3 @@
+<a href="{{
+  path('search', {'query': solr_field ~ ':"' ~ value|raw ~ '"'})
+}}" class="record-link" data="{{ solr_field }}">{{ value|raw }}</a>
