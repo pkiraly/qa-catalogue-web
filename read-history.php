@@ -19,13 +19,13 @@ function readHistogram($dir, $db) {
     $raw_files = scandir(sprintf('images/%s', $db));
     $files = [];
     foreach ($raw_files as $file) {
-      if (preg_match('/^frequency-.*\.png$/', $file)) {
+      if (preg_match('/^marc-history\.png$/', $file)) {
         $files[] = $file;
       }
     }
     $smarty->assign('db', $db);
     $smarty->assign('files', $files);
-    return $smarty->fetch('pareto.tpl');
+    return $smarty->fetch('history.tpl');
   }
   return null;
 }

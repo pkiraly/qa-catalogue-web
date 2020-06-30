@@ -129,6 +129,12 @@
     </li>
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
+         id="history-tab" href="#history" aria-controls="history">
+        History
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
          id="settings-tab" href="#settings" aria-controls="settings">Settings</a>
     </li>
     <li class="nav-item">
@@ -362,6 +368,14 @@
       </p>
 
       <div id="pareto-content"></div>
+    </div>
+    <div class="tab-pane" id="history" role="tabpanel" aria-labelledby="history-tab">
+      <h2>History of cataloging</h2>
+
+      <p>The Y axis is based on the "date entered on file" data element that indicates the date the MARC record was created (008/00-05),
+        the X axis is based on "Date 1" element (008/07-10).</p>
+
+      <div id="history-content"></div>
     </div>
     <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">
       <a href="#" id="set-facets">set facets</a>
@@ -1092,6 +1106,12 @@
     });
   }
 
+  function loadHistory() {
+    $.getJSON('read-history.php?db=' + db, function(result, status) {
+      $('#history-content').html(result.histogram);
+    });
+  }
+
   function setClassificationLinkHandlers() {
     $('a.term-link').click(function(event) {
       event.preventDefault();
@@ -1445,6 +1465,8 @@
         loadTtCompleteness();
       } else if (id == 'pareto-tab') {
         loadPareto();
+      } else if (id == 'history-tab') {
+        loadHistory();
       } else if (id == 'terms-tab') {
         loadTerms();
       }
