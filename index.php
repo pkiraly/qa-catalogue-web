@@ -100,7 +100,7 @@
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
          id="authorities-tab" href="#authorities" aria-controls="authorities">
-        Authorities
+        Names
       </a>
     </li>
     <li class="nav-item">
@@ -112,7 +112,14 @@
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
          id="tt-completeness-tab" href="#tt-completeness" aria-controls="tt-completeness">
-        T&mdash;T completeness
+        T&amp;T
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
+         id="shelf-ready-completeness-tab" href="#shelf-ready-completeness"
+         aria-controls="shelf-ready-completeness">
+        Booth
       </a>
     </li>
     <li class="nav-item">
@@ -356,6 +363,21 @@
       <p>Their approach to calculate the quality of ebook records comming from different data
         sources.</p>
       <div id="tt-completeness-content"></div>
+    </div>
+    <div class="tab-pane" id="shelf-ready-completeness" role="tabpanel"
+         aria-labelledby="shelf-ready-completeness-tab">
+      <h2>Shelf-Ready completeness</h2>
+      <p>These scores are the implementation of the following paper:</p>
+
+      <blockquote>
+        Emma Booth (2020)
+        <em>Quality of Shelf-Ready Metadata. Analysis of survey responses and
+          recommendations for suppliers</em>, Pontefract (UK): National Acquisitions Group, 2020. p 31.
+        <a href="https://nag.org.uk/wp-content/uploads/2020/06/NAG-Quality-of-Shelf-Ready-Metadata-Survey-Analysis-and-Recommendations_FINAL_June2020.pdf" target="_blank">https://nag.org.uk/wp-content/uploads/2020/06/NAG-Quality-of-Shelf-Ready-Metadata-Survey-Analysis-and-Recommendations_FINAL_June2020.pdf</a>
+      </blockquote>
+      <p>The main purpose of the report is to highlight which fields of the printed and electronic
+        book records are important when the records are coming from different suppliers.</p>
+      <div id="shelf-ready-completeness-content"></div>
     </div>
     <div class="tab-pane" id="pareto" role="tabpanel" aria-labelledby="pareto-tab">
       <h2>Field frequency distribution</h2>
@@ -1084,19 +1106,19 @@
 
   function loadSerials() {
     $.getJSON('read-serials.php?db=' + db, function(result, status) {
-      // $('#serials-content').html(result.byRecord);
       $('#serials-content').html(result.histogram);
-      // $('#serials-content').append(result.byField);
-      // setAuthoritiesLinkHandlers();
     });
   }
 
   function loadTtCompleteness() {
     $.getJSON('read-tt-completeness.php?db=' + db, function(result, status) {
-      // $('#serials-content').html(result.byRecord);
       $('#tt-completeness-content').html(result.histogram);
-      // $('#tt-completeness-content').append(result.byField);
-      // setAuthoritiesLinkHandlers();
+    });
+  }
+
+  function loadShelfReadyCompleteness() {
+    $.getJSON('read-shelf-ready-completeness.php?db=' + db, function(result, status) {
+      $('#shelf-ready-completeness-content').html(result.histogram);
     });
   }
 
@@ -1463,6 +1485,8 @@
         loadSerials();
       } else if (id == 'tt-completeness-tab') {
         loadTtCompleteness();
+      } else if (id == 'shelf-ready-completeness-tab') {
+        loadShelfReadyCompleteness();
       } else if (id == 'pareto-tab') {
         loadPareto();
       } else if (id == 'history-tab') {

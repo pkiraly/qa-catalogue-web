@@ -35,6 +35,20 @@ foreach ($serial_score_suffixes as $suffix) {
   ];
 }
 
+$shelf_ready_completeness_suffixes = [
+  'LDR06', 'LDR07', 'LDR1718', 'TAG00600', 'TAG010', 'TAG015', 'TAG020', 'TAG035',
+  'TAG040', 'TAG041', 'TAG050', 'TAG082', 'TAG1XX', 'TAG240', 'TAG245', 'TAG246',
+  'TAG250', 'TAG264', 'TAG300', 'TAG336', 'TAG337', 'TAG338', 'TAG490', 'TAG500',
+  'TAG504', 'TAG505', 'TAG520', 'TAG546', 'TAG588', 'TAG6XX', 'TAG7XX', 'TAG776',
+  'TAG856', 'TAG8XX', 'total'
+];
+
+foreach ($shelf_ready_completeness_suffixes as $suffix) {
+  $allowable_histograms['shelf-ready-completeness-histogram-' . $suffix] = [
+    'name' => 'count', 'limit' => 10
+  ];
+}
+
 $filename = getOrDefault('file', '', array_keys($allowable_histograms));
 
 if ($filename != '') {
