@@ -27,9 +27,8 @@
   <li>x axis: total score of a record</li>
 </ul>
 
-Each record get a score based on a number of criteria.
-Each criteria results in a positive score. The final score is
-the summary of these criteria scores.
+<p>Each record get a score based on a number of criteria. Each criteria results in a
+  positive score. The final (rounded) score is the summary of these criteria scores.</p>
 
 <table>
   <thead>
@@ -60,7 +59,10 @@ the summary of these criteria scores.
       <tr>
   {/if}
     <td>
-      <p id="shelf-ready-component-{$index+1}">{$index+1}. {$field->label}</p>
+      <p id="shelf-ready-component-{$index+1}">
+        {$index+1}. {$field->label}<br/>
+        score: 0&mdash;{$field->score}
+      </p>
       <svg class="shelf-ready-completeness-histogram-chart-{$field->name}" width="320" height="200"></svg>
     </td>
   {if $index % 3 == 2 || $index == count($fields) - 1}

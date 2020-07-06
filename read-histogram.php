@@ -45,8 +45,11 @@ $shelf_ready_completeness_suffixes = [
 
 foreach ($shelf_ready_completeness_suffixes as $suffix) {
   $allowable_histograms['shelf-ready-completeness-histogram-' . $suffix] = [
-    'name' => 'count', 'limit' => 10
+    'name' => 'count', 'limit' => 50
   ];
+  if ($suffix == 'total') {
+    $allowable_histograms['shelf-ready-completeness-histogram-total']['buckets'] = 'round';
+  }
 }
 
 $filename = getOrDefault('file', '', array_keys($allowable_histograms));
@@ -57,6 +60,12 @@ if ($filename != '') {
   $absoluteFilePath = sprintf('%s/%s/%s.csv', $dir, $db, $filename);
   $limit = $allowable_histograms[$filename]['limit'];
   $field_name = $allowable_histograms[$filename]['name'];
+  if (isset($allowable_histograms[$filename]['buckets'])) {
+    $method = $allowable_histograms[$filename]['buckets'];
+    $buckets = [];
+  } else {
+    $method = FALSE;
+  }
   if (file_exists($absoluteFilePath)) {
     $content = '';
     $max = 0;
@@ -70,13 +79,24 @@ if ($filename != '') {
       } else {
         $record = (object)array_combine($header, $values);
         $max = $record->{$field_name};
-        if ($record->{$field_name} >= $limit) {
+        if ($method == 'round') {
+          $round = (string) (round($record->{$field_name} * 2) / 2);
+          if (!isset($buckets[$round]))
+            $buckets[$round] = 0;
+          $buckets[$round] += $record->frequency;
+        } elseif ($record->{$field_name} >= $limit) {
           $lastBucket += $record->frequency;
         } else {
           $content .= $line;
         }
       }
     }
+    if ($method == 'round') {
+      foreach ($buckets as $round => $frequency) {
+        $content .= "$round,$frequency\n";
+      }
+    }
+
     if ($lastBucket != 0) {
       $content .= sprintf(
         "%s,%d\n",
@@ -84,6 +104,7 @@ if ($filename != '') {
         $lastBucket
       );
     }
+
     echo $content;
   }
 }
