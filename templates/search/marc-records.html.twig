@@ -1,14 +1,12 @@
-{% for doc in docs %}
-  {% set record=getRecord(doc) %}
-  {{ dump(record) }}
-  {% set id=doc.id|trim %}
-  {% set type=getFirstField(doc, 'type_ss') %}
+{% for record in records %}
+  {% set id=record.id %}
+  {% set type=record.getType %}
   <div class="record">
+    {% set tag245=record.getFirstField('245') %}
     <h2>
-      {% set tag245=getField(record, '245') %}
-      {% set tag773=getField(record, '773') %}
+      {% set tag773=record.getFirstField('773') %}
       <i class="fa fa-{{ type2icon(type) }}" title="type: {{ type }}"></i>
-      {% if tag245.subfields.a or tag245.subfields.b %}
+      {% if tag245.has('a') or tag245.has('b') %}
         {% include 'search/conditional-foreach.html.twig' with {obj: tag245.subfields, key: 'a'} %}
         {% include 'search/conditional-foreach.html.twig' with {obj: tag245.subfields, key: 'b'} %}
       {% elseif tag773 %}
@@ -18,7 +16,7 @@
         {% endif %}
       {% endif %}
       <a href="#" class="record-details" data="details-{{ id }}" title="display details"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
-      <a href="{{ opacLink(doc, id) }}" target="_blank" title="Display record in the library catalogue"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+      <a href="{{ opacLink(record, id) }}" target="_blank" title="Display record in the library catalogue"><i class="fa fa-external-link" aria-hidden="true"></i></a>
     </h2>
 
     {% if attribute(tag245.subfields, 'c') is defined %}
@@ -29,14 +27,14 @@
         label:'<i class="fa fa-pencil" aria-hidden="true"></i>', suffix:'<br/>'} %}
     {% endif %}
 
-    {% set tag250=getField(record, '250') %}
+    {% set tag250=record.getFirstField('250') %}
     {% if attribute(tag250, 'subfields') is defined %}
       {% include 'search/conditional-foreach.html.twig' with {obj:tag250.subfields, key:'a'} %}
     {% endif %}
 
     {# 260 Publication #}
-    {% if hasPublication(doc) %}
-      {% set tag260=getField(record, '260') %}
+    {% if record.hasPublication %}
+      {% set tag260=record.getFirstField('260') %}
       <i class="fa fa-calendar" aria-hidden="true"></i>
       Published
       {# date #}
@@ -49,8 +47,8 @@
     {% endif %}
 
     {# PhysicalDescription #}
-    {% if hasPhysicalDescription(doc) %}
-      {% set tag300=getField(record, '300') %}
+    {% if record.hasPhysicalDescription %}
+      {% set tag300=record.getFirstField('300') %}
       {# extent #}
       {% include 'search/conditional-foreach.html.twig' with {obj:tag300.subfields, key:'a', tag:'300a'} %}
       {# dimensions #}
@@ -59,134 +57,106 @@
     {% endif %}
 
     {# SeriesStatement #}
-    {% set tag490=getField(record, '490') %}
-    {% if tag490 != null %}
-      {% if attribute(tag490.subfields, 'a') is defined %}
-        Series:
-        {% for tag490 in record.490 %}
-          <a href="{{
-            path('search', {
-            'query': '490a_SeriesStatement_ss:"' ~ attribute(tag490.subfields, 'a')|escape ~ '"'
-            })
-          }}" class="record-link tag-490a" data="490a_SeriesStatement_ss">{{
-            attribute(tag490.subfields, 'a') }}</a>
-          {% if attribute(tag490.subfields, 'v') is defined %}
-            {{ attribute(tag490.subfields, 'v') }}
-          {% endif %}
-          {% if not loop.last %}, {% endif %}
-        {% endfor %}
-        <br/>
-      {% endif %}
+    {% if record.hasAnySubfieldsOf('490', ['a']) %}
+      Series:
+      {% for tag in record.getField('490') %}
+        <a href="{{path('search',{'query':tag.getQuery('a')})}}" class="query-link tag-490a">{{ tag.get('a') }}</a>
+        {% if tag.has('v') %}{{ tag.get('v') }}{% endif %}
+        {% if not loop.last %}, {% endif %}
+      {% endfor %}
+      <br/>
     {% endif %}
 
     {# 520a_Summary_ss #}
-    {% if record.520 is defined %}
-      {% for tag in record.520 %}
-        {{ attribute(tag.subfields, 'a') }}<br/>
+    {% if record.hasField('520') %}
+      {% for tag in record.getField('520') %}
+        {{ tag.get('a') }}<br/>
       {% endfor %}
     {% endif %}
 
     {# 505a_TableOfContents_ss #}
-    {% if record.505 is defined %}
-      {% for tag in record.505 %}
-        {{ attribute(tag.subfields, 'a') }}<br/>
+    {% if record.hasField('505') %}
+      {% for tag in record.getField('505') %}
+        {{ tag.get('a') }}<br/>
       {% endfor %}
     {% endif %}
 
     {# 100a_MainPersonalName_personalName_ss #}
-    {% if hasMainPersonalName(doc) %}
+    {% if record.hasMainPersonalName() %}
       <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
-      {% for tag in record.100 %}
-        <a href="{{ path('search', {
-          'query': '100a_MainPersonalName_personalName_ss:"' ~ attribute(tag.subfields, 'a')|escape ~ '"'
-        }) }}" class="record-link" data="100a_MainPersonalName_personalName_ss">{{ attribute(tag.subfields, 'a') }}</a>
-          {# 100d_MainPersonalName_dates_ss #}
-          {% if attribute(tag.subfields, 'd') is defined %}
-            {{ attribute(tag.subfields, 'd') }}
-          {% endif %}
-          {% if not loop.last %}, {% endif %}
+      {% for tag in record.getField('100') %}
+        <a href="{{path('search',{'query':tag.getQuery('a')})}}" class="query-link" data="100a_MainPersonalName_personalName_ss">{{ tag.get('a') }}</a>
+        {# 100d_MainPersonalName_dates_ss #}
+        {% if tag.has('d') %}{{ tag.get('d') }}{% endif %}
+        {% if not loop.last %}, {% endif %}
       {% endfor %}
       <br/>
     {% endif %}
 
     {# 700a_AddedPersonalName_personalName_ss #}
-    {% if record.700 is defined %}
+    {% if record.hasField('700') %}
       <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
-      {% for tag in record.700 %}
-        <a href="{{ path('search', {
-          'query': '700a_AddedPersonalName_personalName_ss:"' ~ attribute(tag.subfields, 'a')|escape ~ '"'
-          }) }}" class="record-link" data="700a_AddedPersonalName_personalName_ss">{{ attribute(tag.subfields, 'a')
-        }}</a>{# 700d_AddedPersonalName_dates_ss #}{% if attribute(tag.subfields, 'd') is defined %}
-          {{ attribute(tag.subfields, 'd') }}
-        {% endif %}{% if not loop.last %}, {% endif %}
+      {% for tag in record.getField('700') %}
+        <a href="{{path('search',{'query': tag.getQuery('a')})}}" class="query-link tag-700a">{{ tag.get('a') }}</a>
+        {# dates #}{% if tag.has('d') %}{{ tag.get('d') }}{% endif %}{% if not loop.last %}, {% endif %}
       {% endfor %}
       <br/>
     {% endif %}
 
     {# 710a_AddedCorporateName_ss #}
-    {% if record.710 is defined %}
+    {% if record.hasField('710') %}
       <i class="fa fa-user" aria-hidden="true" title="corporate name"></i>
-      {% for tag in record.710 %}
-        <a href="{{ path('search', {
-        'query': '710a_AddedCorporateName_ss:"' ~ attribute(tag.subfields, 'a')|raw ~ '"'
-      }) }}" class="record-link" data="710a_AddedCorporateName_ss">{{ attribute(tag.subfields, 'a')|raw
-      }}</a>{# 710d_AddedCorporateName_dates #}{% if attribute(tag.subfields, 'd') is defined %}
-        {{ attribute(tag.subfields, 'd') }}
-      {% endif %}{% if not loop.last %}, {% endif %}
+      {% for tag in record.getField('710') %}
+        <a href="{{ path('search',{'query':tag.getQuery('a')})}}" class="query-link tag-710a">{{ tag.get('a')|raw
+         }}</a>{# dates #}{% if tag.has('d') %} {{ tag.get('d') }}{% endif
+        %}{% if not loop.last %}, {% endif %}
       {% endfor %}
       <br/>
     {% endif %}
 
     {# 650a_Topic_topicalTerm_ss #}
-    {% if record.650 is defined %}
-      {% for tag in record.650 %}
+    {% if record.hasField('650') %}
+      {% for tag in record.getField('650') %}
         <i class="fa fa-hashtag" aria-hidden="true" title="topical term"></i>
-        {% include 'search/subfield-link.html.twig' with
-          {tag:tag, code:'a', solr_field:'650a_Topic_topicalTerm_ss'} %}
+        {% include 'search/subfield-link.html.twig' with {tag:tag, code:'a'} %}
 
         {# 650b_Topic_topicalTerm_ss #}
-        {% if attribute(tag.subfields, 'b') is defined %}
+        {% if tag.has('b') %}
           <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with
-            {tag:tag, code:'b', solr_field:'650b_Topic_topicalTerm_ss'} %}
+          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'b'} %}
         {% endif %}
 
         {# 650v_Topic_formSubdivision_ss #}
-        {% if attribute(tag.subfields, 'v') is defined %}
+        {% if tag.has('v') %}
           <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with
-            {tag:tag, code:'v', solr_field:'650v_Topic_formSubdivision_ss'} %}
+          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'v'} %}
         {% endif %}
 
         {# 650x_Topic_generalSubdivision_ss #}
-        {% if attribute(tag.subfields, 'x') is defined %}
+        {% if tag.has('x') %}
           <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with
-            {tag:tag, code:'x', solr_field:'650x_Topic_generalSubdivision_ss'} %}
+          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'x'} %}
         {% endif %}
 
         {# 650y_Topic_chronologicalSubdivision_ss #}
-        {% if attribute(tag.subfields, 'y') is defined %}
+        {% if tag.has('y') %}
           <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with
-            {tag:tag, code:'y', solr_field:'650y_Topic_chronologicalSubdivision_ss'} %}
+          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'y'} %}
         {% endif %}
 
         {# 650z_Topic_geographicSubdivision_ss #}
-        {% if attribute(tag.subfields, 'z') is defined %}
+        {% if tag.has('z') %}
           <i class="fa fa-map" aria-hidden="true" title="geographic subdivision"></i>
-          {% include 'search/subfield-link.html.twig' with
-            {tag:tag, code:'z', solr_field:'650z_Topic_geographicSubdivision_ss'} %}
+          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'z'} %}
         {% endif %}
 
         {# 6500_Topic_authorityRecordControlNumber_ss #}
-        {% if attribute(tag.subfields, '0') is defined %}
+        {% if tag.has('0') %}
           <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with
-            {tag:tag, code:'0', solr_field:'6500_Topic_authorityRecordControlNumber_ss'} %}
+          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'0'} %}
         {% endif %}
 
-        {% if attribute(tag.subfields, '2') is defined %}
+        {% if tag.has('2') %}
           <i class="fa fa-tag" aria-hidden="true" title="form"></i>
           {% include 'search/subfield.html.twig' with {tag:tag, code:'2'} %}
         {% endif %}
@@ -196,48 +166,42 @@
     {% endif %}
 
     {# 651a_Geographic_ss #}
-    {% if record.651 is defined %}
-      {% for tag in record.651 %}
+    {% if record.hasField('651') %}
+      {% for tag in record.getField('651') %}
         <i class="fa fa-map" aria-hidden="true" title="topical term"></i>
-        {% include 'search/subfield-link.html.twig' with
-          {tag:tag, code:'a', solr_field:'651a_Geographic_ss'} %}
+        {% include 'search/subfield-link.html.twig' with {tag:tag, code:'a'} %}
 
         {# 651v_Geographic_formSubdivision_ss #}
-        {% if attribute(tag.subfields, 'v') is defined %}
+        {% if tag.has('v') %}
           <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with
-            {tag:tag, code:'v', solr_field:'651v_Geographic_formSubdivision_ss'} %}
+          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'v'} %}
         {% endif %}
 
         {# 651x_Geographic_generalSubdivision_ss #}
-        {% if attribute(tag.subfields, 'x') is defined %}
+        {% if tag.has('x') %}
           <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with
-            {tag:tag, code:'x', solr_field:'651x_Geographic_generalSubdivision_ss'} %}
+          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'x'} %}
         {% endif %}
 
         {# 651y_Geographic_chronologicalSubdivision_ss #}
-        {% if attribute(tag.subfields, 'y') is defined %}
+        {% if tag.has('y') %}
           <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with
-            {tag:tag, code:'y', solr_field:'651y_Geographic_chronologicalSubdivision_ss'} %}
+          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'y'} %}
         {% endif %}
 
         {# 651z_Geographic_geographicSubdivision_ss #}
-        {% if attribute(tag.subfields, 'z') is defined %}
+        {% if tag.has('z') %}
           <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with
-            {tag:tag, code:'z', solr_field:'651z_Geographic_geographicSubdivision_ss'} %}
+          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'z'} %}
         {% endif %}
 
         {# 6510_Geographic_authorityRecordControlNumber_ss #}
-        {% if attribute(tag.subfields, '0') is defined %}
+        {% if tag.has('0') %}
           <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with
-            {tag:tag, code:'0', solr_field:'6510_Geographic_authorityRecordControlNumber_ss'} %}
+          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'0'} %}
         {% endif %}
 
-        {% if attribute(tag.subfields, '2') is defined %}
+        {% if tag.has('2') %}
           <i class="fa fa-tag" aria-hidden="true" title="form"></i>
           {% include 'search/subfield.html.twig' with {tag:tag, code:'2'} %}
         {% endif %}
@@ -246,17 +210,21 @@
       {% endfor %}
     {% endif %}
 
-    {% if hasSimilarBooks(doc) %}
+    {% if record.hasSimilarBooks %}
       <div class="similarity">
         <i class="fa fa-search" aria-hidden="true"></i>
         Search for similar items:
-        {% if attribute(doc, '9129_WorkIdentifier_ss') is defined %}
+        {% if record.hasField('912') %}
           works:
-          {% include 'search/link.html.twig' with {value:attribute(doc, '9129_WorkIdentifier_ss'), solr_field:'9129_WorkIdentifier_ss'} %}
+          {% for tag in record.getField('912') %}
+            {% include 'search/link.html.twig' with {value:tag.get('9'), solr_field:tag.solrField('9')} %}
+          {% endfor %}
         {% endif %}
         {% if attribute(doc, '9119_ManifestationIdentifier_ss') is defined %}
           manifestations:
-          {% include 'search/link.html.twig' with {value:attribute(doc, '9119_ManifestationIdentifier_ss'), solr_field:'9119_ManifestationIdentifier_ss'} %}
+          {% for tag in record.getField('911') %}
+            {% include 'search/link.html.twig' with {value:tag.get('9'), solr_field:tag.solrField('9')} %}
+          {% endfor %}
         {% endif %}
       </div>
     {% endif %}
@@ -290,24 +258,22 @@
         </li>
       </ul>
       <div class="tab-content">
-        <div class="tab-pane active" id="marc-raw-{$id}" role="tabpanel" aria-labelledby="data-tab">
-          <div class="marc-details" id="marc-details-{$id}">
-            {% if doc.record_sni is defined %}
+        <div class="tab-pane active" id="marc-raw-{{ id }}" role="tabpanel" aria-labelledby="data-tab">
+          <div class="marc-details" id="marc-details-{{ id }}">
             <table>
-              {% for row in getMarcFields(doc) %}
-              <tr>
-                {% for cell in row %}
-                  <td>{{ cell }}</td>
-                {% endfor %}
-              </tr>
+              {% for row in record.getMarcFields() %}
+                <tr>
+                  {% for cell in row %}
+                    <td>{{ cell }}</td>
+                  {% endfor %}
+                </tr>
               {% endfor %}
             </table>
-            {% endif %}
           </div>
         </div>
-        <div class="tab-pane" id="marc-human-{$id}" role="tabpanel" aria-labelledby="data-tab">
+        <div class="tab-pane" id="marc-human-{{ id }}" role="tabpanel" aria-labelledby="data-tab">
           <ul>
-            {% for field in getAllSolrFields(doc) %}
+            {% for field in record.allSolrFields %}
               <li>
                 <span class="label">{{ field.label }}:</span>
                 {% for value in field.value %}
@@ -317,10 +283,11 @@
             {% endfor %}
           </ul>
         </div>
-        <div class="tab-pane" id="marc-issue-{$id}" role="tabpanel" aria-labelledby="data-tab">
+        <div class="tab-pane" id="marc-issue-{{ id }}" role="tabpanel" aria-labelledby="data-tab">
           <p>Retrieving issues detected in this MARC record (if any). It might take for a while.</p>
         </div>
       </div>
     </div>
+
   </div>
 {% endfor %}

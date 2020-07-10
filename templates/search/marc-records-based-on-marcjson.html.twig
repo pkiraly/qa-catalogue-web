@@ -23,10 +23,10 @@
   {% if isset($tag245->subfields->c) %}
     {include 'conditional-foreach.tpl' obj=$tag245->subfields key='c'
     label='<i class="fa fa-pencil" aria-hidden="true"></i>' suffix='<br/>'}
-                                                                         {* 773a_PartOf_ss *}
-                                                                         {elseif isset($tag773->subfields->a)}
-                                                                         {include 'conditional-foreach.tpl' obj=$tag773->subfields key='a'
-                                                                         label='<i class="fa fa-pencil" aria-hidden="true"></i>' suffix='<br/>'}
+    {* 773a_PartOf_ss *}
+    {elseif isset($tag773->subfields->a)}
+    {include 'conditional-foreach.tpl' obj=$tag773->subfields key='a'
+              label='<i class="fa fa-pencil" aria-hidden="true"></i>' suffix='<br/>'}
   {% endif %}
 
   {* 250a_Edition_editionStatement_ss *}

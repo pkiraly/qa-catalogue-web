@@ -1,8 +1,8 @@
-{% if attribute(tag.subfields, code) is iterable %}
-  {% for subfield in attribute(tag.subfields, code) %}
-    {% include 'search/link.html.twig' with {value:subfield, solr_field:solr_field}
+{% if tag.get(code) is iterable %}
+  {% for subfield in tag.get(code) %}
+    {% include 'search/link.html.twig' with {value:subfield, solr_field:tag.solrField(code)}
        %}{% if not loop.last %}, {% endif %}
   {% endfor %}
 {% else %}
-  {% include 'search/link.html.twig' with {value:attribute(tag.subfields, code), solr_field:solr_field} %}
+  {% include 'search/link.html.twig' with {value:tag.get(code), solr_field:tag.solrField(code)} %}
 {% endif %}

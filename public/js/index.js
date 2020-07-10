@@ -6,12 +6,14 @@ function showRecordDetails() {
   $('.record h2 a.record-details').click(function (event) {
     event.preventDefault();
     var detailsId = $(this).attr('data');
-    console.log(detailsId);
+    console.log('showRecordDetails: ' + detailsId);
     $('#' + detailsId).toggle();
     $('#' + detailsId + ' a[aria-controls="marc-human-tab"]').click(function (e) {
+      console.log('click on human tab');
       showDataTab(detailsId, 'marc-human');
     });
     $('#' + detailsId + ' a[aria-controls="marc-issue-tab"]').click(function (e) {
+      console.log('click on issue tab');
       showDataTab(detailsId, 'marc-issue');
     });
   });
@@ -31,21 +33,19 @@ function showRecordDetails() {
 }
 
 function showDataTab(detailsId, selectedTab) {
-  console.log(detailsId)
   var id = detailsId.replace('details-', '');
-  console.log(id)
   var tabs = ['marc-raw', 'marc-human', 'marc-issue'];
   for (i in tabs) {
     var tab = tabs[i];
-    console.log(tab + ' -> ' + '#' + tab + '-' + id)
+    var tabId = '#' + tab + '-tab-' + id;
+    var contentId = '#' + tab + '-' + id;
 
     if (tab == selectedTab) {
-      $('#' + tab + '-' + id).addClass('active');
-      $('#' + tab + '-' + id).show();
+      $(tabId).addClass('active');
+      $(contentId).show();
     } else {
-      $('#' + tab + '-' + id).removeClass('active');
-      $('#' + tab + '-' + id).hide();
+      $(tabId).removeClass('active');
+      $(contentId).hide();
     }
-    console.log($('#' + tab + '-' + id).classList());
   }
 }

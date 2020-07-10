@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Record;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -60,6 +61,7 @@ class SearchController extends BaseController
       // 'records' => getRecords($solrResponse),
       // 'facets' => $this->getFacets($solrResponse), // 'marc-facets.tpl'
       'docs' => $solrResponse->response->docs, // 'marc-records-based-on-marcjson.tpl'
+      'records' => $this->createRecords($solrResponse),
       'facets' => $solrResponse->facet_counts->facet_fields,
       'params' => $solrResponse->responseHeader->params
     ]);
@@ -179,4 +181,13 @@ class SearchController extends BaseController
     // $input = str_replace(' ', '%20', html_entity_decode($input, ENT_QUOTES));
     return $input;
   }
+
+  function createRecords($solrResponse) {
+    $records = [];
+    foreach ($solrResponse->response->docs as $doc) {
+      $records[] = new Record($doc);
+    }
+    return $records;
+  }
+
 }

@@ -27,6 +27,8 @@ class AppExtension extends AbstractExtension
       new TwigFunction('hasSimilarBooks', [$this, 'hasSimilarBooks']),
       new TwigFunction('getMarcFields', [$this, 'getMarcFields']),
       new TwigFunction('getAllSolrFields', [$this, 'getAllSolrFields']),
+      new TwigFunction('hasAuthorityNames', [$this, 'hasAuthorityNames']),
+      new TwigFunction('hasSubjectHeadings', [$this, 'hasSubjectHeadings']),
     ];
   }
 
@@ -89,7 +91,7 @@ class AppExtension extends AbstractExtension
       || !empty($doc->{'300c_PhysicalDescription_dimensions_ss'}));
   }
 
-  public function opacLink($doc, $id) {
+  public function opacLink($record, $id) {
     global $configuration;
 
     $ctr = new BaseController();
@@ -105,7 +107,7 @@ class AppExtension extends AbstractExtension
       return 'http://mokka.hu/web/guest/record/-/record/' . trim($id);
     else if ($catalogue == 'cerl') {
       $identifier = '';
-      foreach ($doc->{'035a_SystemControlNumber_ss'} as $tag35a) {
+      foreach ($record->getSolrField('035a_SystemControlNumber_ss') as $tag35a) {
         if (!preg_match('/OCoLC/', $tag35a)) {
           $identifier = $tag35a;
           break;
@@ -195,6 +197,31 @@ class AppExtension extends AbstractExtension
       $fields[] = (object)['label' => $label, 'value' => $value];
     }
     return $fields;
+  }
+
+  function hasAuthorityNames($record) {
+    return hasAny($record, [
+      '100', '110', '111', '130',
+      '700', '710', '711', '720', '730', '740', '751', '752', '753', '754',
+      '800', '810', '811', '830',
+    ]);
+  }
+
+  function hasSubjectHeadings($record) {
+    return hasAny($record, [
+      '080', '600', '610', '611', '630', '647', '648', '650', '651', '653', '655'
+    ]);
+  }
+
+  function hasAny($record, $fields) {
+    $hasAny = false;
+    foreach ($fields as $fieldName) {
+      if (isset($record->{$fieldName})) {
+        $hasAny = true;
+        break;
+      }
+    }
+    return $hasAny;
   }
 
 }
