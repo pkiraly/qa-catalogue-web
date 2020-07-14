@@ -1,0 +1,15 @@
+{# 362a_DatesOfPublication_ss #}
+{% if record.has('362') %}
+  <em>Dates of Publication</em><br>
+  {% for tag in record.get('362') %}
+    <span class="362">
+      {% if tag.has('a') %}
+        <span class="dates">{{ tag.get('a') }}</span>
+      {% endif %}
+      {% if tag.has('z') %}
+        <span class="source">{{ tag.get('z') }}</span>
+      {% endif %}
+    </span>
+    <br/>
+  {% endfor %}
+{% endif %}

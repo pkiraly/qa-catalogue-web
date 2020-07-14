@@ -1,0 +1,21 @@
+{# Production, Publication, Distribution, Manufacture, and Copyright Notice
+   https://www.loc.gov/marc/bibliographic/bd264.html #}
+{% if record.has('264') %}
+  {% for tag in record.get('264') %}
+    <span class="264">
+      {# 264a_ProvisionActivity_place_ss #}
+      {% if tag.has('a') %}
+        <span class="place">{{ tag.get('a') }}</span>
+      {% endif %}
+      {# 264b_ProvisionActivity_agent_ss #}
+      {% if tag.has('b') %}
+        <span class="name">{{ tag.get('b') }}</span>
+      {% endif %}
+      {# 264c_ProvisionActivity_date_ss #}
+      {% if tag.has('c') %}
+        <span class="date">{{ tag.get('c') }}</span>
+      {% endif %}
+    </span>
+    <br/>
+  {% endfor %}
+{% endif %}

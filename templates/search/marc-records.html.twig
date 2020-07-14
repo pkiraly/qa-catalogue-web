@@ -46,6 +46,8 @@
       <br/>
     {% endif %}
 
+    {% include 'search/264.html.twig' %}
+
     {# PhysicalDescription #}
     {% if record.hasPhysicalDescription %}
       {% set tag300=record.getFirstField('300') %}
@@ -67,6 +69,9 @@
       <br/>
     {% endif %}
 
+    {# Dates of Publication #}
+    {% include 'search/362.html.twig' %}
+
     {# 520a_Summary_ss #}
     {% if record.hasField('520') %}
       {% for tag in record.getField('520') %}
@@ -81,133 +86,207 @@
       {% endfor %}
     {% endif %}
 
-    {# 100a_MainPersonalName_personalName_ss #}
-    {% if record.hasMainPersonalName() %}
-      <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
-      {% for tag in record.getField('100') %}
-        <a href="{{path('search',{'query':tag.getQuery('a')})}}" class="query-link" data="100a_MainPersonalName_personalName_ss">{{ tag.get('a') }}</a>
-        {# 100d_MainPersonalName_dates_ss #}
-        {% if tag.has('d') %}{{ tag.get('d') }}{% endif %}
-        {% if not loop.last %}, {% endif %}
-      {% endfor %}
-      <br/>
-    {% endif %}
-
-    {# 700a_AddedPersonalName_personalName_ss #}
-    {% if record.hasField('700') %}
-      <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
-      {% for tag in record.getField('700') %}
-        <a href="{{path('search',{'query': tag.getQuery('a')})}}" class="query-link tag-700a">{{ tag.get('a') }}</a>
-        {# dates #}{% if tag.has('d') %}{{ tag.get('d') }}{% endif %}{% if not loop.last %}, {% endif %}
-      {% endfor %}
-      <br/>
-    {% endif %}
-
-    {# 710a_AddedCorporateName_ss #}
-    {% if record.hasField('710') %}
-      <i class="fa fa-user" aria-hidden="true" title="corporate name"></i>
-      {% for tag in record.getField('710') %}
-        <a href="{{ path('search',{'query':tag.getQuery('a')})}}" class="query-link tag-710a">{{ tag.get('a')|raw
-         }}</a>{# dates #}{% if tag.has('d') %} {{ tag.get('d') }}{% endif
-        %}{% if not loop.last %}, {% endif %}
-      {% endfor %}
-      <br/>
-    {% endif %}
-
-    {# 650a_Topic_topicalTerm_ss #}
-    {% if record.hasField('650') %}
-      {% for tag in record.getField('650') %}
-        <i class="fa fa-hashtag" aria-hidden="true" title="topical term"></i>
-        {% include 'search/subfield-link.html.twig' with {tag:tag, code:'a'} %}
-
-        {# 650b_Topic_topicalTerm_ss #}
-        {% if tag.has('b') %}
-          <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'b'} %}
-        {% endif %}
-
-        {# 650v_Topic_formSubdivision_ss #}
-        {% if tag.has('v') %}
-          <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'v'} %}
-        {% endif %}
-
-        {# 650x_Topic_generalSubdivision_ss #}
-        {% if tag.has('x') %}
-          <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'x'} %}
-        {% endif %}
-
-        {# 650y_Topic_chronologicalSubdivision_ss #}
-        {% if tag.has('y') %}
-          <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'y'} %}
-        {% endif %}
-
-        {# 650z_Topic_geographicSubdivision_ss #}
-        {% if tag.has('z') %}
-          <i class="fa fa-map" aria-hidden="true" title="geographic subdivision"></i>
-          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'z'} %}
-        {% endif %}
-
-        {# 6500_Topic_authorityRecordControlNumber_ss #}
-        {% if tag.has('0') %}
-          <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'0'} %}
-        {% endif %}
-
-        {% if tag.has('2') %}
-          <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield.html.twig' with {tag:tag, code:'2'} %}
-        {% endif %}
-
+    {# Host Item Entry #}
+    {% if record.has('773') %}
+      {% for tag in record.get('773') %}
+        <span class="773">
+          {% if tag.has('a') %}
+            <span class="main-entry">{{ tag.get('a') }}</span>
+          {% endif %}
+          {% if tag.has('b') %}
+            <span class="edition">{{ tag.get('b') }}</span>
+          {% endif %}
+          {% if tag.has('d') %}
+            <span class="place-publisher-dates">{{ tag.get('d') }}</span>
+          {% endif %}
+          {% if tag.has('t') %}
+            <span class="title">{{ tag.get('t') }}</span>
+          {% endif %}
+          {% if tag.has('x') %}
+            <span class="issn">{{ tag.get('x') }}</span>
+          {% endif %}
+          {% if tag.has('g') %}
+            <span class="related-parts">{{ tag.get('g') }}</span>
+          {% endif %}
+          {% if tag.has('w') %}
+            <span class="record-control-number">{{ tag.get('w') }}</span>
+          {% endif %}
+        </span>
         <br/>
       {% endfor %}
     {% endif %}
 
-    {# 651a_Geographic_ss #}
-    {% if record.hasField('651') %}
-      {% for tag in record.getField('651') %}
-        <i class="fa fa-map" aria-hidden="true" title="topical term"></i>
-        {% include 'search/subfield-link.html.twig' with {tag:tag, code:'a'} %}
+    {% if record.hasAuthorityNames() or record.hasSubjectHeadings() %}
+      <table class="authority-names">
+        {% if record.hasAuthorityNames() %}
+          <tr><td colspan="2" class="heading">Authority names</td></tr>
+          {# 100a_MainPersonalName_personalName_ss #}
+          {% if record.hasMainPersonalName() %}
+            <tr>
+              <td><em>main personal names</em>:</td>
+              <td>
+                <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
+                {% for tag in record.getField('100') %}
+                  <a href="{{path('search',{'query':tag.getQuery('a')})}}" class="query-link" data="100a_MainPersonalName_personalName_ss">{{ tag.get('a') }}</a>
+                  {# 100d_MainPersonalName_dates_ss #}
+                  {% if tag.has('d') %}{{ tag.get('d') }}{% endif %}
+                  {% if not loop.last %}, {% endif %}
+                {% endfor %}
+                <br/>
+              </td>
+            </tr>
+          {% endif %}
+          {# TODO 110, 111, 130 #}
+          {# 700a_AddedPersonalName_personalName_ss #}
+          {% if record.hasField('700') %}
+            <tr>
+              <td><em>additional personal names</em>:</td>
+              <td>
+                <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
+                {% for tag in record.getField('700') %}
+                  <a href="{{path('search',{'query': tag.getQuery('a')})}}" class="query-link tag-700a">{{ tag.get('a') }}</a>
+                  {# dates #}{% if tag.has('d') %}{{ tag.get('d') }}{% endif %}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+                <br/>
+              </td>
+            </tr>
+          {% endif %}
 
-        {# 651v_Geographic_formSubdivision_ss #}
-        {% if tag.has('v') %}
-          <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'v'} %}
+          {# 710a_AddedCorporateName_ss #}
+          {% if record.hasField('710') %}
+            <tr>
+              <td><em>additional corporate names</em>:</td>
+              <td>
+                <i class="fa fa-user" aria-hidden="true" title="corporate name"></i>
+                {% for tag in record.getField('710') %}
+                  <a href="{{ path('search',{'query':tag.getQuery('a')})}}" class="query-link tag-710a">{{ tag.get('a')|raw
+                  }}</a>{# dates #}{% if tag.has('d') %} {{ tag.get('d') }}{% endif
+                  %}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+                <br/>
+              </td>
+            </tr>
+          {% endif %}
+
+          {# TODO 711, 720, 730 #}
         {% endif %}
 
-        {# 651x_Geographic_generalSubdivision_ss #}
-        {% if tag.has('x') %}
-          <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'x'} %}
-        {% endif %}
+        {% if record.hasSubjectHeadings() %}
+          <tr><td colspan="2" class="heading">Subjects</td></tr>
+          {# TODO: 055, 654, 656, 657, 658, 662 #}
+          {# TODO: 052, 072, 080, 082, 083, 084, 085, 086 #}
+          {# TODO: 600, 610, 611, 630, 647, 648 #}
 
-        {# 651y_Geographic_chronologicalSubdivision_ss #}
-        {% if tag.has('y') %}
-          <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'y'} %}
-        {% endif %}
+          {# 650a_Topic_topicalTerm_ss #}
+          {% if record.hasField('650') %}
+            <tr>
+              <td><em>topics</em>:</td>
+              <td>
+                {% for tag in record.getField('650') %}
+                  <i class="fa fa-hashtag" aria-hidden="true" title="topical term"></i>
+                  {% include 'search/subfield-link.html.twig' with {tag:tag, code:'a'} %}
 
-        {# 651z_Geographic_geographicSubdivision_ss #}
-        {% if tag.has('z') %}
-          <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'z'} %}
-        {% endif %}
+                  {# 650b_Topic_topicalTerm_ss #}
+                  {% if tag.has('b') %}
+                    <i class="fa fa-tag" aria-hidden="true" title="form"></i>
+                    {% include 'search/subfield-link.html.twig' with {tag:tag, code:'b'} %}
+                  {% endif %}
 
-        {# 6510_Geographic_authorityRecordControlNumber_ss #}
-        {% if tag.has('0') %}
-          <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield-link.html.twig' with {tag:tag, code:'0'} %}
-        {% endif %}
+                  {# 650v_Topic_formSubdivision_ss #}
+                  {% if tag.has('v') %}
+                    <i class="fa fa-tag" aria-hidden="true" title="form"></i>
+                    {% include 'search/subfield-link.html.twig' with {tag:tag, code:'v'} %}
+                  {% endif %}
 
-        {% if tag.has('2') %}
-          <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-          {% include 'search/subfield.html.twig' with {tag:tag, code:'2'} %}
-        {% endif %}
+                  {# 650x_Topic_generalSubdivision_ss #}
+                  {% if tag.has('x') %}
+                    <i class="fa fa-tag" aria-hidden="true" title="form"></i>
+                    {% include 'search/subfield-link.html.twig' with {tag:tag, code:'x'} %}
+                  {% endif %}
 
-        <br/>
-      {% endfor %}
+                  {# 650y_Topic_chronologicalSubdivision_ss #}
+                  {% if tag.has('y') %}
+                    <i class="fa fa-tag" aria-hidden="true" title="form"></i>
+                    {% include 'search/subfield-link.html.twig' with {tag:tag, code:'y'} %}
+                  {% endif %}
+
+                  {# 650z_Topic_geographicSubdivision_ss #}
+                  {% if tag.has('z') %}
+                    <i class="fa fa-map" aria-hidden="true" title="geographic subdivision"></i>
+                    {% include 'search/subfield-link.html.twig' with {tag:tag, code:'z'} %}
+                  {% endif %}
+
+                  {# 6500_Topic_authorityRecordControlNumber_ss #}
+                  {% if tag.has('0') %}
+                    <i class="fa fa-tag" aria-hidden="true" title="form"></i>
+                    {% include 'search/subfield-link.html.twig' with {tag:tag, code:'0'} %}
+                  {% endif %}
+
+                  {% if tag.has('2') %}
+                    <i class="fa fa-tag" aria-hidden="true" title="form"></i>
+                    {% include 'search/subfield.html.twig' with {tag:tag, code:'2'} %}
+                  {% endif %}
+
+                  <br/>
+                {% endfor %}
+              </td>
+            </tr>
+          {% endif %}
+
+          {# 651a_Geographic_ss #}
+          {% if record.hasField('651') %}
+            <tr>
+              <td><em>geographic names</em>:</td>
+              <td>
+                {% for tag in record.getField('651') %}
+                  <i class="fa fa-map" aria-hidden="true" title="topical term"></i>
+                  {% include 'search/subfield-link.html.twig' with {tag:tag, code:'a'} %}
+
+                  {# 651v_Geographic_formSubdivision_ss #}
+                  {% if tag.has('v') %}
+                    <i class="fa fa-tag" aria-hidden="true" title="form"></i>
+                    {% include 'search/subfield-link.html.twig' with {tag:tag, code:'v'} %}
+                  {% endif %}
+
+                  {# 651x_Geographic_generalSubdivision_ss #}
+                  {% if tag.has('x') %}
+                    <i class="fa fa-tag" aria-hidden="true" title="form"></i>
+                    {% include 'search/subfield-link.html.twig' with {tag:tag, code:'x'} %}
+                  {% endif %}
+
+                  {# 651y_Geographic_chronologicalSubdivision_ss #}
+                  {% if tag.has('y') %}
+                    <i class="fa fa-tag" aria-hidden="true" title="form"></i>
+                    {% include 'search/subfield-link.html.twig' with {tag:tag, code:'y'} %}
+                  {% endif %}
+
+                  {# 651z_Geographic_geographicSubdivision_ss #}
+                  {% if tag.has('z') %}
+                    <i class="fa fa-tag" aria-hidden="true" title="form"></i>
+                    {% include 'search/subfield-link.html.twig' with {tag:tag, code:'z'} %}
+                  {% endif %}
+
+                  {# 6510_Geographic_authorityRecordControlNumber_ss #}
+                  {% if tag.has('0') %}
+                    <i class="fa fa-tag" aria-hidden="true" title="form"></i>
+                    {% include 'search/subfield-link.html.twig' with {tag:tag, code:'0'} %}
+                  {% endif %}
+
+                  {% if tag.has('2') %}
+                    <i class="fa fa-tag" aria-hidden="true" title="form"></i>
+                    {% include 'search/subfield.html.twig' with {tag:tag, code:'2'} %}
+                  {% endif %}
+
+                  <br/>
+                {% endfor %}
+              </td>
+            </tr>
+          {% endif %}
+
+          {# TODO: 653, 655 #}
+
+        {% endif %}
+      </table>
     {% endif %}
 
     {% if record.hasSimilarBooks %}

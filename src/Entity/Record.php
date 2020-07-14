@@ -22,8 +22,16 @@ class Record
     return trim($this->solr->type_ss[0]);
   }
 
+  public function has($fieldName) {
+    return $this->hasField($fieldName);
+  }
+
   public function hasField($fieldName) {
     return isset($this->marc->{$fieldName});
+  }
+
+  public function get($fieldName) {
+    return $this->getField($fieldName);
   }
 
   public function getField($fieldName) {
@@ -113,7 +121,7 @@ class Record
   function hasAnyFieldOf($fields) {
     $hasAny = false;
     foreach ($fields as $fieldName) {
-      if (isset($marc->{$fieldName})) {
+      if (isset($this->marc->{$fieldName})) {
         $hasAny = true;
         break;
       }
@@ -137,8 +145,9 @@ class Record
 
   function getMarcFields() {
     $rows = [];
+    $tags = [];
     foreach ($this->marc as $tag => $value) {
-      error_log($tag);
+      $tags[] = $tag;
       if (preg_match('/^00/', $tag)) {
         $rows[] = [$tag, '', '', '', $value];
       } else if ($tag == 'leader') {
@@ -160,6 +169,7 @@ class Record
         }
       }
     }
+    error_log('tags: ' . join(', ', $tags));
     return $rows;
   }
 
