@@ -122,6 +122,14 @@
         Booth
       </a>
     </li>
+    <!--
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
+         id="network-tab" href="#network" aria-controls="network">
+        Network
+      </a>
+    </li>
+    -->
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
         id="terms-tab" href="#terms" aria-controls="terms">
@@ -390,6 +398,11 @@
         data elements are available in the record.
       </p>
       <div id="shelf-ready-completeness-content"></div>
+    </div>
+    <div class="tab-pane" id="network" role="tabpanel" aria-labelledby="network-tab">
+      <h2>Network analysis</h2>
+      <p>network:</p>
+      <div id="network-content"></div>
     </div>
     <div class="tab-pane" id="pareto" role="tabpanel" aria-labelledby="pareto-tab">
       <h2>Field frequency distribution</h2>
@@ -1075,16 +1088,22 @@
   }
 
   function loadIssueHandlers() {
-    $('#issues-table-placeholder tr.t td.count a').hover(
+    $('#issues-table-placeholder tr.t td.count a.search').hover(
       function () {
-        $(this).attr('title', 'show records records having this issue (max 10 records)');
+        $(this).attr('title', 'show records having this issue (max 10 records)');
       },
       function () {
         $(this).find("span:last").remove();
       }
     );
 
-    $('#issues-table-placeholder tr.t td.count a').on('click', function (e) {
+    $('#issues-table-placeholder tr.t td.count a.list').hover(
+      function () {
+        $(this).attr('title', 'download record IDs having this issue');
+      },
+    );
+
+    $('#issues-table-placeholder tr.t td.count a.search').on('click', function (e) {
       var query = {'db': db};
       query.errorId = $(this).attr('data-id');
       var issueDetailsUrl = 'read-issue-collector.php'
@@ -1095,6 +1114,15 @@
          showTab('data');
          doSearch();
        });
+    });
+
+    $('#issues-table-placeholder tr.t td.count a.list').on('click', function (e) {
+      var issueDetailsUrl = 'read-issue-collector.php?'
+        + 'db=' + db
+        + '&errorId=' + $(this).attr('data-id')
+        + '&action=download'
+      ;
+      window.location=issueDetailsUrl;
     });
   }
 
@@ -1131,6 +1159,12 @@
   function loadShelfReadyCompleteness() {
     $.getJSON('read-shelf-ready-completeness.php?db=' + db, function(result, status) {
       $('#shelf-ready-completeness-content').html(result.histogram);
+    });
+  }
+
+  function loadNetwork() {
+    $.getJSON('read-network.php?db=' + db, function(result, status) {
+      $('#network-content').html(result.content);
     });
   }
 
@@ -1499,6 +1533,8 @@
         loadTtCompleteness();
       } else if (id == 'shelf-ready-completeness-tab') {
         loadShelfReadyCompleteness();
+      } else if (id == 'network-tab') {
+        loadNetwork();
       } else if (id == 'pareto-tab') {
         loadPareto();
       } else if (id == 'history-tab') {

@@ -10,8 +10,8 @@ $errorId = getOrDefault('errorId', '');
 $type = getOrDefault('type', '');
 $path = getOrDefault('path', '');
 $message = getOrDefault('message', '');
-
-// error_log()
+$limit = (int) getOrDefault('limit', 10);
+$action = getOrDefault('action', 'query', ['query', 'download']);
 
 $configuration = parse_ini_file("configuration.cnf");
 
@@ -34,7 +34,8 @@ if (file_exists($elementsFile)) {
           $values = str_getcsv($line);
           $record = (object)array_combine($header, $values);
           $recordIds = explode(';', $record->recordIds);
-          $recordIds = array_slice($recordIds, 0, 10);
+          if ($action == 'query')
+            $recordIds = array_slice($recordIds, 0, $limit);
           break;
         }
       }
@@ -46,8 +47,17 @@ if (file_exists($elementsFile)) {
   error_log($msg);
 }
 
-header("Content-type: application/json");
-echo json_encode([
-  'recordIds' => $recordIds
-]);
+if ($action == 'query') {
+  header("Content-type: application/json");
+  echo json_encode([
+    'recordIds' => $recordIds
+  ]);
+} else if ($action == 'download') {
+  $attachment = sprintf(
+    'attachment; filename="issue-%s-at-%s.csv"',
+    $errorId, date("Y-m-d"));
 
+  header('Content-Type: application/csv; charset=utf-8');
+  header('Content-Disposition: ' . $attachment);
+  echo join("\n", $recordIds);
+}

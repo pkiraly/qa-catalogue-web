@@ -89,7 +89,11 @@
             </td>
             <td class="count records">
               <a href="#" data-id="{$rowData->id}" data-type="{$type}" data-path="{$rowData->path}"
-                 data-message="{$rowData->message}">{$rowData->records|number_format}</a>
+                 data-message="{$rowData->message}" class="search">{$rowData->records|number_format}</a>
+              <a href="#" data-id="{$rowData->id}" data-type="{$type}" data-path="{$rowData->path}"
+                 data-message="{$rowData->message}" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
+              <a href="#" data-id="{$rowData->id}" data-type="{$type}" data-path="{$rowData->path}"
+                 data-message="{$rowData->message}" class="list"><i class="fa fa-list-ol" aria-hidden="true"></i></a>
             </td>
           </tr>
         {/if}
