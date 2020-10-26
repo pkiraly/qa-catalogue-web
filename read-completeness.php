@@ -31,6 +31,9 @@ if (file_exists($elementsFile)) {
         error_log($line);
       }
       $record = (object)array_combine($header, $values);
+      if (isset($record->type) && $record->type != 'all')
+        continue;
+
       $max = max($max, $record->{'number-of-record'});
       $record->mean = sprintf('%.2f', $record->mean);
       $record->stddev = sprintf('%.2f', $record->stddev);
