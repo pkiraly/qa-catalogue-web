@@ -57,7 +57,7 @@ if ($action == 'query') {
     'attachment; filename="issue-%s-at-%s.csv"',
     $errorId, date("Y-m-d"));
 
-  header('Content-Type: application/csv; charset=utf-8');
+  header('Content-Type: text/csv; charset=utf-8');
   header('Content-Disposition: ' . $attachment);
-  echo join("\n", $recordIds);
+  echo "Record ID\n", '"', join("\"\n\"", $recordIds), '"';
 }

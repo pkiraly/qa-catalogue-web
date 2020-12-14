@@ -122,14 +122,12 @@
         Booth
       </a>
     </li>
-    <!--
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
          id="network-tab" href="#network" aria-controls="network">
         Network
       </a>
     </li>
-    -->
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
         id="terms-tab" href="#terms" aria-controls="terms">
