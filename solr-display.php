@@ -305,6 +305,8 @@ function opacLink($doc, $id) {
       . '%22';
   } else if ($catalogue == 'gbv') {
     return sprintf('https://kxp.k10plus.de/DB=2.1/PPNSET?PPN=%s', trim($id));
+  } else if ($catalogue == 'bl') {
+    return 'http://explore.bl.uk/BLVU1:LSCOP-ALL:BLL' . trim($id);
   }
 
   return '';
@@ -316,7 +318,7 @@ function opacLink($doc, $id) {
 function getSolrResponse() {
   static $cores = [
     'metadata-qa', 'cerl', 'stanford', 'dnb', 'gent', 'szte', 'mokka', 'loc', 'mtak', 'bayern',
-    'bnpl', 'nfi', 'gbv'
+    'bnpl', 'nfi', 'gbv', 'bl'
   ];
 
   if (isset($_SERVER['QUERY_STRING'])) {

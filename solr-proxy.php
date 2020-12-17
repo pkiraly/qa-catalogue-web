@@ -8,7 +8,7 @@ solr_proxy_main();
 function solr_proxy_main() {
   static $cores = [
     'metadata-qa', 'cerl', 'stanford', 'dnb', 'gent', 'szte', 'mokka', 'loc', 'mtak', 'bayern',
-    'bnpl', 'nfi', 'gbv'
+    'bnpl', 'nfi', 'gbv', 'bl'
   ];
   if (isset($_SERVER['QUERY_STRING'])) {
     $query = $_SERVER['QUERY_STRING'];

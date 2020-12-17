@@ -65,6 +65,8 @@
         document.write('<a href="https://www.kansalliskirjasto.fi/en" target="_blank">Kansallis Kirjasto/National Biblioteket (The National Library of Finnland)</a>');
       } else if (cat == 'gbv') {
         document.write('<a href="http://www.gbv.de/" target="_blank">Verbundzentrale des Gemeinsamen Bibliotheksverbundes</a>');
+      } else if (cat == 'bl') {
+          document.write('<a href="http://bl.uk/" target="_blank">British Library</a>');
       }
     </script>
     &nbsp; &nbsp; <span class="last-update-info">(last data update: <span id="last-update"></span>)</span>

@@ -2,7 +2,7 @@
 require_once 'common-functions.php';
 static $cores = [
   'cerl', 'cerl2', 'stanford', 'dnb', 'gent', 'szte', 'mokka', 'loc', 'mtak', 'bayern',
-  'bnpl', 'nfi', 'gbv'
+  'bnpl', 'nfi', 'gbv', 'bl'
 ];
 
 $db = getPostedOrDefault('db', 'cerl');
