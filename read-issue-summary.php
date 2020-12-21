@@ -41,7 +41,9 @@ if (file_exists($elementsFile)) {
       if (!isset($records[$type])) {
         $records[$type] = [];
       }
-      if (count($records[$type]) < 100) {
+      if ($type == 'field: undefined field') {
+        $records[$type][] = $record;
+      } else if (count($records[$type]) < 100) {
         $records[$type][] = $record;
       }
       if (!isset($typeCounter[$type])) {
@@ -66,7 +68,7 @@ if (file_exists($elementsFile)) {
     }
     $mainTypes[$mainType][] = $type;
     uasort($records[$type], 'issueCmp');
-    error_log(json_encode($records[$type]));
+    # error_log(json_encode($records[$type]));
   }
   $orderedCategories = ['record', 'control subfield', 'field', 'indicator', 'subfield'];
   $categories = [];
