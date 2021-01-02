@@ -11,10 +11,19 @@ $display = getOrDefault('display', 0);
 
 $configuration = parse_ini_file("configuration.cnf");
 
+$categories = readCategories();
+$types = readTypes();
+foreach ($types as $type) {
+  if (!isset($categories[$type->categoryId]->types))
+    $categories[$type->categoryId]->types = [];
+  $categories[$type->categoryId]->types[] = $type->id;
+  $type->variants = [];
+  $type->variantCount = 0;
+}
+
 // $display = TRUE;
 $elementsFile = sprintf('%s/%s/issue-summary.csv', $configuration['dir'], $db);
 $records = [];
-$types = [];
 $max = 0;
 $total = 0;
 if (file_exists($elementsFile)) {
@@ -22,7 +31,6 @@ if (file_exists($elementsFile)) {
   // control subfield: invalid value
   $lineNumber = 0;
   $header = [];
-  $typeCounter = [];
 
   foreach (file($elementsFile) as $line) {
     $lineNumber++;
@@ -35,59 +43,30 @@ if (file_exists($elementsFile)) {
         error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
       }
       $record = (object)array_combine($header, $values);
-      $type = $record->type;
+      $typeId = $record->typeId;
+      unset($record->categoryId);
+      unset($record->typeId);
       unset($record->type);
       $record->url = str_replace('https://www.loc.gov/marc/bibliographic/', '', $record->url);
-      if (!isset($records[$type])) {
-        $records[$type] = [];
+      if (!isset($records[$typeId])) {
+        $records[$typeId] = [];
       }
-      if ($type == 'field: undefined field') {
-        $records[$type][] = $record;
-      } else if (count($records[$type]) < 100) {
-        $records[$type][] = $record;
+      if ($typeId == 9) { // 'undefined field'
+        $records[$typeId][] = $record;
+      } else if (count($records[$typeId]) < 100) {
+        $records[$typeId][] = $record;
       }
-      if (!isset($typeCounter[$type])) {
-        $typeCounter[$type] = (object)[
-          'instances' => 0,
-          'records' => 0,
-          'variations' => 0
-        ];
-      }
-      $typeCounter[$type]->instances += $record->instances;
-      $typeCounter[$type]->records += $record->records;
-      $typeCounter[$type]->variations++;
-    }
-  }
-
-  $types = array_keys($records);
-  $mainTypes = [];
-  foreach ($types as $type) {
-    list($mainType, $subtype) = explode(': ', $type);
-    if (!isset($mainTypes[$mainType])) {
-      $mainTypes[$mainType] = [];
-    }
-    $mainTypes[$mainType][] = $type;
-    uasort($records[$type], 'issueCmp');
-    # error_log(json_encode($records[$type]));
-  }
-  $orderedCategories = ['record', 'control subfield', 'field', 'indicator', 'subfield'];
-  $categories = [];
-  foreach ($orderedCategories as $category) {
-    if (isset($mainTypes[$category])) {
-      asort($mainTypes[$category]);
-      $categories[$category] = $mainTypes[$category];
+      $types[$typeId]->variantCount++;
     }
   }
 
   if ($display == 1) {
     $smarty->assign('records', $records);
     $smarty->assign('categories', $categories);
+    $smarty->assign('types', $types);
     $smarty->assign('topStatistics', readTotal());
     $smarty->assign('total', $total);
-    $smarty->assign('typeStatistics', readTypes());
-    $smarty->assign('categoryStatistics', readCategories());
     $smarty->assign('fieldNames', ['path', 'message', 'url', 'instances', 'records']);
-    $smarty->assign('typeCounter', $typeCounter);
     $smarty->registerPlugin("function", "showMarcUrl", "showMarcUrl");
     $html = $smarty->fetch('issue-summary.tpl');
   }
@@ -104,7 +83,7 @@ if ($display == 1) {
   echo json_encode([
     'records' => $records,
     // 'types' => $typesOrdered,
-    'typeCounter' => $typeCounter
+    // 'typeCounter' => $typeCounter
   ]);
 }
 
@@ -118,49 +97,39 @@ function showMarcUrl($content) {
 }
 
 function readCategories() {
-  return readIssueCsv('issue-by-category.csv', 'category');
+  return readIssueCsv('issue-by-category.csv', 'id');
 }
 
 function readTypes() {
-  return readIssueCsv('issue-by-type.csv', 'type');
+  return readIssueCsv('issue-by-type.csv', 'id');
 }
 
 function readTotal() {
   global $total;
   $statistics = readIssueCsv('issue-total.csv', 'type');
-  foreach ($statistics as $item) {
-    if ($item->type != 2) {
+  foreach ($statistics as $item)
+    if ($item->type != 2)
       $total += $item->records;
-    }
-  }
-  foreach ($statistics as &$item) {
+
+  foreach ($statistics as &$item)
     $item->percent = ($item->records / $total) * 100;
-  }
+
+  if (!isset($statistics["0"]))
+    $statistics["0"] = (object)[
+      "type" => "0",
+  		"instances" => "0",
+	  	"records" => "0",
+		  "percent" => 0
+    ];
+
   return $statistics;
 }
 
 function readIssueCsv($filename, $keyField) {
   global $configuration, $db;
+
   $elementsFile = sprintf('%s/%s/%s', $configuration['dir'], $db, $filename);
-  $records = [];
-  if (file_exists($elementsFile)) {
-    $header = null;
-    foreach (file($elementsFile) as $line) {
-      $values = str_getcsv($line);
-      if (is_null($header)) {
-        $header = $values;
-      } else {
-        if (count($header) != count($values)) {
-          error_log(count($header) . ' vs ' . count($values));
-        }
-        $record = (object)array_combine($header, $values);
-        $key = $record->{$keyField};
-        // unset($record->{$keyField});
-        $records[$key] = $record;
-      }
-    }
-  }
-  return $records;
+  return reacCsv($elementsFile, $keyField);
 }
 
 function issueCmp($a, $b) {

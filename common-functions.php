@@ -36,3 +36,30 @@ function createSmarty($templateDir) {
   $smarty->registerPlugin("modifier", "number_format", "number_format");
   return $smarty;
 }
+
+function reacCsv($csvFile, $id = '') {
+  $records = [];
+  if (file_exists($csvFile)) {
+    $lineNumber = 0;
+    $header = [];
+
+    foreach (file($csvFile) as $line) {
+      $lineNumber++;
+      $values = str_getcsv($line);
+      if ($lineNumber == 1) {
+        $header = $values;
+      } else {
+        if (count($header) != count($values)) {
+          error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
+        }
+        $record = (object)array_combine($header, $values);
+        if ($id != '' && isset($record->{$id})) {
+          $records[$record->{$id}] = $record;
+        } else {
+          $records[] = $record;
+        }
+      }
+    }
+  }
+  return $records;
+}

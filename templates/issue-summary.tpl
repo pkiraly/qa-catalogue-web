@@ -50,32 +50,33 @@
 <table id="issues-table">
   <thead>
     <tr>
-      {foreach $fieldNames as $field}
+      {foreach $fieldNames item=field}
         <th {if in_array($field, ['instances', 'records'])}class="text-right"{/if}>{if field == 'message'}value/explanation{else}{$field}{/if}</th>
       {/foreach}
     </tr>
   </thead>
   <tbody>
-  {foreach $categories key=category item=types name=categories}
-    <tr class="category-header {$category}">
+  {foreach $categories key=index item=category name=categories}
+    <tr class="category-header {$category->category}">
       <td colspan="3" class="category">
-        <span class="category">{$category}</span> level issues
+        <span class="category">{$category->category}</span> level issues
       </td>
-      <td class="count">{$categoryStatistics[$category]->instances|number_format}</td>
-      <td class="count">{$categoryStatistics[$category]->records|number_format}</td>
+      <td class="count">{$category->instances|number_format}</td>
+      <td class="count">{$category->records|number_format}</td>
     </tr>
-    {foreach $types item=type name=types}
-      <tr class="type-header {$type}">
+    {foreach $category->types item=typeId name=types}
+      {assign var="type" value=$types[$typeId]}
+      <tr class="type-header {$type->type}">
         <td colspan="3" class="type">
-          <span class="type">{$type}</span> ({$typeCounter[$type]->variations} variants)
-          <a href="javascript:openType('{$smarty.foreach.categories.index}-{$smarty.foreach.types.index}')">[+]</a>
+          <span class="type">{$type->type}</span> ({$type->variantCount} variants)
+          <a href="javascript:openType('{$category->id}-{$type->id}')">[+]</a>
         </td>
-        <td class="count">{$typeStatistics[$type]->instances|number_format}</td>
-        <td class="count">{$typeStatistics[$type]->records|number_format}</td>
+        <td class="count">{$type->instances|number_format}</td>
+        <td class="count">{$type->records|number_format}</td>
       </tr>
-      {foreach $records[$type] item=rowData name=foo}
+      {foreach $records[$type->id] item=rowData name=foo}
         {if $smarty.foreach.foo.index < 100}
-          <tr class="t t-{$smarty.foreach.categories.index}-{$smarty.foreach.types.index} {if $smarty.foreach.foo.index % 2 == 1}odd{/if}">
+          <tr class="t t-{$category->id}-{$type->id} {if $smarty.foreach.foo.index % 2 == 1}odd{/if}">
             <td class="path">{$rowData->path}</td>
             <td class="message">
               {if preg_match('/^ +$/', $rowData->message)}"{$rowData->message}"{else}{$rowData->message}{/if}
@@ -84,22 +85,22 @@
               <a href="{showMarcUrl($rowData->url)}" target="_blank"><i class="fa fa-info" aria-hidden="true"></i></a>
             </td>
             <td class="count instances">
-              <a href="#" data-id="{$rowData->id}" data-type="{$type}" data-path="{$rowData->path}"
+              <a href="#" data-id="{$rowData->id}" data-type="{$type->type}" data-path="{$rowData->path}"
                  data-message="{$rowData->message}">{$rowData->instances|number_format}</a>
             </td>
             <td class="count records">
-              <a href="#" data-id="{$rowData->id}" data-type="{$type}" data-path="{$rowData->path}"
+              <a href="#" data-id="{$rowData->id}" data-type="{$type->type}" data-path="{$rowData->path}"
                  data-message="{$rowData->message}" class="search">{$rowData->records|number_format}</a>
-              <a href="#" data-id="{$rowData->id}" data-type="{$type}" data-path="{$rowData->path}"
+              <a href="#" data-id="{$rowData->id}" data-type="{$type->type}" data-path="{$rowData->path}"
                  data-message="{$rowData->message}" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
-              <a href="#" data-id="{$rowData->id}" data-type="{$type}" data-path="{$rowData->path}"
+              <a href="#" data-id="{$rowData->id}" data-type="{$type->type}" data-path="{$rowData->path}"
                  data-message="{$rowData->message}" class="list"><i class="fa fa-list-ol" aria-hidden="true"></i></a>
             </td>
           </tr>
         {/if}
       {/foreach}
-      {if $typeCounter[$type]->variations > 100}
-        <tr class="t t-{$smarty.foreach.types.index} text-centered {$type}">
+      {if $type->variantCount > 100}
+        <tr class="t t-{$category->id}-{$type->id} text-centered {$type->type}">
           <td colspan="4">more</td>
         </tr>
       {/if}
@@ -107,4 +108,3 @@
   {/foreach}
   </tbody>
 </table>
-
