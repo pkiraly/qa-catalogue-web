@@ -24,7 +24,6 @@ class Settings extends BaseTab {
   private function getFields() {
     $fields = [];
     $selectedFacets = $this->getSelectedFacets();
-    error_log(gettype($selectedFacets));
     $fieldNames = $this->getSolrFields();
     sort($fieldNames);
 
