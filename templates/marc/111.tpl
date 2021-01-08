@@ -1,5 +1,5 @@
 {* Main Entry-Meeting Name, https://www.loc.gov/marc/bibliographic/bd111.html *}
-{assign var="fieldInstances" value=getFields($record, '111')}
+{assign var="fieldInstances" value=$record->getFields('111')}
 {if !is_null($fieldInstances)}
 <tr>
   <td><em>main meeting names</em>:</td>
@@ -7,7 +7,7 @@
   {foreach $fieldInstances as $field}
     <span class="111">
       <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
-      <a href="#" class="record-link" data="111a_MainMeetingName_ss">{$field->subfields->a}</a>
+      <a href="{$record->filter('111a_MainMeetingName_ss', $field->subfields->a)}" class="record-link">{$field->subfields->a}</a>
       {*  *}
       {if isset($field->subfields->b)}
         <span class="numeration">{$field->subfields->b}</span>

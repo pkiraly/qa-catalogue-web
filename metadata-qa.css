@@ -1,13 +1,12 @@
 #per-page .label {
   color: #999;
 }
-#query {
-  border-radius: 10px;
-  border-color: #37ba00;
-}
+
 #content {
+  /*
   border-top: 1px solid #cccccc;
   border-radius: 10px;
+   */
 }
 h1 {
   color: #37ba00;
@@ -16,24 +15,33 @@ h1 {
   border-radius: 10px;
   font-weight: 900;
 }
+
 h1 span {
   font-size: 80%;
   color: #333;
   font-weight: 100;
 }
-h3 {
+
+h3,
+h4,
+h5
+{
   color: #37ba00;
 }
+
 .search-block {
   margin-bottom: 10px;
 }
+
 #message {
   color: #37ba00;
 }
+
 #navigation {
   border-bottom: 1px dashed #cccccc;
   margin-bottom: 15px;
 }
+
 #navigation-footer {
   border-top: 1px dashed #cccccc;
   margin-bottom: 15px;
@@ -44,8 +52,9 @@ h3 {
   margin: 0;
   margin-top: 5px;
 }
+
 .record {
-  margin-bottom: 15px;
+  margin-bottom: 50px;
 }
 
 .record h2 {
@@ -53,9 +62,11 @@ h3 {
   font-weight: 200;
   font-size: 130%;
 }
+
 .record h2 a .fa {
   color: #37ba00;
 }
+
 .record h2 a .fa-info-circle {
   margin-left: 20px;
 }
@@ -63,22 +74,27 @@ h3 {
 .record .label {
   color: #cccccc;
 }
+
 .record .similarity {
   text-align: right;
   color: #999999;
 }
+
 .record .details {
   display: none;
   margin-left: 50px;
 }
+
 ul {
   list-style-type: none;
   padding-left: 0px;
 }
+
 #numFound {
   color: #37ba00;
   font-weight: 900;
 }
+
 #solr-url {
   overflow: auto;
   overflow-wrap: break-word;
@@ -86,6 +102,7 @@ ul {
   color: #37ba00;
   font-size: small;
 }
+
 .tab-content {
   margin-top: 10px;
 }
@@ -125,28 +142,41 @@ ul {
 }
 
 #completeness-group-table table td.chart,
-#completeness-field-table table td.chart
+#completeness-field-table table td.chart,
+table#authorities-by-field td.chart,
+table#classification-by-field td.chart
 {
   width: 200px;
 }
 
 #completeness-group-table table td.chart div,
-#completeness-field-table table td.chart div
+#completeness-field-table table td.chart div,
+table#authorities-by-field td.chart div,
+table#classification-by-field td.chart div
 {
   background-color: #37ba00;
   height: 15px;
   border-right: 1px solid maroon;
   border-bottom: 2px solid maroon;
 }
+
+table#authorities-by-field td.chart div,
+table#classification-by-field td.chart div
+{
+  margin: 0 5px 0 5px;
+}
+
 #completeness-field-table table td.package {
   text-align: left;
   color: #37ba00;
   font-weight: bold;
 }
+
 #completeness-field-table table td.tag {
   text-align: left;
   color: #37ba00;
 }
+
 #completeness-field-table table tr th,
 #completeness-field-table table tr td {
   padding: 1px;
@@ -168,6 +198,7 @@ ul {
 #completeness-field-table table tr.second th.bordered-left {
   border-left: 1px solid #cccccc;
 }
+
 #completeness-field-table table tr.second th.bordered-right {
   border-right: 1px solid #cccccc;
 }
@@ -241,7 +272,7 @@ div#classifications-content table tbody tr td {
 }
 
 div.classification-subfields,
-div.authority-subfields{
+div.authority-subfields {
   display: none;
   width: 100%;
   min-width: 100%;
@@ -394,11 +425,62 @@ div#completeness-field-table table tr td.number-of-instances {
   padding-left: 5px;
 }
 
-.nav-link {
+.nav-link1 {
   padding: .25rem .5rem;
+  display: block;
+  /* border: 1px solid transparent; */
+  border-top-left-radius: .75rem;
+  /* border-top-right-radius: .75rem; */
+}
+
+.nav-link1.active {
+  /* background-color: #eeeeee; */
+  color: #37ba00;
+  border-bottom: 5px solid #37ba00;
+  border-top-color: #999999;
+  border-left-color: #999999;
+  border-right-color: #999999;
 }
 
 .last-update-info {
   color: #999;
   font-size: 80%;
+}
+
+ul#myTab{
+  list-style: none;
+}
+
+ul#myTab li {
+  display: inline;
+}
+
+div.search-block {
+  padding-top: 5px;
+}
+
+form#search {
+  padding-top: 5px;
+}
+
+input#query {
+  padding: 5px 5px 5px 10px;
+  border-radius: 10px;
+  border-color: #37ba00;
+}
+
+form#search button {
+  border: 1px solid #999999;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 10px;
+}
+
+div#myTabContent {
+  margin-bottom: 20px;
+}
+
+#authorities-by-field tr.category td {
+  padding-top: 50px;
+  border-bottom: 1px solid black;
 }

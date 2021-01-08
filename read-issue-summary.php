@@ -129,7 +129,7 @@ function readIssueCsv($filename, $keyField) {
   global $configuration, $db;
 
   $elementsFile = sprintf('%s/%s/%s', $configuration['dir'], $db, $filename);
-  return reacCsv($elementsFile, $keyField);
+  return readCsv($elementsFile, $keyField);
 }
 
 function issueCmp($a, $b) {

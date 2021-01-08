@@ -1,5 +1,5 @@
 {* Subject Added Entry - Named Event, https://www.loc.gov/marc/bibliographic/bd647.html *}
-{assign var="fieldInstances" value=getFields($record, '647')}
+{assign var="fieldInstances" value=$record->getFields('647')}
 {if !is_null($fieldInstances)}
 <tr>
   <td><em>named events</em>:</td>
@@ -8,7 +8,7 @@
       <span class="647">
         {if isset($field->subfields->a)}
           <i class="fa fa-hashtag" aria-hidden="true" title="Named event"></i>
-          <a href="#" class="record-link" data="647a" title="Named event">{$field->subfields->a}</a>
+          <a href="{$record->filter('647a', $field->subfields->a)}" class="record-link" title="Named event">{$field->subfields->a}</a>
         {/if}
 
         {if isset($field->subfields->c)}
@@ -45,7 +45,7 @@
           {/if}
 
           {if isset($field->subfields->{'0'})}
-            (authority: <a href="#" class="record-link" data="6470">{$field->subfields->{'0'}}</a>)
+            (authority: <a href="{$record->filter('6470', $field->subfields->{'0'})}" class="record-link">{$field->subfields->{'0'}}</a>)
           {/if}
         ]{/if}
       </span>

@@ -1,6 +1,6 @@
 {* Geographic Classification
    http://www.loc.gov/marc/bibliographic/bd052.html *}
-{assign var="fieldInstances" value=getFields($record, '052')}
+{assign var="fieldInstances" value=$record->getFields('052')}
 {if !is_null($fieldInstances)}
 <tr>
   <td><em>geographic classification</em>:</td>

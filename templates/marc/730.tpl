@@ -1,5 +1,5 @@
 {* Added Entry - Uniform Title, https://www.loc.gov/marc/bibliographic/bd730.html *}
-{assign var="fieldInstances" value=getFields($record, '730')}
+{assign var="fieldInstances" value=$record->getFields('730')}
 {if !is_null($fieldInstances)}
 <tr>
   <td><em>uniform title</em>:</td>
@@ -7,7 +7,7 @@
   {foreach $fieldInstances as $field}
     <span class="730">
       <i class="fa fa-user" aria-hidden="true" title="Uniform title"></i>
-      <a href="#" class="record-link" data="730a_AddedUniformTitle_ss" title="Uniform title">{$field->subfields->a}</a>
+      <a href="{$record->filter('730a_AddedUniformTitle_ss', $field->subfields->a)}" class="record-link" title="Uniform title">{$field->subfields->a}</a>
       {*  *}
       {if isset($field->subfields->d)}
         <span class="date" title="Date of treaty signing">{$field->subfields->d}</span>
@@ -66,7 +66,7 @@
       {/if}
       {* 7300_AddedUniformTitle_authorityRecordControlNumber_ss *}
       {if isset($field->subfields->{'0'})}
-        [<a href="#" class="record-link" data="7300_AddedUniformTitle_authorityRecordControlNumber_ss">
+        [<a href="{$record->filter('7300_AddedUniformTitle_authorityRecordControlNumber_ss', $field->subfields->{'0'})}" class="record-link">
         <span class="version" title="Authority record control number or standard number">{$field->subfields->{'0'}}</span></a>]
       {/if}
     </span>

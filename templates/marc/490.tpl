@@ -1,6 +1,6 @@
 {* Series Statement
    http://www.loc.gov/marc/bibliographic/bd490.html *}
-{assign var="fieldInstances" value=getFields($record, '490')}
+{assign var="fieldInstances" value=$record->getFields('490')}
 {if !is_null($fieldInstances)}
   Series:
   <ul>
