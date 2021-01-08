@@ -130,6 +130,7 @@ abstract class BaseTab implements Tab {
   }
 
   protected function getSelectedFacets() {
+    $selectedFacets = [];
     $file = 'cache/selected-facets-' . $this->db . '.js';
     if (file_exists($file)) {
       $facets = file_get_contents($file);
@@ -138,11 +139,9 @@ abstract class BaseTab implements Tab {
     }
     if (!is_null($facets)) {
       $facets = preg_replace(['/var selectedFacets = /', '/;$/', '/\'/'], ['', '', '"'], $facets);
-      return json_decode($facets);
-    } else {
-      $facets = [];
+      $selectedFacets = json_decode($facets);
     }
-    return $facets;
+    return $selectedFacets;
   }
 
   protected function getSolrField($tag, $subfield = '') {
