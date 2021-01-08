@@ -35,7 +35,8 @@ abstract class BaseTab implements Tab {
   protected function readCount() {
     $countFile = $this->getFilePath('count.csv');
     $counts = readCsv($countFile);
-    $this->count = $counts[0]->total; // trim(file_get_contents($countFile));
+    $counts = $counts[0];
+    $this->count = isset($counts->processed) ? $counts->processed : $counts->total; // trim(file_get_contents($countFile));
   }
 
   protected function getSolrFieldMap() {
@@ -132,12 +133,16 @@ abstract class BaseTab implements Tab {
     $file = 'cache/selected-facets-' . $this->db . '.js';
     if (file_exists($file)) {
       $facets = file_get_contents($file);
-    } else {
+    } elseif (file_exists('cache/selected-facets.js')) {
       $facets = file_get_contents('cache/selected-facets.js');
     }
-    $facets = preg_replace(['/var selectedFacets = /', '/;$/', '/\'/'], ['', '', '"'], $facets);
-
-    return json_decode($facets);
+    if (!is_null($facets)) {
+      $facets = preg_replace(['/var selectedFacets = /', '/;$/', '/\'/'], ['', '', '"'], $facets);
+      return json_decode($facets);
+    } else {
+      $facets = [];
+    }
+    return $facets;
   }
 
   protected function getSolrField($tag, $subfield = '') {
