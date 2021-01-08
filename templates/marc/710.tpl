@@ -1,12 +1,12 @@
 {* Added Entry - Corporate Name, https://www.loc.gov/marc/bibliographic/bd710.html *}
-{assign var="fieldInstances" value=getFields($record, '710')}
+{assign var="fieldInstances" value=$record->getFields('710')}
 {if !is_null($fieldInstances)}
 <tr>
   <td><em>additional corporate names</em>:</td>
   <td>
   {foreach $fieldInstances as $field}
     <span class="710">
-      <a href="#" class="record-link" data="710a_AddedCorporateName_ss" title="Corporate name or jurisdiction name as entry element">{$field->subfields->a}</a>
+      <a href="{$record->filter('710a_AddedCorporateName_ss', $field->subfields->a)}" class="record-link" title="Corporate name or jurisdiction name as entry element">{$field->subfields->a}</a>
       {* 710b_AddedCorporateName_subordinateUnit_ss *}
       {if isset($field->subfields->b)}
         <span class="unit" title="Subordinate unit">{$field->subfields->b}</span>

@@ -71,6 +71,7 @@ function type2icon($type) {
   }
   return $icon;
 }
+
 function getFacets($solrResponse) {
   global $smarty;
 

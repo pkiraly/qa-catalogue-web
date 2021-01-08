@@ -1,4 +1,4 @@
-{assign var="fieldInstances" value=getFields($record, '610')}
+{assign var="fieldInstances" value=$record->getFields('610')}
 {if !is_null($fieldInstances)}
 <tr>
   <td><em>corporate names</em>:</td>
@@ -9,7 +9,7 @@
           {*  Personal name *}
           {if isset($field->subfields->a)}
             <i class="fa fa-hashtag" aria-hidden="true" title="corporate"></i>
-            <a href="#" class="record-link" data="610a_CorporateNameSubject_ss">{$field->subfields->a}</a>
+            <a href="{$record->filter('610a_CorporateNameSubject_ss', $field->subfields->a)}" class="record-link" data="">{$field->subfields->a}</a>
           {/if}
 
           {if isset($field->subfields->b)}
@@ -30,7 +30,7 @@
 
           {* 6500_Topic_authorityRecordControlNumber_ss *}
           {if isset($field->subfields->{'0'})}
-            (authority: <a href="#" class="record-link" data="6100">{$field->subfields->{'0'}}</a>)
+            (authority: <a href="{$record->filter('6100', $field->subfields->{'0'})}" class="record-link">{$field->subfields->{'0'}}</a>)
           {/if}
         </span>
       <br/>

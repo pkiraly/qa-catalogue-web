@@ -1,5 +1,5 @@
 {* 100a_MainPersonalName_personalName_ss *}
-{assign var="fieldInstances" value=getFields($record, '362')}
+{assign var="fieldInstances" value=$record->getFields('362')}
 {if !is_null($fieldInstances)}
   <em>Dates of Publication</em><br>
   {foreach $fieldInstances as $field}

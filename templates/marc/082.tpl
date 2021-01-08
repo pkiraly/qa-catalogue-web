@@ -1,6 +1,6 @@
 {* Dewey Decimal Classification Number
    http://www.loc.gov/marc/bibliographic/bd082.html *}
-{assign var="fieldInstances" value=getFields($record, '082')}
+{assign var="fieldInstances" value=$record->getFields('082')}
 {if !is_null($fieldInstances)}
 <tr>
   <td><em>Dewey Decimal Classification</em>:</td>
@@ -10,7 +10,7 @@
       {*  Classification number *}
       {if isset($field->subfields->a)}
         <i class="fa fa-hashtag" aria-hidden="true" title="Classification number"></i>
-        <a href="#" class="record-link" data="082a_ClassificationDdc_ss" title="Classification number">{$field->subfields->a}</a>
+        <a href="{$record->filter('082a_ClassificationDdc_ss', $field->subfields->a)}" class="record-link" title="Classification number">{$field->subfields->a}</a>
       {/if}
 
       {if isset($field->subfields->b)}
@@ -26,7 +26,7 @@
       {/if}
 
       {if isset($field->subfields->{'2'})}
-        <a href="#" class="source" data="0822_ClassificationDdc_edition_ss" title="Source">{$field->subfields->{'2'}}</a>
+        <a href="{$record->filter('0822_ClassificationDdc_edition_ss', $field->subfields->{'2'})}" class="source" title="Source">{$field->subfields->{'2'}}</a>
       {/if}
     </span>
     <br/>

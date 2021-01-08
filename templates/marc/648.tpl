@@ -1,6 +1,6 @@
 {* Subject Added Entry - Chronological Term
    http://www.loc.gov/marc/bibliographic/bd648.html *}
-{assign var="fieldInstances" value=getFields($record, '648')}
+{assign var="fieldInstances" value=$record->getFields('648')}
 {if !is_null($fieldInstances)}
   <tr>
     <td><em>chronological terms</em>:</td>
@@ -9,7 +9,7 @@
         <span class="648">
           {if isset($field->subfields->a)}
             <i class="fa fa-hashtag" aria-hidden="true" title="Chronological term"></i>
-            <a href="#" class="record-link" data="648a_ChronologicalSubject_ss" title="Chronological term">{$field->subfields->a}</a>
+            <a href="{$record->filter('648a_ChronologicalSubject_ss', $field->subfields->a)}" class="record-link" title="Chronological term">{$field->subfields->a}</a>
           {/if}
 
           {if isset($field->subfields->v)}
@@ -35,7 +35,7 @@
             {/if}
 
             {if isset($field->subfields->{'0'})}
-              (ID: <a href="#" class="record-link" data="6470">{$field->subfields->{'0'}}</a>)
+              (ID: <a href="{$record->filter('6470', $field->subfields->{'0'})}" class="record-link">{$field->subfields->{'0'}}</a>)
             {/if}
           ]{/if}
       </span>

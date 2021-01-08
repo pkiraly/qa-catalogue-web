@@ -60,6 +60,5 @@ if ($display == 0) {
   $smarty->assign('records', $records);
   $smarty->assign('max', $max);
   $smarty->assign('hasNonCoreTags', $hasNonCoreTags);
-  $smarty->display('packages.tpl');
+  $smarty->display('completeness-packages.tpl');
 }
-

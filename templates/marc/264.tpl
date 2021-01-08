@@ -1,6 +1,6 @@
 {* Production, Publication, Distribution, Manufacture, and Copyright Notice
    https://www.loc.gov/marc/bibliographic/bd264.html *}
-{assign var="fieldInstances" value=getFields($record, '264')}
+{assign var="fieldInstances" value=$record->getFields('264')}
 {if !is_null($fieldInstances)}
   {foreach $fieldInstances as $field}
     <span class="264">

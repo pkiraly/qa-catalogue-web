@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @param $key The URL key
+ * @param null $default_value A default value in case it is missing
+ * @param array $allowed_values A list of allowed values
+ * @return mixed|null
+ */
 function getOrDefault($key, $default_value = NULL, $allowed_values = []) {
   $value = isset($_GET[$key]) ? $_GET[$key] : $default_value;
   if (!isset($value)
@@ -16,6 +22,12 @@ function getPostedOrDefault($key, $default_value = NULL, $allowed_values = []) {
     $value = $default_value;
   }
   return $value;
+}
+
+function getPath() {
+  $parsed_url = parse_url($_SERVER['REQUEST_URI']);
+  $path = preg_replace(',\/,', '', $parsed_url['path']);
+  return $path;
 }
 
 function createSmarty($templateDir) {
@@ -37,7 +49,7 @@ function createSmarty($templateDir) {
   return $smarty;
 }
 
-function reacCsv($csvFile, $id = '') {
+function readCsv($csvFile, $id = '') {
   $records = [];
   if (file_exists($csvFile)) {
     $lineNumber = 0;
@@ -50,7 +62,7 @@ function reacCsv($csvFile, $id = '') {
         $header = $values;
       } else {
         if (count($header) != count($values)) {
-          error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
+          error_log(sprintf('error in %s line #%d: %d vs %d', $csvFile, $lineNumber, count($header), count($values)));
         }
         $record = (object)array_combine($header, $values);
         if ($id != '' && isset($record->{$id})) {
@@ -60,6 +72,8 @@ function reacCsv($csvFile, $id = '') {
         }
       }
     }
+  } else {
+    error_log('file does not exist! ' . $csvFile);
   }
   return $records;
 }
