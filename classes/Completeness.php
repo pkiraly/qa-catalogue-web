@@ -13,6 +13,7 @@ class Completeness extends BaseTab {
     $this->readPackages();
     $this->readCompleteness();
 
+    $smarty->assign('db', $this->db);
     $smarty->assign('packages', $this->packages);
     $smarty->assign('records', $this->records);
     $smarty->assign('max', $this->max);

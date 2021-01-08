@@ -7,6 +7,7 @@ $configuration = parse_ini_file("configuration.cnf");
 $smarty = createSmarty('templates');
 
 $db = isset($configuration['catalogues']) ? $configuration['catalogues'] : getPath(); // getOrDefault('db', 'bl'); // metadata-qa
+error_log('db: ' . $db);
 
 $tab = getOrDefault('tab', 'completeness');
 $ajax = getOrDefault('ajax', 0, [0, 1]);
