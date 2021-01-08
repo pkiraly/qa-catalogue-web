@@ -6,8 +6,7 @@ $marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
 $configuration = parse_ini_file("configuration.cnf");
 $smarty = createSmarty('templates');
 
-// error_log('REQUEST_URI: ' . $db);
-$db = getPath(); // getOrDefault('db', 'bl'); // metadata-qa
+$db = isset($configuration['catalogues']) ? $configuration['catalogues'] : getPath(); // getOrDefault('db', 'bl'); // metadata-qa
 
 $tab = getOrDefault('tab', 'completeness');
 $ajax = getOrDefault('ajax', 0, [0, 1]);

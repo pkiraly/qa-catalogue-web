@@ -44,9 +44,10 @@ mv metadata-marc-web /var/www/html/[catalogue]
 ```
 cd /var/www/html/[catalogue]
 echo "dir=[data directory]" > configuration.cnf
-touch selected-facets.js
-chmod a+w selected-facets.js
 mkdir cache
+touch selected-facets.js
+sudo chown www-data:www-data -R cache
+chmod g+w -R cache
 mkdir libs
 mkdir images
 
