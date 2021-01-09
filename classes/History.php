@@ -3,8 +3,9 @@
 
 class History extends BaseTab {
 
-  public function prepareData(&$smarty) {
-    $smarty->assign('db',    $this->db);
+  public function prepareData(Smarty &$smarty) {
+    parent::prepareData($smarty);
+
     $smarty->assign('files', $this->listFiles());
   }
 

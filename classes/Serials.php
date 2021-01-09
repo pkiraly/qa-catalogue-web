@@ -3,9 +3,10 @@
 
 class Serials extends BaseTab {
 
-  public function prepareData(&$smarty) {
+  public function prepareData(Smarty &$smarty) {
+    parent::prepareData($smarty);
+
     $smarty->assign('fields', $this->readSerialHistogram());
-    $smarty->assign('db', $this->db);
   }
 
   public function getTemplate() {

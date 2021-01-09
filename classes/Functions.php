@@ -3,7 +3,8 @@
 
 class Functions extends BaseTab {
 
-  public function prepareData(&$smarty) {
+  public function prepareData(Smarty &$smarty) {
+    parent::prepareData($smarty);
   }
 
   public function getTemplate() {

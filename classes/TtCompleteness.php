@@ -3,9 +3,10 @@
 
 class TtCompleteness extends BaseTab {
 
-  public function prepareData(&$smarty) {
+  public function prepareData(Smarty &$smarty) {
+    parent::prepareData($smarty);
+
     $smarty->assign('fields', $this->readTTHistogram());
-    $smarty->assign('db', $this->db);
   }
 
   public function getTemplate() {

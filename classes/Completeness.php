@@ -8,12 +8,13 @@ class Completeness extends BaseTab {
   private $records = [];
   private $max = 0;
 
-  public function prepareData(&$smarty) {
+  public function prepareData(Smarty &$smarty) {
+    parent::prepareData($smarty);
+
     $this->readCount();
     $this->readPackages();
     $this->readCompleteness();
 
-    $smarty->assign('db', $this->db);
     $smarty->assign('packages', $this->packages);
     $smarty->assign('records', $this->records);
     $smarty->assign('max', $this->max);

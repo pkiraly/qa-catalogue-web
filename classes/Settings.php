@@ -3,7 +3,9 @@
 
 class Settings extends BaseTab {
 
-  public function prepareData(&$smarty) {
+  public function prepareData(Smarty &$smarty) {
+    parent::prepareData($smarty);
+
     if (!empty($_POST)) {
       $smarty->assign('saved', true);
       $selectedFacets = getPostedOrDefault('facet', []);
@@ -13,7 +15,6 @@ class Settings extends BaseTab {
       $smarty->assign('saved', false);
     }
 
-    $smarty->assign('db',     $this->db);
     $smarty->assign('facets', $this->getFields());
   }
 

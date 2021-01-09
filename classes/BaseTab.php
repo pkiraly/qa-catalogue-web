@@ -1,5 +1,6 @@
 <?php
 
+include_once 'catalogue/Catalogue.php';
 
 abstract class BaseTab implements Tab {
 
@@ -9,6 +10,9 @@ abstract class BaseTab implements Tab {
   protected static $marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
   protected $solrFields;
   protected $fieldDefinitions;
+  protected $catalogueName;
+  protected $catalogue;
+  protected $lastUpdate;
 
   /**
    * BaseTab constructor.
@@ -18,10 +22,24 @@ abstract class BaseTab implements Tab {
   public function __construct($configuration, $db) {
     $this->configuration = $configuration;
     $this->db = $db;
+    $this->catalogueName = isset($configuration['catalogue']) ? $configuration['catalogue'] : $db;
+    $this->catalogue = $this->createCatalogue();
+    $this->readCount();
+    $this->readLastUpdate();
   }
 
-  public function prepareData(&$smarty) {
-    // TODO: Implement prepareData() method.
+  public function prepareData(Smarty &$smarty) {
+    $smarty->assign('db', $this->db);
+    $smarty->assign('catalogueName', $this->catalogueName);
+    $smarty->assign('catalogue', $this->catalogue);
+    $smarty->assign('count', $this->count);
+    $smarty->assign('lastUpdate', $this->lastUpdate);
+  }
+
+  private function createCatalogue() {
+    $className = strtoupper(substr($this->catalogueName, 0, 1)) . substr($this->catalogueName, 1);
+    include_once 'catalogue/' . $className . '.php';
+    return new $className();
   }
 
   public function getTemplate() {
@@ -37,6 +55,11 @@ abstract class BaseTab implements Tab {
     $counts = readCsv($countFile);
     $counts = $counts[0];
     $this->count = isset($counts->processed) ? $counts->processed : $counts->total; // trim(file_get_contents($countFile));
+  }
+
+  protected function readLastUpdate() {
+    $file = $this->getFilePath('last-update.csv');
+    $this->lastUpdate = trim(file_get_contents($file));
   }
 
   protected function getSolrFieldMap() {

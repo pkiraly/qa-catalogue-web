@@ -3,12 +3,12 @@
 
 class Authorities extends AddedEntry {
 
-  public function prepareData(&$smarty) {
+  public function prepareData(Smarty &$smarty) {
+    parent::prepareData($smarty);
+
     $this->readCount();
     $this->readByRecords($smarty);
     $this->readByField($smarty);
-
-    $smarty->assign('db', $this->db);
   }
 
   public function getTemplate() {

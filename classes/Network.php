@@ -3,9 +3,10 @@
 
 class Network extends BaseTab {
 
-  public function prepareData(&$smarty) {
+  public function prepareData(Smarty &$smarty) {
+    parent::prepareData($smarty);
+
     $smarty->assign('fields', $this->readTags());
-    $smarty->assign('db', $this->db);
   }
 
   public function getTemplate() {

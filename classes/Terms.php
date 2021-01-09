@@ -17,8 +17,9 @@ class Terms extends Facetable {
     $this->facetLimit = getOrDefault('limit', 100, [10, 25, 50, 100]);
   }
 
-  public function prepareData(&$smarty) {
-    $smarty->assign('db',        $this->db);
+  public function prepareData(Smarty &$smarty) {
+    parent::prepareData($smarty);
+
     $smarty->assign('facet',     $this->facet);
     $smarty->assign('query',     $this->query);
     $smarty->assign('scheme',    $this->scheme);

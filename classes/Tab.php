@@ -3,7 +3,7 @@
 
 interface Tab {
 
-  public function prepareData(&$smarty);
+  public function prepareData(Smarty &$smarty);
   public function getTemplate();
 
 }
