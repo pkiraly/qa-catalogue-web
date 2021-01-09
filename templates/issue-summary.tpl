@@ -84,12 +84,9 @@
             <td class="url">
               <a href="{showMarcUrl($rowData->url)}" target="_blank"><i class="fa fa-info" aria-hidden="true"></i></a>
             </td>
-            <td class="count instances">
-              <a href="#" data-id="{$rowData->id}" data-type="{$type->type}" data-path="{$rowData->path}"
-                 data-message="{$rowData->message}">{$rowData->instances|number_format}</a>
-            </td>
+            <td class="count instances">{$rowData->instances|number_format}</td>
             <td class="count records">
-              <a href="{$rowData->queryUrl}" class="search">{$rowData->records|number_format}</a>
+              {$rowData->records|number_format}
               <a href="{$rowData->queryUrl}" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
               <a href="{$rowData->downloadUrl}" class="list"><i class="fa fa-list-ol" aria-hidden="true"></i></a>
             </td>
