@@ -4,7 +4,7 @@
   <a href="{$catalogue->getUrl()}" target="_blank">{$catalogue->getLabel()}</a>
   <span class="header-info">
     {if $lastUpdate != ''}
-      &nbsp; &nbsp; last data update: <strong>{$lastUpdate}</strong></span>
+      &nbsp; &nbsp; last data update: <strong>{$lastUpdate}</strong>
     {/if}
     &nbsp; &nbsp; number of records: <strong>{$count|number_format}</strong>
   </span>
