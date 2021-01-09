@@ -7,8 +7,7 @@ class Gent extends Catalogue {
   protected $label = 'Universiteitsbibliotheek Gent';
   protected $url = 'https://lib.ugent.be/';
 
-  function getLink($recordId)
-  {
-    // TODO: Implement getLink() method.
+  function getOpacLink($id, $record) {
+    return 'https://lib.ugent.be/catalog/rug01:' . trim($id);
   }
 }

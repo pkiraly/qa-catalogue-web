@@ -7,8 +7,7 @@ class Bl extends Catalogue {
   protected $label = 'British Library';
   protected $url = 'http://bl.uk/';
 
-  function getLink($recordId)
-  {
-    // TODO: Implement getLink() method.
+  function getOpacLink($id, $record) {
+    return 'http://explore.bl.uk/BLVU1:LSCOP-ALL:BLL01' . trim($id);
   }
 }

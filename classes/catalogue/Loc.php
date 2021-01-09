@@ -7,8 +7,7 @@ class Loc extends Catalogue {
   protected $label = 'Library of Congress';
   protected $url = 'https://catalog.loc.gov/';
 
-  function getLink($recordId)
-  {
-    // TODO: Implement getLink() method.
+  function getOpacLink($id, $record) {
+    return 'https://lccn.loc.gov/' . trim($id);
   }
 }

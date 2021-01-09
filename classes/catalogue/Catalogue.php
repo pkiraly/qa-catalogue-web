@@ -7,7 +7,7 @@ abstract class Catalogue {
   protected $label;
   protected $url;
 
-  abstract function getLink($recordId);
+  abstract function getOpacLink($id, $record);
 
   public function getName() {
     return $this->name;

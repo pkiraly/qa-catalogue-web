@@ -7,8 +7,7 @@ class Gbv extends Catalogue {
   protected $label = 'Verbundzentrale des Gemeinsamen Bibliotheksverbundes';
   protected $url = 'http://www.gbv.de/';
 
-  function getLink($recordId)
-  {
-    // TODO: Implement getLink() method.
+  function getOpacLink($id, $record) {
+    return sprintf('https://kxp.k10plus.de/DB=2.1/PPNSET?PPN=%s', trim($id));
   }
 }

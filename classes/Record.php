@@ -8,16 +8,18 @@ class Record {
   private $record;
   private $basicQueryParameters;
   private $basicFilterParameters;
+  private $catalogue;
 
   /**
    * Record constructor.
    * @param $doc
    */
-  public function __construct($doc, $configuration, $db) {
+  public function __construct($doc, $configuration, $db, $catalogue) {
     $this->doc = $doc;
     $this->record = json_decode($doc->record_sni);
     $this->configuration = $configuration;
     $this->db = $db;
+    $this->catalogue = $catalogue;
   }
 
   public function getFirstField($fieldName, $withSpaceReplace = FALSE) {
@@ -84,60 +86,7 @@ class Record {
   }
 
   public function opacLink($id) {
-
-    $catalogue = $this->db == 'metadata-qa' && isset($this->configuration['catalogue'])
-        ? $this->configuration['catalogue']
-        : $this->db;
-
-    if ($catalogue == 'szte')
-      return 'http://qulto.bibl.u-szeged.hu/record/-/record/' . trim($id);
-    else if ($catalogue == 'mokka')
-      return 'http://mokka.hu/web/guest/record/-/record/' . trim($id);
-    else if ($catalogue == 'cerl') {
-      $identifier = '';
-      foreach ($this->doc->{'035a_SystemControlNumber_ss'} as $tag35a) {
-        if (!preg_match('/OCoLC/', $tag35a)) {
-          $identifier = $tag35a;
-          break;
-        }
-      }
-      return 'http://hpb.cerl.org/record/' . $identifier;
-    } else if ($catalogue == 'dnb')
-      return 'http://d-nb.info/' . trim($id);
-    else if ($catalogue == 'gent')
-      return 'https://lib.ugent.be/catalog/rug01:' . trim($id);
-    else if ($catalogue == 'loc')
-      return 'https://lccn.loc.gov/' . trim($id);
-    else if ($catalogue == 'mtak')
-      return 'https://mta-primotc.hosted.exlibrisgroup.com/permalink/f/1s1uct8/36MTA' . trim($id);
-    else if ($catalogue == 'bayern')
-      return 'http://gateway-bayern.de/' . trim($id);
-    else if ($catalogue == 'bnpl') {
-      foreach ($this->doc->{'035a_SystemControlNumber_ss'} as $tag35a) {
-        if (preg_match('/^\d/', $tag35a)) {
-          $identifier = $tag35a;
-          break;
-        }
-      }
-      return sprintf(
-          'https://katalogi.bn.org.pl/discovery/fulldisplay?docid=alma%s&context=L&vid=48OMNIS_NLOP:48OMNIS_NLOP&search_scope=NLOP_IZ_NZ&tab=LibraryCatalog&lang=pl',
-          trim($identifier));
-
-    } else if ($catalogue == 'nfi') {
-      // return 'https://melinda.kansalliskirjasto.fi/byid/' . trim($id);
-      return 'https://kansalliskirjasto.finna.fi/Search/Results?bool0[]=OR&lookfor0[]=ctrlnum%3A%22FCC'
-          . trim($id)
-          . '%22&lookfor0[]=ctrlnum%3A%22(FI-MELINDA)'
-          . trim($id)
-          . '%22';
-    } else if ($catalogue == 'gbv') {
-      return sprintf('https://kxp.k10plus.de/DB=2.1/PPNSET?PPN=%s', trim($id));
-    } else if ($catalogue == 'bl') {
-      //      http://explore.bl.uk/BLVU1:LSCOP-ALL:BLL01015811469
-      return 'http://explore.bl.uk/BLVU1:LSCOP-ALL:BLL01' . trim($id);
-    }
-
-    return '';
+    return $this->catalogue->getOpecLink($id, $this);
   }
 
   public function hasSubjectHeadings() {
@@ -258,4 +207,7 @@ class Record {
     return '?' . join('&', array_merge([$filter], $this->basicFilterParameters));
   }
 
+  public function getDoc() {
+    return $this->doc;
+  }
 }

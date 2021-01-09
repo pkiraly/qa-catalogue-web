@@ -7,8 +7,7 @@ class Dnb extends Catalogue {
   protected $label = 'Deutsche Nationalbibliothek';
   protected $url = 'https://www.dnb.de/';
 
-  function getLink($recordId)
-  {
-    // TODO: Implement getLink() method.
+  function getOpacLink($id, $record) {
+    return 'http://d-nb.info/' . trim($id);
   }
 }
