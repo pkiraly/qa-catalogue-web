@@ -8,7 +8,9 @@ class Issues extends BaseTab {
   private $records = [];
   private $total = 0;
 
-  public function prepareData(&$smarty) {
+  public function prepareData(Smarty &$smarty) {
+    parent::prepareData($smarty);
+
     $this->readCategories();
     $this->readTypes();
     $this->readIssues();

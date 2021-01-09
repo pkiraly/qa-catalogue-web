@@ -3,9 +3,10 @@
 
 class ShelfReadyCompleteness extends BaseTab {
 
-  public function prepareData(&$smarty) {
+  public function prepareData(Smarty &$smarty) {
+    parent::prepareData($smarty);
+
     $smarty->assign('fields', $this->readSRHistogram());
-    $smarty->assign('db', $this->db);
   }
 
   public function getTemplate() {

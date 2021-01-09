@@ -34,8 +34,9 @@ class Data extends Facetable {
     ];
   }
 
-  public function prepareData(&$smarty) {
-    $smarty->assign('db', $this->db);
+  public function prepareData(Smarty &$smarty) {
+    parent::prepareData($smarty);
+
     $smarty->assign('query', $this->query);
     $smarty->assign('start', $this->start);
     $smarty->assign('rows', $this->rows);
