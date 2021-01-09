@@ -86,7 +86,7 @@ class Record {
   }
 
   public function opacLink($id) {
-    return $this->catalogue->getOpecLink($id, $this);
+    return $this->catalogue->getOpacLink($id, $this);
   }
 
   public function hasSubjectHeadings() {
