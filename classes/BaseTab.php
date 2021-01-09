@@ -13,6 +13,7 @@ abstract class BaseTab implements Tab {
   protected $catalogueName;
   protected $catalogue;
   protected $lastUpdate;
+  protected $output = 'html';
 
   /**
    * BaseTab constructor.
@@ -235,5 +236,9 @@ abstract class BaseTab implements Tab {
       $label = sprintf('%s$%s', substr($solrField, 0, 3), substr($solrField, 3, 1));
     }
     return $label;
+  }
+
+  public function getOutputType() {
+    return $this->output;
   }
 }
