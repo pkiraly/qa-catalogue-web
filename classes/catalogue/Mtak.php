@@ -7,8 +7,7 @@ class Mtak extends Catalogue {
   protected $label = 'Magyar Tudományos Akadémia Könyvtára';
   protected $url = 'https://mtak.hu/';
 
-  function getLink($recordId)
-  {
-    // TODO: Implement getLink() method.
+  function getOpacLink($id, $record) {
+    return 'https://mta-primotc.hosted.exlibrisgroup.com/permalink/f/1s1uct8/36MTA' . trim($id);
   }
 }
