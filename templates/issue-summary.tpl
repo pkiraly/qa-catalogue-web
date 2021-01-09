@@ -89,12 +89,9 @@
                  data-message="{$rowData->message}">{$rowData->instances|number_format}</a>
             </td>
             <td class="count records">
-              <a href="#" data-id="{$rowData->id}" data-type="{$type->type}" data-path="{$rowData->path}"
-                 data-message="{$rowData->message}" class="search">{$rowData->records|number_format}</a>
-              <a href="#" data-id="{$rowData->id}" data-type="{$type->type}" data-path="{$rowData->path}"
-                 data-message="{$rowData->message}" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
-              <a href="#" data-id="{$rowData->id}" data-type="{$type->type}" data-path="{$rowData->path}"
-                 data-message="{$rowData->message}" class="list"><i class="fa fa-list-ol" aria-hidden="true"></i></a>
+              <a href="{$rowData->queryUrl}" class="search">{$rowData->records|number_format}</a>
+              <a href="{$rowData->queryUrl}" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
+              <a href="{$rowData->downloadUrl}" class="list"><i class="fa fa-list-ol" aria-hidden="true"></i></a>
             </td>
           </tr>
         {/if}

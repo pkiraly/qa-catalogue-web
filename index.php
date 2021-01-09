@@ -41,7 +41,7 @@ $tab->prepareData($smarty);
 
 if ($ajax == 1)
   $smarty->display($tab->getAjaxTemplate());
-else
+elseif ($tab->getOutputType() == 'html')
   $smarty->display($tab->getTemplate());
 
 function createTab($name) {

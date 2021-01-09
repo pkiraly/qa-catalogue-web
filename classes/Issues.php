@@ -7,21 +7,34 @@ class Issues extends BaseTab {
   private $types;
   private $records = [];
   private $total = 0;
+  private $limit = 10;
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 
-    $this->readCategories();
-    $this->readTypes();
-    $this->readIssues();
+    $action = getOrDefault('action', 'list', ['list', 'query', 'download']);
+    if ($action == 'download' || $action == 'query') {
+      $errorId = getOrDefault('errorId', '');
+      if ($errorId != '') {
+        $this->output = 'none';
+        if ($action == 'download')
+          $this->download($errorId);
+        elseif ($action == 'query')
+          $this->query($errorId);
+      }
+    } else {
+      $this->readCategories();
+      $this->readTypes();
+      $this->readIssues();
 
-    $smarty->assign('records', $this->records);
-    $smarty->assign('categories', $this->categories);
-    $smarty->assign('types', $this->types);
-    $smarty->assign('topStatistics', $this->readTotal());
-    $smarty->assign('total', $this->total);
-    $smarty->assign('fieldNames', ['path', 'message', 'url', 'instances', 'records']);
-    $smarty->registerPlugin("function", 'showMarcUrl', array('Issues', 'showMarcUrl'));
+      $smarty->assign('records', $this->records);
+      $smarty->assign('categories', $this->categories);
+      $smarty->assign('types', $this->types);
+      $smarty->assign('topStatistics', $this->readTotal());
+      $smarty->assign('total', $this->total);
+      $smarty->assign('fieldNames', ['path', 'message', 'url', 'instances', 'records']);
+      $smarty->registerPlugin("function", 'showMarcUrl', array('Issues', 'showMarcUrl'));
+    }
   }
 
   public function getTemplate() {
@@ -52,6 +65,18 @@ class Issues extends BaseTab {
           unset($record->typeId);
           unset($record->type);
           $record->url = str_replace('https://www.loc.gov/marc/bibliographic/', '', $record->url);
+
+          $record->downloadUrl = '?' . join('&', [
+            'tab=' . 'issues',
+            'errorId=' . $record->id,
+            'action=download'
+          ]);
+
+          $record->queryUrl = '?' . join('&', [
+            'tab=' . 'issues',
+            'errorId=' . $record->id,
+            'action=query'
+          ]);
 
           if (!isset($this->records[$typeId])) {
             $this->records[$typeId] = [];
@@ -118,5 +143,57 @@ class Issues extends BaseTab {
   private function readIssueCsv($filename, $keyField) {
     $elementsFile = $this->getFilePath($filename);
     return readCsv($elementsFile, $keyField);
+  }
+
+  private function download($errorId) {
+    $recordIds = $this->getIds($errorId, 'download');
+    $attachment = sprintf('attachment; filename="issue-%s-at-%s.csv"', $errorId, date("Y-m-d"));
+
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: ' . $attachment);
+    echo "Record ID\n", '"', join("\"\n\"", $recordIds), '"';
+  }
+
+  private function query($errorId) {
+    $recordIds = $this->getIds($errorId, 'query');
+    $url = '?' . join('&', [
+      'tab=data',
+      'query=' . urlencode('id:("' . join('" OR "', $recordIds) . '")')
+    ]);
+
+    header('Location: ' . $url);
+  }
+
+  private function getIds($errorId, $action) {
+    $elementsFile = $this->getFilePath('issue-collector.csv');
+    $recordIds = [];
+    if (file_exists($elementsFile)) {
+      // $keys = ['errorId', 'recordIds']
+      $lineNumber = 0;
+      $header = [];
+      $in = fopen($elementsFile, "r");
+      while (($line = fgets($in)) != false) {
+        if (count($recordIds) < 10) {
+          $lineNumber++;
+          if ($lineNumber == 1) {
+            $header = str_getcsv($line);
+          } else {
+            if (preg_match('/^' . $errorId . ',/', $line)) {
+              $values = str_getcsv($line);
+              $record = (object)array_combine($header, $values);
+              $recordIds = explode(';', $record->recordIds);
+              if ($action == 'query')
+                $recordIds = array_slice($recordIds, 0, $this->limit);
+              break;
+            }
+          }
+        }
+      }
+      fclose($in);
+    } else {
+      $msg = sprintf("file %s is not existing", $elementsFile);
+      error_log($msg);
+    }
+    return $recordIds;
   }
 }
