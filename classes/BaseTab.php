@@ -69,7 +69,7 @@ abstract class BaseTab implements Tab {
 
   protected function getSolrFieldMap() {
     $solrFieldMap = [];
-    $fields = $this->getSolrFields($this->db);
+    $fields = $this->getSolrFields();
     foreach ($fields as $field) {
       $parts = explode('_', $field);
       $solrFieldMap[$parts[0]] = $field;
@@ -179,13 +179,38 @@ abstract class BaseTab implements Tab {
     if ($subfield == '')
       list($tag, $subfield) = explode('$', $tag);
 
-    $solrField = $tag . $subfield;
     if (isset($this->fieldDefinitions->fields->{$tag}->subfields->{$subfield}->solr)) {
       $solrField = $this->fieldDefinitions->fields->{$tag}->subfields->{$subfield}->solr . '_ss';
     } elseif (isset($this->fieldDefinitions->fields->{$tag}->solr)) {
       $solrField = $tag . $subfield
                  . '_' . $this->fieldDefinitions->fields->{$tag}->solr
                  . '_' . $subfield . '_ss';
+    }
+
+    if (!isset($solrField) || !in_array($solrField, $this->getSolrFields())) {
+      $solrField = $tag . $subfield;
+      $candidates = [];
+      $found = FALSE;
+      foreach ($this->getSolrFields() as $existingSolrField) {
+        if (preg_match('/^' . $solrField . '_/', $existingSolrField)) {
+          $parts = explode('_', $existingSolrField);
+          if (count($parts) == 4) {
+            $found = TRUE;
+            $solrField = $existingSolrField;
+            break;
+          } else {
+            $candidates[] = $existingSolrField;
+          }
+        }
+      }
+
+      if (count($candidates) == 1) {
+        $solrField = $candidates[0];
+        $found = TRUE;
+      }
+
+      if (!$found)
+        error_log('not found: ' . $solrField . ' - ' . join(', ', $candidates));
     }
     return $solrField;
   }
