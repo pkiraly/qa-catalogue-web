@@ -144,6 +144,7 @@ ul {
 #completeness-group-table table td.chart,
 #completeness-field-table table td.chart,
 table#authorities-by-field td.chart,
+table#classification-by-field td.chart,
 table#classification-by-field td.chart
 {
   width: 200px;
@@ -152,7 +153,7 @@ table#classification-by-field td.chart
 #completeness-group-table table td.chart div,
 #completeness-field-table table td.chart div,
 table#authorities-by-field td.chart div,
-table#classification-by-field td.chart div
+table#issues-table td.chart div
 {
   background-color: #37ba00;
   height: 15px;
@@ -161,7 +162,8 @@ table#classification-by-field td.chart div
 }
 
 table#authorities-by-field td.chart div,
-table#classification-by-field td.chart div
+table#classification-by-field td.chart div,
+table#issues-table td.chart div
 {
   margin: 0 5px 0 5px;
 }
@@ -225,12 +227,25 @@ table#issues-table tr.category-header td {
   border-bottom: 1px solid black;
 }
 
+table#issues-table td.chart {
+  width: 200px;
+}
+
+table#issues-table td.actions {
+  width: 45px;
+  padding-left: 5px;
+}
+
+table#issues-table td.percent {
+  width: 30px;
+}
+
 table#issues-table {
   width: 100%;
 }
 
 table#issues-table tr td.path {
-  width: 400px;
+  width: 140px;
 }
 
 table#issues-table tr td.count {
@@ -244,6 +259,10 @@ table#issues-table tr td.url {
 
 table#issues-table tr.t {
   display: none;
+}
+
+table#issues-table tr.padded td {
+  padding-top: 25px;
 }
 
 .marc-details table {
