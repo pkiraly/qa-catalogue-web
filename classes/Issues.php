@@ -12,7 +12,7 @@ class Issues extends BaseTab {
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 
-    $action = getOrDefault('action', 'list', ['list', 'query', 'download']);
+    $action = getOrDefault('action', 'list', ['list', 'query', 'download', 'record']);
     if ($action == 'download' || $action == 'query') {
       $errorId = getOrDefault('errorId', '');
       if ($errorId != '') {
@@ -22,6 +22,12 @@ class Issues extends BaseTab {
         elseif ($action == 'query')
           $this->query($errorId);
       }
+    } elseif ($action == 'record') {
+      $recordId = getOrDefault('recordId', '');
+      if ($recordId != '') {
+        $this->getRecordIssues($recordId, $smarty);
+      }
+
     } else {
       $this->readCategories();
       $this->readTypes();
@@ -195,5 +201,15 @@ class Issues extends BaseTab {
       error_log($msg);
     }
     return $recordIds;
+  }
+
+  private function getRecordIssues($recordId, &$smarty) {
+    $smarty = createSmarty('templates');
+    $smarty->assign('issues', $issues);
+    $smarty->assign('types', $types);
+    $smarty->assign('fieldNames', ['path', 'message', 'url', 'count']);
+    $smarty->assign('typeCounter', $typeCounter);
+    $smarty->registerPlugin("function", "showMarcUrl", "showMarcUrl");
+    $html = $smarty->fetch('record-issues.tpl');
   }
 }

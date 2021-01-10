@@ -33,6 +33,7 @@ $map = [
   'history'                  => 'History',
   'settings'                 => 'Settings',
   'about'                    => 'About',
+  'record-issues'            => 'RecordIssues'
 ];
 
 $class = isset($map[$tab]) ? $map[$tab] : 'Completeness';

@@ -88,24 +88,47 @@
 {literal}
 <script>
 function setFacetNavigationClickBehaviour() {
-    $('a.ajax-facet-navigation').click(function (event) {
-        event.preventDefault();
-        var url = $(this).attr('href');
-        var field = $(this).attr('data-field');
-        $.ajax(url)
-            .done(function (result) {
-                $('#' + field).html(result);
-                setFacetNavigationClickBehaviour();
-            });
+  $('a.ajax-facet-navigation').click(function (event) {
+    event.preventDefault();
+    var url = $(this).attr('href');
+    var field = $(this).attr('data-field');
+    $.ajax(url)
+      .done(function (result) {
+        $('#' + field).html(result);
+        setFacetNavigationClickBehaviour();
+      });
     });
 }
 
+function activateTab(id) {
+  issueTabid = 'marc-issue-' + id;
+  $('#details-tab-' + id + ' .tab-pane').each(function() {
+    if ($(this).attr('id') == issueTabid) {
+      $(this).addClass('active');
+    } else {
+      $(this).removeClass('active');
+    }
+  });
+}
+
 $(document).ready(function() {
-    $('.record h2 a.record-details').click(function (event) {
-        event.preventDefault();
-        var detailsId = $(this).attr('data');
-        $('#' + detailsId).toggle();
+  $('.record h2 a.record-details').click(function (event) {
+    event.preventDefault();
+    var detailsId = $(this).attr('data');
+    $('#' + detailsId).toggle();
+  });
+
+  $('a[aria-controls="marc-issue-tab"]').click(function (event) {
+    event.preventDefault();
+    var id = $(this).attr('data-id');
+    var url = $(this).attr('href');
+    activateTab(id);
+    $.ajax(url)
+      .done(function(result) {
+        $('#marc-issue-' + id).html(result);
+      });
     });
+
   setFacetNavigationClickBehaviour();
 });
 
