@@ -10,6 +10,21 @@
       </div>
 
       <h2>Completeness of MARC21 fields</h2>
+      <div>
+        by document types:
+        {foreach $types as $type name=types}
+          {if $type == $selectedType}
+            <strong>{$type}</strong>
+          {else}
+            <a href="?tab=completeness&type={urlencode($type)}">{$type}</a>
+          {/if}
+          {if !$smarty.foreach.types.last}·{/if}
+        {/foreach}
+      </div>
+      <div>
+        number of records for the type: <strong>{$max|number_format}</strong>
+      </div>
+
       <div id="completeness-field-table">
         {include 'completeness-fields.tpl'}
       </div>

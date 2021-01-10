@@ -6,10 +6,17 @@ class Completeness extends BaseTab {
   private $hasNonCoreTags = FALSE;
   private $packages = [];
   private $records = [];
+  private $types = [];
+  private $type = 'all';
   private $max = 0;
+  private static $supportedTypes = [
+    'Books', 'Computer Files', 'Continuing Resources', 'Maps', 'Mixed Materials', 'Music', 'Visual Materials', 'all'
+  ];
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
+
+    $this->type = getOrDefault('type', 'all', self::$supportedTypes);
 
     $this->readCount();
     $this->readPackages();
@@ -17,6 +24,8 @@ class Completeness extends BaseTab {
 
     $smarty->assign('packages', $this->packages);
     $smarty->assign('records', $this->records);
+    $smarty->assign('types', $this->types);
+    $smarty->assign('selectedType', $this->type);
     $smarty->assign('max', $this->max);
     $smarty->assign('hasNonCoreTags', $this->hasNonCoreTags);
   }
@@ -73,7 +82,6 @@ class Completeness extends BaseTab {
       $header = [];
 
       $fieldDefinitions = json_decode(file_get_contents('fieldmap.json'));
-
       foreach (file($elementsFile) as $line) {
         $lineNumber++;
         $values = str_getcsv($line);
@@ -85,7 +93,11 @@ class Completeness extends BaseTab {
             error_log($line);
           }
           $record = (object)array_combine($header, $values);
-          if (isset($record->type) && $record->type != 'all')
+
+          if (!in_array($record->type, $this->types))
+            $this->types[] = $record->type;
+
+          if (isset($record->type) && $record->type != $this->type)
             continue;
 
           $this->max = max($this->max, $record->{'number-of-record'});
@@ -111,10 +123,26 @@ class Completeness extends BaseTab {
             }
           }
           */
+          if ($record->package == '')
+            $record->package = 'other';
 
-          $this->records[] = $record;
+          if ($record->tag == '')
+            $record->tag = substr($record->path, 0, 3);
+          else
+            $record->tag = substr($record->path, 0, 3) . ' &mdash; ' . $record->tag;
+
+          if (!isset($this->records[$record->package]))
+            $this->records[$record->package] = [];
+
+          if (!isset($this->records[$record->package][$record->tag]))
+            $this->records[$record->package][$record->tag] = [];
+
+          $this->records[$record->package][$record->tag][] = $record;
         }
       }
+      $other = $this->records['other'];
+      unset($this->records['other']);
+      $this->records['other'] = $other;
     } else {
       $msg = sprintf("file %s is not existing", $elementsFile);
       error_log($msg);
