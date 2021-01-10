@@ -232,13 +232,13 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
-             id="marc-issue-tab-{$id}" href="#marc-issue-{$id}"
+             id="marc-issue-tab-{$id}" href="{$record->issueLink($id)}"
              aria-controls="marc-issue-tab" data-id="{$id}">issues</a>
         </li>
       </ul>
-      <div class="tab-content">
-        <div class="tab-pane active" id="marc-raw-{$id}" role="tabpanel"
-             aria-labelledby="data-tab">
+
+      <div class="tab-content" id="details-tab-{$id}">
+        <div class="tab-pane active" id="marc-raw-{$id}" role="tabpanel" aria-labelledby="data-tab">
           <div class="marc-details" id="marc-details-{$id}">
             {if isset($doc->record_sni)}
               <table>
@@ -253,16 +253,13 @@
             {/if}
           </div>
         </div>
-        <div class="tab-pane marc-leader" id="marc-leader-{$id}" role="tabpanel"
-             aria-labelledby="data-tab">
+        <div class="tab-pane marc-leader" id="marc-leader-{$id}" role="tabpanel" aria-labelledby="data-tab">
           {include 'marc/leader.tpl'}
         </div>
-        <div class="tab-pane marc-008" id="marc-008-{$id}" role="tabpanel"
-             aria-labelledby="data-tab">
+        <div class="tab-pane marc-008" id="marc-008-{$id}" role="tabpanel" aria-labelledby="data-tab">
           {include 'marc/008.tpl'}
         </div>
-        <div class="tab-pane" id="marc-human-{$id}" role="tabpanel"
-             aria-labelledby="data-tab">
+        <div class="tab-pane" id="marc-human-{$id}" role="tabpanel" aria-labelledby="data-tab">
           <ul>
             {foreach $record->getAllSolrFields() as $field}
               <li>
@@ -274,8 +271,7 @@
             {/foreach}
           </ul>
         </div>
-        <div class="tab-pane" id="marc-issue-{$id}" role="tabpanel"
-             aria-labelledby="data-tab">
+        <div class="tab-pane" id="marc-issue-{$id}" role="tabpanel" aria-labelledby="data-tab">
           <p>Retrieving issues detected in this MARC record (if any). It might take for a while.</p>
         </div>
       </div>

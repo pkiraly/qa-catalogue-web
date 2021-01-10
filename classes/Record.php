@@ -71,7 +71,6 @@ class Record {
     return null;
   }
 
-
   public function type2icon($type) {
     switch ($type) {
       case 'Books': $icon = 'book'; break;
@@ -87,6 +86,15 @@ class Record {
 
   public function opacLink($id) {
     return $this->catalogue->getOpacLink($id, $this);
+  }
+
+  public function issueLink($id) {
+    return '?' . join('&', [
+      'tab=record-issues',
+      // 'action=record',
+      'recordId=' . $id,
+      'ajax=1'
+    ]);
   }
 
   public function hasSubjectHeadings() {
