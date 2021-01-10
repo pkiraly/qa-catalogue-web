@@ -70,6 +70,9 @@ class Issues extends BaseTab {
           unset($record->categoryId);
           unset($record->typeId);
           unset($record->type);
+          $record->ratio = $record->records / $this->count;
+          $record->percent = $record->ratio * 100;
+
           $record->url = str_replace('https://www.loc.gov/marc/bibliographic/', '', $record->url);
 
           $record->downloadUrl = '?' . join('&', [
@@ -112,6 +115,10 @@ class Issues extends BaseTab {
 
   private function readCategories() {
     $this->categories = $this->readIssueCsv('issue-by-category.csv', 'id');
+    foreach ($this->categories as $category) {
+      $category->ratio = $category->records / $this->count;
+      $category->percent = $category->ratio * 100;
+    }
   }
 
   private function readTypes() {
@@ -123,6 +130,8 @@ class Issues extends BaseTab {
       $this->categories[$type->categoryId]->types[] = $type->id;
       $type->variants = [];
       $type->variantCount = 0;
+      $type->ratio = $type->records / $this->count;
+      $type->percent = $type->ratio * 100;
     }
   }
 
@@ -201,15 +210,5 @@ class Issues extends BaseTab {
       error_log($msg);
     }
     return $recordIds;
-  }
-
-  private function getRecordIssues($recordId, &$smarty) {
-    $smarty = createSmarty('templates');
-    $smarty->assign('issues', $issues);
-    $smarty->assign('types', $types);
-    $smarty->assign('fieldNames', ['path', 'message', 'url', 'count']);
-    $smarty->assign('typeCounter', $typeCounter);
-    $smarty->registerPlugin("function", "showMarcUrl", "showMarcUrl");
-    $html = $smarty->fetch('record-issues.tpl');
   }
 }

@@ -54,8 +54,12 @@ abstract class BaseTab implements Tab {
   protected function readCount() {
     $countFile = $this->getFilePath('count.csv');
     $counts = readCsv($countFile);
-    $counts = $counts[0];
-    $this->count = isset($counts->processed) ? $counts->processed : $counts->total; // trim(file_get_contents($countFile));
+    if (empty($counts)) {
+      $this->count = trim(file_get_contents($countFile));
+    } else {
+      $counts = $counts[0];
+      $this->count = isset($counts->processed) ? $counts->processed : $counts->total;
+    }
   }
 
   protected function readLastUpdate() {
