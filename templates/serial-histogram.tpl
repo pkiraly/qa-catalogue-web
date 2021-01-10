@@ -134,7 +134,7 @@ these criteria scores.
 // $()
 var db = '{$db}';
 var fields = {json_encode($fields)};
-// var authoritiesHistogramUrl = 'read-histogram.php?db='+ db + '&file=serial-histogram';
+// var authoritiesHistogramUrl = '?tab=histogram&file=serial-histogram';
 {literal}
 var tooltipSerial = d3.select("body")
   .append("div")
@@ -149,7 +149,7 @@ for (var i in fields) {
 }
 
 function showHistogram(field) {
-  var histogramDataUrl = 'read-histogram.php?db='+ db + '&file=serial-score-histogram-' + field;
+  var histogramDataUrl = '?tab=histogram&file=serial-score-histogram-' + field;
   var histogramSvgClass = "serial-histogram-chart-" + field;
   displayHistogram(histogramDataUrl, histogramSvgClass);
 }

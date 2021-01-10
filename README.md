@@ -43,7 +43,22 @@ mv metadata-marc-web /var/www/html/[catalogue]
 
 ```
 cd /var/www/html/[catalogue]
+```
+
+prepare configuration file:
+```
 echo "dir=[data directory]" > configuration.cnf
+```
+ You can also add the [catalogue] infor the configuration if the 
+ application path does not equals to the [catalogue]:
+
+```
+echo "catalogue=[catalogue]" >> configuration.cnf
+```
+
+setup directories and permissions, download the Smarty templating library.
+
+```
 mkdir cache
 touch selected-facets.js
 sudo chown www-data:www-data -R cache
@@ -76,9 +91,36 @@ Add these lines to Apache configuration (`/etc/apache2/sites-available/000-defau
 
 You can access the site at `http://localhost/[catalogue]`
 
-## WARNING
+# Customization
 
-This project is not intended to be used in publicly available sites.
+The name, catalogue link and the record levele catalogue link are different 
+per libraries. The tool has prepared for a number of libraries, but there's
+high chance, that you would like to apply it for another library. 
+You have set these values in a class which extends the `Catalogue` class,
+here is an example: 
+
+```PHP
+class Gent extends Catalogue {
+
+  protected $name = 'gent';
+  protected $label = 'Universiteitsbibliotheek Gent';
+  protected $url = 'https://lib.ugent.be/';
+
+  function getOpacLink($id, $record) {
+    return 'https://lib.ugent.be/catalog/rug01:' . trim($id);
+  }
+}
+```
+
+Please create a new file in the directory `classes/catalogue`. You do not have
+to do any other registration. The convention is that the name of the class
+is the first upper case form of the name property (Gent - gent, Cerl - cerl)
+etc. The later should fit the data directory name, the Solr index name, and 
+either the application path or the `catalogue` property of the 
+`configuration.cnf` file.
+
+You can also share the code with me, and then I will incorporate it into the 
+code base. 
 
 Please notify me if you would like to use it. Happy searching!
 
