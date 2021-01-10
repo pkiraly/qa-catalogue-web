@@ -91,7 +91,7 @@ for (var i in fields) {
 }
 
 function showHistogram(field) {
-  var histogramDataUrl = 'read-histogram.php?db='+ db + '&file=shelf-ready-completeness-histogram-' + field;
+  var histogramDataUrl = '?tab=histogram&file=shelf-ready-completeness-histogram-' + field;
   var histogramSvgClass = "shelf-ready-completeness-histogram-chart-" + field;
   displayHistogram(histogramDataUrl, histogramSvgClass);
 }

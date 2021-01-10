@@ -12,23 +12,12 @@
   <script src="//code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="metadata-qa.css">
   <script type="text/javascript">
-      var db = 'metadata-qa';
-      var urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.has('db')) {
-          db = urlParams.get('db');
-      } else {
-          db = window.location.pathname.replace(/\//g, '');
-      }
       var marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
-      var solrProxy = 'solr-proxy.php';
-      var solrDisplay = 'solr-display.php';
-
       function showMarcUrl(link) {
           return marcBaseUrl + link;
       }
   </script>
   <script src="configuration.js" type="text/javascript"></script>
-  <script src="loadFacets.php" type="text/javascript"></script>
   <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
 <body>

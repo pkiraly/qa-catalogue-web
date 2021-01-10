@@ -29,7 +29,7 @@
 <script>
 // $()
 var db = '{$db}';
-var classificationsHistogramUrl = 'read-histogram.php?db='+ db + '&file=classifications-histogram';
+var classificationsHistogramUrl = '?tab=histogram&file=classifications-histogram';
 {literal}
 var svg = d3.select("svg.classifications-histogram-chart"),
   margin = {top: 20, right: 20, bottom: 40, left: 60},

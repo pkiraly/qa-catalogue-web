@@ -183,7 +183,7 @@ for (var i in fields) {
 }
 
 function showHistogram(field) {
-  var histogramDataUrl = 'read-histogram.php?db='+ db + '&file=tt-completeness-histogram-' + field;
+  var histogramDataUrl = '?tab=histogram&file=tt-completeness-histogram-' + field;
   var histogramSvgClass = "tt-completeness-histogram-chart-" + field;
   displayHistogram(histogramDataUrl, histogramSvgClass);
 }
