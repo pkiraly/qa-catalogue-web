@@ -111,18 +111,6 @@ class Completeness extends BaseTab {
           $record->histogram = $histogram;
           $record->solr = $this->getSolrField($record->path);
 
-          /*
-          list($tag, $subfield) = explode('$', $record->path);
-          if (isset($fieldDefinitions->fields->{$tag}->subfields->{$subfield}->solr)) {
-            $record->solr = $fieldDefinitions->fields->{$tag}->subfields->{$subfield}->solr . '_ss';
-          } else {
-            if (isset($fieldDefinitions->fields->{$tag}->solr)) {
-              $record->solr = $tag . $subfield
-                  . '_' . $fieldDefinitions->fields->{$tag}->solr
-                  . '_' . $subfield . '_ss';
-            }
-          }
-          */
           if ($record->package == '')
             $record->package = 'other';
 
