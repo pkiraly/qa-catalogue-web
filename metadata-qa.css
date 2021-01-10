@@ -121,11 +121,14 @@ ul {
   vertical-align: top;
 }
 
+#completeness-field-table table tr.padded td {
+  padding-top: 25px;
+}
+
 #completeness-field-table table td.path,
 #completeness-field-table table td.subfield {
   text-align: left;
 }
-
 
 #completeness-field-table table td.subfield {
   width: 300px;
