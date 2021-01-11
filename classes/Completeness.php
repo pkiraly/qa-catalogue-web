@@ -79,6 +79,13 @@ class Completeness extends BaseTab {
           $this->packages[] = $record;
         }
       }
+      usort($this->packages, function($a, $b){
+        return ($a->packageid == $b->packageid)
+         ? 0
+         : ($a->packageid < $b->packageid)
+            ? -1
+            : 1;
+      });
     } else {
       $msg = sprintf("file %s is not existing", $elementsFile);
       error_log($msg);
