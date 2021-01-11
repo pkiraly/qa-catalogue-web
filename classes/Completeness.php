@@ -5,6 +5,7 @@ class Completeness extends BaseTab {
 
   private $hasNonCoreTags = FALSE;
   private $packages = [];
+  private $packageIndex = [];
   private $records = [];
   private $types = [];
   private $type = 'all';
@@ -22,7 +23,9 @@ class Completeness extends BaseTab {
     $this->readPackages();
     $this->readCompleteness();
 
+    error_log(json_encode($this->packages));
     $smarty->assign('packages', $this->packages);
+    $smarty->assign('packageIndex', $this->packageIndex);
     $smarty->assign('records', $this->records);
     $smarty->assign('types', $this->types);
     $smarty->assign('selectedType', $this->type);
@@ -55,7 +58,15 @@ class Completeness extends BaseTab {
             error_log($line);
           }
           $record = (object)array_combine($header, $values);
-          $record->percent = $record->count * 100 / $this->count;
+
+          if (isset($record->documenttype) && $record->documenttype != $this->type)
+            continue;
+
+          $record->packageid = (int) $record->packageid;
+          $this->packageIndex[$record->packageid] = ($record->iscoretag == 'true' ? $record->name . ': ' . $record->label : $record->label);
+
+          $this->max = max($this->max, $record->count);
+          // $record->percent = $record->count * 100 / $this->count;
           if ($record->label == '') {
             $record->iscoretag = false;
           }
@@ -94,13 +105,13 @@ class Completeness extends BaseTab {
           }
           $record = (object)array_combine($header, $values);
 
-          if (!in_array($record->type, $this->types))
-            $this->types[] = $record->type;
+          if (!in_array($record->documenttype, $this->types))
+            $this->types[] = $record->documenttype;
 
-          if (isset($record->type) && $record->type != $this->type)
+          if (isset($record->documenttype) && $record->documenttype != $this->type)
             continue;
 
-          $this->max = max($this->max, $record->{'number-of-record'});
+          // $this->max = max($this->max, $record->{'number-of-record'});
           $record->mean = sprintf('%.2f', $record->mean);
           $record->stddev = sprintf('%.2f', $record->stddev);
           $histogram = new stdClass();
@@ -119,18 +130,23 @@ class Completeness extends BaseTab {
           else
             $record->tag = substr($record->path, 0, 3) . ' &mdash; ' . $record->tag;
 
-          if (!isset($this->records[$record->package]))
-            $this->records[$record->package] = [];
+          $record->packageid = (int) $record->packageid;
+          if (!isset($this->records[$record->packageid]))
+            $this->records[$record->packageid] = [];
 
-          if (!isset($this->records[$record->package][$record->tag]))
-            $this->records[$record->package][$record->tag] = [];
+          if (!isset($this->records[$record->packageid][$record->tag]))
+            $this->records[$record->packageid][$record->tag] = [];
 
-          $this->records[$record->package][$record->tag][] = $record;
+          $this->records[$record->packageid][$record->tag][] = $record;
         }
       }
-      $other = $this->records['other'];
-      unset($this->records['other']);
-      $this->records['other'] = $other;
+
+      ksort($this->records, SORT_NUMERIC);
+      // $other = $this->records['other'];
+      // unset($this->records['other']);
+      // $this->records['other'] = $other;
+
+      $this->types = array_merge(['all'], array_diff($this->types, ['all']));
     } else {
       $msg = sprintf("file %s is not existing", $elementsFile);
       error_log($msg);

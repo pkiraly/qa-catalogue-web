@@ -107,6 +107,14 @@ ul {
   margin-top: 10px;
 }
 
+div#completeness h3 {
+  padding-top: 20px;
+}
+
+div#completeness h4 {
+  padding-top: 10px;
+}
+
 #completeness-group-table td {
   padding: 0 5px 0 5px;
 }
@@ -175,6 +183,7 @@ table#issues-table td.chart div
   text-align: left;
   color: #37ba00;
   font-weight: bold;
+  border-bottom: 1px solid black;
 }
 
 #completeness-field-table table td.tag {

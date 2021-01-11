@@ -34,9 +34,9 @@
     </tr>
   </thead>
   <tbody>
-    {foreach $records as $packageName => $tags name=packages}
+    {foreach $records as $packageId => $tags name=packages}
       <tr{if !$smarty.foreach.packages.first} class="padded"{/if}>
-        <td colspan="4" class="package">{$packageName}</td>
+        <td colspan="11" class="package" id="package-{$packageId}">{$packageIndex[$packageId]}</td>
       </tr>
       {foreach $tags as $tagName => $records}
          <tr>
@@ -47,7 +47,7 @@
           <tr>
             <td class="path" id="completeness-{$record->path}">
               {if isset($record->solr)}
-                <a href="?tab=data&query=*:*&filters[]={$record->solr}:*">{$record->path|substr:3}</a>
+                <a href="?tab=data&query=&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}&filters[]={$record->solr}:*">{$record->path|substr:3}</a>
               {else}
                 {$record->path|substr:3}
               {/if}
@@ -56,7 +56,7 @@
             <td class="chart"><div style="width: {ceil($percent * 2)}px;">&nbsp;</div></td>
             <td class="terms">
               {if isset($record->solr)}
-                <a href="?tab=terms&facet={$record->solr}&query=*:*&scheme={$record->solr}"><i class="fa fa-list-ol"></i></a>
+                <a href="?tab=terms&facet={$record->solr}&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}&scheme={$record->solr}"><i class="fa fa-list-ol"></i></a>
               {/if}
             </td>
             <td class="number-of-record">{$record->{'number-of-record'}|number_format}</td>
