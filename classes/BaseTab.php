@@ -209,8 +209,10 @@ abstract class BaseTab implements Tab {
         $found = TRUE;
       }
 
-      if (!$found)
+      if (!$found) {
         error_log('not found: ' . $solrField . ' - ' . join(', ', $candidates));
+        $solrField = FALSE;
+      }
     }
     return $solrField;
   }
