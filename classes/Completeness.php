@@ -149,9 +149,6 @@ class Completeness extends BaseTab {
       }
 
       ksort($this->records, SORT_NUMERIC);
-      // $other = $this->records['other'];
-      // unset($this->records['other']);
-      // $this->records['other'] = $other;
 
       $this->types = array_merge(['all'], array_diff($this->types, ['all']));
     } else {

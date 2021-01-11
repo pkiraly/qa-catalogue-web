@@ -46,7 +46,7 @@
           {assign var=percent value="{$record->{'number-of-record'} * 100 / $max}"}
           <tr>
             <td class="path" id="completeness-{$record->path}">
-              {if isset($record->solr)}
+              {if isset($record->solr) && !empty($record->solr)}
                 <a href="?tab=data&query=&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}&filters[]={$record->solr}:*">{$record->path|substr:3}</a>
               {else}
                 {$record->path|substr:3}
@@ -55,7 +55,7 @@
             <td class="subfield">{$record->subfield}</td>
             <td class="chart"><div style="width: {ceil($percent * 2)}px;">&nbsp;</div></td>
             <td class="terms">
-              {if isset($record->solr)}
+                {if isset($record->solr) && !empty($record->solr)}
                 <a href="?tab=terms&facet={$record->solr}&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}&scheme={$record->solr}"><i class="fa fa-list-ol"></i></a>
               {/if}
             </td>
