@@ -133,14 +133,15 @@ these criteria scores.
 <script>
 // $()
 var db = '{$db}';
+var count = {$count};
+var units = 'score';
 var fields = {json_encode($fields)};
-// var authoritiesHistogramUrl = '?tab=histogram&file=serial-histogram';
 {literal}
-var tooltipSerial = d3.select("body")
+var tooltip = d3.select("body")
   .append("div")
   .style("opacity", 0)
   .attr("class", "tooltip")
-  .attr("id", "tooltip-serial")
+  .attr("id", "tooltip")
 
 showHistogram('total');
 for (var i in fields) {
