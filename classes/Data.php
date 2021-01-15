@@ -26,11 +26,12 @@ class Data extends Facetable {
     $this->rows = (int) getOrDefault('rows', 10, $this->itemsPerPageSelectors);
 
     $this->parameters = [
-        'wt=json',
-        'json.nl=map',
-        'json.wrf=?',
-        'facet=on',
-        'facet.limit=' . $this->facetLimit
+      'wt=json',
+      'q.op=AND',
+      'json.nl=map',
+      'json.wrf=?',
+      'facet=on',
+      'facet.limit=' . $this->facetLimit
     ];
   }
 
