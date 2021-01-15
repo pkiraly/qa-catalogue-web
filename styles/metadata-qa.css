@@ -415,6 +415,9 @@ div.tooltip {
   border-radius: 5px;
 }
 
+.tick text {
+  cursor: default;
+}
 table tr td {
   vertical-align: top;
 }
