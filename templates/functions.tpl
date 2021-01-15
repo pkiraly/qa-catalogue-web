@@ -86,7 +86,7 @@
         </div>
       </div>
 
-      <p>The Funtional Requirements for Bibliographic Records (FRBR) document's main part defines the primary and
+      <p>The Functional Requirements for Bibliographic Records (FRBR) document's main part defines the primary and
         secondary entities which became famous as FRBR models. Years later Tom Delsey created a mapping
         between the 12 functions and the individual MARC elements.</p>
 
