@@ -163,6 +163,7 @@ table#classification-by-field td.chart
 
 #completeness-group-table table td.chart div,
 #completeness-field-table table td.chart div,
+table#classification-by-field td.chart div,
 table#authorities-by-field td.chart div,
 table#issues-table td.chart div
 {

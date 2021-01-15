@@ -4,9 +4,14 @@
   {assign var="type" value=$record->getFirstField('type_ss')}
   <div class="record">
     <h2>
+      <i class="fa fa-{$record->type2icon($type)}" title="type: {$type}"></i>
+      <strong>{$id}</strong>
+      <a href="#" class="record-details" data="details-{$id}" title="display details"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+      <a href="{$record->opacLink($doc->id)}" target="_blank" title="Display record in the library catalogue"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+    </h2>
+    <strong>
       {assign var="tag245" value=$record->getField('245')}
       {assign var="tag773" value=$record->getField('773')}
-      <i class="fa fa-{$record->type2icon($type)}" title="type: {$type}"></i>
       {if isset($tag245->subfields->a) || isset($tag245->subfields->b)}
         {include 'conditional-foreach.tpl' obj=$tag245->subfields key='a'}
         {include 'conditional-foreach.tpl' obj=$tag245->subfields key='b'}
@@ -16,9 +21,7 @@
           {include 'conditional-foreach.tpl' obj=$tag245->subfields key='n'}
         {/if}
       {/if}
-      <a href="#" class="record-details" data="details-{$id}" title="display details"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
-      <a href="{$record->opacLink($doc->id)}" target="_blank" title="Display record in the library catalogue"><i class="fa fa-external-link" aria-hidden="true"></i></a>
-    </h2>
+    </strong><br/>
     {* 245c_Title_responsibilityStatement_ss *}
     {if isset($tag245->subfields->c)}
       {include 'conditional-foreach.tpl' obj=$tag245->subfields key='c'
