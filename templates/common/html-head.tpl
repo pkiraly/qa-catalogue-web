@@ -10,7 +10,7 @@
   <!-- script src="//use.fontawesome.com/feff23b961.js"></script -->
   <script src="feff23b961.js"></script>
   <script src="//code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="metadata-qa.css">
+  <link rel="stylesheet" href="styles/metadata-qa.css">
   <script type="text/javascript">
       var marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
       function showMarcUrl(link) {

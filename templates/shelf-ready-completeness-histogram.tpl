@@ -1,25 +1,5 @@
+<link rel="stylesheet" href="styles/histogram.css">
 <h3>histogram</h3>
-
-<style>
-  .bar {
-    fill: steelblue;
-  }
-
-  .axis text {
-    font: 10px sans-serif;
-  }
-
-  .axis path,
-  .axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-  }
-
-  .x.axis path {
-    display: none;
-  }
-</style>
 
 <svg class="shelf-ready-completeness-histogram-chart-total" width="960" height="300"></svg>
 <ul>
