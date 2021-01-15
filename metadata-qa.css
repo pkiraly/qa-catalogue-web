@@ -401,10 +401,10 @@ div.record ul {
 }
 
 div.tooltip {
-  color: white;
+  color: white !important;
   position: absolute;
   text-align: left;
-  width: 120px;
+  width: 150px;
   height: 32px;
   padding: 2px;
   font: 10px sans-serif;
@@ -412,7 +412,6 @@ div.tooltip {
   border: 2px solid black;
   pointer-events: none;
   background-color: black;
-  color: white;
   border-radius: 5px;
 }
 

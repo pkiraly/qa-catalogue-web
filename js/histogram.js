@@ -1,6 +1,6 @@
 function displayHistogram(histogramDataUrl, histogramSvgClass) {
-  console.log(histogramDataUrl);
-  console.log(histogramSvgClass);
+  // console.log(histogramDataUrl);
+  // console.log(histogramSvgClass);
   var svg = d3.select("svg." + histogramSvgClass),
     margin = {top: 20, right: 20, bottom: 40, left: 60},
     width = +svg.attr("width") - margin.left - margin.right,
@@ -10,7 +10,7 @@ function displayHistogram(histogramDataUrl, histogramSvgClass) {
       y = d3.scaleLinear().rangeRound([height, 0]);
 
   var g = svg.append("g")
-  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   d3.csv(histogramDataUrl)
     .then((data) => {
@@ -29,8 +29,8 @@ function displayHistogram(histogramDataUrl, histogramSvgClass) {
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x))
         .selectAll("text")
-        .attr("transform", "translate(-10,0)rotate(-45)")
-        .style("text-anchor", "end")
+          .attr("transform", "translate(-10,0)rotate(-45)")
+          .style("text-anchor", "end")
       ;
 
       // ticks on y axis
@@ -44,28 +44,29 @@ function displayHistogram(histogramDataUrl, histogramSvgClass) {
         .attr("text-anchor", "end")
         .text("Frequency");
 
-      var showTooltipSerial = function(d) {
-        tooltipSerial
+      var showTooltip = function(d) {
+        tooltip
           .transition()
           .duration(200)
           .style("opacity", .9)
 
-        var msg = d.frequency.toLocaleString('en-US') + " records with<br/>"
-                + d.count + ' score';
-        tooltipSerial
+        var percentage = d.frequency / count * 100;
+        var msg = d.frequency.toLocaleString('en-US') + " records (" + percentage.toFixed(2) + "%) with "
+                + d.count + ' ' + units;
+        tooltip
           .html(msg)
           .style("left", getXCoord() + "px")
           .style("top", getYCoord() + "px")
       }
 
-      var moveTooltipSerial = function(d) {
-        tooltipSerial
+      var moveTooltip = function(d) {
+        tooltip
           .style("left", getXCoord() + "px")
           .style("top", getYCoord() + "px")
       }
 
-      var hideTooltipSerial = function(d) {
-        tooltipSerial
+      var hideTooltip = function(d) {
+        tooltip
           .transition()
           .duration(100)
           .style("opacity", 0)
@@ -87,16 +88,16 @@ function displayHistogram(histogramDataUrl, histogramSvgClass) {
         .attr("y", function(d) { return y(d.frequency); })
         .attr("width", x.bandwidth())
         .attr("height", function(d) { return height - y(d.frequency); })
-        .on("mouseover", showTooltipSerial)
-        .on("mousemove", moveTooltipSerial)
-        .on("mouseleave", hideTooltipSerial)
+        .on("mouseover", showTooltip)
+        .on("mousemove", moveTooltip)
+        .on("mouseleave", hideTooltip)
       ;
 
       g.selectAll('.tick text')
         .data(data)
-        .on('mouseover', showTooltipSerial)
-        .on("mousemove", moveTooltipSerial)
-        .on("mouseleave", hideTooltipSerial)
+        .on('mouseover', showTooltip)
+        .on("mousemove", moveTooltip)
+        .on("mouseleave", hideTooltip)
       ;
     })
     .catch((error) => {
