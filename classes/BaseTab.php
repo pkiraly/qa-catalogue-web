@@ -106,7 +106,6 @@ abstract class BaseTab implements Tab {
   }
 
   protected function getFacets($facet, $query, $limit, $offset = 0) {
-    error_log('getFacets');
     $parameters = [
       'q=' . $query,
       'facet=on',
@@ -119,7 +118,6 @@ abstract class BaseTab implements Tab {
       'wt=json',
       'json.nl=map',
     ];
-    error_log(join('  ', $parameters));
     $response = $this->getSolrResponse($parameters);
     return $response->facets;
   }

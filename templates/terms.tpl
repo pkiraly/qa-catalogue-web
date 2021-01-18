@@ -5,10 +5,23 @@
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane active" id="terms" role="tabpanel" aria-labelledby="terms-tab">
       <h2>Terms</h2>
-      {* <div id="terms-scheme" data-facet="{$facet}" data-query="{$termQuery}">{$label}</div> *}
+      {if $scheme == ''}
+        <form id="facetselection">
+          <input type="hidden" name="tab" value="terms" />
+          <input type="hidden" name="query" value="{$query}" />
+          <select name="facet">
+            <option value="">-- select --</option>
+            {foreach $solrFields as $field}
+              <option value="{$field}"{if $field == $facet} selected="selected"{/if}>{$field}</option>
+            {/foreach}
+          </select>
+          <input type="submit" value="Term list" id="save-facet-change" />
+        </form>
+      {/if}
+
       {if $scheme != ''}
         <div>vocabulary: <strong>{$scheme|htmlentities}</strong></div>
-      {else}
+      {elseif $facet != ''}
         <div>query: {$query|htmlentities}</div>
       {/if}
       <div id="terms-content">
