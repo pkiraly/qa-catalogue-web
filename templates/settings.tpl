@@ -17,11 +17,15 @@
       <div id="set-facet-list">
         <form id="facetselection" method="post">
           <input type="hidden" name="tab" value="settings" />
-          {foreach $facets as $facet}
-            <input type="checkbox" value="{$facet->name}" name="facet[]" id="{$facet->name}"{if $facet->checked} checked="checked"{/if}>
-            <label for="{$facet->name}">{$facet->name}</label><br/>
+          {foreach $categories as $category => $fields}
+            <p><strong>{$category}</strong> ({count($fields)} fields)</p>
+            <select name="facet[]" multiple="multiple">
+              <option value="">-- select --</option>
+              {foreach $fields as $field}
+                <option value="{$field->name}"{if $field->checked} selected="selected"{/if}>{$field->name}</option>
+              {/foreach}
+            </select>
           {/foreach}
-
           <div style="margin: 20px; padding: 20px;">
             <input type="submit" value="save" id="save-facet-change" />
           </div>
