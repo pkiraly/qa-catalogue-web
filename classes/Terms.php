@@ -34,10 +34,13 @@ class Terms extends Facetable {
     $smarty->assign('label',     $this->resolveSolrField($this->facet));
     $smarty->assign('basicFacetParams', ['tab=data', 'query=' . $this->query]);
     $smarty->assign('prevLink',  $this->createPrevLink());
-    $smarty->assign('nextLink',  $this->createNextLink(get_object_vars($facets->{$this->facet})));
+    if (isset($facets->{$this->facet}))
+      $smarty->assign('nextLink',  $this->createNextLink(get_object_vars($facets->{$this->facet})));
+    else
+      $smarty->assign('nextLink',  '');
 
     // if ($this->facet == '' && $this->query == '')
-      $smarty->assign('solrFields', $this->getFields());
+    $smarty->assign('solrFields', $this->getFields());
   }
 
   public function getTemplate() {

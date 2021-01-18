@@ -533,3 +533,16 @@ div#myTabContent {
 div#terms.tab-pane form {
   margin: 20px;
 }
+
+div#terms.tab-pane form select {
+  padding: 5px 5px 5px 10px;
+  border-radius: 10px;
+  border-color: #37ba00;
+}
+
+div#terms.tab-pane form button {
+  border: 1px solid #999999;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 10px;
+}

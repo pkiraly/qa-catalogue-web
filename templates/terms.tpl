@@ -15,7 +15,9 @@
               <option value="{$field}"{if $field == $facet} selected="selected"{/if}>{$field}</option>
             {/foreach}
           </select>
-          <input type="submit" value="Term list" id="save-facet-change" />
+          <button type="submit" class="btn">
+            <i class="fa fa-search" aria-hidden="true"></i> Term list
+          </button>
         </form>
       {/if}
 
