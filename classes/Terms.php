@@ -10,7 +10,7 @@ class Terms extends Facetable {
   public function __construct($configuration, $db) {
     parent::__construct($configuration, $db);
     $this->facet = getOrDefault('facet', '');
-    $this->query = getOrDefault('query', '');
+    $this->query = getOrDefault('query', '*:*');
     $this->scheme = getOrDefault('scheme', '');
     $this->offset = getOrDefault('offset', 0);
     $this->ajaxFacet = getOrDefault('ajax', 0, [0, 1]);
@@ -35,6 +35,9 @@ class Terms extends Facetable {
     $smarty->assign('basicFacetParams', ['tab=data', 'query=' . $this->query]);
     $smarty->assign('prevLink',  $this->createPrevLink());
     $smarty->assign('nextLink',  $this->createNextLink(get_object_vars($facets->{$this->facet})));
+
+    // if ($this->facet == '' && $this->query == '')
+      $smarty->assign('solrFields', $this->getFields());
   }
 
   public function getTemplate() {
@@ -46,7 +49,6 @@ class Terms extends Facetable {
   }
 
   private function createTermList() {
-    error_log('$this->query: ' . $this->query);
     return $this->getFacets($this->facet, $this->query, $this->facetLimit, $this->offset);
   }
 
@@ -85,5 +87,11 @@ class Terms extends Facetable {
       'tab=data',
       'query=' . urlencode($this->query)
     ];
+  }
+
+  private function getFields() {
+    $fieldNames = $this->getSolrFields();
+    sort($fieldNames);
+    return $fieldNames;
   }
 }

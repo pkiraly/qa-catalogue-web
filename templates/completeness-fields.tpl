@@ -55,8 +55,8 @@
             <td class="subfield">{$record->subfield}</td>
             <td class="chart"><div style="width: {ceil($percent * 2)}px;">&nbsp;</div></td>
             <td class="terms">
-                {if isset($record->solr) && !empty($record->solr)}
-                <a href="?tab=terms&facet={$record->solr}&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}&scheme={$record->solr}"><i class="fa fa-list-ol"></i></a>
+              {if isset($record->solr) && !empty($record->solr)}
+                <a href="?tab=terms&facet={$record->solr}&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}"><i class="fa fa-list-ol"></i></a>
               {/if}
             </td>
             <td class="number-of-record">{$record->{'number-of-record'}|number_format}</td>
