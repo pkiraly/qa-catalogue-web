@@ -46,11 +46,13 @@
          id="shelf-ready-completeness-tab" aria-controls="shelf-ready-completeness"
          href="?tab=shelf-ready-completeness">Booth</a>
     </li>
-    <li class="nav-item1">
-      <a class="nav-link1{if $tab == 'network'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="network-tab" aria-controls="network"
-         href="?tab=network">Network</a>
-    </li>
+    {if $displayNetwork}
+      <li class="nav-item1">
+        <a class="nav-link1{if $tab == 'network'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+           id="network-tab" aria-controls="network"
+           href="?tab=network">Network</a>
+      </li>
+    {/if}
     <li class="nav-item1">
       <a class="nav-link1{if $tab == 'terms'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
          id="terms-tab" aria-controls="terms"
