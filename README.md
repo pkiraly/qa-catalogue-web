@@ -56,6 +56,11 @@ echo "dir=[data directory]" > configuration.cnf
 echo "catalogue=[catalogue]" >> configuration.cnf
 ```
 
+other configuration parameters:
+
+* `display-network`: to show or hide the network tab. 
+  Possible values: 1 (to display the tab), or 0 (not to display)
+
 setup directories and permissions, download the Smarty templating library.
 
 ```
