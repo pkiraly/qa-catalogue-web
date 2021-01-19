@@ -9,6 +9,8 @@ class Authorities extends AddedEntry {
     $this->readCount();
     $this->readByRecords($smarty);
     $this->readByField($smarty);
+
+    $this->readFrequencyExamples($smarty);
   }
 
   public function getTemplate() {
@@ -247,5 +249,17 @@ class Authorities extends AddedEntry {
       $obj->percent = $obj->ratio * 100;
     }
     return $categories;
+  }
+
+  private function readFrequencyExamples(Smarty &$smarty) {
+    $file = $this->getFilePath('authorities-frequency-examples.csv');
+    if (file_exists($file)) {
+      $frequencyExamples = readCsv($file);
+      $examples = [];
+      foreach ($frequencyExamples as $example) {
+        $examples[$example->count] = $example->id;
+      }
+      $smarty->assign('frequencyExamples', $examples);
+    }
   }
 }

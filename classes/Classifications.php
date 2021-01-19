@@ -3,12 +3,16 @@
 
 class Classifications extends AddedEntry {
 
+  protected $frequencyExamples;
+
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 
     $this->readCount();
     $this->readByRecords($smarty);
     $this->readByField($smarty);
+
+    $this->readFrequencyExamples($smarty);
   }
 
   public function getTemplate() {
@@ -189,7 +193,19 @@ class Classifications extends AddedEntry {
     }
   }
 
-  /**
+  private function readFrequencyExamples(Smarty &$smarty) {
+    $file = $this->getFilePath('classifications-frequency-examples.csv');
+    if (file_exists($file)) {
+      $frequencyExamples = readCsv($file);
+      $examples = [];
+      foreach ($frequencyExamples as $example) {
+        $examples[$example->count] = $example->id;
+      }
+      $smarty->assign('frequencyExamples', $examples);
+    }
+  }
+
+    /**
    * @param $dir
    * @param $db
    * @param Smarty $smarty
