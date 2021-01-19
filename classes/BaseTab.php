@@ -14,6 +14,7 @@ abstract class BaseTab implements Tab {
   protected $catalogue;
   protected $lastUpdate;
   protected $output = 'html';
+  protected $displayNetwork = false;
 
   /**
    * BaseTab constructor.
@@ -25,6 +26,7 @@ abstract class BaseTab implements Tab {
     $this->db = $db;
     $this->catalogueName = isset($configuration['catalogue']) ? $configuration['catalogue'] : $db;
     $this->catalogue = $this->createCatalogue();
+    $this->displayNetwork = isset($configuration['display-network']) && (int) $configuration['display-network'] == 1;
     $this->readCount();
     $this->readLastUpdate();
   }
@@ -35,6 +37,7 @@ abstract class BaseTab implements Tab {
     $smarty->assign('catalogue', $this->catalogue);
     $smarty->assign('count', $this->count);
     $smarty->assign('lastUpdate', $this->lastUpdate);
+    $smarty->assign('displayNetwork', $this->displayNetwork);
   }
 
   private function createCatalogue() {
