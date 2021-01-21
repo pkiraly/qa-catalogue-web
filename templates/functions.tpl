@@ -163,7 +163,6 @@ function loadFunctions() {
           maxCount = -1;
       for (var i in data) {
         var item = data[i];
-        console.log(item);
         if (i == 'columns')
           continue;
 
