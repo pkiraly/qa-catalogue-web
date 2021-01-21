@@ -3,6 +3,14 @@
 
 class FunctionalAnalysisHistogram extends BaseTab {
 
+  protected $selectedFunction;
+
+  public function __construct($configuration, $db) {
+    parent::__construct($configuration, $db);
+
+    $this->selectedFunction = getOrDefault('function', '');
+  }
+
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 
@@ -20,29 +28,36 @@ class FunctionalAnalysisHistogram extends BaseTab {
       $lineNumber = 0;
       $header = [];
       $in = fopen($elementsFile, "r");
-      $groupped_csv = [];
+      $grouppedCsv = [];
       while (($line = fgets($in)) != false) {
         $lineNumber++;
         $values = str_getcsv($line);
         if ($lineNumber == 1) {
           $header = $values;
-          $current_function = '';
+          $currentFunction = '';
           $function_report = [];
-          $groupped_csv[] = $header;
+          if ($this->selectedFunction != '')
+            $grouppedCsv[] = ['count', 'frequency'];
+          else
+            $grouppedCsv[] = ['frbrfunction', 'score', 'count'];
         } else {
           if (count($header) != count($values)) {
             error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
           }
           $record = (object)array_combine($header, $values);
-          if ($record->frbrfunction != $current_function) {
-            if ($current_function != '') {
-              $this->addFunctionReport($current_function, $function_report, $groupped_csv);
+          if ($this->selectedFunction != '' && $this->selectedFunction != $record->frbrfunction)
+            continue;
+
+          if ($record->frbrfunction != $currentFunction) {
+            if ($currentFunction != '') {
+              $this->addFunctionReport($currentFunction, $function_report, $grouppedCsv);
             }
             $function_report = [];
-            $current_function = $record->frbrfunction;
+            $currentFunction = $record->frbrfunction;
           }
 
           $rounded = round($record->score * 100);
+          $rounded = $record->functioncount;
           if (!isset($function_report[$rounded])) {
             $function_report[$rounded] = $record->count;
           } else {
@@ -50,17 +65,20 @@ class FunctionalAnalysisHistogram extends BaseTab {
           }
         }
       }
-      $this->addFunctionReport($current_function, $function_report, $groupped_csv);
+      $this->addFunctionReport($currentFunction, $function_report, $grouppedCsv);
       fclose($in);
 
       header("Content-type: text/csv");
-      echo $this->formatAsCsv($groupped_csv);
+      echo $this->formatAsCsv($grouppedCsv);
     }
   }
 
   private function addFunctionReport($current_function, $function_report, &$groupped_csv) {
     foreach ($function_report as $score => $count) {
-      $groupped_csv[] = [$current_function, $score, $count];
+      if ($this->selectedFunction != '')
+        $groupped_csv[] = [$score, $count];
+      else
+        $groupped_csv[] = [$current_function, $score, $count];
     }
   }
 
