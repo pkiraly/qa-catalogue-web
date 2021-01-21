@@ -40,7 +40,7 @@
       </tr>
       {foreach $tags as $tagName => $records}
          <tr>
-            <td colspan="4" class="tag">{$tagName}</td>
+            <td colspan="4" class="tag" id="completeness-{substr($tagName, 0, 3)}">{$tagName}</td>
          </tr>
         {foreach $records as $record}
           {assign var=percent value="{$record->{'number-of-record'} * 100 / $max}"}
