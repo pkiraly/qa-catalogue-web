@@ -547,6 +547,7 @@ div#terms.tab-pane form button {
   border-radius: 10px;
 }
 
-#functions svg.selected {
-  border: 1px solid lightskyblue;
+#functions div.selected-function {
+  border: 1px solid #37ba00;
+  background-color: #fafafa;
 }
