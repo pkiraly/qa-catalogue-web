@@ -40,27 +40,27 @@
 
       <div class="row"><label>Discovery functions</label></div>
       <div class="row">
-        <div class="col-3">
-          <svg id="bar-chart-DiscoverySearch" class="bar-chart{if $function == "DiscoverySearch"} selected{/if}"></svg>
+        <div class="col-3{if $function == "DiscoverySearch"} selected-function{/if}">
+          <svg id="bar-chart-DiscoverySearch" class="bar-chart"></svg>
           <p class="title"><a href="?tab=functions&function=DiscoverySearch">Search</a></p>
           <p class="explanation">Search for a resource corresponding to stated criteria (i.e., to search either a
             single entity or a set of entities using an attribute or relationship of the entity as the search criteria).</p>
         </div>
-        <div class="col-3">
-          <svg id="bar-chart-DiscoveryIdentify" class="bar-chart{if $function == "DiscoveryIdentify"} selected{/if}"></svg>
+        <div class="col-3{if $function == "DiscoveryIdentify"} selected-function{/if}">
+          <svg id="bar-chart-DiscoveryIdentify" class="bar-chart"></svg>
           <p class="title"><a href="?tab=functions&function=DiscoveryIdentify">Identify</a></p>
           <p class="explanation">Identify a resource (i.e., to confirm that the entity described or located corresponds
             to the entity sought, or to distinguish between two or more entities with similar characteristics).</p>
         </div>
-        <div class="col-3">
-          <svg id="bar-chart-DiscoverySelect" class="bar-chart{if $function == "DiscoverySelect"} selected{/if}"></svg>
+        <div class="col-3{if $function == "DiscoverySelect"} selected-function{/if}">
+          <svg id="bar-chart-DiscoverySelect" class="bar-chart"></svg>
           <p class="title"><a href="?tab=functions&function=DiscoverySelect">Select</a></p>
           <p class="explanation">Select a resource that is appropriate to the user’s needs (i.e., to choose an entity
             that meets the user’s requirements with respect to content, physical format, etc., or to reject an entity
             as being inappropriate to the user’s needs).</p>
         </div>
-        <div class="col-3">
-          <svg id="bar-chart-DiscoveryObtain" class="bar-chart{if $function == "DiscoveryObtain"} selected{/if}"></svg>
+        <div class="col-3{if $function == "DiscoveryObtain"} selected-function{/if}">
+          <svg id="bar-chart-DiscoveryObtain" class="bar-chart"></svg>
           <p class="title"><a href="?tab=functions&function=DiscoveryObtain">Obtain</a></p>
           <p class="explanation">Access a resource either physically or electronically through an online connection to
             a remote computer, and/or acquire a resource through purchase, licence, loan, etc.</p>
@@ -68,50 +68,50 @@
       </div>
       <div class="row"><label>Usage functions</label></div>
       <div class="row">
-        <div class="col-3">
-          <svg id="bar-chart-UseRestrict" class="bar-chart{if $function == "UseRestrict"} selected{/if}"></svg>
+        <div class="col-3{if $function == "UseRestrict"} selected-function{/if}">
+          <svg id="bar-chart-UseRestrict" class="bar-chart"></svg>
           <p class="title"><a href="?tab=functions&function=UseRestrict">Restrict</a></p>
           <p class="explanation">Control access to or use of a resource (i.e., to restrict access to and/or use of an
             entity on the basis of proprietary rights, administrative policy, etc.).</p>
         </div>
-        <div class="col-3">
-          <svg id="bar-chart-UseManage" class="bar-chart{if $function == "UseManage"} selected{/if}"></svg>
+        <div class="col-3{if $function == "UseManage"} selected-function{/if}">
+          <svg id="bar-chart-UseManage" class="bar-chart"></svg>
           <p class="title"><a href="?tab=functions&function=UseManage">Manage</a></p>
           <p class="explanation">Manage a resource in the course of acquisition, circulation, preservation, etc.</p>
         </div>
-        <div class="col-3">
-          <svg id="bar-chart-UseOperate" class="bar-chart{if $function == "UseOperate"} selected{/if}"></svg>
+        <div class="col-3{if $function == "UseOperate"} selected-function{/if}">
+          <svg id="bar-chart-UseOperate" class="bar-chart"></svg>
           <p class="title"><a href="?tab=functions&function=UseOperate">Operate</a></p>
           <p class="explanation">Operate a resource (i.e., to open, display, play, activate, run, etc. an entity that
             requires specialized equipment, software, etc. for its operation).</p>
         </div>
-        <div class="col-3">
-          <svg id="bar-chart-UseInterpret" class="bar-chart{if $function == "UseInterpret"} selected{/if}"></svg>
+        <div class="col-3{if $function == "UseInterpret"} selected-function{/if}">
+          <svg id="bar-chart-UseInterpret" class="bar-chart"></svg>
           <p class="title"><a href="?tab=functions&function=UseInterpret">Interpret</a></p>
           <p class="explanation">Interpret or assess the information contained in a resource.</p>
         </div>
       </div>
       <div class="row"><label>Management functions</label></div>
       <div class="row">
-        <div class="col-3">
-          <svg id="bar-chart-ManagementIdentify" class="bar-chart{if $function == "ManagementIdentify"} selected{/if}"></svg>
+        <div class="col-3{if $function == "ManagementIdentify"} selected-function{/if}">
+          <svg id="bar-chart-ManagementIdentify" class="bar-chart"></svg>
           <p class="title"><a href="?tab=functions&function=ManagementIdentify">Identify</a></p>
           <p class="explanation">Identify a record, segment, field, or data element (i.e., to differentiate one logical
             data component from another).</p>
         </div>
-        <div class="col-3">
-          <svg id="bar-chart-ManagementProcess" class="bar-chart{if $function == "ManagementProcess"} selected{/if}"></svg>
+        <div class="col-3{if $function == "ManagementProcess"} selected-function{/if}">
+          <svg id="bar-chart-ManagementProcess" class="bar-chart"></svg>
           <p class="title"><a href="?tab=functions&function=ManagementProcess">Process</a></p>
           <p class="explanation">Process a record, segment, field, or data element (i.e., to add, delete, replace,
             output, etc. a logical data component by means of an automated process).</p>
         </div>
-        <div class="col-3">
-          <svg id="bar-chart-ManagementSort" class="bar-chart{if $function == "ManagementSort"} selected{/if}"></svg>
+        <div class="col-3{if $function == "ManagementSort"} selected-function{/if}">
+          <svg id="bar-chart-ManagementSort" class="bar-chart"></svg>
           <p class="title"><a href="?tab=functions&function=ManagementSort">Sort</a></p>
           <p class="explanation">Sort a field for purposes of alphabetic or numeric arrangement.</p>
         </div>
-        <div class="col-3">
-          <svg id="bar-chart-ManagementDisplay" class="bar-chart{if $function == "ManagementDisplay"} selected{/if}"></svg>
+        <div class="col-3{if $function == "ManagementDisplay"} selected-function{/if}">
+          <svg id="bar-chart-ManagementDisplay" class="bar-chart"></svg>
           <p class="title"><a href="?tab=functions&function=ManagementDisplay">Display</a></p>
           <p class="explanation">Display a field or data element (i.e., to display a field or data element with the
             appropriate print constant or as a tracing).</p>
