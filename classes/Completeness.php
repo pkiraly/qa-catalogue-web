@@ -98,6 +98,38 @@ class Completeness extends BaseTab {
       // $keys = ['element','number-of-record',number-of-instances,min,max,mean,stddev,histogram]; // "sum",
       $lineNumber = 0;
       $header = [];
+      $complexControlFields = ['006', '007', '008'];
+      $types007 = [
+        "common" => "Common",
+        "map" => "Map",
+        "electro" => "Electronic resource",
+        "globe" => "Globe",
+        "tactile" => "Tactile material",
+        "projected" => "Projected graphic",
+        "microform" => "Microform",
+        "nonprojected" => "Nonprojected graphic",
+        "motionPicture" => "Motion picture",
+        "kit" => "Kit",
+        "music" => "Notated music",
+        "remoteSensing" => "Remote-sensing image",
+        "soundRecording" => "Sound recording",
+        "text" => "Text",
+        "video" => "Videorecording",
+        "unspecified" => "Unspecified"
+      ];
+      $types008 = [
+        "all" => "All Materials",
+        "book" => "Books",
+        "continuing" => "Continuing Resources",
+        "music" => "Music",
+        "map" => "Maps",
+        "visual" => "Visual Materials",
+        "computer" => "Computer Files",
+        "mixed" => "Mixed Materials"
+      ];
+
+
+
 
       $fieldDefinitions = json_decode(file_get_contents('fieldmap.json'));
       foreach (file($elementsFile) as $line) {
@@ -128,6 +160,18 @@ class Completeness extends BaseTab {
           }
           $record->histogram = $histogram;
           $record->solr = $this->getSolrField($record->path);
+          $tag = substr($record->path, 0, 3);
+          $record->isComplexControlField = in_array($tag, $complexControlFields);
+          if ($record->isComplexControlField) {
+            if (preg_match('/^...([a-zA-Z]+)(\d+)$/', $record->path, $matches)) {
+              $record->complexType = $matches[1];
+              $record->complexPosition = $matches[2];
+              if ($tag == '007')
+                $record->complexType = $types007[$record->complexType];
+              else
+                $record->complexType = $types008[$record->complexType];
+            }
+          }
 
           if ($record->package == '')
             $record->package = 'other';

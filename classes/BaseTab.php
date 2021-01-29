@@ -177,7 +177,7 @@ abstract class BaseTab implements Tab {
     if (!isset($this->fieldDefinitions))
       $this->fieldDefinitions = json_decode(file_get_contents('fieldmap.json'));
 
-    if ($subfield == '')
+    if ($subfield == '' && strstr($tag, '$') !== false)
       list($tag, $subfield) = explode('$', $tag);
 
     if (isset($this->fieldDefinitions->fields->{$tag}->subfields->{$subfield}->solr)) {
