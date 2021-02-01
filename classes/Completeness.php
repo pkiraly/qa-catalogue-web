@@ -128,9 +128,6 @@ class Completeness extends BaseTab {
         "mixed" => "Mixed Materials"
       ];
 
-
-
-
       $fieldDefinitions = json_decode(file_get_contents('fieldmap.json'));
       foreach (file($elementsFile) as $line) {
         $lineNumber++;
@@ -161,6 +158,7 @@ class Completeness extends BaseTab {
           $record->histogram = $histogram;
           $record->solr = $this->getSolrField($record->path);
           $tag = substr($record->path, 0, 3);
+          $record->isLeader = false;
           $record->isComplexControlField = in_array($tag, $complexControlFields);
           if ($record->isComplexControlField) {
             if (preg_match('/^...([a-zA-Z]+)(\d+)$/', $record->path, $matches)) {
@@ -171,6 +169,9 @@ class Completeness extends BaseTab {
               else
                 $record->complexType = $types008[$record->complexType];
             }
+          } elseif (preg_match('/^leader(..)$/', $record->path, $matches)) {
+            $record->isLeader = true;
+            $record->complexPosition = $matches[1];
           }
 
           if ($record->package == '')
@@ -178,7 +179,7 @@ class Completeness extends BaseTab {
 
           if ($record->tag == '')
             $record->tag = substr($record->path, 0, 3);
-          else
+          elseif (!$record->isLeader)
             $record->tag = substr($record->path, 0, 3) . ' &mdash; ' . $record->tag;
 
           $record->packageid = (int) $record->packageid;
