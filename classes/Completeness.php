@@ -186,15 +186,19 @@ class Completeness extends BaseTab {
           if (!isset($this->records[$record->packageid]))
             $this->records[$record->packageid] = [];
 
-          if (!isset($this->records[$record->packageid][$record->tag]))
-            $this->records[$record->packageid][$record->tag] = [];
+          if (!isset($this->records[$record->packageid][$record->tag])) {
+            if ($record->tag == 'Leader') {
+              $this->records[$record->packageid] = array_merge([$record->tag => []], $this->records[$record->packageid]);
+            } else {
+              $this->records[$record->packageid][$record->tag] = [];
+            }
+          }
 
           $this->records[$record->packageid][$record->tag][] = $record;
         }
       }
 
       ksort($this->records, SORT_NUMERIC);
-
       $this->types = array_merge(['all'], array_diff($this->types, ['all']));
     } else {
       $msg = sprintf("file %s is not existing", $elementsFile);
