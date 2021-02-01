@@ -1,0 +1,7 @@
+# site files
+configuration.cnf
+images/
+libs/
+
+# eidtor files
+.idea/
