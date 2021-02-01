@@ -223,7 +223,8 @@ abstract class BaseTab implements Tab {
       $this->fieldDefinitions = json_decode(file_get_contents('fieldmap.json'));
 
     $solrField = preg_replace('/_ss$/', '', $solrField);
-    if ($solrField == 'type' || substr($solrField, 0, 2) == '00' || substr($solrField, 0, 6) == 'Leader') {
+    if ($solrField == 'type' || substr($solrField, 0, 2) == '00'
+       || substr($solrField, 0, 6) == 'Leader' || substr($solrField, 0, 6) == 'leader') {
       $found = false;
       if (substr($solrField, 0, 2) == '00') {
         $parts = explode('_', $solrField);
@@ -236,7 +237,7 @@ abstract class BaseTab implements Tab {
             }
       }
       if (!$found) {
-        $solrField = preg_replace('/^(00.|Leader)_/', "$1/", $solrField);
+        $solrField = preg_replace('/^(00.|leader|Leader_)/', "$1/", $solrField);
         $solrField = preg_replace('/_/', ' ', $solrField);
         $label = $solrField;
       }

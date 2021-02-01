@@ -39,9 +39,9 @@
         <td colspan="11" class="package" id="package-{$packageId}">{$packageIndex[$packageId]}</td>
       </tr>
       {foreach $tags as $tagName => $records}
-         <tr>
-            <td colspan="4" class="tag" id="completeness-{substr($tagName, 0, 3)}">{$tagName}</td>
-         </tr>
+        <tr>
+          <td colspan="4" class="tag" id="completeness-{substr($tagName, 0, 3)}">{$tagName}</td>
+        </tr>
         {assign var=prevComplexType value=""}
         {foreach $records as $record}
           {assign var=percent value="{$record->{'number-of-record'} * 100 / $max}"}
@@ -54,13 +54,13 @@
             <td class="path" id="completeness-{$record->path}">
               {if isset($record->solr) && !empty($record->solr)}
                 <a href="?tab=data&query=&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}&filters[]={$record->solr}:*">
-                  {if $record->isComplexControlField}
+                  {if $record->isComplexControlField || $record->isLeader}
                     {$record->complexPosition}
                   {else}
                     {$record->path|substr:3}
                   {/if}
                 </a>
-              {elseif $record->isComplexControlField}
+              {elseif $record->isComplexControlField || $record->isLeader}
                 {$record->complexPosition}
               {else}
                 {$record->path|substr:3}
