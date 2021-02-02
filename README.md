@@ -96,6 +96,14 @@ Add these lines to Apache configuration (`/etc/apache2/sites-available/000-defau
 
 You can access the site at `http://localhost/[catalogue]`
 
+If this is the only application on the site, you can redirect
+all requests to QA Catalogue by adding the following line to 
+the same file (before the `<Directory/>` element):
+
+```
+RedirectMatch ^/$ /metadata-qa/
+```
+
 # Customization
 
 The name, catalogue link and the record levele catalogue link are different 
