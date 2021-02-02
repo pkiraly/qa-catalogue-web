@@ -1,12 +1,19 @@
 {foreach $docs as $doc}
-  {assign var="record" value=getRecord($doc)}
+  {assign var="record" value=$controller->getRecord($doc)}
   {assign var="id" value=$doc->id|regex_replace:"/ +$/":""}
-  {assign var="type" value=getFirstField($doc, 'type_ss')}
+  {assign var="type" value=$record->getFirstField('type_ss')}
   <div class="record">
     <h2>
-      {assign var="tag245" value=getField($record, '245')}
-      {assign var="tag773" value=getField($record, '773')}
-      <i class="fa fa-{type2icon($type)}" title="type: {$type}"></i>
+      <i class="fa fa-{$record->type2icon($type)}" title="type: {$type}"></i>
+      <strong>{$id}</strong>
+      <a href="#" class="record-details" data="details-{$id}" title="display details"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+      <a href="{$record->opacLink($doc->id)}" target="_blank" title="Display record in the library catalogue"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+    </h2>
+    {include 'marc/245.tpl'}
+    {* include 'marc/773.tpl' *}
+        {*
+      {assign var="tag245" value=$record->getField('245')}
+      {assign var="tag773" value=$record->getField('773')}
       {if isset($tag245->subfields->a) || isset($tag245->subfields->b)}
         {include 'conditional-foreach.tpl' obj=$tag245->subfields key='a'}
         {include 'conditional-foreach.tpl' obj=$tag245->subfields key='b'}
@@ -16,9 +23,7 @@
           {include 'conditional-foreach.tpl' obj=$tag245->subfields key='n'}
         {/if}
       {/if}
-      <a href="#" class="record-details" data="details-{$id}" title="display details"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
-      <a href="{opacLink($doc, $doc->id)}" target="_blank" title="Display record in the library catalogue"><i class="fa fa-external-link" aria-hidden="true"></i></a>
-    </h2>
+       *}
     {* 245c_Title_responsibilityStatement_ss *}
     {if isset($tag245->subfields->c)}
       {include 'conditional-foreach.tpl' obj=$tag245->subfields key='c'
@@ -30,7 +35,7 @@
     {/if}
 
     {* 250a_Edition_editionStatement_ss *}
-    {assign var="fieldInstances" value=getFields($record, '250')}
+    {assign var="fieldInstances" value=$record->getFields('250')}
     {if !is_null($fieldInstances)}
       {foreach $fieldInstances as $field}
         {if isset($field->subfields->a)}
@@ -40,9 +45,9 @@
       <br/>
     {/if}
 
-    {if hasPublication($doc)}
+    {if $record->hasPublication()}
       {* 250a_Edition_editionStatement_ss *}
-      {assign var="tag260" value=getField($record, '260')}
+      {assign var="tag260" value=$record->getField('260')}
       <i class="fa fa-calendar" aria-hidden="true"></i>
       Published
       {* 260a_Publication_place_ss *}
@@ -56,8 +61,8 @@
 
     {include 'marc/264.tpl'}
 
-    {if hasPhysicalDescription($doc)}
-      {assign var="tag300" value=getField($record, '300')}
+    {if $record->hasPhysicalDescription()}
+      {assign var="tag300" value=$record->getField('300')}
       {* 300a_PhysicalDescription_extent_ss *}
       {include 'conditional-foreach.tpl' obj=$tag300->subfields key='a' tag='300a'}
       {* 300c_PhysicalDescription_dimensions_ss *}
@@ -74,7 +79,7 @@
     {include 'marc/362.tpl'}
 
     {* 520a_Summary_ss *}
-    {assign var="tag520s" value=getFields($record, '520')}
+    {assign var="tag520s" value=$record->getFields('520')}
     {if !is_null($tag520s)}
       <!-- 520a_Summary_ss -->
       {foreach $tag520s as $field}
@@ -83,7 +88,7 @@
     {/if}
 
     {* 505a_TableOfContents_ss *}
-    {assign var="tag505s" value=getFields($record, '505')}
+    {assign var="tag505s" value=$record->getFields('505')}
     {if !is_null($tag505s)}
       <!-- 505a_TableOfContents_ss -->
       {foreach $tag505s as $field}
@@ -92,7 +97,7 @@
     {/if}
 
     {* Host Item Entry *}
-    {assign var="fieldInstances" value=getFields($record, '773')}
+    {assign var="fieldInstances" value=$record->getFields('773')}
     {if !is_null($fieldInstances)}
       {foreach $fieldInstances as $field}
         <span class="773">
@@ -122,9 +127,9 @@
       {/foreach}
     {/if}
 
-    {if hasAuthorityNames($record) || hasSubjectHeadings($record)}
+    {if $record->hasAuthorityNames() || $record->hasSubjectHeadings()}
       <table class="authority-names">
-      {if hasAuthorityNames($record)}
+      {if $record->hasAuthorityNames()}
         <tr><td colspan="2" class="heading">Authority names</td></tr>
         {* TODO: 740, 751, 752, 753, 754, 800, 810, 811, 830 *}
         {* Main personal names *}
@@ -147,7 +152,7 @@
         {include 'marc/730.tpl'}
       {/if}
 
-      {if hasSubjectHeadings($record)}
+      {if $record->hasSubjectHeadings()}
         <tr><td colspan="2" class="heading">Subjects</td></tr>
         {* TODO: 055, 654, 656, 657, 658, 662 *}
         {* geographic classification *}
@@ -190,17 +195,20 @@
       </table>
     {/if}
 
-    {if hasSimilarBooks($doc)}
+    {* Cataloging Source *}
+    {include 'marc/040.tpl'}
+
+    {if $record->hasSimilarBooks()}
       <div class="similarity">
         <i class="fa fa-search" aria-hidden="true"></i>
         Search for similar items:
         {if isset($doc->{'9129_WorkIdentifier_ss'})}
           works:
-          <a href="#" class="record-link" data="9129_WorkIdentifier_ss">{$doc->{'9129_WorkIdentifier_ss'}}</a>
+          <a href="{$record->filter('9129_WorkIdentifier_ss', $doc->{'9129_WorkIdentifier_ss'})}" class="record-link">{$doc->{'9129_WorkIdentifier_ss'}}</a>
         {/if}
         {if isset($doc->{'9119_ManifestationIdentifier_ss'})}
           manifestations:
-          <a href="#" class="record-link" data="9119_ManifestationIdentifier_ss">{$doc->{'9119_ManifestationIdentifier_ss'}}</a>
+          <a href="{$record->filter('9119_ManifestationIdentifier_ss', $doc->{'9119_ManifestationIdentifier_ss'})}" class="record-link">{$doc->{'9119_ManifestationIdentifier_ss'}}</a>
         {/if}
       </div>
     {/if}
@@ -229,17 +237,17 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
-             id="marc-issue-tab-{$id}" href="#marc-issue-{$id}"
+             id="marc-issue-tab-{$id}" href="{$record->issueLink($id)}"
              aria-controls="marc-issue-tab" data-id="{$id}">issues</a>
         </li>
       </ul>
-      <div class="tab-content">
-        <div class="tab-pane active" id="marc-raw-{$id}" role="tabpanel"
-             aria-labelledby="data-tab">
+
+      <div class="tab-content" id="details-tab-{$id}">
+        <div class="tab-pane active" id="marc-raw-{$id}" role="tabpanel" aria-labelledby="data-tab">
           <div class="marc-details" id="marc-details-{$id}">
             {if isset($doc->record_sni)}
               <table>
-                {foreach getMarcFields($doc) as $row}
+                {foreach $record->getMarcFields() as $row}
                   <tr>
                     {foreach $row as $cell}
                       <td>{$cell}</td>
@@ -250,18 +258,15 @@
             {/if}
           </div>
         </div>
-        <div class="tab-pane marc-leader" id="marc-leader-{$id}" role="tabpanel"
-             aria-labelledby="data-tab">
+        <div class="tab-pane marc-leader" id="marc-leader-{$id}" role="tabpanel" aria-labelledby="data-tab">
           {include 'marc/leader.tpl'}
         </div>
-        <div class="tab-pane marc-008" id="marc-008-{$id}" role="tabpanel"
-             aria-labelledby="data-tab">
+        <div class="tab-pane marc-008" id="marc-008-{$id}" role="tabpanel" aria-labelledby="data-tab">
           {include 'marc/008.tpl'}
         </div>
-        <div class="tab-pane" id="marc-human-{$id}" role="tabpanel"
-             aria-labelledby="data-tab">
+        <div class="tab-pane" id="marc-human-{$id}" role="tabpanel" aria-labelledby="data-tab">
           <ul>
-            {foreach getAllSolrFields($doc) as $field}
+            {foreach $record->getAllSolrFields() as $field}
               <li>
                 <span class="label">{$field->label}:</span>
                 {foreach $field->value as $value}
@@ -271,8 +276,7 @@
             {/foreach}
           </ul>
         </div>
-        <div class="tab-pane" id="marc-issue-{$id}" role="tabpanel"
-             aria-labelledby="data-tab">
+        <div class="tab-pane" id="marc-issue-{$id}" role="tabpanel" aria-labelledby="data-tab">
           <p>Retrieving issues detected in this MARC record (if any). It might take for a while.</p>
         </div>
       </div>

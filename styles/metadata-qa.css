@@ -1,0 +1,559 @@
+#per-page .label {
+  color: #999;
+}
+
+#content {
+  /*
+  border-top: 1px solid #cccccc;
+  border-radius: 10px;
+   */
+}
+
+h1 {
+  color: #37ba00;
+  padding: 5px;
+  border-bottom: 1px solid #cccccc;
+  border-radius: 10px;
+  font-weight: 900;
+}
+
+h1 span {
+  font-size: 80%;
+  color: #333;
+  font-weight: 100;
+}
+
+h1 a.header-link {
+  color: #37ba00;
+  text-decoration: none;
+}
+
+h3,
+h4,
+h5
+{
+  color: #37ba00;
+}
+
+.search-block {
+  margin-bottom: 10px;
+}
+
+#message {
+  color: #37ba00;
+}
+
+#navigation {
+  border-bottom: 1px dashed #cccccc;
+  margin-bottom: 15px;
+}
+
+#navigation-footer {
+  border-top: 1px dashed #cccccc;
+  margin-bottom: 15px;
+}
+
+#records {
+  padding: 0;
+  margin: 0;
+  margin-top: 5px;
+}
+
+.record {
+  margin-bottom: 50px;
+}
+
+.record h2 {
+  margin-bottom: 0;
+  font-weight: 200;
+  font-size: 130%;
+}
+
+.record h2 a .fa {
+  color: #37ba00;
+}
+
+.record h2 a .fa-info-circle {
+  margin-left: 20px;
+}
+
+.record .label {
+  color: #cccccc;
+}
+
+.record .similarity {
+  text-align: right;
+  color: #999999;
+}
+
+.record .details {
+  display: none;
+  margin-left: 50px;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0px;
+}
+
+#numFound {
+  color: #37ba00;
+  font-weight: 900;
+}
+
+#solr-url {
+  overflow: auto;
+  overflow-wrap: break-word;
+  word-break: break-all;
+  color: #37ba00;
+  font-size: small;
+}
+
+.tab-content {
+  margin-top: 10px;
+}
+
+div#completeness h3 {
+  padding-top: 20px;
+}
+
+div#completeness h4 {
+  padding-top: 10px;
+}
+
+#completeness-group-table td {
+  padding: 0 5px 0 5px;
+}
+
+#completeness-group-table {
+  margin-bottom: 10px;
+}
+
+#completeness-field-table table td {
+  width: 50px;
+  text-align: right;
+  vertical-align: top;
+}
+
+#completeness-field-table table tr.padded td {
+  padding-top: 25px;
+}
+
+#completeness-field-table table td.path,
+#completeness-field-table table td.subfield {
+  text-align: left;
+}
+
+#completeness-field-table table td.subfield {
+  width: 300px;
+  text-overflow: ellipsis;
+  font-size: 80%;
+}
+
+#completeness-field-table table td.histogram {
+  width: 400px;
+}
+
+#completeness-field-table table td.number-of-record {
+  width: 70px;
+}
+
+#completeness-group-table table td.chart,
+#completeness-field-table table td.chart,
+table#authorities-by-field td.chart,
+table#classification-by-field td.chart,
+table#classification-by-field td.chart
+{
+  width: 200px;
+}
+
+#completeness-group-table table td.chart div,
+#completeness-field-table table td.chart div,
+table#classification-by-field td.chart div,
+table#authorities-by-field td.chart div,
+table#issues-table td.chart div
+{
+  background-color: #37ba00;
+  height: 15px;
+  border-right: 1px solid maroon;
+  border-bottom: 2px solid maroon;
+}
+
+table#authorities-by-field td.chart div,
+table#classification-by-field td.chart div,
+table#issues-table td.chart div
+{
+  margin: 0 5px 0 5px;
+}
+
+#completeness-field-table table td.package {
+  text-align: left;
+  color: #37ba00;
+  font-weight: bold;
+  border-bottom: 1px solid black;
+}
+
+#completeness-field-table table td.tag {
+  text-align: left;
+  color: #37ba00;
+}
+
+#completeness-field-table table tr th,
+#completeness-field-table table tr td {
+  padding: 1px;
+}
+
+#completeness-field-table table tr.first th.with-border {
+  text-align: center;
+  border-bottom: 1px solid #cccccc;
+}
+
+#completeness-field-table table tr.second th {
+  text-align: center;
+}
+
+#completeness-field-table table tr.second th.left {
+  text-align: left;
+}
+
+#completeness-field-table table tr.second th.bordered-left {
+  border-left: 1px solid #cccccc;
+}
+
+#completeness-field-table table tr.second th.bordered-right {
+  border-right: 1px solid #cccccc;
+}
+
+table#issues-table tr td.type {
+  text-align: left;
+}
+
+table#issues-table thead tr th.count {
+  text-align: right;
+}
+
+table#issues-table tr td.type span.type {
+  color: #37ba00;
+  font-weight: bold;
+}
+
+table#issues-table tr td.category span.category {
+  font-weight: bold;
+}
+
+table#issues-table tr.category-header td {
+  padding-top: 5px;
+  border-bottom: 1px solid black;
+}
+
+table#issues-table td.chart {
+  width: 200px;
+}
+
+table#issues-table td.actions {
+  width: 45px;
+  padding-left: 5px;
+}
+
+table#issues-table td.percent {
+  width: 30px;
+}
+
+table#issues-table {
+  width: 100%;
+}
+
+table#issues-table tr td.path {
+  width: 140px;
+}
+
+table#issues-table tr td.count {
+  text-align: right;
+  width: 100px;
+}
+
+table#issues-table tr td.url {
+  width: 20px;
+}
+
+table#issues-table tr.t {
+  display: none;
+}
+
+table#issues-table tr.padded td {
+  padding-top: 25px;
+}
+
+.marc-details table {
+  /* font-family: Courier; */
+  vertical-align: top;
+}
+
+.marc-details table tr td,
+.marc-leader  table tr td,
+.marc-leader  p,
+.marc-008     table tr td,
+.marc-008     p
+{
+  vertical-align: top;
+  font-size: 80%;
+  padding: 0 5px 0 5px;
+}
+
+/*
+div#myTabContent.tab-content div#issues.tab-pane.active div#issues-table-placeholder
+table#issues-table thead tr th
+ */
+
+div#classifications-content table tbody tr td {
+  vertical-align: top;
+}
+
+div.classification-subfields,
+div.authority-subfields {
+  display: none;
+  width: 100%;
+  min-width: 100%;
+}
+
+div.classification-subfields table,
+div.authority-subfields table {
+  width: 100%;
+  min-width: 100%;
+}
+
+div.classification-subfields table th.count,
+div.authority-subfields table th.count {
+  width: 100px;
+  min-width: 100px;
+  max-width: 100px;
+  text-align: right;
+}
+
+div.classification-subfields table td.count,
+div.authority-subfields table td.count {
+  text-align: right;
+}
+
+div#classifications-content th.scheme {
+  text-align: center;
+}
+
+div#classifications-content th.instances {
+  width: 100px;
+  text-align: right;
+}
+
+div#classifications-content th.records {
+  width: 100px;
+  text-align: right;
+}
+
+div.classification-subfields p,
+div.authority-subfields p {
+  margin: 10px;
+}
+
+div.classification-subfields ul li,
+div.authority-subfields ul li {
+  margin-left: 20px;
+  list-style-type: square;
+}
+
+div.classification-subfields ul li span,
+div.authority-subfields ul li span {
+  color: #999999;
+}
+
+div#about-tab ul li {
+  margin-left: 20px;
+  list-style-type: square;
+}
+
+fieldset {
+  border: 0;
+  border-left: 1px solid #37ba00;
+  margin: 0 0 5px 0;
+  padding: 0 0 5px 5px;
+}
+
+fieldset legend {
+  font-size: 100%;
+  color: #37ba00;
+  margin: 0;
+  padding: 0 0 0 5px;
+}
+
+table.authority-names tr td,
+table.subject-headings tr td {
+  vertical-align: top;
+}
+
+table.authority-names tr td.heading {
+  color: #cccccc;
+  border-bottom: 1px solid #cccccc;
+}
+
+div.record p {
+  margin: 0;
+  padding: 0;
+}
+
+div.record ul {
+  margin-bottom: 0;
+}
+
+.authorities-chart div {
+  font: 10px sans-serif;
+  background-color: steelblue;
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: white;
+}
+
+div.tooltip {
+  color: white !important;
+  position: absolute;
+  text-align: left;
+  width: 150px;
+  height: 32px;
+  padding: 2px;
+  font: 10px sans-serif;
+  background: rgba(0,0,0,.8);
+  border: 2px solid black;
+  pointer-events: none;
+  background-color: black;
+  border-radius: 5px;
+}
+
+.tick text {
+  cursor: default;
+}
+table tr td {
+  vertical-align: top;
+}
+
+#issues-table tr.t td {border-bottom: 1px solid #eee}
+
+/* #issues-table tr.t.odd {background: #eee} */
+
+#functions p.title {
+  margin-bottom: 0;
+}
+
+#functions p.explanation {
+  font-size: 80%;
+  line-height: 1;
+}
+
+#functions .bar-chart {
+  /*
+  height: 200px;
+  width: 270px;
+  border: 1px solid #37ba00;
+  */
+}
+#functions .bar-chart g rect {
+  background-color: #37ba00;
+}
+#functions div.row label {
+  font-weight: bold;
+}
+
+blockquote {
+  margin: 20px;
+}
+
+div#completeness-field-table table tr td.number-of-instances {
+  margin-left: 5px;
+  padding-left: 5px;
+}
+
+.nav-link1 {
+  padding: .25rem .5rem;
+  display: block;
+  /* border: 1px solid transparent; */
+  border-top-left-radius: .75rem;
+  /* border-top-right-radius: .75rem; */
+}
+
+.nav-link1.active {
+  /* background-color: #eeeeee; */
+  color: #37ba00;
+  border-bottom: 5px solid #37ba00;
+  border-top-color: #999999;
+  border-left-color: #999999;
+  border-right-color: #999999;
+}
+
+.header-info {
+  color: #999;
+  font-size: 90%;
+}
+
+ul#myTab{
+  list-style: none;
+}
+
+ul#myTab li {
+  display: inline;
+}
+
+div.search-block {
+  padding-top: 5px;
+}
+
+form#search {
+  padding-top: 5px;
+}
+
+input#query {
+  padding: 5px 5px 5px 10px;
+  border-radius: 10px;
+  border-color: #37ba00;
+}
+
+form#search button {
+  border: 1px solid #999999;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 10px;
+}
+
+div#myTabContent {
+  margin-bottom: 20px;
+}
+
+#authorities-by-field tr.category td {
+  padding-top: 50px;
+  border-bottom: 1px solid black;
+}
+
+#facetselection p {
+  padding-top: 20px;
+  padding-bottom: 10px;
+  margin: 0;
+}
+
+div#terms.tab-pane form {
+  margin: 20px;
+}
+
+div#terms.tab-pane form select {
+  padding: 5px 5px 5px 10px;
+  border-radius: 10px;
+  border-color: #37ba00;
+}
+
+div#terms.tab-pane form button {
+  border: 1px solid #999999;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 10px;
+}
+
+#functions div.selected-function {
+  border: 1px solid #37ba00;
+  background-color: #fafafa;
+}

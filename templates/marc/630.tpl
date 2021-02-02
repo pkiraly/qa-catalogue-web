@@ -1,4 +1,4 @@
-{assign var="fieldInstances" value=getFields($record, '630')}
+{assign var="fieldInstances" value=$record->getFields('630')}
 {if !is_null($fieldInstances)}
 <tr>
   <td><em>uniform titles</em>:</td>
@@ -7,7 +7,7 @@
       <span class="630">
         {if isset($field->subfields->a)}
           <i class="fa fa-hashtag" aria-hidden="true" title="uniform title"></i>
-          <a href="#" class="record-link" data="630a_SubjectAddedUniformTitle_ss">{$field->subfields->a}</a>
+          <a href="{$record->filter('630a_SubjectAddedUniformTitle_ss', $field->subfields->a)}" class="record-link">{$field->subfields->a}</a>
         {/if}
 
         {if isset($field->subfields->n)}
@@ -35,7 +35,7 @@
         {/if}
 
         {if isset($field->subfields->{'0'})}
-          (authority: <a href="#" class="record-link" data="6300">{$field->subfields->{'0'}}</a>)
+          (authority: <a href="{$record->filter('6300', $field->subfields->{'0'})}" class="record-link">{$field->subfields->{'0'}}</a>)
         {/if}
       </span>
       <br/>

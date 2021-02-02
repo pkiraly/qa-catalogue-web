@@ -1,5 +1,5 @@
 {* Added Entry-Meeting Name, https://www.loc.gov/marc/bibliographic/bd711.html *}
-{assign var="fieldInstances" value=getFields($record, '711')}
+{assign var="fieldInstances" value=$record->getFields('711')}
 {if !is_null($fieldInstances)}
 <tr>
   <td><em>additional meeting names</em>:</td>
@@ -7,7 +7,7 @@
   {foreach $fieldInstances as $field}
     <span class="711">
       <i class="fa fa-user" aria-hidden="true" title="Meeting name or jurisdiction name as entry element"></i>
-      <a href="#" class="record-link" data="711a_AddedMeetingName_ss" title="Meeting name or jurisdiction name as entry element">{$field->subfields->a}</a>
+      <a href="{$record->filter('711a_AddedMeetingName_ss', $field->subfields->a)}" class="record-link" title="Meeting name or jurisdiction name as entry element">{$field->subfields->a}</a>
       {* 711c_AddedMeetingName_locationOfMeeting_ss *}
       {if isset($field->subfields->c)}
         <span class="location" title="Location of meeting">{$field->subfields->c}</span>

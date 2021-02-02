@@ -1,25 +1,5 @@
+<link rel="stylesheet" href="styles/histogram.css">
 <h3>histogram</h3>
-
-<style>
-  .bar {
-    fill: steelblue;
-  }
-
-  .axis text {
-    font: 10px sans-serif;
-  }
-
-  .axis path,
-  .axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-  }
-
-  .x.axis path {
-    display: none;
-  }
-</style>
 
 <svg class="tt-completeness-histogram-chart-total" width="960" height="300"></svg>
 <ul>
@@ -167,14 +147,16 @@ the summary of these criteria scores.
 <script>
 // $()
 var db = '{$db}';
+var count = {$count};
+var units = 'score';
 var fields = {json_encode($fields)};
 {literal}
 
-var tooltipSerial = d3.select("body")
+var tooltip = d3.select("body")
   .append("div")
   .style("opacity", 0)
   .attr("class", "tooltip")
-  .attr("id", "tooltip-serial")
+  .attr("id", "tooltip")
 
 showHistogram('total');
 for (var i in fields) {
@@ -183,7 +165,7 @@ for (var i in fields) {
 }
 
 function showHistogram(field) {
-  var histogramDataUrl = 'read-histogram.php?db='+ db + '&file=tt-completeness-histogram-' + field;
+  var histogramDataUrl = '?tab=histogram&file=tt-completeness-histogram-' + field;
   var histogramSvgClass = "tt-completeness-histogram-chart-" + field;
   displayHistogram(histogramDataUrl, histogramSvgClass);
 }

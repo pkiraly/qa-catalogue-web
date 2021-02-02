@@ -1,6 +1,6 @@
 {* Additional Dewey Decimal Classification Number
    http://www.loc.gov/marc/bibliographic/bd083.html *}
-{assign var="fieldInstances" value=getFields($record, '083')}
+{assign var="fieldInstances" value=$record->getFields('083')}
 {if !is_null($fieldInstances)}
 <tr>
   <td><em>additional DDC</em>:</td>
@@ -10,11 +10,11 @@
       {*  Classification number *}
       {if isset($field->subfields->a)}
         <i class="fa fa-hashtag" aria-hidden="true" title="Classification number"></i>
-        <a href="#" class="record-link" data="083a_ClassificationAdditionalDdc_ss" title="Classification number">{$field->subfields->a}</a>
+        <a href="{$record->filter('083a_ClassificationAdditionalDdc_ss', $field->subfields->a)}" class="record-link" title="Classification number">{$field->subfields->a}</a>
       {/if}
 
       {if isset($field->subfields->c)}
-        <a href="#" class="subdivision" data="083c" title="Classification number--Ending number of span">{$field->subfields->c}</a>
+        <a href="{$record->filter('083c', $field->subfields->c)}" class="subdivision" title="Classification number--Ending number of span">{$field->subfields->c}</a>
       {/if}
 
       {if isset($field->subfields->m)}
@@ -38,7 +38,7 @@
       {/if}
 
       {if isset($field->subfields->{'2'})}
-        <a href="#" class="source" data="0832_ClassificationAdditionalDdc_edition_ss" title="Source">{$field->subfields->{'2'}}</a>
+        <a href="{$record->filter('0832_ClassificationAdditionalDdc_edition_ss', $field->subfields->{'2'})}" class="source" title="Source">{$field->subfields->{'2'}}</a>
       {/if}
     </span>
     <br/>

@@ -1,39 +1,44 @@
-{assign var="fieldInstances" value=getFields($record, '650')}
+{assign var="fieldInstances" value=$record->getFields('650')}
 {if !is_null($fieldInstances)}
 <tr>
   <td><em>topics</em>:</td>
   <td>
     {foreach $fieldInstances as $field}
-        {* 650a_Topic_topicalTerm_ss *}
       <span class="650">
-          {if isset($field->subfields->a)}
-            <i class="fa fa-hashtag" aria-hidden="true" title="topical term"></i>
-            <a href="#" class="record-link" data="650a_Topic_topicalTerm_ss">{$field->subfields->a}</a>
+        <i class="fa fa-hashtag" aria-hidden="true" title="topical term"></i>
+        {foreach $field->subfields as $code => $value name=subfields}
+          {assign 'comma' value=(($smarty.foreach.subfields.last) ? '' : ',')}
+          {if $code == 'a'}
+            <a href="{$record->filter('650a_Topic_topicalTerm_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          {elseif $code == 'b'}
+            <a href="{$record->filter('650b_Topic_topicalTerm_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          {elseif $code == 'c'}
+            event location: <a href="{$record->filter('650c_Topic_locationOfEvent_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          {elseif $code == 'd'}
+            dates: <a href="{$record->filter('650d_Topic_activeDates_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          {elseif $code == 'e'}
+            relator: <a href="{$record->filter('650e_Topic_relatorTerm_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          {elseif $code == 'g'}
+            miscellaneous: <a href="{$record->filter('650g_Topic_miscellaneousInformation_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          {elseif $code == '4'}
+            relationship: <a href="{$record->filter('6504_Topic_relationship_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          {elseif $code == 'v'}
+            form: <a href="{$record->filter('650v_Topic_formSubdivision_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          {elseif $code == 'x'}
+            general: <a href="{$record->filter('650x_Topic_generalSubdivision_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          {elseif $code == 'y'}
+            chronological: <a href="{$record->filter('650y_Topic_chronologicalSubdivision_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          {elseif $code == 'z'}
+            geographic: <a href="{$record->filter('650z_Topic_geographicSubdivision_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          {elseif $code == '0'}
+            authority ID: <a href="{$record->filter('6500_Topic_authorityRecordControlNumber_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          {elseif $code == '1'}
+            url: <a href="{$record->filter('6501', $value)}" class="record-link">{$value}</a>{$comma}
+          {elseif $code == '2'}
+            vocabulary: <a href="{$record->filter('6502_Topic_sourceOfHeading_ss', $value)}" class="record-link">{$value}</a>{$comma}
           {/if}
-
-          {* 650z_Topic_geographicSubdivision_ss *}
-          {if isset($field->subfields->z)}
-            geo:
-            <i class="fa fa-map" aria-hidden="true" title="geographic subdivision"></i>
-            <a href="#" class="record-link" data="650z_Topic_geographicSubdivision_ss">{$field->subfields->z}</a>
-          {/if}
-
-          {* 650v_Topic_formSubdivision_ss *}
-          {if isset($field->subfields->v)}
-            form:
-            <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-            <a href="#" class="record-link" data="650v_Topic_formSubdivision_ss">{$field->subfields->v}</a>
-          {/if}
-
-          {if isset($field->subfields->{'2'})}
-            vocabulary: {$field->subfields->{'2'}}</a>
-          {/if}
-
-          {* 6500_Topic_authorityRecordControlNumber_ss *}
-          {if isset($field->subfields->{'0'})}
-            (authority: <a href="#" class="record-link" data="650v_Topic_formSubdivision_ss">{$field->subfields->{'0'}}</a>)
-          {/if}
-        </span>
+        {/foreach}
+      </span>
       <br/>
     {/foreach}
   </td>

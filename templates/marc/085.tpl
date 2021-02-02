@@ -1,6 +1,6 @@
 {* Synthesized Classification Number Components
    http://www.loc.gov/marc/bibliographic/bd085.html *}
-{assign var="fieldInstances" value=getFields($record, '085')}
+{assign var="fieldInstances" value=$record->getFields('085')}
 {if !is_null($fieldInstances)}
 <tr>
   <td><em>synthesized classifications</em>:</td>
@@ -9,7 +9,7 @@
     <span class="085">
       {*  Classification number *}
       {if isset($field->subfields->a)}
-        <a href="#" class="record-link" data="084a_Classification_classificationPortion_ss"
+        <a href="{$record->filter('084a_Classification_classificationPortion_ss', $field->subfields->a)}" class="record-link"
            title="Number where instructions are found-single number or beginning number of span">{$field->subfields->a}</a>
       {/if}
 

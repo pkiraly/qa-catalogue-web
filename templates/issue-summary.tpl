@@ -53,16 +53,22 @@
       {foreach $fieldNames item=field}
         <th {if in_array($field, ['instances', 'records'])}class="text-right"{/if}>{if field == 'message'}value/explanation{else}{$field}{/if}</th>
       {/foreach}
+      <th></th>
+      <th>chart</th>
+      <th>%</th>
     </tr>
   </thead>
   <tbody>
   {foreach $categories key=index item=category name=categories}
-    <tr class="category-header {$category->category}">
+    <tr class="category-header {$category->category}{if !$smarty.foreach.categories.first} padded{/if}">
       <td colspan="3" class="category">
         <span class="category">{$category->category}</span> level issues
       </td>
       <td class="count">{$category->instances|number_format}</td>
       <td class="count">{$category->records|number_format}</td>
+      <td class="actions"></td>
+      <td class="chart"><div style="width: {ceil($category->ratio * 200)}px;">&nbsp;</div></td>
+      <td class="percent text-right" title="{$category->percent|number_format:8}%">{$category->percent|number_format:2}</td>
     </tr>
     {foreach $category->types item=typeId name=types}
       {assign var="type" value=$types[$typeId]}
@@ -73,6 +79,9 @@
         </td>
         <td class="count">{$type->instances|number_format}</td>
         <td class="count">{$type->records|number_format}</td>
+        <td class="actions"></td>
+        <td class="chart"><div style="width: {ceil($type->ratio * 200)}px;">&nbsp;</div></td>
+        <td class="percent text-right" title="{$type->percent|number_format:8}%">{$type->percent|number_format:2}</td>
       </tr>
       {foreach $records[$type->id] item=rowData name=foo}
         {if $smarty.foreach.foo.index < 100}
@@ -84,18 +93,14 @@
             <td class="url">
               <a href="{showMarcUrl($rowData->url)}" target="_blank"><i class="fa fa-info" aria-hidden="true"></i></a>
             </td>
-            <td class="count instances">
-              <a href="#" data-id="{$rowData->id}" data-type="{$type->type}" data-path="{$rowData->path}"
-                 data-message="{$rowData->message}">{$rowData->instances|number_format}</a>
+            <td class="count instances">{$rowData->instances|number_format}</td>
+            <td class="count records">{$rowData->records|number_format}</td>
+            <td class="actions">
+              <a href="{$rowData->queryUrl}" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
+              <a href="{$rowData->downloadUrl}" class="list"><i class="fa fa-download" aria-hidden="true"></i></a>
             </td>
-            <td class="count records">
-              <a href="#" data-id="{$rowData->id}" data-type="{$type->type}" data-path="{$rowData->path}"
-                 data-message="{$rowData->message}" class="search">{$rowData->records|number_format}</a>
-              <a href="#" data-id="{$rowData->id}" data-type="{$type->type}" data-path="{$rowData->path}"
-                 data-message="{$rowData->message}" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
-              <a href="#" data-id="{$rowData->id}" data-type="{$type->type}" data-path="{$rowData->path}"
-                 data-message="{$rowData->message}" class="list"><i class="fa fa-list-ol" aria-hidden="true"></i></a>
-            </td>
+            <td class="chart"><div style="width: {ceil($rowData->ratio * 200)}px;">&nbsp;</div></td>
+            <td class="percent text-right" title="{$rowData->percent|number_format:8}%">{$rowData->percent|number_format:2}</td>
           </tr>
         {/if}
       {/foreach}
