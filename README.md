@@ -60,6 +60,16 @@ other configuration parameters:
 
 * `display-network`: to show or hide the network tab. 
   Possible values: 1 (to display the tab), or 0 (not to display)
+* `indexName[<catalogue>]`: the name of the Solr index, it it is different than the name of the catalogue. 
+* `dirName[<catalogue>]`: the name of the data directory, it it is different than the name of the catalogue.
+
+example:
+
+```
+display-network=0
+indexName[bvb]=bayern
+dirName[bvb]=bayern
+```
 
 setup directories and permissions, download the Smarty templating library.
 
