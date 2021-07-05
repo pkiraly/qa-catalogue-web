@@ -27,7 +27,6 @@ class Issues extends BaseTab {
       if ($recordId != '') {
         $this->getRecordIssues($recordId, $smarty);
       }
-
     } else {
       $this->readCategories();
       $this->readTypes();
@@ -37,7 +36,7 @@ class Issues extends BaseTab {
       $smarty->assign('categories', $this->categories);
       $smarty->assign('types', $this->types);
       $smarty->assign('topStatistics', $this->readTotal());
-      $smarty->assign('total', $this->total);
+      $smarty->assign('total', $this->count);
       $smarty->assign('fieldNames', ['path', 'message', 'url', 'instances', 'records']);
       $smarty->registerPlugin("function", 'showMarcUrl', array('Issues', 'showMarcUrl'));
     }
@@ -137,12 +136,19 @@ class Issues extends BaseTab {
 
   private function readTotal() {
     $statistics = $this->readIssueCsv('issue-total.csv', 'type');
+    $this->total = $this->count;
+    /*
     foreach ($statistics as $item)
       if ($item->type != 2)
         $this->total += $item->records;
+    */
 
-    foreach ($statistics as &$item)
-      $item->percent = ($item->records / $this->total) * 100;
+    foreach ($statistics as &$item) {
+      $item->good = $this->count - $item->records;
+      $item->goodPercent = ($item->good / $this->count) * 100;
+      $item->bad = $item->records;
+      $item->badPercent = ($item->bad / $this->count) * 100;
+    }
 
     if (!isset($statistics["0"]))
       $statistics["0"] = (object)[
