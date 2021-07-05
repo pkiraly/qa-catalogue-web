@@ -51,7 +51,11 @@ abstract class BaseTab implements Tab {
   }
 
   protected function getFilePath($name) {
-    return sprintf('%s/%s/%s', $this->configuration['dir'], $this->db, $name);
+    //  $this->db
+    $path = (isset($this->configuration['dirName']) && isset($this->configuration['dirName'][$this->db]))
+      ? $this->configuration['dirName'][$this->db]
+      : $this->db;
+    return sprintf('%s/%s/%s', $this->configuration['dir'], $path, $name);
   }
 
   protected function readCount() {
@@ -87,7 +91,8 @@ abstract class BaseTab implements Tab {
    */
   protected function getSolrFields() {
     if (!isset($this->solrFields)) {
-      $url = 'http://localhost:8983/solr/' . $this->db;
+      $solrPath = $this->getIndexName();
+      $url = 'http://localhost:8983/solr/' . $solrPath; // $this->db;
       $all_fields = file_get_contents($url . '/select/?q=*:*&wt=csv&rows=0');
       $this->solrFields = explode(',', $all_fields);
     }
@@ -95,7 +100,9 @@ abstract class BaseTab implements Tab {
   }
 
   protected function getSolrResponse($params) {
-    $url = 'http://localhost:8983/solr/' . $this->db . '/select?' . join('&', $this->encodeSolrParams($params));
+    //
+    $solrPath = $this->getIndexName();
+    $url = 'http://localhost:8983/solr/' . $solrPath . '/select?' . join('&', $this->encodeSolrParams($params));
     error_log($url);
     $solrResponse = json_decode(file_get_contents($url));
     $response = (object)[
@@ -273,5 +280,16 @@ abstract class BaseTab implements Tab {
 
   public function getOutputType() {
     return $this->output;
+  }
+
+  /**
+   * @return mixed
+   */
+  protected function getIndexName() {
+    $solrPath = (isset($this->configuration['indexName']) && isset($this->configuration['indexName'][$this->db]))
+      ? $this->configuration['indexName'][$this->db]
+      : $this->db;
+    error_log('solrPath: ' . $solrPath);
+    return $solrPath;
   }
 }
