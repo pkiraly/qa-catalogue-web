@@ -200,7 +200,7 @@ class Issues extends BaseTab {
             $header = str_getcsv($line);
           } else {
             if (preg_match('/^' . $errorId . ',/', $line)) {
-              $values = str_getcsv($line);
+              $values = str_getcsv(substr($line, 0, 10000));
               $record = (object)array_combine($header, $values);
               $recordIds = explode(';', $record->recordIds);
               if ($action == 'query')
