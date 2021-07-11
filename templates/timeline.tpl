@@ -4,8 +4,9 @@
   {include 'common/nav-tabs.tpl'}
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane active" id="timeline" role="tabpanel" aria-labelledby="timeline-tab">
-      <h2>Timeline</h2>
-      <div>
+      <h2>Timeline of changes</h2>
+
+      <p>How did the catalogue change over time?</p>
         <table id="timeline">
           <thead>
             <tr>
@@ -18,10 +19,10 @@
             <tr>
               <th>version</th>
               <th>records</th>
-              <th>good</th>
-              <th>bad</th>
-              <th>good</th>
-              <th>bad</th>
+              <th>without</th>
+              <th>with</th>
+              <th>without</th>
+              <th>with</th>
               <th>change</th>
             </tr>
           </thead>
@@ -56,7 +57,6 @@
             {/foreach}
           </tbody>
         </table>
-      </div>
     </div>
   </div>
 </div>
