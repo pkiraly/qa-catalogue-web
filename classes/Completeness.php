@@ -19,11 +19,9 @@ class Completeness extends BaseTab {
 
     $this->type = getOrDefault('type', 'all', self::$supportedTypes);
 
-    $this->readCount();
     $this->readPackages();
     $this->readCompleteness();
 
-    error_log(json_encode($this->packages));
     $smarty->assign('packages', $this->packages);
     $smarty->assign('packageIndex', $this->packageIndex);
     $smarty->assign('records', $this->records);

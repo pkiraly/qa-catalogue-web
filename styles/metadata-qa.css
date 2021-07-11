@@ -557,3 +557,35 @@ div#terms.tab-pane form button {
   border: 1px solid #37ba00;
   background-color: #fafafa;
 }
+
+table#timeline th {
+  text-align: center;
+}
+
+table#timeline td {
+  padding-left: 10px;
+  text-align: right;
+  width: 200px;
+}
+
+table#timeline td.good {
+  text-align: left;
+}
+
+table#timeline td.version {
+  padding-left: 0px;
+  text-align: left;
+}
+
+table#timeline td.version,
+table#timeline td.count {
+  width: 100px;
+}
+
+table#timeline td div.barchart {
+  width: 400px; background-color: maroon; height: 10px;
+}
+
+table#timeline td div.barchart div.greenchart {
+  float: left; background-color: #37ba00; text-align: left; height: 10px;
+}

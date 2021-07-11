@@ -68,6 +68,13 @@
          id="history-tab" aria-controls="history"
          href="?tab=history">History</a>
     </li>
+    {if !is_null($historicalDataDir)}
+      <li class="nav-item1">
+        <a class="nav-link1{if $tab == 'timeline'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+         id="timeline-tab" aria-controls="timeline"
+         href="?tab=timeline">Timeline</a>
+      </li>
+    {/if}
     <li class="nav-item1">
       <a class="nav-link1{if $tab == 'settings'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
          id="settings-tab" aria-controls="settings"

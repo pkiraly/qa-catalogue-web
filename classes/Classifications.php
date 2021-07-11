@@ -8,7 +8,6 @@ class Classifications extends AddedEntry {
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 
-    $this->readCount();
     $this->readByRecords($smarty);
     $this->readByField($smarty);
 

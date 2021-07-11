@@ -15,6 +15,7 @@ abstract class BaseTab implements Tab {
   protected $lastUpdate;
   protected $output = 'html';
   protected $displayNetwork = false;
+  protected $historicalDataDir = null;
 
   /**
    * BaseTab constructor.
@@ -27,8 +28,9 @@ abstract class BaseTab implements Tab {
     $this->catalogueName = isset($configuration['catalogue']) ? $configuration['catalogue'] : $db;
     $this->catalogue = $this->createCatalogue();
     $this->displayNetwork = isset($configuration['display-network']) && (int) $configuration['display-network'] == 1;
-    $this->readCount();
+    $this->count = $this->readCount();
     $this->readLastUpdate();
+    $this->handleHistoricalData();
   }
 
   public function prepareData(Smarty &$smarty) {
@@ -38,6 +40,7 @@ abstract class BaseTab implements Tab {
     $smarty->assign('count', $this->count);
     $smarty->assign('lastUpdate', $this->lastUpdate);
     $smarty->assign('displayNetwork', $this->displayNetwork);
+    $smarty->assign('historicalDataDir', $this->historicalDataDir);
   }
 
   private function createCatalogue() {
@@ -51,22 +54,20 @@ abstract class BaseTab implements Tab {
   }
 
   protected function getFilePath($name) {
-    //  $this->db
-    $path = (isset($this->configuration['dirName']) && isset($this->configuration['dirName'][$this->db]))
-      ? $this->configuration['dirName'][$this->db]
-      : $this->db;
-    return sprintf('%s/%s/%s', $this->configuration['dir'], $path, $name);
+    return sprintf('%s/%s/%s', $this->configuration['dir'], $this->getDirName(), $name);
   }
 
-  protected function readCount() {
-    $countFile = $this->getFilePath('count.csv');
+  protected function readCount($countFile = null) {
+    if (is_null($countFile))
+      $countFile = $this->getFilePath('count.csv');
     $counts = readCsv($countFile);
     if (empty($counts)) {
-      $this->count = trim(file_get_contents($countFile));
+      $count = trim(file_get_contents($countFile));
     } else {
       $counts = $counts[0];
-      $this->count = isset($counts->processed) ? $counts->processed : $counts->total;
+      $count = isset($counts->processed) ? $counts->processed : $counts->total;
     }
+    return $count;
   }
 
   protected function readLastUpdate() {
@@ -291,5 +292,36 @@ abstract class BaseTab implements Tab {
       : $this->db;
     error_log('solrPath: ' . $solrPath);
     return $solrPath;
+  }
+
+  private function handleHistoricalData() {
+    $historicalDir = sprintf('%s/_historical/%s', $this->configuration['dir'], $this->getDirName());
+    if (file_exists($historicalDir))
+      $this->historicalDataDir = $historicalDir;
+  }
+
+  protected function getVersions() {
+    return array_diff(scandir($this->historicalDataDir,  SCANDIR_SORT_ASCENDING), ['..', '.']);
+  }
+
+  protected function getHistoricalFilePaths($name) {
+    $files = [];
+    if (!is_null($this->historicalDataDir)) {
+      foreach ($this->getVersions() as $version) {
+        $files[$version] = sprintf('%s/%s/%s', $this->historicalDataDir, $version, $name);
+      }
+    }
+    return $files;
+  }
+
+
+  /**
+   * @return mixed
+   */
+  private function getDirName() {
+    $path = (isset($this->configuration['dirName']) && isset($this->configuration['dirName'][$this->db]))
+      ? $this->configuration['dirName'][$this->db]
+      : $this->db;
+    return $path;
   }
 }

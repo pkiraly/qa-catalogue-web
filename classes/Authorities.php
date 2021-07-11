@@ -6,7 +6,6 @@ class Authorities extends AddedEntry {
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 
-    $this->readCount();
     $this->readByRecords($smarty);
     $this->readByField($smarty);
 
@@ -190,7 +189,6 @@ class Authorities extends AddedEntry {
 
   private function getFieldHierarchy() {
     $categoryStatistics = readCsv($this->getFilePath('authorities-by-categories.csv'), 'category');
-    error_log(json_encode($categoryStatistics));
 
     $categories = [
       'Personal names' => (object)[

@@ -7,11 +7,9 @@ $configuration = parse_ini_file("configuration.cnf");
 $smarty = createSmarty('templates');
 
 $db = getPath(); // getOrDefault('db', 'bl'); // metadata-qa
-error_log('db: ' . $db);
 
 $tab = getOrDefault('tab', 'completeness');
 $ajax = getOrDefault('ajax', 0, [0, 1]);
-error_log("tab: $tab");
 $smarty->assign('tab', $tab);
 
 include_once('classes/Tab.php');
@@ -31,6 +29,7 @@ $map = [
   'terms'                    => 'Terms',
   'pareto'                   => 'Pareto',
   'history'                  => 'History',
+  'timeline'                 => 'Timeline',
   'settings'                 => 'Settings',
   'about'                    => 'About',
   'record-issues'            => 'RecordIssues',
