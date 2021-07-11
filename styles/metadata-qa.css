@@ -578,7 +578,8 @@ table#timeline td.version {
 }
 
 table#timeline td.version,
-table#timeline td.count {
+table#timeline td.count,
+table#timeline td.change {
   width: 100px;
 }
 

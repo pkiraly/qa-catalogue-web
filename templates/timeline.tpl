@@ -14,7 +14,7 @@
               <th></th>
               <th colspan="2">all issues</th>
               <th colspan="2">issues in documented data elements</th>
-              <th></th>
+              <th colspan="2">change</th>
             </tr>
             <tr>
               <th>version</th>
@@ -23,11 +23,12 @@
               <th>with</th>
               <th>without</th>
               <th>with</th>
-              <th>change</th>
+              <th>in records</th>
+              <th>in %</th>
             </tr>
           </thead>
           <tbody>
-            {foreach from=$totals key=version item=issues}
+            {foreach from=$totals key=version item=issues name=foo}
               <tr>
                 <td class="version">{$version}</td>
                 <td class="count">{number_format($issues['count'])}</td>
@@ -45,12 +46,24 @@
                   </div>
                   <div><div style="float: left">{number_format($issues[2]['good'])}</div>{number_format($issues[2]['bad'])}</div>
                 </td>
-                <td class="{if $issues['change'] > 0}change-positive{elseif $issues['change'] < 0}change-negative{/if}">
-                  {if $issues['change'] > 0}+{/if}{sprintf("%.3f", $issues['change'])}%
-                  {if $issues['change'] > 0}
-                    <i class="fa fa-arrow-up"></i>
-                  {elseif $issues['change'] < 0}
-                    <i class="fa fa-arrow-down"></i>
+                <td class="change {if $issues['change']['records'] > 0}change-positive{elseif $issues['change']['records'] < 0}change-negative{/if}">
+                  {if $smarty.foreach.foo.index > 0}
+                    {if $issues['change']['records'] > 0}+{/if}{number_format($issues['change']['records'])}
+                    {if $issues['change']['records'] > 0}
+                      <i class="fa fa-arrow-up"></i>
+                    {elseif $issues['change']['records'] < 0}
+                      <i class="fa fa-arrow-down"></i>
+                    {/if}
+                  {/if}
+                </td>
+                <td class="change {if $issues['change']['percent'] > 0}change-positive{elseif $issues['change']['percent'] < 0}change-negative{/if}">
+                  {if $smarty.foreach.foo.index > 0}
+                    {if $issues['change']['percent'] > 0}+{/if}{sprintf("%.3f", $issues['change']['percent'])}%
+                    {if $issues['change']['percent'] > 0}
+                      <i class="fa fa-arrow-up"></i>
+                    {elseif $issues['change']['percent'] < 0}
+                      <i class="fa fa-arrow-down"></i>
+                    {/if}
                   {/if}
                 </td>
               </tr>

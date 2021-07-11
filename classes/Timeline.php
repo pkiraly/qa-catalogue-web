@@ -43,7 +43,8 @@ class Timeline extends BaseTab {
     $counts = $this->readCounts();
     $totals = [];
     $issuesFiles = $this->getHistoricalFilePaths('issue-total.csv');
-    $prev = 0;
+    $prevRecords = 0;
+    $prevPercent = 0;
     foreach ($issuesFiles as $version => $file) {
       $count = $counts[$version];
       $totals[$version]['count'] = $count;
@@ -59,8 +60,12 @@ class Timeline extends BaseTab {
           ];
         }
       }
-      $totals[$version]['change'] = $prev == 0 ? 0 : $totals[$version][2]['goodPercent'] - $prev;
-      $prev = $totals[$version][2]['goodPercent'];
+      $totals[$version]['change'] = [
+        'records' => $prevRecords == 0 ? 0 : $totals[$version][2]['good'] - $prevRecords,
+        'percent' => $prevPercent == 0 ? 0 : $totals[$version][2]['goodPercent'] - $prevPercent
+      ];
+      $prevRecords = $totals[$version][2]['good'];
+      $prevPercent = $totals[$version][2]['goodPercent'];
     }
     return $totals;
   }
