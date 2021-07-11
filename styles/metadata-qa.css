@@ -565,7 +565,7 @@ table#timeline th {
 table#timeline td {
   padding-left: 10px;
   text-align: right;
-  width: 200px;
+  width: 150px;
 }
 
 table#timeline td.good {
@@ -583,9 +583,17 @@ table#timeline td.count {
 }
 
 table#timeline td div.barchart {
-  width: 400px; background-color: maroon; height: 10px;
+  width: 300px; background-color: maroon; height: 10px;
 }
 
 table#timeline td div.barchart div.greenchart {
   float: left; background-color: #37ba00; text-align: left; height: 10px;
+}
+
+table#timeline td.change-positive {
+  color: #37ba00;
+}
+
+table#timeline td.change-negative {
+  color: maroon;
 }

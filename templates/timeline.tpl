@@ -13,6 +13,7 @@
               <th></th>
               <th colspan="2">all issues</th>
               <th colspan="2">issues of documented data types</th>
+              <th></th>
             </tr>
             <tr>
               <th>version</th>
@@ -21,6 +22,7 @@
               <th>bad</th>
               <th>good</th>
               <th>bad</th>
+              <th>change</th>
             </tr>
           </thead>
           <tbody>
@@ -31,16 +33,24 @@
                 <td colspan="2">
                   <div><div style="float: left">{sprintf("%.2f", $issues[1]['goodPercent'])}%</div>{sprintf("%.2f", $issues[1]['badPercent'])}%</div>
                   <div class="barchart">
-                    <div class="greenchart" style="width: {ceil($issues[1]['goodPercent'] * 4)}px;"> </div>
+                    <div class="greenchart" style="width: {ceil($issues[1]['goodPercent'] * 3)}px;"> </div>
                   </div>
                   <div><div style="float: left">{number_format($issues[1]['good'])}</div>{number_format($issues[1]['bad'])}</div>
                 </td>
                 <td colspan="2">
                   <div><div style="float: left">{sprintf("%.2f", $issues[2]['goodPercent'])}%</div>{sprintf("%.2f", $issues[2]['badPercent'])}%
                   <div class="barchart">
-                    <div class="greenchart" style="width: {ceil($issues[2]['goodPercent'] * 4)}px;"> </div>
+                    <div class="greenchart" style="width: {ceil($issues[2]['goodPercent'] * 3)}px;"> </div>
                   </div>
                   <div><div style="float: left">{number_format($issues[2]['good'])}</div>{number_format($issues[2]['bad'])}</div>
+                </td>
+                <td class="{if $issues['change'] > 0}change-positive{elseif $issues['change'] < 0}change-negative{/if}">
+                  {if $issues['change'] > 0}+{/if}{sprintf("%.3f", $issues['change'])}%
+                  {if $issues['change'] > 0}
+                    <i class="fa fa-arrow-up"></i>
+                  {elseif $issues['change'] < 0}
+                    <i class="fa fa-arrow-down"></i>
+                  {/if}
                 </td>
               </tr>
             {/foreach}
