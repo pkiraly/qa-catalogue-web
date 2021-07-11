@@ -13,7 +13,7 @@
               <th></th>
               <th></th>
               <th colspan="2">all issues</th>
-              <th colspan="2">issues of documented data types</th>
+              <th colspan="2">issues in documented data elements</th>
               <th></th>
             </tr>
             <tr>
