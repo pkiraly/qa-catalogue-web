@@ -598,3 +598,8 @@ table#timeline td.change-positive {
 table#timeline td.change-negative {
   color: maroon;
 }
+
+div#timeline ul {
+  list-style-type: square;
+  padding-left: 20px;
+}
