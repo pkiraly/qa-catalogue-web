@@ -42,9 +42,10 @@
                 {foreach $matrices[$record->id]['codes'] as $code => $divs}
                   {assign var="total" value=0}
                   {assign var="key" value="{$record->field}{$code}"}
+                  {assign var=MAX_WIDTH value=280 - count($divs)}
                   <tr>
                     <td class="labels">
-                      <a href="#completeness-{$key}" class="completeness" data-field="{$key}">{$code}</a>
+                      <a href="?tab=completeness#completeness-{$key}" class="completeness" data-field="{$key}">{$code}</a>
                       {if isset($elements[$key]) && $elements[$key] != ''}
                           {$elements[$key]}
                       {elseif $item == '$9'}
@@ -55,7 +56,7 @@
                     </td>
                     <td class="bars">
                       {foreach from=$divs item=div name=divs}
-                        {assign var=width value=ceil($matrices[$record->id]['widths'][$smarty.foreach.divs.index]['perc'] * 260)}
+                        {assign var=width value=ceil($matrices[$record->id]['widths'][$smarty.foreach.divs.index]['perc'] * $MAX_WIDTH)}
                         {assign var=color value=($div > 0) ? 'green' : 'white'}
 <span style="width: {$width}px" class="{$color}">&nbsp;</span>
                         {$total = $total + $div}
@@ -79,7 +80,7 @@
                       <td>
                         {foreach $item->subfields as $subfield}
                           {assign var="sub" value={substr($subfield, 0, 2)}}
-                          <a href="#completeness-{$record->field}{$sub}" class="completeness" data-field="{$record->field}{$sub}"
+                          <a href="?tab=completeness#completeness-{$record->field}{$sub}" class="completeness" data-field="{$record->field}{$sub}"
                           >{$subfield}</a>{if !$subfield@last}, {/if}
                         {/foreach}
                       </td>
