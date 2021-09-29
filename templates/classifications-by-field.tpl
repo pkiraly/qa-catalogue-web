@@ -38,6 +38,34 @@
           {if $hasSubfields && isset($record->id) && isset($subfields[$record->id])}
             <div id="classification-subfields-{$record->id}" class="classification-subfields">
               <p>Which subfields are available in the individual instances of this field?</p>
+              <table class="matrix">
+                {foreach $matrices[$record->id]['codes'] as $code => $divs}
+                  {assign var="total" value=0}
+                  {assign var="key" value="{$record->field}{$code}"}
+                  <tr>
+                    <td class="labels">
+                      <a href="#completeness-{$key}" class="completeness" data-field="{$key}">{$code}</a>
+                      {if isset($elements[$key]) && $elements[$key] != ''}
+                          {$elements[$key]}
+                      {elseif $item == '$9'}
+                        &mdash; <span>(locally defined subfield)</span>
+                      {else}
+                        &mdash; <span>(not defined in MARC21)</span>
+                      {/if}
+                    </td>
+                    <td class="bars">
+                      {foreach from=$divs item=div name=divs}
+                        {assign var=width value=ceil($matrices[$record->id]['widths'][$smarty.foreach.divs.index]['perc'] * 260)}
+                        {assign var=color value=($div > 0) ? 'green' : 'white'}
+<span style="width: {$width}px" class="{$color}">&nbsp;</span>
+                        {$total = $total + $div}
+                      {/foreach}
+                    </td>
+                    <td class="total">{$total|number_format}</td>
+                  </tr>
+                {/foreach}
+              </table>
+
               <table>
                 <thead>
                   <tr>
@@ -60,23 +88,8 @@
                   {/foreach}
                 </tbody>
               </table>
-              <p>notes:</p>
-              <ul>
-                {foreach $subfieldsById[$record->id] as $item}
-                  {assign var="key" value="{$record->field}{$item}"}
-                  <li>
-                    <a href="#completeness-{$record->field}{$item}" class="completeness" data-field="{$record->field}{$item}">{$item}</a>:
-                    {if isset($elements[$key]) && $elements[$key] != ''}
-                      {$elements[$key]}
-                    {elseif $item == '$9'}
-                      &mdash; <span>(locally defined subfield)</span>
-                    {else}
-                      &mdash; <span>(not defined in MARC21)</span>
-                    {/if}
-                  </li>
-                {/foreach}
-              </ul>
               {if $subfields[$record->id]['has-plus'] || $subfields[$record->id]['has-space']}
+                <p>notes:</p>
                 <ul>
                   {if $subfields[$record->id]['has-plus']}
                     <li>+ sign denotes multiple instances</li>

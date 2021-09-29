@@ -603,3 +603,23 @@ div#timeline ul {
   list-style-type: square;
   padding-left: 20px;
 }
+
+table.matrix tr td.labels {
+  min-width: 220px;
+  max-width: 220px;
+}
+
+table.matrix tr td.bars {
+  min-width: 280px;
+  max-width: 280px;
+}
+table.matrix tr td.bars span {
+  display: block;
+  float: left;
+}
+table.matrix tr td.bars span.green {background-color: #37ba00}
+table.matrix tr td.total {
+  min-width: 80px;
+  max-width: 80px;
+  text-align: right
+}
