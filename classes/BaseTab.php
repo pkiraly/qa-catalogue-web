@@ -12,7 +12,7 @@ abstract class BaseTab implements Tab {
   protected $fieldDefinitions;
   protected $catalogueName;
   protected $catalogue;
-  protected $lastUpdate;
+  protected $lastUpdate = '';
   protected $output = 'html';
   protected $displayNetwork = false;
   protected $historicalDataDir = null;
@@ -72,7 +72,8 @@ abstract class BaseTab implements Tab {
 
   protected function readLastUpdate() {
     $file = $this->getFilePath('last-update.csv');
-    $this->lastUpdate = trim(file_get_contents($file));
+    if (file_exists($file))
+      $this->lastUpdate = trim(file_get_contents($file));
   }
 
   protected function getSolrFieldMap() {
