@@ -8,8 +8,8 @@ class Onb extends Catalogue {
   protected $url = 'https://search.onb.ac.at/primo-explore/search?vid=ONB&lang=de_DE';
 
   function getOpacLink($id, $record) {
-    error_log(json_encode($record));
-    foreach ($record->getDoc()->{'035a_SystemControlNumber_ss'} as $tag35a) {
+    foreach ($record->getFields('035') as $tag35a) {
+      error_log(json_encode($tag35a));
       if (preg_match('/\(AT-OBV\)/', $tag35a)) {
         $id = preg_replace('/\(AT-OBV\)/', '', $tag35a);
         break;
