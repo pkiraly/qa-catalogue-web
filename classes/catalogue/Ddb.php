@@ -5,9 +5,9 @@ class Ddb extends Catalogue {
 
   protected $name = 'ddb';
   protected $label = 'Deutsche Digitale Bibliothek';
-  protected $url = 'http://ddb.de/';
+  protected $url = 'https://www.deutsche-digitale-bibliothek.de/';
 
   function getOpacLink($id, $record) {
-    return 'http://explore.bl.uk/BLVU1:LSCOP-ALL:BLL01' . trim($id);
+    return 'https://www.deutsche-digitale-bibliothek.de/' . trim($id);
   }
 }
