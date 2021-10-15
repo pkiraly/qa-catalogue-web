@@ -16,6 +16,21 @@
     $('tr.t-' + t).toggle();
   }
 
+  $('a.clickMore').click(function (event) {
+    event.preventDefault();
+    var url = $(this).attr('href');
+    var id = $(this).attr('data-id');
+    var page = $(this).attr('data-page');
+    $.ajax(url)
+      .done(function (result) {
+        $('tr.x-' + id).remove();
+        $(result).insertAfter('tr.h-' + id);
+        $('tr.t-' + id).show();
+        $('a.clickMore-' + id).css('font-weight', 'normal');
+        $('a#clickMore-' + page).css('font-weight', 'bold');
+      });
+  });
+
   function loadIssueHandlers() {
     $('#issues-table-placeholder tr.t td.count a.search').hover(
       function () {
