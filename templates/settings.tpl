@@ -19,7 +19,7 @@
           <input type="hidden" name="tab" value="settings" />
           {foreach $categories as $category => $fields}
             <p><strong>{$category}</strong> ({count($fields)} fields)</p>
-            <select name="facet[]" multiple="multiple">
+            <select name="facet[]" multiple="multiple" size="15">
               <option value="">-- select --</option>
               {foreach $fields as $field}
                 <option value="{$field->name}"{if $field->checked} selected="selected"{/if}>{$field->name}</option>
