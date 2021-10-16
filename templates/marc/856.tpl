@@ -10,7 +10,7 @@
         {/if}
         {if isset($field->subfields->u)}
           <span class="" title="Link">
-            <a href="{$field->subfields->u}" class="title">
+            <a href="{$field->subfields->u}" target="_blank">
               {if isset($field->subfields->y)}{$field->subfields->y}{else}{$field->subfields->u}{/if}
             </a>
           </span>
