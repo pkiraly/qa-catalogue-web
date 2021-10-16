@@ -63,7 +63,7 @@
         {/if}
         {if isset($field->subfields->w)}
           <a class="record-control-number">
-            <a href="{$record->filter($controller->getSolrField('035', 'a'), $field->subfields->w)}"
+            <a href="{$record->link($controller->getSolrField('035', 'a'), $field->subfields->w)}"
                class="record-link">{$field->subfields->w}</a>
           </span>
         {/if}
