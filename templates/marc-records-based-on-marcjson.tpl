@@ -81,7 +81,7 @@
     {* 520a_Summary_ss *}
     {assign var="tag520s" value=$record->getFields('520')}
     {if !is_null($tag520s)}
-      summary: <span class="520">
+      <em>summary:</em> <span class="520">
         {foreach $tag520s as $field}
           {include 'conditional-foreach.tpl' obj=$field->subfields key='a' suffix='<br/>'}
         {/foreach}

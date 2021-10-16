@@ -1,8 +1,15 @@
 {* Electronic Location and Access, https://www.loc.gov/marc/bibliographic/bd856.html *}
 {assign var="fieldInstances" value=$record->getFields('856')}
 {if !is_null($fieldInstances)}
+  {assign var="count" value="{count($fieldInstances)}"}
   <p>
+    {if $count > 1}<em>Links:</em>
+    <li>
+    {/if}
+
+
     {foreach $fieldInstances as $field name="fields"}
+      {if $count > 1}<li>{/if}
       <span class="856">
         {if isset($field->subfields->{'3'})}
           <span class="" title="Materials specified">{$field->subfields->{'3'}}</span>:
@@ -69,7 +76,10 @@
           </span>
         {/if}
       </span>
-      {if !$smarty.foreach.fields.last}<br/>{/if}
+      {if $count > 1}</li>{/if}
     {/foreach}
+    {if $count > 1}<em>Links:</em>
+      </ul>
+    {/if}
   <p>
 {/if}
