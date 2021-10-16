@@ -13,7 +13,10 @@
             <a href="" class="title" href="{$field->subfields->u}">
               {if isset($field->subfields->y)}{$field->subfields->y}{else}{$field->subfields->u}{/if}
             </a>
-          </span>,
+          </span>
+        {/if}
+        {if isset($field->subfields->q)}
+          (format: <span class="" title="Electronic format type">{$field->subfields->q}</span>)
         {/if}
         {if isset($field->subfields->a)}
           <span class="host-name" title="Host name"><em>{$field->subfields->a}</em></span>,
@@ -35,9 +38,6 @@
         {/if}
         {if isset($field->subfields->p)}
           <span class="" title="Port">{$field->subfields->p}</span>,
-        {/if}
-        {if isset($field->subfields->q)}
-          format: <span class="" title="Electronic format type">{$field->subfields->q}</span>,
         {/if}
         {if isset($field->subfields->s)}
           <span class="" title="File size">{$field->subfields->s}</span>,
