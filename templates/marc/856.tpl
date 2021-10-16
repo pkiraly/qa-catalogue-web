@@ -15,7 +15,7 @@
           </span>
         {/if}
         {if isset($field->subfields->q)}
-          (format: <span class="" title="Electronic format type">{$field->subfields->q}</span>)
+          (<em>format:</em> <span class="" title="Electronic format type">{$field->subfields->q}</span>)
         {/if}
         {if isset($field->subfields->a)}
           <span class="host-name" title="Host name"><em>{$field->subfields->a}</em></span>,
@@ -30,7 +30,7 @@
           <span class="" title="Electronic name">{$field->subfields->f}</span>,
         {/if}
         {if isset($field->subfields->m)}
-          <span class="" title="Contact for access assistance">{$field->subfields->m}</span>,
+          <em>contact:</em> <span class="" title="Contact for access assistance">{$field->subfields->m}</span>,
         {/if}
         {if isset($field->subfields->o)}
           <span class="" title="Operating system">{$field->subfields->o}</span>,
@@ -45,10 +45,10 @@
           <span class="title" title="Hours access method available">{$field->subfields->v}</span>,
         {/if}
         {if isset($field->subfields->x)}
-          Nonpublic note: <span class="" title="Nonpublic note">{$field->subfields->x}</span>,
+          <em>Nonpublic note:</em> <span class="" title="Nonpublic note">{$field->subfields->x}</span>,
         {/if}
         {if isset($field->subfields->z)}
-          Public note: <span class="" title="Public note">{$field->subfields->z}</span>,
+          <em>Public note:</em> <span class="" title="Public note">{$field->subfields->z}</span>,
         {/if}
         {if isset($field->subfields->{'2'})}
           <span class="" title="Access method">{$field->subfields->{'2'}}</span>,
