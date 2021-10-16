@@ -51,7 +51,7 @@
           <em>public note:</em> <span class="" title="Public note">{$field->subfields->z}</span>,
         {/if}
         {if isset($field->subfields->{'2'})}
-          <span class="" title="Access method">{$field->subfields->{'2'}}</span>,
+          (<span class="" title="Access method">{$field->subfields->{'2'}}</span>),
         {/if}
         {if isset($field->subfields->{'6'})}
           <span class="" title="Linkage">{$field->subfields->{'6'}}</span>,
