@@ -5,6 +5,15 @@
     Host Item{if count($fieldInstances) > 1}s{/if}:
     {foreach $fieldInstances as $field name="fields"}
       <span class="773">
+        {if isset($field->subfields->i)}
+          <span class="relationship-information" title="Relationship information">{$field->subfields->i}</span>,
+        {/if}
+        {if isset($field->subfields->s)}
+          <span class="" title="Uniform title">{$field->subfields->s}</span>,
+        {/if}
+        {if isset($field->subfields->t)}
+          <span class="title" title="Title">{$field->subfields->t}</span>,
+        {/if}
         {if isset($field->subfields->a)}
           <span class="main-entry" title="Main entry heading"><em>{$field->subfields->a}</em></span>,
         {/if}
@@ -19,9 +28,6 @@
         {/if}
         {if isset($field->subfields->h)}
           <span class="physical-description" title="Physical description">{$field->subfields->h}</span>,
-        {/if}
-        {if isset($field->subfields->i)}
-          <span class="relationship-information" title="Relationship information">{$field->subfields->i}</span>,
         {/if}
         {if isset($field->subfields->k)}
           <span class="series-data" title="Series data for related">{$field->subfields->k}</span>,
@@ -44,12 +50,6 @@
         {if isset($field->subfields->r)}
           <span class="" title="Report number">{$field->subfields->r}</span>,
         {/if}
-        {if isset($field->subfields->s)}
-          <span class="" title="Uniform title">{$field->subfields->s}</span>,
-        {/if}
-        {if isset($field->subfields->t)}
-          <span class="title" title="Title">{$field->subfields->t}</span>,
-        {/if}
         {if isset($field->subfields->u)}
           <span class="title" title="Standard Technical Report Number">{$field->subfields->u}</span>,
         {/if}
@@ -62,8 +62,23 @@
         {if isset($field->subfields->z)}
           ISBN: <span class="ISBN" title="International Standard Book Number">{$field->subfields->z}</span>,
         {/if}
+        {if isset($field->subfields->{'3'})}
+          <span class="" title="Materials specified">{$field->subfields->{'3'}}</span>,
+        {/if}
+        {if isset($field->subfields->{'4'})}
+          <span class="" title="Relationship">{$field->subfields->{'4'}}</span>,
+        {/if}
+        {if isset($field->subfields->{'6'})}
+          <span class="" title="Linkage">{$field->subfields->{'6'}}</span>,
+        {/if}
+        {if isset($field->subfields->{'7'})}
+          <span class="" title="Control subfield">{$field->subfields->{'7'}}</span>,
+        {/if}
+        {if isset($field->subfields->{'8'})}
+          <span class="" title="Field link and sequence number">{$field->subfields->{'8'}}</span>,
+        {/if}
         {if isset($field->subfields->w)}
-          <a class="record-control-number">
+          <span class="record-control-number">
             <a href="{$record->link($controller->getSolrField('035', 'a'), $field->subfields->w)}"
                class="record-link">{$field->subfields->w}</a>
           </span>

@@ -99,6 +99,9 @@
     {* Host Item Entry *}
     {include 'marc/773.tpl'}
 
+    {* Electronic Location and Access *}
+    {include 'marc/856.tpl'}
+
     {if $record->hasAuthorityNames() || $record->hasSubjectHeadings()}
       <table class="authority-names">
       {if $record->hasAuthorityNames()}
