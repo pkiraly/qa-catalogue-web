@@ -2,11 +2,10 @@
 {assign var="fieldInstances" value=$record->getFields('856')}
 {if !is_null($fieldInstances)}
   <p>
-    Electronic Location and Access:
     {foreach $fieldInstances as $field name="fields"}
       <span class="856">
         {if isset($field->subfields->{'3'})}
-          <span class="" title="Materials specified">{$field->subfields->{'3'}}</span>,
+          <span class="" title="Materials specified">{$field->subfields->{'3'}}</span>:
         {/if}
         {if isset($field->subfields->u)}
           <span class="" title="Link">
