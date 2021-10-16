@@ -45,10 +45,10 @@
           <span class="title" title="Hours access method available">{$field->subfields->v}</span>,
         {/if}
         {if isset($field->subfields->x)}
-          <em>Nonpublic note:</em> <span class="" title="Nonpublic note">{$field->subfields->x}</span>,
+          <em>nonpublic note:</em> <span class="" title="Nonpublic note">{$field->subfields->x}</span>,
         {/if}
         {if isset($field->subfields->z)}
-          <em>Public note:</em> <span class="" title="Public note">{$field->subfields->z}</span>,
+          <em>public note:</em> <span class="" title="Public note">{$field->subfields->z}</span>,
         {/if}
         {if isset($field->subfields->{'2'})}
           <span class="" title="Access method">{$field->subfields->{'2'}}</span>,

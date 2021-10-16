@@ -5,6 +5,8 @@
   {foreach $fieldInstances as $field name=fields}
     <span class="245">
       {foreach $field->subfields as $code => $value name=subfields}
+        {if $code == 'c' && $record->getLeaderByPosition(18) == 'c'}/{/if}
+        {if $code == 'b' && $record->getLeaderByPosition(18) == 'c'}.{/if}
         <span class="{$code}">{$value}</span>
       {/foreach}
     </span>
