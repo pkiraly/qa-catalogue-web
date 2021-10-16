@@ -3,11 +3,7 @@
 {if !is_null($fieldInstances)}
   {assign var="count" value="{count($fieldInstances)}"}
   <p>
-    {if $count > 1}<em>Links:</em>
-    <li>
-    {/if}
-
-
+    {if $count > 1}<em>Links:</em><ul class="list-856">{/if}
     {foreach $fieldInstances as $field name="fields"}
       {if $count > 1}<li>{/if}
       <span class="856">
@@ -78,8 +74,6 @@
       </span>
       {if $count > 1}</li>{/if}
     {/foreach}
-    {if $count > 1}<em>Links:</em>
-      </ul>
-    {/if}
+    {if $count > 1}</ul>{/if}
   <p>
 {/if}

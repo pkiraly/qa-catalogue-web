@@ -623,3 +623,8 @@ table.matrix tr td.total {
   max-width: 80px;
   text-align: right
 }
+
+ul.list-856 {
+  list-style-type: square;
+  padding-left: 20px;
+}
