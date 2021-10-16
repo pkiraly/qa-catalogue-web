@@ -2,6 +2,7 @@
 {assign var="fieldInstances" value=$record->getFields('773')}
 {if !is_null($fieldInstances)}
   <p>
+    Host Item{if count($fieldInstances) > 1}s{/if}:
     {foreach $fieldInstances as $field name="fields"}
       <span class="773">
         {if isset($field->subfields->a)}
