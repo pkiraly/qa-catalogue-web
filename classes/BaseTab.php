@@ -182,7 +182,8 @@ abstract class BaseTab implements Tab {
     return $selectedFacets;
   }
 
-  protected function getSolrField($tag, $subfield = '') {
+  public function getSolrField($tag, $subfield = '') {
+    error_log('getSolrField(' . $tag . ', ' . $subfield . ')');
     if (!isset($this->fieldDefinitions))
       $this->fieldDefinitions = json_decode(file_get_contents('fieldmap.json'));
 
@@ -196,8 +197,10 @@ abstract class BaseTab implements Tab {
                  . '_' . $this->fieldDefinitions->fields->{$tag}->solr
                  . '_' . $subfield . '_ss';
     }
+    error_log('$solrField: ' . $solrField);
 
     if (!isset($solrField) || !in_array($solrField, $this->getSolrFields())) {
+      error_log('strange case');
       $solrField = $tag . $subfield;
       $candidates = [];
       $found = FALSE;
@@ -224,6 +227,7 @@ abstract class BaseTab implements Tab {
         $solrField = FALSE;
       }
     }
+    error_log('solrField: ' . $solrField);
     return $solrField;
   }
 

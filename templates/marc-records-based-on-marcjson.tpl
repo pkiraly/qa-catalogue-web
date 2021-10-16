@@ -97,35 +97,7 @@
     {/if}
 
     {* Host Item Entry *}
-    {assign var="fieldInstances" value=$record->getFields('773')}
-    {if !is_null($fieldInstances)}
-      {foreach $fieldInstances as $field}
-        <span class="773">
-          {if isset($field->subfields->a)}
-            <span class="main-entry">{$field->subfields->a}</span>
-          {/if}
-          {if isset($field->subfields->b)}
-            <span class="edition">{$field->subfields->b}</span>
-          {/if}
-          {if isset($field->subfields->d)}
-            <span class="place-publisher-dates">{$field->subfields->d}</span>
-          {/if}
-          {if isset($field->subfields->t)}
-            <span class="title">{$field->subfields->t}</span>
-          {/if}
-          {if isset($field->subfields->x)}
-            <span class="issn">{$field->subfields->x}</span>
-          {/if}
-          {if isset($field->subfields->g)}
-            <span class="related-parts">{$field->subfields->g}</span>
-          {/if}
-          {if isset($field->subfields->w)}
-            <span class="record-control-number">{$field->subfields->w}</span>
-          {/if}
-        </span>
-        <br/>
-      {/foreach}
-    {/if}
+    {include 'marc/773.tpl'}
 
     {if $record->hasAuthorityNames() || $record->hasSubjectHeadings()}
       <table class="authority-names">

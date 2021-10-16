@@ -126,7 +126,6 @@ class Issues extends BaseTab {
   }
 
   private function readIssuesAjax($categoryId, $typeId, $page = 0, $limit = 100) {
-    error_log('readIssuesAjax');
     $lineNumber = 0;
     $elementsFile = $this->getFilePath('issue-summary.csv');
     if (file_exists($elementsFile)) {
@@ -183,7 +182,6 @@ class Issues extends BaseTab {
       $msg = sprintf("file %s is not existing", $elementsFile);
       error_log($msg);
     }
-    error_log('/readIssuesAjax');
   }
 
   public static function showMarcUrl($content) {
