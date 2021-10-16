@@ -5,6 +5,16 @@
     Electronic Location and Access:
     {foreach $fieldInstances as $field name="fields"}
       <span class="856">
+        {if isset($field->subfields->{'3'})}
+          <span class="" title="Materials specified">{$field->subfields->{'3'}}</span>,
+        {/if}
+        {if isset($field->subfields->u)}
+          <span class="" title="Link">
+            <a href="" class="title" href="{$field->subfields->u}">
+              {if isset($field->subfields->y)}{$field->subfields->y}{else}{$field->subfields->u}{/if}
+            </a>
+          </span>,
+        {/if}
         {if isset($field->subfields->a)}
           <span class="host-name" title="Host name"><em>{$field->subfields->a}</em></span>,
         {/if}
@@ -32,26 +42,17 @@
         {if isset($field->subfields->s)}
           <span class="" title="File size">{$field->subfields->s}</span>,
         {/if}
-        {if isset($field->subfields->u)}
-          URI: <span class="title" title="Uniform Resource Identifier">{$field->subfields->u}</span>,
-        {/if}
         {if isset($field->subfields->v)}
           <span class="title" title="Hours access method available">{$field->subfields->v}</span>,
         {/if}
-        {if isset($field->subfields->y)}
-          <span class="" title="Link text">{$field->subfields->y}</span>,
-        {/if}
         {if isset($field->subfields->x)}
-          Nonpublic note: <span class="issn" title="Nonpublic note">{$field->subfields->x}</span>,
+          Nonpublic note: <span class="" title="Nonpublic note">{$field->subfields->x}</span>,
         {/if}
         {if isset($field->subfields->z)}
-          Public note: <span class="ISBN" title="Public note">{$field->subfields->z}</span>,
+          Public note: <span class="" title="Public note">{$field->subfields->z}</span>,
         {/if}
         {if isset($field->subfields->{'2'})}
           <span class="" title="Access method">{$field->subfields->{'2'}}</span>,
-        {/if}
-        {if isset($field->subfields->{'3'})}
-          <span class="" title="Materials specified">{$field->subfields->{'3'}}</span>,
         {/if}
         {if isset($field->subfields->{'6'})}
           <span class="" title="Linkage">{$field->subfields->{'6'}}</span>,
