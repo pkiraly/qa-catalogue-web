@@ -319,11 +319,10 @@ abstract class BaseTab implements Tab {
     return $files;
   }
 
-
   /**
    * @return mixed
    */
-  private function getDirName() {
+  protected function getDirName() {
     $path = (isset($this->configuration['dirName']) && isset($this->configuration['dirName'][$this->db]))
       ? $this->configuration['dirName'][$this->db]
       : $this->db;

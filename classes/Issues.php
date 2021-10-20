@@ -126,6 +126,12 @@ class Issues extends BaseTab {
   }
 
   private function readIssuesAjax($categoryId, $typeId, $page = 0, $limit = 100) {
+    $this->readIssuesAjaxDB($categoryId, $typeId, $page, $limit);
+    // $this->readIssuesAjaxCSV($categoryId, $typeId, $page, $limit);
+  }
+
+  private function readIssuesAjaxCSV($categoryId, $typeId, $page = 0, $limit = 100) {
+    $this->readIssuesAjaxDB($categoryId, $typeId, $page, $limit);
     $lineNumber = 0;
     $elementsFile = $this->getFilePath('issue-summary.csv');
     if (file_exists($elementsFile)) {
@@ -150,38 +156,60 @@ class Issues extends BaseTab {
           if ($count < ($page * $limit))
             continue;
 
-          $typeId = $record->typeId;
-          unset($record->categoryId);
-          unset($record->typeId);
-          unset($record->type);
-          $record->ratio = $record->records / $this->count;
-          $record->percent = $record->ratio * 100;
-
-          $record->url = str_replace('https://www.loc.gov/marc/bibliographic/', '', $record->url);
-
-          $record->downloadUrl = '?' . join('&', [
-              'tab=' . 'issues',
-              'errorId=' . $record->id,
-              'action=download'
-            ]);
-
-          $record->queryUrl = '?' . join('&', [
-              'tab=' . 'issues',
-              'errorId=' . $record->id,
-              'action=query'
-            ]);
+          $this->processRecord($record);
 
           if (count($this->records) < $this->issueLimit) {
             $this->records[] = $record;
           }
-
-          // $this->types[$typeId]->variantCount++;
         }
       }
     } else {
       $msg = sprintf("file %s is not existing", $elementsFile);
       error_log($msg);
     }
+    error_log('records: ' . count($this->records));
+  }
+
+  private function readIssuesAjaxDB($categoryId, $typeId, $page = 0, $limit = 100) {
+    # install php7.4-sqlite3
+    include_once 'IssuesDB.php';
+    $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
+    $db = new MyDB($dir);
+    $result = $db->getByCategoryAndType($categoryId, $typeId, $page * $limit, $limit);
+    $i = 0;
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+      $record = (object) $row;
+      $this->processRecord($record);
+      $this->records[] = $record;
+    }
+  }
+
+  private function processRecord(&$record) {
+    unset($record->categoryId);
+    unset($record->typeId);
+    unset($record->type);
+    if (!isset($record->path)) {
+      $record->path = $record->MarcPath;
+    }
+    $record->ratio = $record->records / $this->count;
+    $record->percent = $record->ratio * 100;
+    $record->url = str_replace('https://www.loc.gov/marc/bibliographic/', '', $record->url);
+    $record->downloadUrl = $this->getDownloadUrl($record);
+    $record->queryUrl = $this->getQueryUrl($record);
+  }
+
+  private function getDownloadUrl($record) {
+    return '?' . join('&', [
+        'tab=' . 'issues',
+        'errorId=' . $record->id,
+        'action=download'
+      ]);
+  }
+
+  private function getQueryUrl($record) {
+    return '?' . join('&', ['tab=' . 'issues',
+      'errorId=' . $record->id,
+      'action=query']);
   }
 
   public static function showMarcUrl($content) {
