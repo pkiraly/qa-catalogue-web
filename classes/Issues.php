@@ -172,9 +172,10 @@ class Issues extends BaseTab {
 
   private function readIssuesAjaxDB($categoryId, $typeId, $page = 0, $limit = 100) {
     # install php7.4-sqlite3
+    # sudo service apache2 restart
     include_once 'IssuesDB.php';
     $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
-    $db = new MyDB($dir);
+    $db = new IssuesDB($dir);
     $result = $db->getByCategoryAndType($categoryId, $typeId, $page * $limit, $limit);
     $i = 0;
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
