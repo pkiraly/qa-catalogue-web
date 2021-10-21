@@ -9,31 +9,44 @@ class Issues extends BaseTab {
   private $total = 0;
   private $idLimit = 10;
   private $issueLimit = 100;
+  private $action = 'list';
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 
-    $action = getOrDefault('action', 'list', ['list', 'query', 'download', 'record', 'ajaxIssue']);
-    if ($action == 'download' || $action == 'query') {
+    $this->action = getOrDefault('action', 'list', ['list', 'query', 'download', 'record', 'ajaxIssue', 'ajaxIssueByTag']);
+    if ($this->action == 'download' || $this->action == 'query') {
       $errorId = getOrDefault('errorId', '');
       if ($errorId != '') {
         $this->output = 'none';
-        if ($action == 'download')
+        if ($this->action == 'download')
           $this->download($errorId);
-        elseif ($action == 'query')
+        elseif ($this->action == 'query')
           $this->query($errorId);
       }
-    } elseif ($action == 'record') {
+    } elseif ($this->action == 'record') {
       $recordId = getOrDefault('recordId', '');
       if ($recordId != '') {
         $this->getRecordIssues($recordId, $smarty);
       }
-    } elseif ($action == 'ajaxIssue') {
+    } elseif ($this->action == 'ajaxIssue') {
       $categoryId = getOrDefault('categoryId', -1);
       $typeId = getOrDefault('typeId', -1);
+      $path = getOrDefault('path', null);
+      $order = getOrDefault('order', 'records DESC');
       $page = getOrDefault('page', 0);
       $limit = getOrDefault('limit', $this->issueLimit);
-      $this->readIssuesAjax($categoryId, $typeId, $page, $limit);
+      $this->readIssuesAjax($categoryId, $typeId, $path, $order, $page, $limit);
+      $smarty->assign('records', $this->records);
+      $smarty->assign('categoryId', $categoryId);
+      $smarty->assign('typeId', $typeId);
+    } elseif ($this->action == 'ajaxIssueByTag') {
+      $categoryId = getOrDefault('categoryId', -1);
+      $typeId = getOrDefault('typeId', -1);
+      $order = getOrDefault('order', 'records DESC');
+      $page = getOrDefault('page', 0);
+      $limit = getOrDefault('limit', $this->issueLimit);
+      $this->readIssuesAjaxByTag($categoryId, $typeId, $order, $page, $limit);
       $smarty->assign('records', $this->records);
       $smarty->assign('categoryId', $categoryId);
       $smarty->assign('typeId', $typeId);
@@ -57,6 +70,8 @@ class Issues extends BaseTab {
   }
 
   public function getAjaxTemplate() {
+    if ($this->action == 'ajaxIssueByTag')
+      return 'issue-by-tag.tpl';
     return 'issue-list.tpl';
   }
 
@@ -125,12 +140,14 @@ class Issues extends BaseTab {
     }
   }
 
-  private function readIssuesAjax($categoryId, $typeId, $page = 0, $limit = 100) {
-    $this->readIssuesAjaxDB($categoryId, $typeId, $page, $limit);
-    // $this->readIssuesAjaxCSV($categoryId, $typeId, $page, $limit);
+  private function readIssuesAjax($categoryId, $typeId, $path = null, $order = 'records DESC', $page = 0, $limit = 100) {
+    if ($this->sqliteExists())
+      $this->readIssuesAjaxDB($categoryId, $typeId, $path, $order, $page, $limit);
+    else
+      $this->readIssuesAjaxCSV($categoryId, $typeId, $path, $order, $page, $limit);
   }
 
-  private function readIssuesAjaxCSV($categoryId, $typeId, $page = 0, $limit = 100) {
+  private function readIssuesAjaxCSV($categoryId, $typeId, $path = null, $order = 'records DESC', $page = 0, $limit = 100) {
     $this->readIssuesAjaxDB($categoryId, $typeId, $page, $limit);
     $lineNumber = 0;
     $elementsFile = $this->getFilePath('issue-summary.csv');
@@ -170,17 +187,35 @@ class Issues extends BaseTab {
     error_log('records: ' . count($this->records));
   }
 
-  private function readIssuesAjaxDB($categoryId, $typeId, $page = 0, $limit = 100) {
+  private function readIssuesAjaxDB($categoryId, $typeId, $path = null, $order = 'records DESC', $page = 0, $limit = 100) {
     # install php7.4-sqlite3
     # sudo service apache2 restart
     include_once 'IssuesDB.php';
     $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
     $db = new IssuesDB($dir);
-    $result = $db->getByCategoryAndType($categoryId, $typeId, $page * $limit, $limit);
+    if (is_null($path))
+      $result = $db->getByCategoryAndType($categoryId, $typeId, $order, $page * $limit, $limit);
+    else
+      $result = $db->getByCategoryTypeAndPath($categoryId, $typeId, $path, $order, $page * $limit, $limit);
     $i = 0;
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
       $record = (object) $row;
       $this->processRecord($record);
+      $this->records[] = $record;
+    }
+  }
+
+  private function readIssuesAjaxByTag($categoryId, $typeId, $order = 'records DESC', $page = 0, $limit = 100) {
+    # install php7.4-sqlite3
+    # sudo service apache2 restart
+    include_once 'IssuesDB.php';
+    $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
+    $db = new IssuesDB($dir);
+    $result = $db->getByCategoryAndTypeGrouppedByPath($categoryId, $typeId, $order, $page * $limit, $limit);
+    $i = 0;
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+      $record = (object) $row;
+      $this->calculateRatio($record);
       $this->records[] = $record;
     }
   }
@@ -192,11 +227,15 @@ class Issues extends BaseTab {
     if (!isset($record->path)) {
       $record->path = $record->MarcPath;
     }
-    $record->ratio = $record->records / $this->count;
-    $record->percent = $record->ratio * 100;
+    $this->calculateRatio($record);
     $record->url = str_replace('https://www.loc.gov/marc/bibliographic/', '', $record->url);
     $record->downloadUrl = $this->getDownloadUrl($record);
     $record->queryUrl = $this->getQueryUrl($record);
+  }
+
+  private function calculateRatio(&$record) {
+    $record->ratio = $record->records / $this->count;
+    $record->percent = $record->ratio * 100;
   }
 
   private function getDownloadUrl($record) {

@@ -16,20 +16,66 @@
     $('tr.t-' + t).toggle();
   }
 
-  $('a.clickMore').click(function (event) {
-    event.preventDefault();
-    var url = $(this).attr('href');
-    var id = $(this).attr('data-id');
-    var page = $(this).attr('data-page');
-    $.ajax(url)
-      .done(function (result) {
-        $('tr.x-' + id).remove();
-        $(result).insertAfter('tr.h-' + id);
-        $('tr.t-' + id).show();
-        $('a.clickMore-' + id).css('font-weight', 'normal');
-        $('a#clickMore-' + page).css('font-weight', 'bold');
+  function loadClickMoreHandlers() {
+    $('a.clickMore').unbind("click").click(function (event) {
+      event.preventDefault();
+      var url = $(this).attr('href');
+      console.log('clickMore ' + url);
+      var id = $(this).attr('data-id');
+      var page = $(this).attr('data-page');
+      $.ajax(url)
+        .done(function (result) {
+          console.log('clickMore RESULT');
+          $('tr.x-' + id).remove();
+          $(result).insertAfter('tr.h-' + id);
+          $('tr.t-' + id).show();
+          $('a.clickMore-' + id).css('font-weight', 'normal');
+          $('a.byTag-' + id).css('font-weight', 'normal');
+          $('a#clickMore-' + page).css('font-weight', 'bold');
+          loadHandlers();
+        });
+    });
+  }
+
+  function loadByPathHandlers() {
+    $('a.byPath').unbind("click").click(function (event) {
+      event.preventDefault();
+      var url = $(this).attr('href');
+      console.log('byPath ' + url);
+      var id = $(this).attr('data-id');
+      var page = id + '-0';
+      $.ajax(url)
+        .done(function (result) {
+          console.log('byPath RESULT');
+          $('tr.x-' + id).remove();
+          $(result).insertAfter('tr.h-' + id);
+          $('tr.t-' + id).show();
+          $('a.clickMore-' + id).css('font-weight', 'normal');
+          $('a.byTag-' + id).css('font-weight', 'normal');
+          $('a#clickMore-' + page).css('font-weight', 'bold');
+          loadHandlers()
+        });
       });
-  });
+  }
+
+  function loadByTagHandlers() {
+    $('a.byTag').unbind("click").click(function (event) {
+      event.preventDefault();
+      var url = $(this).attr('href');
+      console.log('byTag ' + url);
+      var id = $(this).attr('data-id');
+      $.ajax(url)
+        .done(function (result) {
+          console.log('byTag RESULT');
+          $('tr.x-' + id).remove();
+          $(result).insertAfter('tr.h-' + id);
+          $('tr.t-' + id).show();
+          $('a.clickMore-' + id).css('font-weight', 'normal');
+          $('a#byTag-' + id).css('font-weight', 'bold');
+          loadHandlers();
+        });
+    });
+  }
 
   function loadIssueHandlers() {
     $('#issues-table-placeholder tr.t td.count a.search').hover(
@@ -48,8 +94,15 @@
     );
   }
 
+  function loadHandlers() {
+      loadIssueHandlers();
+      loadClickMoreHandlers();
+      loadByPathHandlers();
+      loadByTagHandlers();
+  }
+
   $(document).ready(function () {
-    loadIssueHandlers()
+    loadHandlers();
   });
 {/literal}</script>
 {include 'common/html-footer.tpl'}

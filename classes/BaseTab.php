@@ -328,4 +328,8 @@ abstract class BaseTab implements Tab {
       : $this->db;
     return $path;
   }
+
+  protected function sqliteExists() {
+    return file_exists($this->getFilePath('qa_catalogue.sqlite'));
+  }
 }
