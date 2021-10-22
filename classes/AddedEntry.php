@@ -127,8 +127,10 @@ class AddedEntry extends BaseTab {
             $subfields[$record->id]['has-space'] = TRUE;
         }
       }
+
       $smarty->assign('subfields', $subfields);
       $smarty->assign('hasSubfields', TRUE);
+      $smarty->assign('matrices', $this->createMatrix($subfields));
 
       foreach ($subfieldsById as $id => $subfields) {
         sort($subfields);
@@ -167,6 +169,58 @@ class AddedEntry extends BaseTab {
         && in_array($record->abbreviation, $this->getSolrFields())) {
       $record->facet2 = $base . '_' . $record->abbreviation . '_ss';
     }
+  }
+
+  /**
+   * @param $subfields
+   * {
+   *    recordId =» {
+   *      'list' =» [{"id" =» ..., "subfields" =» ["$.","$.","$."],"count" =» ...}, ...]
+   * 	    'has-plus' =» true,
+   *      'has-space' =» false
+   *    },
+   *    ...
+   * }
+   */
+  protected function createMatrix($subfields) {
+    $matrices = [];
+    foreach ($subfields as $recordId => $entry) {
+      $total = 0;
+      $matrix = [];
+      $widths = [];
+      foreach ($entry['list'] as $lineNr => $listItem) {
+        $number = intval($listItem->count);
+        $total += $number;
+        foreach ($listItem->subfields as $code) {
+          $code = str_replace('+', '', $code);
+          if (!isset($matrix[$code]))
+            $matrix[$code] = [];
+          $matrix[$code][$lineNr] = $number;
+          $widths[$lineNr] = ['abs' => $number];
+        }
+      }
+
+      foreach ($matrix as $code => $codes) {
+        for ($i = 0; $i <= $lineNr; $i++) {
+          $key = $i;
+          if (!isset($codes[$key]))
+            $codes[$key] = 0;
+        }
+        ksort($codes);
+        $matrix[$code] = $codes;
+      }
+
+      for ($i = 0; $i <= $lineNr; $i++) {
+        $widths[$i]['perc'] = ceil($widths[$i]['abs'] * 100000 / $total) / 100000;
+      }
+
+      $matrices[$recordId] = [
+        'codes' => $matrix,
+        'widths' => $widths,
+        'total' => $total
+      ];
+    }
+    return $matrices;
   }
 
 }
