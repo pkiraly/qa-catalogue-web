@@ -41,9 +41,12 @@ mv metadata-marc-web /var/www/html/[catalogue]
 
 3. Setup
 
+prepare configuration file:
 ```
 cd /var/www/html/[catalogue]
 ```
+ You can also add the [catalogue] infor the configuration if the 
+ application path does not equals to the [catalogue]:
 
 prepare configuration file:
 ```

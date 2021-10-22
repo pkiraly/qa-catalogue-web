@@ -222,5 +222,4 @@ class AddedEntry extends BaseTab {
     }
     return $matrices;
   }
-
 }
