@@ -83,55 +83,7 @@
         <td class="chart"><div style="width: {ceil($type->ratio * 200)}px;">&nbsp;</div></td>
         <td class="percent text-right" title="{$type->percent|number_format:8}%">{$type->percent|number_format:2}</td>
       </tr>
-      {include file="issue-list.tpl" records=$records[$type->id] categoryId=$category->id typeId=$type->id}
-{*
-      {foreach $records[$type->id] item=rowData name=foo}
-        {if $smarty.foreach.foo.index < 100}
-          <tr class="t t-{$category->id}-{$type->id} x-{$category->id}-{$type->id} {if $smarty.foreach.foo.index % 2 == 1}odd{/if}">
-            <td class="path">{$rowData->path}</td>
-            <td class="message">
-              {if preg_match('/^ +$/', $rowData->message)}"{$rowData->message}"{else}{$rowData->message}{/if}
-            </td>
-            <td class="url">
-              <a href="{showMarcUrl($rowData->url)}" target="_blank"><i class="fa fa-info" aria-hidden="true"></i></a>
-            </td>
-            <td class="count instances">{$rowData->instances|number_format}</td>
-            <td class="count records">{$rowData->records|number_format}</td>
-            <td class="actions">
-              <a href="{$rowData->queryUrl}" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
-              <a href="{$rowData->downloadUrl}" class="list"><i class="fa fa-download" aria-hidden="true"></i></a>
-            </td>
-            <td class="chart"><div style="width: {ceil($rowData->ratio * 200)}px;">&nbsp;</div></td>
-            <td class="percent text-right" title="{$rowData->percent|number_format:8}%">{$rowData->percent|number_format:2}</td>
-          </tr>
-        {/if}
-      {/foreach}
-*}
-      <tr class="t t-{$category->id}-{$type->id} text-centered {$type->type}">
-        <td colspan="8">
-          {if $type->variantCount > 100}
-            {foreach from=$type->pages item=page}
-              <a class="clickMore clickMore-{$category->id}-{$type->id}"
-                 {if $page == 0}style="font-weight: bold"{/if}
-                 id="clickMore-{$category->id}-{$type->id}-{$page}"
-                 data-id="{$category->id}-{$type->id}"
-                 data-page="{$category->id}-{$type->id}-{$page}"
-                 href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$category->id}&typeId={$type->id}&page={$page}">[{$page+1}]</a>
-            {/foreach}
-          {else}
-            <a class="clickMore clickMore-{$category->id}-{$type->id}"
-               style="font-weight: bold"
-               id="clickMore-{$category->id}-{$type->id}-0"
-               data-id="{$category->id}-{$type->id}"
-               data-page="{$category->id}-{$type->id}-0"
-               href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$category->id}&typeId={$type->id}">list all</a>
-          {/if} |
-          <a class="byTag byTag-{$category->id}-{$type->id}"
-             id="byTag-{$category->id}-{$type->id}"
-             data-id="{$category->id}-{$type->id}"
-             href="?tab=issues&ajax=1&action=ajaxIssueByTag&categoryId={$category->id}&typeId={$type->id}">grouped by tag</a>
-        </td>
-      </tr>
+      {include file="issue-list.tpl" records=$records[$type->id] categoryId=$category->id typeId=$type->id pages=$type->pages recordCount=$type->variantCount}
     {/foreach}
   {/foreach}
   </tbody>

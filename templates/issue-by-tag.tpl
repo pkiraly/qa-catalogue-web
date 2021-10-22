@@ -54,3 +54,4 @@
     <td class="percent text-right" title="{$rowData->percent|number_format:8}%">{$rowData->percent|number_format:2}</td>
   </tr>
 {/foreach}
+{include file="issue-list-navigation.tpl"}

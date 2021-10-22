@@ -10,6 +10,14 @@ class Issues extends BaseTab {
   private $idLimit = 10;
   private $issueLimit = 100;
   private $action = 'list';
+  private $recordCount;
+  private $pages;
+  private $categoryId;
+  private $typeId;
+  private $order;
+  private $page;
+  private $limit;
+  private $listType;
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
@@ -30,26 +38,17 @@ class Issues extends BaseTab {
         $this->getRecordIssues($recordId, $smarty);
       }
     } elseif ($this->action == 'ajaxIssue') {
-      $categoryId = getOrDefault('categoryId', -1);
-      $typeId = getOrDefault('typeId', -1);
+      $this->getAjaxParameters();
       $path = getOrDefault('path', null);
-      $order = getOrDefault('order', 'records DESC');
-      $page = getOrDefault('page', 0);
-      $limit = getOrDefault('limit', $this->issueLimit);
-      $this->readIssuesAjax($categoryId, $typeId, $path, $order, $page, $limit);
-      $smarty->assign('records', $this->records);
-      $smarty->assign('categoryId', $categoryId);
-      $smarty->assign('typeId', $typeId);
+      $this->listType = is_null($path) ? 'full-list' : 'filtered-list';
+      $this->readIssuesAjax($this->categoryId, $this->typeId, $path, $this->order, $this->page, $this->limit);
+      $this->assignAjax($smarty);
+      $smarty->assign('path', $path);
     } elseif ($this->action == 'ajaxIssueByTag') {
-      $categoryId = getOrDefault('categoryId', -1);
-      $typeId = getOrDefault('typeId', -1);
-      $order = getOrDefault('order', 'records DESC');
-      $page = getOrDefault('page', 0);
-      $limit = getOrDefault('limit', $this->issueLimit);
-      $this->readIssuesAjaxByTag($categoryId, $typeId, $order, $page, $limit);
-      $smarty->assign('records', $this->records);
-      $smarty->assign('categoryId', $categoryId);
-      $smarty->assign('typeId', $typeId);
+      $this->listType = 'gropupped-list';
+      $this->getAjaxParameters();
+      $this->readIssuesAjaxByTag($this->categoryId, $this->typeId, $this->order, $this->page, $this->limit);
+      $this->assignAjax($smarty);
     } else {
       $this->readCategories();
       $this->readTypes();
@@ -61,6 +60,8 @@ class Issues extends BaseTab {
       $smarty->assign('topStatistics', $this->readTotal());
       $smarty->assign('total', $this->count);
       $smarty->assign('fieldNames', ['path', 'message', 'url', 'instances', 'records']);
+      $smarty->assign('listType', 'full-list');
+      $smarty->assign('path', null);
       $smarty->registerPlugin("function", 'showMarcUrl', array('Issues', 'showMarcUrl'));
     }
   }
@@ -129,15 +130,20 @@ class Issues extends BaseTab {
         }
       }
       foreach ($this->types as $typeId => $type) {
-        $nrPages = ceil($type->variantCount / $this->issueLimit);
-        $type->pages = [];
-        for ($i = 0; $i < $nrPages; $i++)
-          $type->pages[] = $i;
+        $type->pages = $this->createPages($type->variantCount);
       }
     } else {
       $msg = sprintf("file %s is not existing", $elementsFile);
       error_log($msg);
     }
+  }
+
+  private function createPages($count) {
+    $nrPages = ceil($count / $this->issueLimit);
+    $pages = [];
+    for ($i = 0; $i < $nrPages; $i++)
+      $pages[] = $i;
+    return $pages;
   }
 
   private function readIssuesAjax($categoryId, $typeId, $path = null, $order = 'records DESC', $page = 0, $limit = 100) {
@@ -193,16 +199,19 @@ class Issues extends BaseTab {
     include_once 'IssuesDB.php';
     $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
     $db = new IssuesDB($dir);
-    if (is_null($path))
+    if (is_null($path)) {
+      $this->recordCount = $db->getByCategoryAndTypeCount($categoryId, $typeId)->fetchArray(SQLITE3_ASSOC)['count'];
       $result = $db->getByCategoryAndType($categoryId, $typeId, $order, $page * $limit, $limit);
-    else
+    } else {
+      $this->recordCount = $db->getByCategoryTypeAndPathCount($categoryId, $typeId, $path)->fetchArray(SQLITE3_ASSOC)['count'];
       $result = $db->getByCategoryTypeAndPath($categoryId, $typeId, $path, $order, $page * $limit, $limit);
-    $i = 0;
+    }
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
       $record = (object) $row;
       $this->processRecord($record);
       $this->records[] = $record;
     }
+    $this->pages = $this->createPages($this->recordCount);
   }
 
   private function readIssuesAjaxByTag($categoryId, $typeId, $order = 'records DESC', $page = 0, $limit = 100) {
@@ -211,8 +220,8 @@ class Issues extends BaseTab {
     include_once 'IssuesDB.php';
     $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
     $db = new IssuesDB($dir);
+    $this->recordCount = $db->getByCategoryAndTypeGrouppedByPathCount($categoryId, $typeId)->fetchArray(SQLITE3_ASSOC)['count'];
     $result = $db->getByCategoryAndTypeGrouppedByPath($categoryId, $typeId, $order, $page * $limit, $limit);
-    $i = 0;
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
       $record = (object) $row;
       $this->calculateRatio($record);
@@ -363,5 +372,27 @@ class Issues extends BaseTab {
       error_log($msg);
     }
     return $recordIds;
+  }
+
+  /**
+   * @param Smarty $smarty
+   */
+  private function assignAjax(Smarty $smarty): void
+  {
+    $smarty->assign('categoryId', $this->categoryId);
+    $smarty->assign('typeId', $this->typeId);
+    $smarty->assign('records', $this->records);
+    $smarty->assign('recordCount', $this->recordCount);
+    $smarty->assign('pages', $this->pages);
+    $smarty->assign('listType', $this->listType);
+  }
+
+  private function getAjaxParameters(): void
+  {
+    $this->categoryId = getOrDefault('categoryId', -1);
+    $this->typeId = getOrDefault('typeId', -1);
+    $this->order = getOrDefault('order', 'records DESC');
+    $this->page = getOrDefault('page', 0);
+    $this->limit = getOrDefault('limit', $this->issueLimit);
   }
 }

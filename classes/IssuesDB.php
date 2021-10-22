@@ -27,7 +27,18 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function getByCategoryTypeAndPath($categoryId, $typeId, $path, $order = 'records DESC', $offset = 0, $limit) {
+  public function getByCategoryAndTypeCount($categoryId, $typeId) {
+    $stmt = $this->prepare('SELECT COUNT(*) AS count
+       FROM issue_summary
+       WHERE categoryId = :categoryId AND typeId = :typeId
+    ');
+    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
+    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
+
+    return $stmt->execute();
+  }
+
+  public function getByCategoryTypeAndPath($categoryId, $typeId, $path = null, $order = 'records DESC', $offset = 0, $limit) {
     $default_order = 'records DESC';
     if (!preg_match('/^(MarcPath|message|instances|records) (ASC|DESC)$/', $order))
       $order = $default_order;
@@ -47,12 +58,23 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
+  public function getByCategoryTypeAndPathCount($categoryId, $typeId, $path) {
+    $stmt = $this->prepare('SELECT COUNT(*) AS count
+       FROM issue_summary
+       WHERE categoryId = :categoryId AND typeId = :typeId AND MarcPath = :path
+    ');
+    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
+    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
+    $stmt->bindValue(':path', $path, SQLITE3_TEXT);
+
+    return $stmt->execute();
+  }
+
   public function getByCategoryAndTypeGrouppedByPath($categoryId, $typeId, $order = 'records DESC', $offset = 0, $limit) {
     $default_order = 'records DESC';
     if (!preg_match('/^(path|variants|instances|records) (ASC|DESC)$/', $order))
       $order = $default_order;
-    $stmt = $this->prepare('
-SELECT path, variants, instances, records
+    $stmt = $this->prepare('SELECT path, variants, instances, records
 FROM issue_groups AS s
 WHERE categoryId = :categoryId AND typeId = :typeId
 ORDER BY ' . $order . ';');
@@ -62,12 +84,22 @@ ORDER BY ' . $order . ';');
     return $stmt->execute();
   }
 
-/*
-SELECT s.MarcPath AS path, COUNT(DISTINCT(s.id)) AS variants, SUM(d.instances) AS instances, COUNT(DISTINCT(d.id)) AS records
-FROM issue_summary AS s
-LEFT JOIN issue_details AS d ON (s.id = d.errorId)
-WHERE categoryId = :categoryId AND typeId = :typeId
-GROUP BY s.MarcPath
-ORDER BY ' . $order . ';');
-*/
+  public function getByCategoryAndTypeGrouppedByPathCount($categoryId, $typeId) {
+    $stmt = $this->prepare('SELECT COUNT(*) AS count
+FROM issue_groups AS s
+WHERE categoryId = :categoryId AND typeId = :typeId');
+    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
+    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
+
+    return $stmt->execute();
+  }
+
+  /*
+  SELECT s.MarcPath AS path, COUNT(DISTINCT(s.id)) AS variants, SUM(d.instances) AS instances, COUNT(DISTINCT(d.id)) AS records
+  FROM issue_summary AS s
+  LEFT JOIN issue_details AS d ON (s.id = d.errorId)
+  WHERE categoryId = :categoryId AND typeId = :typeId
+  GROUP BY s.MarcPath
+  ORDER BY ' . $order . ';');
+  */
 }

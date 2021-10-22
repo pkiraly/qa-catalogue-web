@@ -26,7 +26,7 @@
       $.ajax(url)
         .done(function (result) {
           console.log('clickMore RESULT');
-          $('tr.x-' + id).remove();
+          $('tr.t-' + id).remove();
           $(result).insertAfter('tr.h-' + id);
           $('tr.t-' + id).show();
           $('a.clickMore-' + id).css('font-weight', 'normal');
@@ -47,7 +47,7 @@
       $.ajax(url)
         .done(function (result) {
           console.log('byPath RESULT');
-          $('tr.x-' + id).remove();
+          $('tr.t-' + id).remove();
           $(result).insertAfter('tr.h-' + id);
           $('tr.t-' + id).show();
           $('a.clickMore-' + id).css('font-weight', 'normal');
@@ -67,7 +67,7 @@
       $.ajax(url)
         .done(function (result) {
           console.log('byTag RESULT');
-          $('tr.x-' + id).remove();
+          $('tr.t-' + id).remove();
           $(result).insertAfter('tr.h-' + id);
           $('tr.t-' + id).show();
           $('a.clickMore-' + id).css('font-weight', 'normal');
