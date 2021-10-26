@@ -354,7 +354,7 @@ class Issues extends BaseTab {
     $recordIds = [];
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
       $recordIds[] = $row['id'];
-      if ($action == 'query' && count($recordIds) > $this->idLimit)
+      if ($action == 'query' && count($recordIds) == $this->idLimit)
         break;
     }
     return $recordIds;
