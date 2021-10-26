@@ -95,7 +95,7 @@ WHERE categoryId = :categoryId AND typeId = :typeId');
   }
 
   public function getIds($errorId) {
-    $stmt = $this->prepare('SELECT id FROM issue_details WHERE errorId = 3;');
+    $stmt = $this->prepare('SELECT id FROM issue_details WHERE errorId = :errorId;');
     $stmt->bindValue(':errorId', $errorId, SQLITE3_INTEGER);
 
     return $stmt->execute();
