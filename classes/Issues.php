@@ -332,8 +332,7 @@ class Issues extends BaseTab {
   }
 
   private function query($errorId) {
-    // $recordIds = $this->getIds($errorId, 'query');
-    $recordIds = $this->getIdsDB($errorId, 'query');
+    $recordIds = $this->getIds($errorId, 'query');
     $url = '?' . join('&', [
       'tab=data',
       'query=' . urlencode('id:("' . join('" OR "', $recordIds) . '")')
@@ -343,7 +342,15 @@ class Issues extends BaseTab {
     header('Location: ' . $url);
   }
 
-  private function getIdsDB($errorId, $action) {
+  private function getIds($errorId, $action) {
+    if ($this->sqliteExists())
+      $recordIds = $this->getIdsFromDB($errorId, $action);
+    else
+      $recordIds = $this->getIdsFromCsv($errorId, $action);
+    return $recordIds;
+  }
+
+  private function getIdsFromDB($errorId, $action) {
     # install php7.4-sqlite3
     # sudo service apache2 restart
     include_once 'IssuesDB.php';
@@ -360,7 +367,7 @@ class Issues extends BaseTab {
     return $recordIds;
   }
 
-  private function getIds($errorId, $action) {
+  private function getIdsFromCsv($errorId, $action) {
     $elementsFile = $this->getFilePath('issue-collector.csv');
     $recordIds = [];
     if (file_exists($elementsFile)) {
