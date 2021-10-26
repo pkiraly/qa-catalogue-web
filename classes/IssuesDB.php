@@ -94,7 +94,17 @@ WHERE categoryId = :categoryId AND typeId = :typeId');
     return $stmt->execute();
   }
 
+  public function getIds($errorId) {
+    $stmt = $this->prepare('SELECT id FROM issue_details WHERE errorId = 3;');
+    $stmt->bindValue(':errorId', $errorId, SQLITE3_INTEGER);
+
+    return $stmt->execute();
+  }
+
   /*
+SELECT id FROM issue_details WHERE errorId = 3;
+
+
   SELECT s.MarcPath AS path, COUNT(DISTINCT(s.id)) AS variants, SUM(d.instances) AS instances, COUNT(DISTINCT(d.id)) AS records
   FROM issue_summary AS s
   LEFT JOIN issue_details AS d ON (s.id = d.errorId)

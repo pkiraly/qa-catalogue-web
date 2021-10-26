@@ -332,13 +332,30 @@ class Issues extends BaseTab {
   }
 
   private function query($errorId) {
-    $recordIds = $this->getIds($errorId, 'query');
+    // $recordIds = $this->getIds($errorId, 'query');
+    $recordIds = $this->getIdsDB($errorId, 'query');
     $url = '?' . join('&', [
       'tab=data',
       'query=' . urlencode('id:("' . join('" OR "', $recordIds) . '")')
     ]);
+    error_log($url);
 
     header('Location: ' . $url);
+  }
+
+  private function getIdsDB($errorId, $action) {
+    # install php7.4-sqlite3
+    # sudo service apache2 restart
+    include_once 'IssuesDB.php';
+    $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
+    $db = new IssuesDB($dir);
+
+    $result = $db->getIds($errorId);
+    $recordIds = [];
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+      $recordIds[] = $row['id'];
+    }
+    return $recordIds;
   }
 
   private function getIds($errorId, $action) {
