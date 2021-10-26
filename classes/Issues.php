@@ -7,7 +7,7 @@ class Issues extends BaseTab {
   private $types;
   private $records = [];
   private $total = 0;
-  private $idLimit = 10;
+  private $idLimit = 1000;
   private $issueLimit = 100;
   private $action = 'list';
   private $recordCount;
