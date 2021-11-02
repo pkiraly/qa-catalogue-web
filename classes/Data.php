@@ -16,6 +16,9 @@ class Data extends Facetable {
   private $parameters;
   protected $facetLimit = 10;
   protected $ajaxFacet = 1;
+  private $typeCache008 = [];
+  private $typeCache007 = [];
+  private $typeCache006 = [];
 
   public function __construct($configuration, $db) {
     parent::__construct($configuration, $db);
@@ -187,6 +190,63 @@ class Data extends Facetable {
       ];
     }
     return $filterLinks;
+  }
+
+  public function get008Definition($type) {
+    if (!isset($this->typeCache008[$type])) {
+      $positions = [];
+      $tag008 = $this->getDieldDefinitions()->fields->{'008'};
+      foreach ($tag008->types->{'All Materials'}->positions as $id => $data) {
+        $data->type = 1;
+        $positions["" . $id] = $data;
+      }
+      if (isset($tag008->types->{$type})) {
+        foreach ($tag008->types->{$type}->positions as $id => $data) {
+          $data->type = 2;
+          $positions["" . $id] = $data;
+        }
+        ksort($positions);
+      } else {
+        error_log('invalid type: ' . $type);
+      }
+      $this->typeCache008[$type] = $positions;
+    }
+    return $this->typeCache008[$type];
+  }
+
+  public function get007Definition($category) {
+    if (!isset($this->typeCache007[$category])) {
+      $positions = [];
+      $definition = $this->getDieldDefinitions()->fields->{'007'};
+      if (isset($definition->types->{$category})) {
+        foreach ($definition->types->{$category}->positions as $id => $data) {
+          $positions["" . $id] = $data;
+        }
+      } else {
+        error_log('invalid type: ' . $category);
+      }
+      $this->typeCache007[$category] = $positions;
+    }
+    return $this->typeCache007[$category];
+  }
+
+  public function get006Definition($category) {
+    if (!isset($this->typeCache006[$category])) {
+      $positions = [];
+      $definition = $this->getDieldDefinitions()->fields->{'006'};
+      foreach ($definition->types->{'All Materials'}->positions as $id => $data) {
+        $positions["" . $id] = $data;
+      }
+      if (isset($definition->types->{$category})) {
+        foreach ($definition->types->{$category}->positions as $id => $data) {
+          $positions["" . $id] = $data;
+        }
+      } else {
+        error_log('invalid type: ' . $category);
+      }
+      $this->typeCache006[$category] = $positions;
+    }
+    return $this->typeCache006[$category];
   }
 
   public function getRecord($doc) {

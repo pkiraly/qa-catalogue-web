@@ -35,7 +35,7 @@ class Record {
 
   public function getField($fieldName) {
     if (isset($this->record->{$fieldName}))
-      return $this->record->{$fieldName}[0];
+      return is_array($this->record->{$fieldName}) ? $this->record->{$fieldName}[0] : $this->record->{$fieldName};
     return null;
   }
 
@@ -45,27 +45,106 @@ class Record {
     return null;
   }
 
+  public function resolveLeader($definition, $code) {
+    if ($code == '" "')
+      $code = ' ';
+    if (isset($definition->codes)) {
+      if (isset($definition->codes->{$code})) {
+        return $definition->codes->{$code}->label;
+      } else {
+        return 'invalid value';
+      }
+    }
+    return '';
+  }
+
+  public function resolve008($definition, $code) {
+    // error_log('code: ' . json_encode($code));
+    if ($code == '" "')
+      $code = ' ';
+    if (isset($definition->codes)) {
+      if ($definition->repeatableCOntent === TRUE) {
+        $resoltutions = [];
+        for ($i = 0; $i < strlen($code); $i += $definition->unitLength) {
+          $unit = substr($code, $i, $definition->unitLength);
+          if (isset($definition->codes->{$unit})) {
+            $value = $definition->codes->{$unit}->label;
+          } else {
+            $value = 'invalid value';
+          }
+          if (!in_array($value, $resoltutions))
+            $resoltutions[] = $value;
+        }
+        return implode(' - ', $resoltutions);
+      } else {
+        if (isset($definition->codes->{$code})) {
+          return $definition->codes->{$code}->label;
+        } else {
+          return 'invalid value';
+        }
+      }
+    }
+    return '';
+  }
+
+  public function getLeaderByPositionString($position) {
+    $atomic = explode('-', $position, 2);
+    array_walk($atomic, function(&$value, $key) {
+      $value = (int) preg_replace('/^0+/', '', $value);
+    });
+    if (count($atomic) == 2)
+      return $this->getLeaderByPosition($atomic[0], $atomic[1]);
+    else
+      return $this->getLeaderByPosition($atomic[0]);
+  }
+
   public function getLeaderByPosition($start, $end = NULL) {
     $leader = $this->getFirstField('Leader_ss');
     if ($leader != null) {
       $length = ($end == null) ? 1 : $end - $start;
       $part = substr($leader, $start, $length);
-      if ($part == ' ') {
-        $part = '" "';
-      }
+      // if ($part == ' ') {
+      //   $part = '" "';
+      // }
       return $part;
     }
     return null;
   }
 
   public function get008ByPosition($start, $end = NULL) {
-    $field = $this->getFirstField('008_GeneralInformation_ss');
+    $field = $this->getField('008');
     if ($field != null) {
       $length = ($end == null) ? 1 : $end - $start;
       $part = substr($field, $start, $length);
-      if ($part == ' ') {
-        $part = '" "';
-      }
+      //if ($part == ' ') {
+      //  $part = '" "';
+      //}
+      return $part;
+    }
+    return null;
+  }
+
+  public function get007ByPosition($start, $end = NULL) {
+    $field = $this->getField('007');
+    if ($field != null) {
+      $length = ($end == null) ? 1 : $end - $start;
+      $part = substr($field, $start, $length);
+      //if ($part == ' ') {
+      //  $part = '" "';
+      //}
+      return $part;
+    }
+    return null;
+  }
+
+  public function get006ByPosition($start, $end = NULL) {
+    $field = $this->getField('006');
+    if ($field != null) {
+      $length = ($end == null) ? 1 : $end - $start;
+      $part = substr($field, $start, $length);
+      //if ($part == ' ') {
+      //  $part = '" "';
+      //}
       return $part;
     }
     return null;
@@ -213,6 +292,66 @@ class Record {
   public function filter($field, $value) {
     $filter = 'filters[]=' . urlencode(sprintf('%s:"%s"', $field, $value));
     return '?' . join('&', array_merge([$filter], $this->basicFilterParameters));
+  }
+
+  public function get007Category() {
+    static $categories;
+    if (!isset($categories)) {
+      $categories = [
+        "a" => "Map",
+        "c" => "Electronic resource",
+        "d" => "Globe",
+        "f" => "Tactile material",
+        "g" => "Projected graphic",
+        "h" => "Microform",
+        "k" => "Nonprojected graphic",
+        "m" => "Motion picture",
+        "o" => "Kit",
+        "q" => "Notated music",
+        "r" => "Remote-sensing image",
+        "s" => "Sound recording",
+        "t" => "Text",
+        "v" => "Videorecording",
+        "z" => "Unspecified"
+      ];
+    }
+    $tag = $this->getField('007');
+    if (!is_null($tag)) {
+      $category = substr($tag, 0, 1);
+      if (isset($categories[$category]))
+        return $categories[$category];
+    }
+    return $categories['t'];
+  }
+
+  public function get006Type() {
+    static $categories;
+    if (!isset($categories)) {
+      $categories = [
+        "a" => "Books",
+        "c" => "Music",
+        "d" => "Music",
+        "e" => "Maps",
+        "f" => "Maps",
+        "g" => "Visual Materials",
+        "i" => "Music",
+        "j" => "Music",
+        "k" => "Visual Materials",
+        "m" => "Computer Files",
+        "o" => "Visual Materials",
+        "p" => "Mixed Materials",
+        "r" => "Visual Materials",
+        "s" => "Continuing Resources",
+        "t" => "Books"
+      ];
+    }
+    $tag = $this->getField('006');
+    if (!is_null($tag)) {
+      $category = substr($tag, 0, 1);
+      if (isset($categories[$category]))
+        return $categories[$category];
+    }
+    return $categories['t'];
   }
 
   public function getDoc() {

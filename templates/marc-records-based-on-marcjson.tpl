@@ -199,13 +199,27 @@
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
              id="marc-leader-tab-{$id}" href="#marc-leader-{$id}"
-             aria-controls="marc-leader-tab">Leader explained</a>
+             aria-controls="marc-leader-tab">Leader</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
              id="marc-008-tab-{$id}" href="#marc-008-{$id}"
-             aria-controls="marc-008-tab">008 explained</a>
+             aria-controls="marc-008-tab">008</a>
         </li>
+        {if !is_null($record->getField('007'))}
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
+               id="marc-007-tab-{$id}" href="#marc-007-{$id}"
+               aria-controls="marc-007-tab">007</a>
+          </li>
+        {/if}
+        {if !is_null($record->getField('006'))}
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
+               id="marc-006-tab-{$id}" href="#marc-006-{$id}"
+               aria-controls="marc-006-tab">006</a>
+          </li>
+        {/if}
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
              id="marc-human-tab-{$id}" href="#marc-human-{$id}"
@@ -240,6 +254,16 @@
         <div class="tab-pane marc-008" id="marc-008-{$id}" role="tabpanel" aria-labelledby="data-tab">
           {include 'marc/008.tpl'}
         </div>
+        {if !is_null($record->getFields('007'))}
+          <div class="tab-pane marc-007" id="marc-007-{$id}" role="tabpanel" aria-labelledby="data-tab">
+            {include 'marc/007.tpl'}
+          </div>
+        {/if}
+        {if !is_null($record->getFields('006'))}
+          <div class="tab-pane marc-006" id="marc-006-{$id}" role="tabpanel" aria-labelledby="data-tab">
+            {include 'marc/006.tpl'}
+          </div>
+        {/if}
         <div class="tab-pane" id="marc-human-{$id}" role="tabpanel" aria-labelledby="data-tab">
           <ul>
             {foreach $record->getAllSolrFields() as $field}
