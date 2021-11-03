@@ -312,6 +312,9 @@ table#issues-table tr.padded td {
   font-weight: bold;
 }
 
+.control-field-explanation table {
+  margin-top: 10px;
+}
 /*
 div#myTabContent.tab-content div#issues.tab-pane.active div#issues-table-placeholder
 table#issues-table thead tr th
