@@ -4,6 +4,10 @@
 <p>
   007: "{str_replace(' ', '&nbsp;', $record->getField('007'))}"<br/>
   category: {$type}<br/>
+  Special information about the physical characteristics in a coded form. The information
+  may represent the whole item or parts of an item such as accompanying material. The
+  physical characteristics are often related to information in other parts of the MARC
+  record especially from field 300 (Physical Description) or one of the 5XX note fields.
 </p>
 
 <table class="explanation">
