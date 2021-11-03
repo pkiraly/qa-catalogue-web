@@ -88,7 +88,8 @@ h5
 
 .record .details {
   display: none;
-  margin-left: 50px;
+  margin-left: 25px;
+  margin-top: 10px;
 }
 
 ul {
