@@ -1,16 +1,18 @@
+<h4>Physical Description-General Information</h4>
+
 {assign var="type" value=$record->get007Category()}
 <p>
   007: "{str_replace(' ', '&nbsp;', $record->getField('007'))}"<br/>
-  category*: {$type}<br/>
+  category: {$type}<br/>
 </p>
 
-<table>
+<table class="explanation">
   <thead>
   <tr>
     <th>pos.</th>
-    <th>- meaning of position</th>
+    <th>meaning of position</th>
     <th>value</th>
-    <th>- meaning of value</th>
+    <th>meaning of value</th>
   </tr>
   </thead>
   <tbody>

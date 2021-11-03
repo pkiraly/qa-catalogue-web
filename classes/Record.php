@@ -60,6 +60,8 @@ class Record {
 
   public function resolve008($definition, $code) {
     // error_log('code: ' . json_encode($code));
+    if ($code == '')
+      return 'missing value';
     if ($code == '" "')
       $code = ' ';
     if (isset($definition->codes)) {
@@ -103,9 +105,6 @@ class Record {
     if ($leader != null) {
       $length = ($end == null) ? 1 : $end - $start;
       $part = substr($leader, $start, $length);
-      // if ($part == ' ') {
-      //   $part = '" "';
-      // }
       return $part;
     }
     return null;
@@ -116,9 +115,6 @@ class Record {
     if ($field != null) {
       $length = ($end == null) ? 1 : $end - $start;
       $part = substr($field, $start, $length);
-      //if ($part == ' ') {
-      //  $part = '" "';
-      //}
       return $part;
     }
     return null;
@@ -129,9 +125,6 @@ class Record {
     if ($field != null) {
       $length = ($end == null) ? 1 : $end - $start;
       $part = substr($field, $start, $length);
-      //if ($part == ' ') {
-      //  $part = '" "';
-      //}
       return $part;
     }
     return null;
@@ -142,9 +135,6 @@ class Record {
     if ($field != null) {
       $length = ($end == null) ? 1 : $end - $start;
       $part = substr($field, $start, $length);
-      //if ($part == ' ') {
-      //  $part = '" "';
-      //}
       return $part;
     }
     return null;

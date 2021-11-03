@@ -1,21 +1,23 @@
+<h4>Additional Material Characteristics</h4>
+
 {assign var="type" value=$record->get006Type()}
 <p>
   006:
     {if gettype($record->getFields('006') == 'string')}
-      "{$record->getFields('006')}"
+      "{str_replace(' ', '&nbsp;', $record->getFields('006'))}"
     {else}
-      "{implode('", "', $record->getFields('006'))}"
+      "{implode('", "', str_replace(' ', '&nbsp;', $record->getFields('006')))}"
     {/if}<br/>
-  type*: {$type}<br/>
+  type: {$type}<br/>
 </p>
 
-<table>
+<table class="explanation">
   <thead>
     <tr>
       <th>pos.</th>
-      <th>- meaning of position</th>
+      <th>meaning of position</th>
       <th>value</th>
-      <th>- meaning of value</th>
+      <th>meaning of value</th>
     </tr>
   </thead>
   <tbody>

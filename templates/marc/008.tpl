@@ -1,6 +1,8 @@
+<h4>General Information</h4>
+
 {assign var="type" value=$record->getFirstField('type_ss')}
 <p>
-  008: {$record->getFirstField('008_GeneralInformation_ss', TRUE)}<br/>
+  008: "{str_replace(' ', '&nbsp;', $record->getFirstField('008_GeneralInformation_ss', TRUE))}"<br/>
   type*: {$type}<br/>
   Field 008 contains general information. It is a row of fixed-length data elements, such that
   there is no formal separators between elements, only the standard sets the boundaries
@@ -12,13 +14,17 @@
   encoded information (e.g. in 6th position "s" means <em>Single known date/probable date</em>).
 </p>
 
-<table>
+<p>* Type comes from the combination of type of record (06) and bibliographic level (07) positions of the Leader.
+  See 'Dependencies' section of
+  <a href="https://www.loc.gov/marc/bibliographic/bdleader.html" target="_blank">Leader</a></p>
+
+<table class="explanation">
   <thead>
   <tr>
     <th>pos.</th>
-    <th>- meaning of position</th>
+    <th>meaning of position</th>
     <th>value</th>
-    <th>- meaning of value</th>
+    <th>meaning of value</th>
   </tr>
   </thead>
   <tbody>
@@ -52,7 +58,3 @@
   {/foreach}
   </tbody>
 </table>
-
-<p>* Type comes from the combination of type of record (06) and bibliographic level (07) positions.
-  See 'Dependencies' section of
-  <a href="https://www.loc.gov/marc/bibliographic/bdleader.html" target="_blank">Leader</a></p>
