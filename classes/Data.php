@@ -22,9 +22,9 @@ class Data extends Facetable {
 
   public function __construct($configuration, $db) {
     parent::__construct($configuration, $db);
-    $this->facet = htmlspecialchars(getOrDefault('facet', ''));
+    $this->facet = getOrDefault('facet', '');
     $this->query = htmlspecialchars(getOrDefault('query', '*:*'));
-    $this->filters = htmlspecialchars(getOrDefault('filters', []));
+    $this->filters = getOrDefault('filters', []);
     $this->start = (int) getOrDefault('start', 0);
     $this->rows = (int) getOrDefault('rows', 10, $this->itemsPerPageSelectors);
 
