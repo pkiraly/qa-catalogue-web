@@ -7,9 +7,10 @@
   {foreach $fieldInstances as $field}
     <li>
       {if isset($field->subfields->a)}
-        {foreach $field->subfields->a as $value}
-          <a href="#" class="record-link tag-490a" data="490a_SeriesStatement_ss"
-          title="Series statement">{$value}</a>{if !$value@last}, {/if}
+        {foreach $field->subfields->a as $value name="subfields"}
+          <a href="{$record->filter($controller->getSolrField('490', 'a'), $value)}"
+             class="record-link tag-490a" data="490a_SeriesStatement_ss">{$value}</a>
+            {if !$smarty.foreach.subfields.last}, {/if}
         {/foreach}
       {/if}
 

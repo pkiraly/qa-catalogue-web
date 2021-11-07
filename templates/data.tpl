@@ -12,7 +12,7 @@
           <div class="col search-block">
             <form id="search">
               <input type="hidden" name="tab" value="data">
-              <input type="text" name="query" id="query" value="{$query}" size="65">
+              <input type="text" name="query" id="query" value="{htmlentities($query)}" size="65">
               <button type="submit" class="btn">
                 <i class="fa fa-search" aria-hidden="true"></i> search
               </button>
@@ -75,7 +75,7 @@
               </div>
               <div class="col-4"></div>
             </div>
-            <div id="solr-url">{$solrUrl}</div>
+            <div id="solr-url">{htmlentities($solrUrl)}</div>
           </div>
         </div>
       </div>
