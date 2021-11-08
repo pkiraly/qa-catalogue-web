@@ -8,6 +8,6 @@ class Libris extends Catalogue {
   protected $url = 'https://libris.kb.se/';
 
   function getOpacLink($id, $record) {
-    return 'http://libris.kb.se/' . trim($id);
+    return 'http://libris.kb.se/bib/' . trim($id);
   }
 }
