@@ -195,7 +195,7 @@ class Data extends Facetable {
   public function get008Definition($type) {
     if (!isset($this->typeCache008[$type])) {
       $positions = [];
-      $tag008 = $this->getDieldDefinitions()->fields->{'008'};
+      $tag008 = $this->getFieldDefinitions()->fields->{'008'};
       foreach ($tag008->types->{'All Materials'}->positions as $id => $data) {
         $data->type = 1;
         $positions["" . $id] = $data;
@@ -217,7 +217,7 @@ class Data extends Facetable {
   public function get007Definition($category) {
     if (!isset($this->typeCache007[$category])) {
       $positions = [];
-      $definition = $this->getDieldDefinitions()->fields->{'007'};
+      $definition = $this->getFieldDefinitions()->fields->{'007'};
       if (isset($definition->types->{$category})) {
         foreach ($definition->types->{$category}->positions as $id => $data) {
           $positions["" . $id] = $data;
@@ -233,7 +233,7 @@ class Data extends Facetable {
   public function get006Definition($category) {
     if (!isset($this->typeCache006[$category])) {
       $positions = [];
-      $definition = $this->getDieldDefinitions()->fields->{'006'};
+      $definition = $this->getFieldDefinitions()->fields->{'006'};
       foreach ($definition->types->{'All Materials'}->positions as $id => $data) {
         $positions["" . $id] = $data;
       }

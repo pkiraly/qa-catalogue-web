@@ -76,6 +76,11 @@
       </li>
     {/if}
     <li class="nav-item1">
+      <a class="nav-link1{if $tab == 'control-fields'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+         id="control-fields-tab" aria-controls="control-fields"
+         href="?tab=control-fields">CRTL fields</a>
+    </li>
+    <li class="nav-item1">
       <a class="nav-link1{if $tab == 'settings'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
          id="settings-tab" aria-controls="settings"
          href="?tab=settings">Settings</a>

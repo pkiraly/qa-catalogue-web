@@ -182,7 +182,7 @@ abstract class BaseTab implements Tab {
     return $selectedFacets;
   }
 
-  public function getDieldDefinitions() {
+  public function getFieldDefinitions() {
     if (!isset($this->fieldDefinitions))
       $this->fieldDefinitions = json_decode(file_get_contents('fieldmap.json'));
     return $this->fieldDefinitions;
@@ -190,7 +190,7 @@ abstract class BaseTab implements Tab {
 
   public function getSolrField($tag, $subfield = '') {
     error_log('getSolrField(' . $tag . ', ' . $subfield . ')');
-    $this->getDieldDefinitions();
+    $this->getFieldDefinitions();
 
     if ($subfield == '' && strstr($tag, '$') !== false)
       list($tag, $subfield) = explode('$', $tag);
@@ -237,7 +237,7 @@ abstract class BaseTab implements Tab {
   }
 
   public function resolveSolrField($solrField) {
-    $this->getDieldDefinitions();
+    $this->getFieldDefinitions();
 
     $solrField = preg_replace('/_ss$/', '', $solrField);
     if ($solrField == 'type' || substr($solrField, 0, 2) == '00'
