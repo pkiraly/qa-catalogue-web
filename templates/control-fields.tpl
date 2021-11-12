@@ -15,6 +15,7 @@
                 var db = '{$db}';
                 var count = {$count};
                 var histogramDataUrl = '?tab=control-fields&action=histogram&field={$selectedField}&position={$selectedPosition}';
+                var solrField = '{$solrField}';
                 {literal}
                 var units = 'data elements';
                 var histogramSvgClass = 'histogram-chart';
@@ -24,7 +25,7 @@
                     .style("opacity", 0)
                     .attr("class", "tooltip")
                     .attr("id", "tooltip")
-                displayBarchart(histogramDataUrl, histogramSvgClass);
+                displayBarchart(histogramDataUrl, histogramSvgClass, solrField);
                 {/literal}
             </script>
           </td>

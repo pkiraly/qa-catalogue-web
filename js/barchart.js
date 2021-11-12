@@ -1,4 +1,4 @@
-function displayBarchart(histogramDataUrl, histogramSvgClass) {
+function displayBarchart(histogramDataUrl, histogramSvgClass, solrField) {
     // console.log(histogramDataUrl);
     // console.log(histogramSvgClass);
 
@@ -53,18 +53,22 @@ function displayBarchart(histogramDataUrl, histogramSvgClass) {
             svg.append("g")
                 .call(d3.axisLeft(y))
                 .selectAll("text")
-                .style("font-size", "11pt")
+                    .style("font-size", "11pt")
+                    .attr('xlink:href', function (d) {
+                        console.log(d)
+                        return 'q=' + encodeURI(solrField + ':"' + d + '"');
+                    })
 
-            //Bars
+            // bars
             svg.selectAll("myRect")
                 .data(data)
                 .enter()
                 .append("rect")
-                .attr("x", x(0) )
-                .attr("y", function(d) { return y(d.term); })
-                .attr("width", function(d) { return x(d.count); })
-                .attr("height", y.bandwidth() )
-                .attr("fill", 'steelblue')
+                    .attr("x", x(0) )
+                    .attr("y", function(d) { return y(d.term); })
+                    .attr("width", function(d) { return x(d.count); })
+                    .attr("height", y.bandwidth() )
+                    .attr("fill", 'steelblue')
         }
     )
 }
