@@ -24,7 +24,7 @@
   </tr>
   </thead>
   <tbody>
-  {foreach $controller->getDieldDefinitions()->fields->LDR->positions as $id => $data}
+  {foreach $controller->getFieldDefinitions()->fields->LDR->positions as $id => $data}
     <tr>
       <td>{$id}</td>
       <td>{$data->label}</td>
