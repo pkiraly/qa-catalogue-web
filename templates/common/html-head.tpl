@@ -17,7 +17,6 @@
       return marcBaseUrl + link;
     }
   </script>
-  <script src="configuration.js" type="text/javascript"></script>
   <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
 <body>
