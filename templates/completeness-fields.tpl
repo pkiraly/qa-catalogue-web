@@ -56,6 +56,8 @@
                 <a href="?tab=data&query=&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}&filters[]={$record->solr}:*">
                   {if $record->isComplexControlField || $record->isLeader}
                     {$record->complexPosition}
+                  {elseif preg_match('/ind[12]$/', $record->path)}
+                    {$record->path|substr:3}
                   {else}
                     {$record->path|substr:3}
                   {/if}
