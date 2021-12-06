@@ -145,7 +145,7 @@ abstract class BaseTab implements Tab {
         continue;
       }
       if ($k == 'q') {
-        error_log($v);
+        error_log('query: ' . $v);
       }
       if (!preg_match('/%/', $v))
         $v = urlencode($v);
@@ -189,7 +189,6 @@ abstract class BaseTab implements Tab {
   }
 
   public function getSolrField($tag, $subfield = '') {
-    error_log('getSolrField(' . $tag . ', ' . $subfield . ')');
     $this->getFieldDefinitions();
 
     if ($subfield == '' && strstr($tag, '$') !== false)
@@ -202,7 +201,6 @@ abstract class BaseTab implements Tab {
                  . '_' . $this->fieldDefinitions->fields->{$tag}->solr
                  . '_' . $subfield . '_ss';
     }
-    error_log('$solrField: ' . $solrField);
 
     if (!isset($solrField) || !in_array($solrField, $this->getSolrFields())) {
       error_log('strange case');
@@ -232,7 +230,6 @@ abstract class BaseTab implements Tab {
         $solrField = FALSE;
       }
     }
-    error_log('solrField: ' . $solrField);
     return $solrField;
   }
 
@@ -300,7 +297,6 @@ abstract class BaseTab implements Tab {
     $solrPath = (isset($this->configuration['indexName']) && isset($this->configuration['indexName'][$this->db]))
       ? $this->configuration['indexName'][$this->db]
       : $this->db;
-    error_log('solrPath: ' . $solrPath);
     return $solrPath;
   }
 

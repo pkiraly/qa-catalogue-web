@@ -14,7 +14,7 @@
             <script>
                 var db = '{$db}';
                 var count = {$count};
-                var histogramDataUrl = '?tab=control-fields&action=histogram&field={$selectedField}&position={$selectedPosition}';
+                var histogramDataUrl = '?tab=control-fields&action=histogram&field={$selectedField}&type={$selectedType}&position={$selectedPosition}';
                 var solrField = '{$solrField}';
                 {literal}
                 var units = 'data elements';
@@ -30,29 +30,36 @@
             </script>
           </td>
           <td style="padding-left: 50px;">
-            {foreach $supportedPositions as $field => $positions}
+            {foreach $solrFieldsMap as $field => $properties}
               <h4>{$field}</h4>
-              <ul>
-                {foreach $positions as $position}
-                  {assign var="label" value=$solrFieldsMap[$field][$position]->label}
-                  <li>
-                    {if $selectedField == $field && $selectedPosition == $position}
-                      <strong>{$position} {$label}</strong>
-                    {else}
-                      <a href="?tab=control-fields&field={$field}&position={$position}">{$position} {$label}</a>
-                    {/if}
-                    {*
-                    {if $selectedField == $field && $selectedPosition == $position}
-                      <ul>
-                        {foreach $terms as $term => $count}
-                          <li>{if preg_match('/(^\s|\s\s|\s$)/', $term)}"{preg_replace('/\s/', '&nbsp;', $term)}"{else}{$term}{/if} ({$count|number_format})</li>
-                        {/foreach}
-                      </ul>
-                    {/if}
-                    *}
-                  </li>
+              {if $field == 'Leader'}
+                <ul>
+                  {foreach $properties as $position => $positionProperties}
+                    <li>
+                      {if $selectedField == $field && $selectedPosition == $position}
+                        <strong>{$position} {$positionProperties->label}</strong>
+                      {else}
+                        <a href="?tab=control-fields&field={$field}&position={$position}">{$position} {$positionProperties->label}</a>
+                      {/if}
+                    </li>
+                  {/foreach}
+                </ul>
+              {else}
+                {foreach $properties as $type => $typeProperties}
+                  <h5>{$type}</h5>
+                  <ul>
+                    {foreach $typeProperties as $position => $positionProperties}
+                      <li>
+                        {if $selectedField == $field && $selectedPosition == $position}
+                          <strong>{$position} {$positionProperties->label}</strong>
+                        {else}
+                          <a href="?tab=control-fields&field={$field}&type={$type}&position={$position}">{$position} {$positionProperties->label}</a>
+                        {/if}
+                      </li>
+                    {/foreach}
+                  </ul>
                 {/foreach}
-              </ul>
+              {/if}
             {/foreach}
           </td>
         </tr>
