@@ -1,7 +1,7 @@
 # QA Catalogue
 ## A data quality dashboard for MARC catalogues
 
-<video width="900" height="600" controls autoplay>
+<video width="900" height="600" controls autoplay loop>
   <source src="https://video.twimg.com/tweet_video/EtPClAjXABAY3jf.mp4" type="video/mp4">
 </video>
 
