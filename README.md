@@ -1,13 +1,7 @@
 # QA Catalogue
 ## A data quality dashboard for MARC catalogues
 
-<video width="900" height="600" controls autoplay loop>
-  <source src="https://video.twimg.com/tweet_video/EtPClAjXABAY3jf.mp4" type="video/mp4">
-</video>
-
-[![Watch the video](https://pbs.twimg.com/media/FHJvPCYXEAMEi_N?format=jpg&name=medium)](https://video.twimg.com/tweet_video/EtPClAjXABAY3jf.mp4)
-
-![Output sample](https://pbs.twimg.com/media/FHJvPCYXEAMEi_N?format=jpg&name=medium)
+![Output sample](https://github.com/pkiraly/metadata-qa-marc-web/raw/gh-pages/img/issues-v1.gif)
 
 This web interface is created mainly for research purposes. 
 It is a lightweight web allication (PHP, JavaScript, HTML and CSS). The data
