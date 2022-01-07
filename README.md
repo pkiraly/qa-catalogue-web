@@ -1,7 +1,7 @@
 # QA Catalogue
 ## A data quality dashboard for MARC catalogues
 
-![Output sample](https://pbs.twimg.com/tweet_video_thumb/EtPClAjXABAY3jf.jpg)
+![Output sample](https://pbs.twimg.com/media/FHJvPCYXEAMEi_N?format=jpg&name=medium)
 
 This web interface is created mainly for research purposes. 
 It is a lightweight web allication (PHP, JavaScript, HTML and CSS). The data
