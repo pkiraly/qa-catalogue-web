@@ -4,10 +4,10 @@
 class Kbr extends Catalogue {
 
   protected $name = 'kbr';
-  protected $label = 'KBR';
-  protected $url = 'https://uba.uva.nl/home';
+  protected $label = 'KBR (Koninklijke Bibliotheek van België/Bibliothèque royale de Belgique)';
+  protected $url = 'https://www.kbr.be/';
 
   function getOpacLink($id, $record) {
-    return ' https://pid.uba.uva.nl/ark:/88238/b1' . trim($id);
+    return 'https://opac.kbr.be/LIBRARY/doc/SYRACUSE/' . trim($id);
   }
 }
