@@ -3,10 +3,13 @@ set_time_limit(0);
 
 require_once 'common-functions.php';
 $marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
-$configuration = parse_ini_file("configuration.cnf");
+$configuration = parse_ini_file("configuration.cnf", false, INI_SCANNER_TYPED);
 $smarty = createSmarty('templates');
 
-$db = getPath(); // getOrDefault('db', 'bl'); // metadata-qa
+if (isset($configuration['db']) && $configuration['db'] != '')
+  $db = $configuration['db'];
+else
+  $db = getPath(); // getOrDefault('db', 'bl'); // metadata-qa
 
 $tab = getOrDefault('tab', 'completeness');
 $ajax = getOrDefault('ajax', 0, [0, 1]);
