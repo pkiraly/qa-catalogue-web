@@ -65,7 +65,7 @@ class Record {
     if ($code == '" "')
       $code = ' ';
     if (isset($definition->codes)) {
-      if ($definition->repeatableCOntent === TRUE) {
+      if ($definition->repeatableContent === TRUE) {
         $resoltutions = [];
         for ($i = 0; $i < strlen($code); $i += $definition->unitLength) {
           $unit = substr($code, $i, $definition->unitLength);

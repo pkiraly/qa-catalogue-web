@@ -6,6 +6,7 @@ abstract class Catalogue {
   protected $name;
   protected $label;
   protected $url;
+  protected $marcVersion = 'MARC21';
 
   abstract function getOpacLink($id, $record);
 
@@ -19,5 +20,9 @@ abstract class Catalogue {
 
   public function getUrl() {
     return $this->url;
+  }
+
+  public function getMarcVersion() {
+    return $this->marcVersion;
   }
 }

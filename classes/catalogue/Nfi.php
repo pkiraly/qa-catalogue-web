@@ -6,6 +6,7 @@ class Nfi extends Catalogue {
   protected $name = 'nfi';
   protected $label = 'Kansallis Kirjasto/National Biblioteket (The National Library of Finnland)';
   protected $url = 'https://www.kansalliskirjasto.fi/en';
+  protected $marcVersion = 'FENNICA';
 
   function getOpacLink($id, $record) {
     // return 'https://melinda.kansalliskirjasto.fi/byid/' . trim($id);

@@ -147,6 +147,7 @@ class Issues extends BaseTab {
   }
 
   private function readIssuesAjax($categoryId, $typeId, $path = null, $order = 'records DESC', $page = 0, $limit = 100) {
+    error_log('readIssuesAjax sqliteExists? ' . $this->sqliteExists());
     if ($this->sqliteExists())
       $this->readIssuesAjaxDB($categoryId, $typeId, $path, $order, $page, $limit);
     else
@@ -199,13 +200,14 @@ class Issues extends BaseTab {
     include_once 'IssuesDB.php';
     $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
     $db = new IssuesDB($dir);
-    if (is_null($path)) {
+    if (is_null($path) || empty($path)) {
       $this->recordCount = $db->getByCategoryAndTypeCount($categoryId, $typeId)->fetchArray(SQLITE3_ASSOC)['count'];
       $result = $db->getByCategoryAndType($categoryId, $typeId, $order, $page * $limit, $limit);
     } else {
       $this->recordCount = $db->getByCategoryTypeAndPathCount($categoryId, $typeId, $path)->fetchArray(SQLITE3_ASSOC)['count'];
       $result = $db->getByCategoryTypeAndPath($categoryId, $typeId, $path, $order, $page * $limit, $limit);
     }
+
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
       $record = (object) $row;
       $this->processRecord($record);
@@ -403,18 +405,17 @@ class Issues extends BaseTab {
   /**
    * @param Smarty $smarty
    */
-  private function assignAjax(Smarty $smarty): void
-  {
+  private function assignAjax(Smarty $smarty): void {
     $smarty->assign('categoryId', $this->categoryId);
     $smarty->assign('typeId', $this->typeId);
     $smarty->assign('records', $this->records);
     $smarty->assign('recordCount', $this->recordCount);
     $smarty->assign('pages', $this->pages);
     $smarty->assign('listType', $this->listType);
+    $smarty->assign('order', $this->order);
   }
 
-  private function getAjaxParameters(): void
-  {
+  private function getAjaxParameters(): void {
     $this->categoryId = getOrDefault('categoryId', -1);
     $this->typeId = getOrDefault('typeId', -1);
     $this->order = getOrDefault('order', 'records DESC');

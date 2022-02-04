@@ -12,6 +12,7 @@ abstract class BaseTab implements Tab {
   protected $fieldDefinitions;
   protected $catalogueName;
   protected $catalogue;
+  protected $marcVersion ;
   protected $lastUpdate = '';
   protected $output = 'html';
   protected $displayNetwork = false;
@@ -27,6 +28,7 @@ abstract class BaseTab implements Tab {
     $this->db = $db;
     $this->catalogueName = isset($configuration['catalogue']) ? $configuration['catalogue'] : $db;
     $this->catalogue = $this->createCatalogue();
+    $this->marcVersion = $this->catalogue->getMarcVersion();
     $this->displayNetwork = isset($configuration['display-network']) && (int) $configuration['display-network'] == 1;
     $this->count = $this->readCount();
     $this->readLastUpdate();
@@ -194,17 +196,25 @@ abstract class BaseTab implements Tab {
     if ($subfield == '' && strstr($tag, '$') !== false)
       list($tag, $subfield) = explode('$', $tag);
 
-    if (isset($this->fieldDefinitions->fields->{$tag}->subfields->{$subfield}->solr)) {
-      $solrField = $this->fieldDefinitions->fields->{$tag}->subfields->{$subfield}->solr . '_ss';
-    } elseif (isset($this->fieldDefinitions->fields->{$tag}->solr)) {
-      $solrField = $tag . $subfield
-                 . '_' . $this->fieldDefinitions->fields->{$tag}->solr
-                 . '_' . $subfield . '_ss';
+    if (isset($this->fieldDefinitions->fields->{$tag})) {
+      $tagDefinition = $this->getTagDefinition($tag);
+
+      if (isset($tagDefinition->subfields->{$subfield}->solr)) {
+        $solrField = $tagDefinition->subfields->{$subfield}->solr . '_ss';
+      } elseif ($this->hasVersionSpecificSolrField($tagDefinition, $subfield)) {
+        $solrField = $tagDefinition->versionSpecificSubfields->{$this->marcVersion}->{$subfield}->solr . '_ss';
+      } elseif (isset($tagDefinition->solr)) {
+        $solrField = sprintf('%s%s_%s_%s_ss', $tag, $subfield, $tagDefinition->solr, $subfield);
+      } else {
+        // leader\d+
+      }
     }
 
     if (!isset($solrField) || !in_array($solrField, $this->getSolrFields())) {
-      error_log('strange case');
-      $solrField = $tag . $subfield;
+      $solrField1 = isset($solrField) ? $solrField : false;
+      $solrField = $tag;
+      if ($subfield != '')
+        $solrField .= preg_match('/[0-9a-zA-Z]/', $subfield) ? $subfield : 'x' . bin2hex($subfield);
       $candidates = [];
       $found = FALSE;
       foreach ($this->getSolrFields() as $existingSolrField) {
@@ -226,7 +236,7 @@ abstract class BaseTab implements Tab {
       }
 
       if (!$found) {
-        error_log('not found: ' . $solrField . ' - ' . join(', ', $candidates));
+        error_log(sprintf('Solr field not found: %s (%s) - %s', $solrField1, $solrField, join(', ', $candidates)));
         $solrField = FALSE;
       }
     }
@@ -332,5 +342,39 @@ abstract class BaseTab implements Tab {
 
   protected function sqliteExists() {
     return file_exists($this->getFilePath('qa_catalogue.sqlite'));
+  }
+
+  private function getTagDefinition($tag) {
+    if (is_array($this->fieldDefinitions->fields->{$tag})) {
+      $tagDefinition = null;
+      $tagDefinitionDefault = null;
+      foreach ($this->fieldDefinitions->fields->{$tag} as $candidate) {
+        if ($candidate->version == $this->marcVersion) {
+          $tagDefinition = $candidate;
+          break;
+        } elseif ($candidate->version == 'MARC21') {
+          $tagDefinitionDefault = $candidate;
+        }
+      }
+      if (is_null($tagDefinition) && !is_null($tagDefinitionDefault))
+        $tagDefinition = $tagDefinitionDefault;
+    } else {
+      $tagDefinition = $this->fieldDefinitions->fields->{$tag};
+    }
+    return $tagDefinition;
+  }
+
+  /**
+   * @param $tagDefinition
+   * @param $subfield
+   * @return bool
+   */
+  private function hasVersionSpecificSolrField($tagDefinition, $subfield): bool
+  {
+    return !is_null($this->marcVersion)
+      && isset($tagDefinition->versionSpecificSubfields)
+      && isset($tagDefinition->versionSpecificSubfields->{$this->marcVersion})
+      && isset($tagDefinition->versionSpecificSubfields->{$this->marcVersion}->{$subfield})
+      && isset($tagDefinition->versionSpecificSubfields->{$this->marcVersion}->{$subfield}->solr);
   }
 }
