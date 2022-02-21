@@ -8,6 +8,7 @@ abstract class Facetable extends BaseTab {
   protected $facetLimit = 100;
   protected $ajaxFacet;
   protected $scheme = '';
+  protected $termFilter = '';
 
   public function createFacet($facetName, $values) {
     return new Facet($facetName, $values, $this);
@@ -32,6 +33,14 @@ abstract class Facetable extends BaseTab {
   public function getScheme() {
     return $this->scheme;
   }
+
+  /**
+   * @return string
+   */
+  public function getTermFilter(): string {
+    return $this->termFilter;
+  }
+
 
   abstract function getBasicFacetParams();
 }

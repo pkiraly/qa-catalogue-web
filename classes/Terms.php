@@ -13,6 +13,7 @@ class Terms extends Facetable {
     $this->query = getOrDefault('query', '*:*');
     $this->scheme = getOrDefault('scheme', '');
     $this->offset = getOrDefault('offset', 0);
+    $this->termFilter = getOrDefault('termFilter', '');
     $this->ajaxFacet = getOrDefault('ajax', 0, [0, 1]);
     $this->facetLimit = getOrDefault('limit', 100, [10, 25, 50, 100]);
   }
@@ -24,6 +25,7 @@ class Terms extends Facetable {
     $smarty->assign('query',     $this->query);
     $smarty->assign('scheme',    $this->scheme);
 
+    $smarty->assign('termFilter',$this->termFilter);
     $smarty->assign('facetLimit',$this->facetLimit);
     $smarty->assign('offset',    $this->offset);
     $smarty->assign('ajaxFacet', $this->ajaxFacet);
@@ -52,7 +54,7 @@ class Terms extends Facetable {
   }
 
   private function createTermList() {
-    return $this->getFacets($this->facet, $this->query, $this->facetLimit, $this->offset);
+    return $this->getFacets($this->facet, $this->query, $this->facetLimit, $this->offset, $this->termFilter);
   }
 
   private function createPrevLink() {
@@ -74,7 +76,8 @@ class Terms extends Facetable {
       'query=' . urlencode($this->query),
       'scheme=' . $this->scheme,
       // 'facetLimit=' . $this->facetLimit,
-      'offset=' . $offset
+      'offset=' . $offset,
+      'termFilter=' . urlencode($this->termFilter),
     ];
     if ($this->ajaxFacet == 1)
       $params[] = 'ajax=1';

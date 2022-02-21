@@ -119,7 +119,7 @@ abstract class BaseTab implements Tab {
     return $response;
   }
 
-  protected function getFacets($facet, $query, $limit, $offset = 0) {
+  protected function getFacets($facet, $query, $limit, $offset = 0, $termFilter = '') {
     $parameters = [
       'q=' . $query,
       'facet=on',
@@ -132,6 +132,10 @@ abstract class BaseTab implements Tab {
       'wt=json',
       'json.nl=map',
     ];
+    if (!empty($termFilter)) {
+      $parameters[] = sprintf('f.%s.facet.contains=%s', $facet, $termFilter);
+      $parameters[] = sprintf('f.%s.facet.contains.ignoreCase=true', $facet);
+    }
     $response = $this->getSolrResponse($parameters);
     return $response->facets;
   }

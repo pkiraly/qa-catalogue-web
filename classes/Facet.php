@@ -52,7 +52,8 @@ class Facet {
       'query=' . urlencode($this->controller->getQuery()),
       'scheme=' . urlencode($this->controller->getScheme()),
       'limit=' . $this->controller->getFacetLimit(),
-      'offset=' . $offset
+      'offset=' . $offset,
+      'termFilter=' . urlencode($this->controller->getTermFilter()),
     ];
     if ($this->controller->getAjaxFacet() == 1)
       $params[] = 'ajax=1';

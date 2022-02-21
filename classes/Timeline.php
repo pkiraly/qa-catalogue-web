@@ -23,7 +23,6 @@ class Timeline extends BaseTab {
     $smarty->assign('versions', $this->getVersions());
     $smarty->assign('counts', $this->readCounts());
     $smarty->assign('totals', $this->readTotal());
-
   }
 
   public function getTemplate() {
