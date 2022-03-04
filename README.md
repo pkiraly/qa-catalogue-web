@@ -133,6 +133,7 @@ class Gent extends Catalogue {
   protected $name = 'gent';
   protected $label = 'Universiteitsbibliotheek Gent';
   protected $url = 'https://lib.ugent.be/';
+  protected $marcVersion = 'GENT';
 
   function getOpacLink($id, $record) {
     return 'https://lib.ugent.be/catalog/rug01:' . trim($id);
@@ -145,7 +146,9 @@ to do any other registration. The convention is that the name of the class
 is the first upper case form of the name property (Gent - gent, Cerl - cerl)
 etc. The later should fit the data directory name, the Solr index name, and 
 either the application path or the `catalogue` property of the 
-`configuration.cnf` file.
+`configuration.cnf` file. `$url` contains an URL of the catalogue in the library
+website, `$marcVersion` is the abbreviation of MARC version used in the
+analyses.
 
 You can also share the code with me, and then I will incorporate it into the 
 code base. 
