@@ -81,6 +81,11 @@
          href="?tab=control-fields">CRTL fields</a>
     </li>
     <li class="nav-item1">
+      <a class="nav-link1{if $tab == 'collocations'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+         id="collocations-tab" aria-controls="collocations"
+         href="?tab=collocations">Collocations</a>
+    </li>
+    <li class="nav-item1">
       <a class="nav-link1{if $tab == 'download'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
          id="download-tab" aria-controls="download"
          href="?tab=download">Download</a>

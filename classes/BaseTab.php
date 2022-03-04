@@ -96,18 +96,18 @@ abstract class BaseTab implements Tab {
   protected function getSolrFields() {
     if (!isset($this->solrFields)) {
       $solrPath = $this->getIndexName();
-      $url = 'http://localhost:8983/solr/' . $solrPath; // $this->db;
-      $all_fields = file_get_contents($url . '/select/?q=*:*&wt=csv&rows=0');
+      $baseUrl = 'http://localhost:8983/solr/' . $solrPath; // $this->db;
+      $url = $baseUrl . '/select/?q=*:*&wt=csv&rows=0';
+      $all_fields = file_get_contents($url);
       $this->solrFields = explode(',', $all_fields);
     }
     return $this->solrFields;
   }
 
   protected function getSolrResponse($params) {
-    //
     $solrPath = $this->getIndexName();
     $url = 'http://localhost:8983/solr/' . $solrPath . '/select?' . join('&', $this->encodeSolrParams($params));
-    error_log($url);
+    // error_log($url);
     $solrResponse = json_decode(file_get_contents($url));
     $response = (object)[
       'numFound' => $solrResponse->response->numFound,

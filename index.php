@@ -40,6 +40,7 @@ $map = [
   'functional-analysis-histogram' => 'FunctionalAnalysisHistogram',
   'control-fields'           => 'ControlFields',
   'download'                 => 'Download',
+  'collocations'             => 'Collocations',
 ];
 
 $class = isset($map[$tab]) ? $map[$tab] : 'Completeness';
