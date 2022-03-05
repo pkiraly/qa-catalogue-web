@@ -34,7 +34,7 @@ function createSmarty($templateDir) {
   // define('APPLICATION', 'szte');
   // define('APPLICATION_DIR', $_SERVER['DOCUMENT_ROOT'] . '/' . APPLICATION);
   define('APPLICATION_DIR', __DIR__);
-  define('SMARTY_DIR', APPLICATION_DIR . '/libs/smarty-3.1.40/libs/');
+  define('SMARTY_DIR', APPLICATION_DIR . '/libs/smarty-3.1.44/libs/');
   define('_SMARTY', APPLICATION_DIR . '/libs/_smarty/');
   require_once(SMARTY_DIR . 'Smarty.class.php');
   $smarty = new Smarty();

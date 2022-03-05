@@ -89,7 +89,7 @@ mkdir images
 ln -s [data directory]/[catalogue]/img images/[catalogue]
 
 # download Smarty templating library
-export SMARTY_VERSION=3.1.40
+export SMARTY_VERSION=3.1.44
 cd libs/
 curl -s -L https://github.com/smarty-php/smarty/archive/v${SMARTY_VERSION}.zip --output v$SMARTY_VERSION.zip
 unzip -q v${SMARTY_VERSION}.zip
