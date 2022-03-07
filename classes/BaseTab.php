@@ -321,7 +321,13 @@ abstract class BaseTab implements Tab {
   }
 
   protected function getVersions() {
-    return array_diff(scandir($this->historicalDataDir,  SCANDIR_SORT_ASCENDING), ['..', '.']);
+    $versions = [];
+    $candidates = array_diff(scandir($this->historicalDataDir,  SCANDIR_SORT_ASCENDING), ['..', '.']);
+    foreach ($candidates as $version) {
+      if (is_dir($this->historicalDataDir . '/' . $version))
+        $versions[] = $version;
+    }
+    return $versions;
   }
 
   protected function getHistoricalFilePaths($name) {
