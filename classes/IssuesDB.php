@@ -85,18 +85,38 @@ ORDER BY ' . $order . ';');
   }
 
   public function getByCategoryAndTypeGrouppedByPathCount($categoryId, $typeId) {
-    $stmt = $this->prepare('SELECT COUNT(*) AS count
-FROM issue_groups AS s
-WHERE categoryId = :categoryId AND typeId = :typeId');
+    $stmt = $this->prepare(
+      'SELECT COUNT(*) AS count
+      FROM issue_groups AS s
+      WHERE categoryId = :categoryId AND typeId = :typeId'
+    );
     $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
     $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
 
     return $stmt->execute();
   }
 
-  public function getIds($errorId) {
+  public function getRecordIdsByErrorId($errorId) {
     $stmt = $this->prepare('SELECT id FROM issue_details WHERE errorId = :errorId;');
     $stmt->bindValue(':errorId', $errorId, SQLITE3_INTEGER);
+
+    return $stmt->execute();
+  }
+
+  public function getRecordIdsByCategoryId($categoryId) {
+    $stmt = $this->prepare(
+      'SELECT id FROM issue_details WHERE errorId IN 
+            (SELECT distinct(id) FROM issue_summary WHERE categoryId = :categoryId;)');
+    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
+
+    return $stmt->execute();
+  }
+
+  public function getRecordIdsByTypeId($typeId) {
+    $stmt = $this->prepare(
+      'SELECT id FROM issue_details WHERE errorId IN 
+            (SELECT distinct(id) FROM issue_summary WHERE typeId = :typeId;)');
+    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
 
     return $stmt->execute();
   }

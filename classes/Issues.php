@@ -359,7 +359,7 @@ class Issues extends BaseTab {
     $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
     $db = new IssuesDB($dir);
 
-    $result = $db->getIds($errorId);
+    $result = $db->getRecordIdsByErrorId($errorId);
     $recordIds = [];
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
       $recordIds[] = $row['id'];

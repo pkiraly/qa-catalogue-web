@@ -35,7 +35,10 @@
          href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if !is_null($path)}&path={$path}{/if}&order=records DESC">
         <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i></a>
     </td>
-    <td class="actions"></td>
+    <td class="actions">
+      <a href="{$rowData->queryUrl}" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
+      <a href="{$rowData->downloadUrl}" class="list"><i class="fa fa-download" aria-hidden="true"></i></a>
+    </td>
     <td class="chart"></td>
     <td class="percent text-right"></td>
   </tr>
