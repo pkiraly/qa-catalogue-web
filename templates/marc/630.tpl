@@ -30,11 +30,11 @@
           <span class="work-title" data="630t_SubjectAddedUniformTitle_titleOfAWork_ss">{$field->subfields->t}</span>
         {/if}
 
-        {if isset($field->subfields->{'2'})}
+        {if property_exists($field->subfields, '2')}
           vocabulary: {$field->subfields->{'2'}}</a>
         {/if}
 
-        {if isset($field->subfields->{'0'})}
+        {if property_exists($field->subfields, '0')}
           (authority: <a href="{$record->filter('6300', $field->subfields->{'0'})}" class="record-link">{$field->subfields->{'0'}}</a>)
         {/if}
       </span>

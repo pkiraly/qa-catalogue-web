@@ -23,7 +23,7 @@
               title="Assigning agency">{$field->subfields->q}</span>
       {/if}
 
-      {if isset($field->subfields->{'2'})}
+      {if property_exists($field->subfields, '2')}
         <a href="{$record->filter('0842_Classification_source_ss', $field->subfields->{'2'})}" class="source" title="Source">{$field->subfields->{'2'}}</a>
       {/if}
     </span>

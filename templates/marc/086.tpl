@@ -21,7 +21,7 @@
       {if isset($field->ind1) && $field->ind1 != ' '}
         <a href="{$record->filter('086ind1_GovernmentDocumentClassification_numberSource_ss', $field->ind1)}" class="source" title="Source">{$field->ind1}</a>
       {else}
-        {if isset($field->subfields->{'2'})}
+        {if property_exists($field->subfields, '2')}
           <a href="{$record->filter('0862_GovernmentDocumentClassification_source_ss', $field->subfields->{'2'})}" class="source" title="Source">{$field->subfields->{'2'}}</a>
         {/if}
       {/if}

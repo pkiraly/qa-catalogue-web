@@ -59,7 +59,7 @@
         <span class="version" title="Title of a work">{$field->subfields->t}</span>
       {/if}
       {* 1300_MainUniformTitle_authorityRecordControlNumber_ss *}
-      {if isset($field->subfields->{'0'})}
+      {if property_exists($field->subfields, '0')}
         [<a href="{$record->filter('1300_MainUniformTitle_authorityRecordControlNumber_ss', $field->subfields->{'0'})}" class="record-link">
         <span class="version" title="Authority record control number or standard number">{$field->subfields->{'0'}}</span></a>]
       {/if}

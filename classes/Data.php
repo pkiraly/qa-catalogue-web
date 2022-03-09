@@ -19,6 +19,8 @@ class Data extends Facetable {
   private $typeCache008 = [];
   private $typeCache007 = [];
   private $typeCache006 = [];
+  private $type = 'solr';
+  private $numFound = null;
 
   public function __construct($configuration, $db) {
     parent::__construct($configuration, $db);
@@ -27,6 +29,7 @@ class Data extends Facetable {
     $this->filters = getOrDefault('filters', []);
     $this->start = (int) getOrDefault('start', 0);
     $this->rows = (int) getOrDefault('rows', 10, $this->itemsPerPageSelectors);
+    $this->type = getOrDefault('type', 'solr', ['solr', 'issues']);
 
     $this->parameters = [
       'wt=json',
@@ -48,20 +51,21 @@ class Data extends Facetable {
     $smarty->assign('filters', $this->getFilters());
     $smarty->assign('offset', $this->offset);
 
-    $response = $this->getSolrResponse($this->buildParameters([]));
-    $smarty->assign('numFound', $response->numFound);
+    $solrParams = $this->buildParameters();
+    $smarty->assign('solrUrl', join('&', $solrParams));
+    $response = $this->getSolrResponse($solrParams);
+    if (is_null($this->numFound)) {
+      $this->numFound = $response->numFound;
+    }
+    $smarty->assign('numFound', $this->numFound);
     $smarty->assign('docs', $response->docs);
     $smarty->assign('facets', $response->facets);
-    $smarty->assign('solrUrl', join('&', $this->buildParameters([])));
     $smarty->assign('itemsPerPage', $this->getItemPerPage());
-    $smarty->assign('prevNextLinks', $this->createPrevNextLinks($response->numFound));
+    $smarty->assign('prevNextLinks', $this->createPrevNextLinks($this->numFound));
     $smarty->assign('basicFacetParams', $this->getBasicUrl());
     $smarty->assign('ajaxFacet', $this->ajaxFacet);
 
     $smarty->assign('controller', $this);
-    // $smarty->registerPlugin("function", "getRecord", array('Data', 'getRecord'));
-
-    // $smarty->registerPlugin("function", "getFirstField", array($this, 'getFirstField'));
   }
 
   public function getTemplate() {
@@ -70,7 +74,7 @@ class Data extends Facetable {
 
   private function getBasicUrl(array $excluded = []) {
     $urlParams = ['tab=data'];
-    $baseParams = ['query', 'facet', 'filters', 'start', 'rows'];
+    $baseParams = ['query', 'facet', 'filters', 'start', 'rows', 'type'];
     foreach ($baseParams as $p) {
       if (!in_array($p, $excluded))
         if (is_array($this->$p))
@@ -84,11 +88,21 @@ class Data extends Facetable {
 
   private function buildParameters() {
     $solrParams = [
-      'q=' . $this->query,
-      'start=' . $this->start,
       'rows=' . $this->rows,
       'core=' . $this->db,
     ];
+
+    if ($this->type == 'issues') {
+      if (preg_match('/^(categoryId|typeId|errorId):(\d+)$/', $this->query, $matches)) {
+        $recordIds = $this->prepareParametersForIssueQueries($matches);
+        $solrParams[] = 'q=' . urlencode('id:("' . join('" OR "', $recordIds) . '")');
+        $solrParams[] = 'start=' . 0;
+      }
+    } else {
+      $solrParams[] = 'q=' . $this->query;
+      $solrParams[] = 'start=' . $this->start;
+    }
+
 
     $solrParams = array_merge($solrParams, $this->parameters);
     $solrParams = array_merge($solrParams, $this->buildFacetParameters());
@@ -258,5 +272,38 @@ class Data extends Facetable {
 
   function getBasicFacetParams() {
     return $this->getBasicUrl();
+  }
+
+  /**
+   * @param $matches
+   * @return array
+   */
+  private function prepareParametersForIssueQueries($matches): array
+  {
+    $idType = $matches[1];
+    $id = $matches[2];
+    include_once 'IssuesDB.php';
+    $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
+    $db = new IssuesDB($dir);
+
+    if ($idType == 'errorId') {
+      $this->numFound = $db->getRecordIdsByErrorIdCount($id)->fetchArray(SQLITE3_ASSOC)['count'];
+      $result = $db->getRecordIdsByErrorId($id, $this->start, $this->rows);
+    } else if ($idType == 'categoryId') {
+      include_once 'Issues.php';
+      $issues = new Issues($this->configuration, $this->db);
+      $categories = $issues->readIssueCsv('issue-by-category.csv', 'id');
+      $this->numFound = $categories[$id]->records; // $db->getRecordIdsByCategoryIdCount($id)->fetchArray(SQLITE3_ASSOC)['count'];
+      $result = $db->getRecordIdsByCategoryId($id, $this->start, $this->rows);
+    } else if ($idType == 'typeId') {
+      $this->numFound = $db->getRecordIdsByTypeIdCount($id)->fetchArray(SQLITE3_ASSOC)['count'];
+      $result = $db->getRecordIdsByTypeId($id, $this->start, $this->rows);
+    }
+
+    $recordIds = [];
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+      $recordIds[] = $row['id'];
+    }
+    return $recordIds;
   }
 }

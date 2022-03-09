@@ -96,44 +96,71 @@ ORDER BY ' . $order . ';');
     return $stmt->execute();
   }
 
-  public function getRecordIdsByErrorId($errorId) {
-    $stmt = $this->prepare('SELECT distinct(id) FROM issue_details WHERE errorId = :errorId;');
+  public function getRecordIdsByErrorIdCount($errorId) {
+    $stmt = $this->prepare('SELECT COUNT(distinct(id)) AS count FROM issue_details WHERE errorId = :errorId;');
     $stmt->bindValue(':errorId', $errorId, SQLITE3_INTEGER);
+    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
 
-  public function getRecordIdsByCategoryId($categoryId) {
+  public function getRecordIdsByErrorId($errorId, $offset = 0, $limit = -1) {
+    $sql = 'SELECT distinct(id) FROM issue_details WHERE errorId = :id';
+    return $this->getRecordIdsById($sql, $errorId, $offset, $limit);
+  }
+
+  public function getRecordIdsByCategoryIdCount($categoryId) {
     $stmt = $this->prepare(
-      'SELECT distinct(id)
+      'SELECT COUNT(distinct(id)) AS count
        FROM issue_details
        WHERE errorId IN 
-            (SELECT distinct(id) FROM issue_summary WHERE categoryId = :categoryId);');
+            (SELECT distinct(id) FROM issue_summary WHERE categoryId = :categoryId)');
     $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
+    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
 
-  public function getRecordIdsByTypeId($typeId) {
+  public function getRecordIdsByCategoryId($categoryId, $offset = 0, $limit = -1) {
+    $sql = 'SELECT distinct(id)
+       FROM issue_details
+       WHERE errorId IN 
+            (SELECT distinct(id) FROM issue_summary WHERE categoryId = :id)';
+    return $this->getRecordIdsById($sql, $categoryId, $offset, $limit);
+  }
+
+  public function getRecordIdsByTypeIdCount($typeId) {
     $stmt = $this->prepare(
-      'SELECT distinct(id)
+      'SELECT COUNT(distinct(id)) AS count
        FROM issue_details
        WHERE errorId IN 
             (SELECT distinct(id) FROM issue_summary WHERE typeId = :typeId);');
     $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
+    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
 
-  /*
-SELECT id FROM issue_details WHERE errorId = 3;
+  public function getRecordIdsByTypeId($typeId, $offset = 0, $limit = -1) {
+    $sql = 'SELECT distinct(id)
+       FROM issue_details
+       WHERE errorId IN 
+            (SELECT distinct(id) FROM issue_summary WHERE typeId = :id)';
+    return $this->getRecordIdsById($sql, $typeId, $offset, $limit);
+  }
 
+  private function getRecordIdsById($sql, $id, $offset = 0, $limit = -1) {
+    if ($limit != -1) {
+      $sql .= ' LIMIT :limit OFFSET :offset';
+    }
+    $stmt = $this->prepare($sql);
+    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+    if ($limit != -1) {
+      $stmt->bindValue(':limit', $limit, SQLITE3_INTEGER);
+      $stmt->bindValue(':offset', $offset, SQLITE3_INTEGER);
+    }
+    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
-  SELECT s.MarcPath AS path, COUNT(DISTINCT(s.id)) AS variants, SUM(d.instances) AS instances, COUNT(DISTINCT(d.id)) AS records
-  FROM issue_summary AS s
-  LEFT JOIN issue_details AS d ON (s.id = d.errorId)
-  WHERE categoryId = :categoryId AND typeId = :typeId
-  GROUP BY s.MarcPath
-  ORDER BY ' . $order . ';');
-  */
+    return $stmt->execute();
+  }
 }

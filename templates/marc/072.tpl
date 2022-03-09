@@ -17,7 +17,7 @@
         <a href="{$record->filter('072x', $field->subfields->x)}" class="common-auxiliary-subdivision" title="Subject category code subdivision">{$field->subfields->x}</a>
       {/if}
 
-      {if isset($field->subfields->{'2'})}
+      {if property_exists($field->subfields, '2')}
         <a href="{$record->filter('0722', $field->subfields->{'2'})}" class="source" title="Source">{$field->subfields->{'2'}}</a>
       {/if}
     </span>

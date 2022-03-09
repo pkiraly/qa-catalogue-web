@@ -114,9 +114,9 @@ class Issues extends BaseTab {
           ]);
 
           $record->queryUrl = '?' . join('&', [
-            'tab=' . 'issues',
-            'errorId=' . $record->id,
-            'action=query'
+            'tab=' . 'data',
+            'type=' . 'issues',
+            'query=' . 'errorId:' . $record->id
           ]);
 
           if (!isset($this->records[$typeId])) {
@@ -322,7 +322,7 @@ class Issues extends BaseTab {
     return $statistics;
   }
 
-  private function readIssueCsv($filename, $keyField) {
+  public function readIssueCsv($filename, $keyField) {
     $elementsFile = $this->getFilePath($filename);
     return readCsv($elementsFile, $keyField);
   }
@@ -333,7 +333,7 @@ class Issues extends BaseTab {
     else if ($categoryId != '')
       $recordIds = $this->getIdsFromDB($categoryId, 'categoryId', 'download');
     else if ($typeId != '')
-      $recordIds = $this->queryByTypeId($typeId, 'typeId', 'download');
+      $recordIds = $this->getIdsFromDB($typeId, 'typeId', 'download');
 
     $attachment = sprintf('attachment; filename="issue-%s-at-%s.csv"', $errorId, date("Y-m-d"));
     header('Content-Type: text/csv; charset=utf-8');
@@ -347,7 +347,7 @@ class Issues extends BaseTab {
     else if ($categoryId != '')
       $recordIds = $this->getIdsFromDB($categoryId, 'categoryId', 'query');
     else if ($typeId != '')
-      $recordIds = $this->queryByTypeId($typeId, 'typeId', 'query');
+      $recordIds = $this->getIdsFromDB($typeId, 'typeId', 'query');
 
     $url = '?' . join('&', [
       'tab=data',

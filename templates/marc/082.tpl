@@ -25,7 +25,7 @@
         <span class="agency" data="082q_ClassificationDdc_source_ss" title="Assigning agency">{$field->subfields->q}</span>
       {/if}
 
-      {if isset($field->subfields->{'2'})}
+      {if property_exists($field->subfields, '2')}
         <a href="{$record->filter('0822_ClassificationDdc_edition_ss', $field->subfields->{'2'})}" class="source" title="Source">{$field->subfields->{'2'}}</a>
       {/if}
     </span>

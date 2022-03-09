@@ -65,7 +65,7 @@
         <span class="version" title="International Standard Serial Number">{$field->subfields->x}</span>
       {/if}
       {* 7300_AddedUniformTitle_authorityRecordControlNumber_ss *}
-      {if isset($field->subfields->{'0'})}
+      {if property_exists($field->subfields, '0')}
         [<a href="{$record->filter('7300_AddedUniformTitle_authorityRecordControlNumber_ss', $field->subfields->{'0'})}" class="record-link">
         <span class="version" title="Authority record control number or standard number">{$field->subfields->{'0'}}</span></a>]
       {/if}

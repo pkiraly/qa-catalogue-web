@@ -41,7 +41,7 @@
         <span class="part" title="Title of a work">{$field->subfields->t}</span>
       {/if}
       {* 7110_AddedMeetingName_authorityRecordControlNumber_ss *}
-      {if isset($field->subfields->{'0'})}
+      {if property_exists($field->subfields, '0')}
         <span class="part" title="Authority record control number or standard number">{$field->subfields->{'0'}}</span>
       {/if}
     </span>

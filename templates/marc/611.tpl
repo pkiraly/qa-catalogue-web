@@ -23,12 +23,12 @@
             <span class="dates" data="611d_SubjectAddedMeetingName_dates_ss">{$field->subfields->d}</span>
           {/if}
 
-          {if isset($field->subfields->{'2'})}
+          {if property_exists($field->subfields, '2')}
             vocabulary: {$field->subfields->{'2'}}</a>
           {/if}
 
           {* 6500_Topic_authorityRecordControlNumber_ss *}
-          {if isset($field->subfields->{'0'})}
+          {if property_exists($field->subfields, '0')}
             (authority: <a href="{$record->filter('6110', $field->subfields->{'0'})}" class="record-link">{$field->subfields->{'0'}}</a>)
           {/if}
         </span>

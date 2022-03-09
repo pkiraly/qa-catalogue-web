@@ -44,7 +44,7 @@
         <span class="relator" title="Title of a work">{$field->subfields->t}</span>
       {/if}
       {* 7100_AddedCorporateName_authorityRecordControlNumber_ss *}
-      {if isset($field->subfields->{'0'})}
+      {if property_exists($field->subfields, '0')}
         <span class="relator" title="Authority record control number or standard number">{$field->subfields->{'0'}}</span>
       {/if}
     </span>

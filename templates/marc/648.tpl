@@ -28,13 +28,13 @@
             <span class="work-title" title="Geographic subdivision">{$field->subfields->z}</span>
           {/if}
 
-          {if isset($field->subfields->{'2'}) || isset($field->subfields->{'0'})}[
+          {if property_exists($field->subfields, '2') || property_exists($field->subfields, '0')}[
             {* 6482_ChronologicalSubject_source_ss *}
-            {if isset($field->subfields->{'2'})}
+            {if property_exists($field->subfields, '2')}
               vocabulary: {$field->subfields->{'2'}}</a>
             {/if}
 
-            {if isset($field->subfields->{'0'})}
+            {if property_exists($field->subfields, '0')}
               (ID: <a href="{$record->filter('6470', $field->subfields->{'0'})}" class="record-link">{$field->subfields->{'0'}}</a>)
             {/if}
           ]{/if}

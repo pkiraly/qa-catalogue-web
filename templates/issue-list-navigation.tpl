@@ -18,7 +18,7 @@
            id="clickMore-{$categoryId}-{$typeId}-{$page}"
            data-id="{$categoryId}-{$typeId}"
            data-page="{$categoryId}-{$typeId}-{$page}"
-           href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if !is_null({$path})}&order={$order}&path={$path}{/if}&page={$page}">[{$page+1}]</a>
+           href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if !is_null({$path})}{if isset($order)}&order={$order}{/if}&path={$path}{/if}&page={$page}">[{$page+1}]</a>
       {/foreach}
       {if $listType == 'filtered-list'}
         |
@@ -27,7 +27,7 @@
            id="clickMore-{$categoryId}-{$typeId}-0"
            data-id="{$categoryId}-{$typeId}"
            data-page="{$categoryId}-{$typeId}-0"
-           href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}&order={$order}">list all</a>
+           href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if isset($order)}&order={$order}{/if}">list all</a>
       {/if}
     {else}
       <a class="clickMore clickMore-{$categoryId}-{$typeId}"
@@ -35,7 +35,7 @@
          id="clickMore-{$categoryId}-{$typeId}-0"
          data-id="{$categoryId}-{$typeId}"
          data-page="{$categoryId}-{$typeId}-0"
-         href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}&order={$order}">list all</a>
+         href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if isset($order)}&order={$order}{/if}">list all</a>
     {/if} |
     <a class="byTag byTag-{$categoryId}-{$typeId}"
        id="byTag-{$categoryId}-{$typeId}"

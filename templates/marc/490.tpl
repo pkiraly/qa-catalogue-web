@@ -33,7 +33,7 @@
         {/foreach}
       {/if}
 
-      {if isset($field->subfields->{'3'})}
+      {if property_exists($field->subfields, '3')}
         <a href="#" class="record-link issn" data="4903_SeriesStatement_materialsSpecified_ss"
          title="Materials specified">{$field->subfields->{'3'}}</a>
       {/if}

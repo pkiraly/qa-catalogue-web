@@ -58,14 +58,14 @@
         <a href="#" class="record-link item-number" data="080z_Udc_z_ss">{$field->subfields->z}</a>
       {/if}
       *}
-      {if isset($field->subfields->{'2'})}
+      {if property_exists($field->subfields, '2')}
         <a href="{$record->filter('0802_Udc_edition_ss', $field->subfields->{'2'})}" class="edition">{$field->subfields->{'2'}}</a>
       {/if}
 
       {if $field->ind1 == '0'}Full{/if}
       {if $field->ind1 == '1'}Abridged{/if}
 
-      {if isset($field->subfields->{'0'})}
+      {if property_exists($field->subfields, '0')}
         <a href="{$record->filter('0800_Udc_0_ss', $field->subfields->{'0'})}" class="edition">{$field->subfields->{'0'}}</a>
       {/if}
     </span>

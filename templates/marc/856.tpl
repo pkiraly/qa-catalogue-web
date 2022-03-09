@@ -7,7 +7,7 @@
     {foreach $fieldInstances as $field name="fields"}
       {if $count > 1}<li>{/if}
       <span class="856">
-        {if isset($field->subfields->{'3'})}
+        {if property_exists($field->subfields, '3')}
           <span class="" title="Materials specified">{$field->subfields->{'3'}}</span>:
         {/if}
         {if isset($field->subfields->u)}
@@ -53,16 +53,16 @@
         {if isset($field->subfields->z)}
           <em>public note:</em> <span class="" title="Public note">{$field->subfields->z}</span>,
         {/if}
-        {if isset($field->subfields->{'2'})}
+        {if property_exists($field->subfields, '2')}
           (<span class="" title="Access method">{$field->subfields->{'2'}}</span>),
         {/if}
-        {if isset($field->subfields->{'6'})}
+        {if property_exists($field->subfields, '6')}
           <span class="" title="Linkage">{$field->subfields->{'6'}}</span>,
         {/if}
-        {if isset($field->subfields->{'7'})}
+        {if property_exists($field->subfields, '7')}
           <span class="" title="Control subfield">{$field->subfields->{'7'}}</span>,
         {/if}
-        {if isset($field->subfields->{'8'})}
+        {if property_exists($field->subfields, '8')}
           <span class="" title="Field link and sequence number">{$field->subfields->{'8'}}</span>,
         {/if}
         {if isset($field->subfields->w)}

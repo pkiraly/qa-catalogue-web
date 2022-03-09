@@ -24,7 +24,7 @@
            title="Populated place name">{$field->subfields->d}</a>
       {/if}
 
-      {if isset($field->subfields->{'2'})}
+      {if property_exists($field->subfields, '2')}
         <a href="#" class="source" data="0522" title="Source">{$field->subfields->{'2'}}</a>
       {/if}
     </span>

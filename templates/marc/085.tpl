@@ -68,7 +68,7 @@
               title="Table identification">{$field->subfields->z}</span>
       {/if}
 
-      {if isset($field->subfields->{'0'})}
+      {if property_exists($field->subfields, '0')}
         <a href="#" class="source" data="0842_Classification_source_ss"
            title="Authority record control number or standard number">{$field->subfields->{'0'}}</a>
       {/if}
