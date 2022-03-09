@@ -25,12 +25,15 @@ class Issues extends BaseTab {
     $this->action = getOrDefault('action', 'list', ['list', 'query', 'download', 'record', 'ajaxIssue', 'ajaxIssueByTag']);
     if ($this->action == 'download' || $this->action == 'query') {
       $errorId = getOrDefault('errorId', '');
-      if ($errorId != '') {
+      $categoryId = getOrDefault('categoryId', '');
+      $typeId = getOrDefault('typeId', '');
+      if ($errorId != '' || $categoryId != '' || $typeId != '') {
         $this->output = 'none';
         if ($this->action == 'download')
-          $this->download($errorId);
-        elseif ($this->action == 'query')
-          $this->query($errorId);
+          $this->download($errorId, $categoryId, $typeId);
+        elseif ($this->action == 'query') {
+          $this->query($errorId, $categoryId, $typeId);
+        }
       }
     } elseif ($this->action == 'record') {
       $recordId = getOrDefault('recordId', '');
@@ -324,17 +327,28 @@ class Issues extends BaseTab {
     return readCsv($elementsFile, $keyField);
   }
 
-  private function download($errorId) {
-    $recordIds = $this->getIds($errorId, 'download');
-    $attachment = sprintf('attachment; filename="issue-%s-at-%s.csv"', $errorId, date("Y-m-d"));
+  private function download($errorId, $categoryId, $typeId) {
+    if ($errorId != '')
+      $recordIds = $this->getIds($errorId, 'download');
+    else if ($categoryId != '')
+      $recordIds = $this->getIdsFromDB($categoryId, 'categoryId', 'download');
+    else if ($typeId != '')
+      $recordIds = $this->queryByTypeId($typeId, 'typeId', 'download');
 
+    $attachment = sprintf('attachment; filename="issue-%s-at-%s.csv"', $errorId, date("Y-m-d"));
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: ' . $attachment);
     echo "Record ID\n", '"', join("\"\n\"", $recordIds), '"';
   }
 
-  private function query($errorId) {
-    $recordIds = $this->getIds($errorId, 'query');
+  private function query($errorId, $categoryId, $typeId) {
+    if ($errorId != '')
+      $recordIds = $this->getIds($errorId, 'query');
+    else if ($categoryId != '')
+      $recordIds = $this->getIdsFromDB($categoryId, 'categoryId', 'query');
+    else if ($typeId != '')
+      $recordIds = $this->queryByTypeId($typeId, 'typeId', 'query');
+
     $url = '?' . join('&', [
       'tab=data',
       'query=' . urlencode('id:("' . join('" OR "', $recordIds) . '")')
@@ -346,20 +360,26 @@ class Issues extends BaseTab {
 
   private function getIds($errorId, $action) {
     if ($this->sqliteExists())
-      $recordIds = $this->getIdsFromDB($errorId, $action);
+      $recordIds = $this->getIdsFromDB($errorId, 'errorId', $action);
     else
       $recordIds = $this->getIdsFromCsv($errorId, $action);
     return $recordIds;
   }
 
-  private function getIdsFromDB($errorId, $action) {
+  private function getIdsFromDB($id, $type, $action) {
     # install php7.4-sqlite3
     # sudo service apache2 restart
     include_once 'IssuesDB.php';
     $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
     $db = new IssuesDB($dir);
 
-    $result = $db->getRecordIdsByErrorId($errorId);
+    if ($type == 'errorId')
+      $result = $db->getRecordIdsByErrorId($id);
+    else if ($type == 'categoryId')
+      $result = $db->getRecordIdsByCategoryId($id);
+    else if ($type == 'typeId')
+      $result = $db->getRecordIdsByTypeId($id);
+
     $recordIds = [];
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
       $recordIds[] = $row['id'];

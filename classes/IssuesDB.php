@@ -106,7 +106,7 @@ ORDER BY ' . $order . ';');
   public function getRecordIdsByCategoryId($categoryId) {
     $stmt = $this->prepare(
       'SELECT id FROM issue_details WHERE errorId IN 
-            (SELECT distinct(id) FROM issue_summary WHERE categoryId = :categoryId;)');
+            (SELECT distinct(id) FROM issue_summary WHERE categoryId = :categoryId);');
     $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
 
     return $stmt->execute();
@@ -115,7 +115,7 @@ ORDER BY ' . $order . ';');
   public function getRecordIdsByTypeId($typeId) {
     $stmt = $this->prepare(
       'SELECT id FROM issue_details WHERE errorId IN 
-            (SELECT distinct(id) FROM issue_summary WHERE typeId = :typeId;)');
+            (SELECT distinct(id) FROM issue_summary WHERE typeId = :typeId);');
     $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
 
     return $stmt->execute();

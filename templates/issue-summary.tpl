@@ -66,7 +66,10 @@
       </td>
       <td class="count">{$category->instances|number_format}</td>
       <td class="count">{$category->records|number_format}</td>
-      <td class="actions"></td>
+      <td class="actions">
+        <a href="?tab=issues&categoryId={$category->id}&action=query" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
+        <a href="?tab=issues&categoryId={$category->id}&action=download" class="list"><i class="fa fa-download" aria-hidden="true"></i></a>
+      </td>
       <td class="chart"><div style="width: {ceil($category->ratio * 200)}px;">&nbsp;</div></td>
       <td class="percent text-right" title="{$category->percent|number_format:8}%">{$category->percent|number_format:2}</td>
     </tr>
@@ -79,7 +82,10 @@
         </td>
         <td class="count">{$type->instances|number_format}</td>
         <td class="count">{$type->records|number_format}</td>
-        <td class="actions"></td>
+        <td class="actions">
+          <a href="?tab=issues&typeId={$typeId}&action=query" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
+          <a href="?tab=issues&typeId={$typeId}&action=download" class="list"><i class="fa fa-download" aria-hidden="true"></i></a>
+        </td>
         <td class="chart"><div style="width: {ceil($type->ratio * 200)}px;">&nbsp;</div></td>
         <td class="percent text-right" title="{$type->percent|number_format:8}%">{$type->percent|number_format:2}</td>
       </tr>
