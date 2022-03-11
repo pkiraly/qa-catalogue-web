@@ -23,6 +23,7 @@ class Timeline extends BaseTab {
     $smarty->assign('versions', $this->getVersions());
     $smarty->assign('counts', $this->readCounts());
     $smarty->assign('totals', $this->readTotal());
+    $smarty->assign('byCategoryImage', $this->getByCategoryImage());
   }
 
   public function getTemplate() {
@@ -67,5 +68,15 @@ class Timeline extends BaseTab {
       $prevPercent = $totals[$version][2]['goodPercent'];
     }
     return $totals;
+  }
+
+  private function getByCategoryImage() {
+    if (!is_null($this->historicalDataDir) && file_exists($this->historicalDataDir)) {
+      $timelineFilename = 'timeline-by-category.png';
+      if (file_exists(sprintf('images/%s/%s', $this->db, $timelineFilename))) {
+        return $timelineFilename;
+      }
+    }
+    return null;
   }
 }

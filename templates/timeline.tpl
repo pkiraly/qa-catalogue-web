@@ -28,6 +28,10 @@
         type) between the previous and current measurement.
       </p>
 
+      {if !is_null($byCategoryImage)}
+        <p><img src="images/{$db}/{$byCategoryImage}" width="1000"/></p>
+      {/if}
+
       <table id="timeline">
         <thead>
           <tr>
