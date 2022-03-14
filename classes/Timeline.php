@@ -24,6 +24,7 @@ class Timeline extends BaseTab {
     $smarty->assign('counts', $this->readCounts());
     $smarty->assign('totals', $this->readTotal());
     $smarty->assign('byCategoryImage', $this->getByCategoryImage());
+    $smarty->assign('byTypeImages', $this->getByTypeImages());
   }
 
   public function getTemplate() {
@@ -76,6 +77,20 @@ class Timeline extends BaseTab {
       if (file_exists(sprintf('images/%s/%s', $this->db, $timelineFilename))) {
         return $timelineFilename;
       }
+    }
+    return null;
+  }
+
+  private function getByTypeImages() {
+    if (!is_null($this->historicalDataDir) && file_exists($this->historicalDataDir)) {
+      $allFiles = scandir(sprintf('images/%s', $this->db));
+      $files = [];
+      $regex = '/^timeline-by-type-.*.png$/';
+      foreach ($allFiles as $file)
+        if (preg_match($regex, $file))
+          $files[] = $file;
+
+      return $files;
     }
     return null;
   }

@@ -32,6 +32,12 @@
         <p><img src="images/{$db}/{$byCategoryImage}" width="1000"/></p>
       {/if}
 
+      {if !empty($byTypeImages)}
+        {foreach $byTypeImages as $img}
+          <p><img src="images/{$db}/{$img}" width="1000"/></p>
+        {/foreach}
+      {/if}
+
       <table id="timeline">
         <thead>
           <tr>
