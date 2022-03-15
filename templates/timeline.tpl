@@ -26,8 +26,6 @@
         type) between the previous and current measurement.
         <em>change in %</em> represents the difference in the percentage of "good" records (no having the first issue
         type) between the previous and current measurement.
-
-        {(int)$versioning}
       </p>
 
       {if !is_null($byCategoryImage)}
@@ -66,7 +64,7 @@
           {foreach from=$totals key=version item=issues name=foo}
             <tr>
               <td class="version">
-                {if $this->versioning}
+                {if $versioning}
                   <a href="?tab=issues&version={$version}">{$version}</a>
                 {else}
                   {$version}
