@@ -26,6 +26,8 @@
         type) between the previous and current measurement.
         <em>change in %</em> represents the difference in the percentage of "good" records (no having the first issue
         type) between the previous and current measurement.
+
+        {(int)$versioning}
       </p>
 
       {if !is_null($byCategoryImage)}
