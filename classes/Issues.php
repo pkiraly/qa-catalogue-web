@@ -27,9 +27,9 @@ class Issues extends BaseTab {
     if ($this->versioning) {
       $versions = $this->getVersions();
       $smarty->assign('versions', $versions);
-      $this->version = getOrDefault('version', '', $versions);
-      $smarty->assign('version', $this->version);
+      $this->version = getOrDefault('version', $versions[array_key_last($versions)], $versions);
     }
+    $smarty->assign('version', $this->version);
     $this->action = getOrDefault('action', 'list', ['list', 'query', 'download', 'record', 'ajaxIssue', 'ajaxIssueByTag']);
     if ($this->action == 'download' || $this->action == 'query') {
       $errorId = getOrDefault('errorId', '');
