@@ -5,6 +5,18 @@
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane active" id="issues" role="tabpanel" aria-labelledby="issues-tab">
       <h2>Issues in MARC21 records</h2>
+      {if isset($versions) && !empty($versions)}
+        <p>versions:
+          {foreach $versions as $currentVersion name="versions"}
+            {if $version != $currentVersion}
+              <a href="?tab=issues&version={$currentVersion}">{$currentVersion}</a>
+                {else}
+                {$currentVersion}
+            {/if}
+            {if !$smarty.foreach.versions.last}·{/if}
+          {/foreach}
+        </p>
+      {/if}
       <div id="issues-table-placeholder">
         {include 'issue-summary.tpl'}
       </div>

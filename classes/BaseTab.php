@@ -59,6 +59,10 @@ abstract class BaseTab implements Tab {
     return sprintf('%s/%s/%s', $this->configuration['dir'], $this->getDirName(), $name);
   }
 
+  protected function getVersionedFilePath($version, $name) {
+    return sprintf('%s/_historical/%s/%s/%s', $this->configuration['dir'], $this->getDirName(), $version, $name);
+  }
+
   protected function readCount($countFile = null) {
     if (is_null($countFile))
       $countFile = $this->getFilePath('count.csv');

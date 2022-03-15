@@ -18,10 +18,18 @@ class Issues extends BaseTab {
   private $page;
   private $limit;
   private $listType;
+  private $versioning = false;
+  private $version;
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
-
+    $this->versioning = ($this->configuration['versions'][$this->db] === true);
+    if ($this->versioning) {
+      $versions = $this->getVersions();
+      $smarty->assign('versions', $versions);
+      $this->version = getOrDefault('version', '', $versions);
+      $smarty->assign('version', $this->version);
+    }
     $this->action = getOrDefault('action', 'list', ['list', 'query', 'download', 'record', 'ajaxIssue', 'ajaxIssueByTag']);
     if ($this->action == 'download' || $this->action == 'query') {
       $errorId = getOrDefault('errorId', '');
@@ -81,7 +89,11 @@ class Issues extends BaseTab {
 
   private function readIssues() {
     $lineNumber = 0;
-    $elementsFile = $this->getFilePath('issue-summary.csv');
+    if ($this->versioning && $this->version != '') {
+      $elementsFile = $this->getVersionedFilePath($this->version, 'issue-summary.csv');
+    } else {
+      $elementsFile = $this->getFilePath('issue-summary.csv');
+    }
     if (file_exists($elementsFile)) {
       // $keys = ['path', 'type', 'message', 'url', 'count']; // "sum",
       // control subfield: invalid value
@@ -160,7 +172,11 @@ class Issues extends BaseTab {
   private function readIssuesAjaxCSV($categoryId, $typeId, $path = null, $order = 'records DESC', $page = 0, $limit = 100) {
     $this->readIssuesAjaxDB($categoryId, $typeId, $page, $limit);
     $lineNumber = 0;
-    $elementsFile = $this->getFilePath('issue-summary.csv');
+    if ($this->versioning && $this->version != '') {
+      $elementsFile = $this->getVersionedFilePath($this->version, 'issue-summary.csv');
+    } else {
+      $elementsFile = $this->getFilePath('issue-summary.csv');
+    }
     if (file_exists($elementsFile)) {
       // $keys = ['path', 'type', 'message', 'url', 'count']; // "sum",
       // control subfield: invalid value
@@ -198,11 +214,8 @@ class Issues extends BaseTab {
   }
 
   private function readIssuesAjaxDB($categoryId, $typeId, $path = null, $order = 'records DESC', $page = 0, $limit = 100) {
-    # install php7.4-sqlite3
-    # sudo service apache2 restart
     include_once 'IssuesDB.php';
-    $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
-    $db = new IssuesDB($dir);
+    $db = new IssuesDB($this->getDbDir());
     if (is_null($path) || empty($path)) {
       $this->recordCount = $db->getByCategoryAndTypeCount($categoryId, $typeId)->fetchArray(SQLITE3_ASSOC)['count'];
       $result = $db->getByCategoryAndType($categoryId, $typeId, $order, $page * $limit, $limit);
@@ -220,11 +233,8 @@ class Issues extends BaseTab {
   }
 
   private function readIssuesAjaxByTag($categoryId, $typeId, $order = 'records DESC', $page = 0, $limit = 100) {
-    # install php7.4-sqlite3
-    # sudo service apache2 restart
     include_once 'IssuesDB.php';
-    $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
-    $db = new IssuesDB($dir);
+    $db = new IssuesDB($this->getDbDir());
     $this->recordCount = $db->getByCategoryAndTypeGrouppedByPathCount($categoryId, $typeId)->fetchArray(SQLITE3_ASSOC)['count'];
     $result = $db->getByCategoryAndTypeGrouppedByPath($categoryId, $typeId, $order, $page * $limit, $limit);
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
@@ -323,7 +333,11 @@ class Issues extends BaseTab {
   }
 
   public function readIssueCsv($filename, $keyField) {
-    $elementsFile = $this->getFilePath($filename);
+    if ($this->versioning && $this->version != '') {
+      $elementsFile = $this->getVersionedFilePath($this->version, $filename);
+    } else {
+      $elementsFile = $this->getFilePath($filename);
+    }
     return readCsv($elementsFile, $keyField);
   }
 
@@ -367,11 +381,8 @@ class Issues extends BaseTab {
   }
 
   private function getIdsFromDB($id, $type, $action) {
-    # install php7.4-sqlite3
-    # sudo service apache2 restart
     include_once 'IssuesDB.php';
-    $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
-    $db = new IssuesDB($dir);
+    $db = new IssuesDB($this->getDbDir());
 
     if ($type == 'errorId')
       $result = $db->getRecordIdsByErrorId($id);
@@ -390,7 +401,11 @@ class Issues extends BaseTab {
   }
 
   private function getIdsFromCsv($errorId, $action) {
-    $elementsFile = $this->getFilePath('issue-collector.csv');
+    if ($this->versioning && $this->version != '') {
+      $elementsFile = $this->getVersionedFilePath($this->version, 'issue-collector.csv');
+    } else {
+      $elementsFile = $this->getFilePath('issue-collector.csv');
+    }
     $recordIds = [];
     if (file_exists($elementsFile)) {
       // $keys = ['errorId', 'recordIds']
@@ -441,5 +456,14 @@ class Issues extends BaseTab {
     $this->order = getOrDefault('order', 'records DESC');
     $this->page = getOrDefault('page', 0);
     $this->limit = getOrDefault('limit', $this->issueLimit);
+  }
+
+  private function getDbDir() {
+    if ($this->versioning && $this->version != '') {
+      $dir = sprintf('%s/_historical/%s/%s', $this->configuration['dir'], $this->getDirName(), $this->version);
+    } else {
+      $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
+    }
+    return $dir;
   }
 }
