@@ -20,6 +20,7 @@ class Timeline extends BaseTab {
     // get version
     // $this->type = getOrDefault('type', 'all', self::$supportedTypes);
 
+    $smarty->assign('versioning', $this->versioning);
     $smarty->assign('versions', $this->getVersions());
     $smarty->assign('counts', $this->readCounts());
     $smarty->assign('totals', $this->readTotal());

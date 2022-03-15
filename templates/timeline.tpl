@@ -63,7 +63,13 @@
         <tbody>
           {foreach from=$totals key=version item=issues name=foo}
             <tr>
-              <td class="version">{$version}</td>
+              <td class="version">
+                {if $this->versioning}
+                  <a href="?tab=issues&version={$version}">{$version}</a>
+                {else}
+                  {$version}
+                {/if}
+              </td>
               <td class="count">{number_format($issues['count'])}</td>
               <td colspan="2">
                 <div><div style="float: left">{sprintf("%.2f", $issues[1]['goodPercent'])}%</div>{sprintf("%.2f", $issues[1]['badPercent'])}%</div>

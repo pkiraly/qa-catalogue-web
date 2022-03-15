@@ -18,12 +18,10 @@ class Issues extends BaseTab {
   private $page;
   private $limit;
   private $listType;
-  private $versioning = false;
   private $version;
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
-    $this->versioning = ($this->configuration['versions'][$this->db] === true);
     if ($this->versioning) {
       $versions = $this->getVersions();
       $smarty->assign('versions', $versions);

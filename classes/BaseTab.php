@@ -17,6 +17,7 @@ abstract class BaseTab implements Tab {
   protected $output = 'html';
   protected $displayNetwork = false;
   protected $historicalDataDir = null;
+  protected $versioning = false;
 
   /**
    * BaseTab constructor.
@@ -30,6 +31,8 @@ abstract class BaseTab implements Tab {
     $this->catalogue = $this->createCatalogue();
     $this->marcVersion = $this->catalogue->getMarcVersion();
     $this->displayNetwork = isset($configuration['display-network']) && (int) $configuration['display-network'] == 1;
+    $this->versioning = ($this->configuration['versions'][$this->db] === true);
+
     $this->count = $this->readCount();
     $this->readLastUpdate();
     $this->handleHistoricalData();
