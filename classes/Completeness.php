@@ -9,26 +9,30 @@ class Completeness extends BaseTab {
   private $records = [];
   private $types = [];
   private $type = 'all';
+  private $sort;
   private $max = 0;
-  private static $supportedTypes = [
-    'Books', 'Computer Files', 'Continuing Resources', 'Maps', 'Mixed Materials', 'Music', 'Visual Materials', 'all'
-  ];
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 
     $this->type = getOrDefault('type', 'all', $this->catalogue::$supportedTypes);
+    $this->sort = getOrDefault('sort', '', ['number-of-record', 'number-of-instances', 'min', 'max', 'mean', 'stddev']);
 
     $this->readPackages();
     $this->readCompleteness();
 
     $smarty->assign('packages', $this->packages);
     $smarty->assign('packageIndex', $this->packageIndex);
-    $smarty->assign('records', $this->records);
+    if ($this->sort != '') {
+      $smarty->assign('records', $this->orderBy());
+    } else {
+      $smarty->assign('records', $this->records);
+    }
     $smarty->assign('types', $this->types);
     $smarty->assign('selectedType', $this->type);
     $smarty->assign('max', $this->max);
     $smarty->assign('hasNonCoreTags', $this->hasNonCoreTags);
+    $smarty->assign('sort', $this->sort);
   }
 
   public function getTemplate() {
@@ -155,7 +159,7 @@ class Completeness extends BaseTab {
           }
           $record->histogram = $histogram;
           $record->solr = $this->getSolrField($record->path);
-          $position = $this->catalogue->getSchemaType == 'MARC21' ? 3 : 4;
+          $position = $this->catalogue->getSchemaType() == 'MARC21' ? 3 : 4;
           $tag = substr($record->path, 0, $position);
           $record->isLeader = false;
           $record->isComplexControlField = in_array($tag, $complexControlFields);
@@ -209,4 +213,18 @@ class Completeness extends BaseTab {
     return sprintf('?tab=data&query=*:*&filters[]=%s:*', $field);
   }
 
+  private function orderBy() {
+    $records = [];
+    foreach ($this->records as $packageId => $package) {
+      foreach ($package as $tag => $_records) {
+        foreach ($_records as $record) {
+          $records[] = $record;
+        }
+      }
+    }
+    usort($records, function ($item1, $item2) {
+      return [$item2->{$this->sort}, $item1->path] <=> [$item1->{$this->sort}, $item2->path];
+    });
+    return $records;
+  }
 }

@@ -31,7 +31,7 @@ abstract class BaseTab implements Tab {
     $this->catalogue = $this->createCatalogue();
     $this->marcVersion = $this->catalogue->getMarcVersion();
     $this->displayNetwork = isset($configuration['display-network']) && (int) $configuration['display-network'] == 1;
-    $this->versioning = ($this->configuration['versions'][$this->db] === true);
+    $this->versioning = (isset($this->configuration['versions'][$this->db]) && $this->configuration['versions'][$this->db] === true);
 
     $this->count = $this->readCount();
     $this->readLastUpdate();
@@ -247,7 +247,7 @@ abstract class BaseTab implements Tab {
       }
 
       if (!$found) {
-        error_log(sprintf('Solr field not found: %s (%s) - %s', $solrField1, $solrField, join(', ', $candidates)));
+        // error_log(sprintf('Solr field not found: %s (%s) - %s', $solrField1, $solrField, join(', ', $candidates)));
         $solrField = FALSE;
       }
     }
