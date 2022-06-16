@@ -113,9 +113,9 @@
                 {if $record->isComplexControlField || $record->isLeader}
                   {$record->complexPosition}
                 {elseif preg_match('/ind[12]$/', $record->path)}
-                  {$catalogue->getSubfield($record->path)}
+                  {$record->path}
                 {else}
-                  {$catalogue->getSubfield($record->path)}
+                  {$record->path}
                 {/if}
               </a>
             {elseif $record->isComplexControlField || $record->isLeader}
