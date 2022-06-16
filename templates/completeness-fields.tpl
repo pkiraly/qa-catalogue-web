@@ -40,7 +40,7 @@
       </tr>
       {foreach $tags as $tagName => $records}
         <tr>
-          <td colspan="4" class="tag" id="completeness-{substr($tagName, 0, 3)}">{$tagName}</td>
+          <td colspan="4" class="tag" id="completeness-{$catalogue->getTag($tagName)}">{$tagName}</td>
         </tr>
         {assign var=prevComplexType value=""}
         {foreach $records as $record}
@@ -57,15 +57,15 @@
                   {if $record->isComplexControlField || $record->isLeader}
                     {$record->complexPosition}
                   {elseif preg_match('/ind[12]$/', $record->path)}
-                    {$record->path|substr:3}
+                    {$catalogue->getSubfield($record->path)}
                   {else}
-                    {$record->path|substr:3}
+                    {$catalogue->getSubfield($record->path)}
                   {/if}
                 </a>
               {elseif $record->isComplexControlField || $record->isLeader}
                 {$record->complexPosition}
               {else}
-                {$record->path|substr:3}
+                {$catalogue->getSubfield($record->path)}
               {/if}
             </td>
             <td class="subfield">{$record->subfield}</td>

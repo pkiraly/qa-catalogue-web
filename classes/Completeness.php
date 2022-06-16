@@ -17,7 +17,7 @@ class Completeness extends BaseTab {
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 
-    $this->type = getOrDefault('type', 'all', self::$supportedTypes);
+    $this->type = getOrDefault('type', 'all', $this->catalogue::$supportedTypes);
 
     $this->readPackages();
     $this->readCompleteness();
@@ -79,10 +79,10 @@ class Completeness extends BaseTab {
       }
       usort($this->packages, function($a, $b){
         return ($a->packageid == $b->packageid)
-         ? 0
-         : ($a->packageid < $b->packageid)
+          ? 0
+          : (($a->packageid < $b->packageid)
             ? -1
-            : 1;
+            : 1);
       });
     } else {
       $msg = sprintf("file %s is not existing", $elementsFile);
@@ -155,7 +155,8 @@ class Completeness extends BaseTab {
           }
           $record->histogram = $histogram;
           $record->solr = $this->getSolrField($record->path);
-          $tag = substr($record->path, 0, 3);
+          $position = $this->catalogue->getSchemaType == 'MARC21' ? 3 : 4;
+          $tag = substr($record->path, 0, $position);
           $record->isLeader = false;
           $record->isComplexControlField = in_array($tag, $complexControlFields);
           if ($record->isComplexControlField) {
@@ -176,9 +177,9 @@ class Completeness extends BaseTab {
             $record->package = 'other';
 
           if ($record->tag == '')
-            $record->tag = substr($record->path, 0, 3);
+            $record->tag = substr($record->path, 0, $position);
           elseif (!$record->isLeader)
-            $record->tag = substr($record->path, 0, 3) . ' &mdash; ' . $record->tag;
+            $record->tag = substr($record->path, 0, $position) . ' &mdash; ' . $record->tag;
 
           $record->packageid = (int) $record->packageid;
           if (!isset($this->records[$record->packageid]))
