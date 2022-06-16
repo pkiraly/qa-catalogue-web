@@ -111,17 +111,18 @@
             {if isset($record->solr) && !empty($record->solr)}
               <a href="?tab=data&query=&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}&filters[]={$record->solr}:*">
                 {if $record->isComplexControlField || $record->isLeader}
+                    a {$record->path}
                   {$record->complexPosition}
                 {elseif preg_match('/ind[12]$/', $record->path)}
-                  {$record->path}
+                  b {$record->path}
                 {else}
-                  {$record->path}
+                  c {$record->path}
                 {/if}
               </a>
             {elseif $record->isComplexControlField || $record->isLeader}
-              {$record->complexPosition}
+              d {$record->path}
             {else}
-              {$record->path}
+              e {$record->path}
             {/if}
           </td>
           <td class="subfield">{$record->subfield}</td>
