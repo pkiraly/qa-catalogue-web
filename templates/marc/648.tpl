@@ -5,7 +5,7 @@
   <tr>
     <td><em>chronological terms</em>:</td>
     <td>
-      {foreach $fieldInstances as $field}
+      {foreach from=$fieldInstances item=field}
         <span class="648">
           {if isset($field->subfields->a)}
             <i class="fa fa-hashtag" aria-hidden="true" title="Chronological term"></i>

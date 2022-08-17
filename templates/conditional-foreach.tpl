@@ -3,7 +3,7 @@
 {/if}
 {if isset($var)}
   {if isset($label)}{$label}{/if}
-  {foreach $var as $value}
+  {foreach from=$var item=value}
     {if isset($tag)}
       {if gettype($tag) != 'string'}{json_encode($tag)}{/if}
       <span class="tag-{$tag}">{$value}</span>{if !$value@first}, {/if}

@@ -4,10 +4,10 @@
 <tr>
   <td><em>geographic names</em>:</td>
   <td>
-    {foreach $fieldInstances as $field}
+    {foreach from=$fieldInstances item=field}
       <span class="651">
         <i class="fa fa-map" aria-hidden="true" title="geographic term"></i>
-        {foreach $field->subfields as $code => $value name=subfields}
+        {foreach from=$field->subfields key=code item=value name=subfields}
           {assign 'comma' value=(($smarty.foreach.subfields.last) ? '' : ',')}
           {if $code == 'a'}
             <a href="{$record->filter('651a_Geographic_ss', $value)}" class="record-link">{$value}</a>{$comma}

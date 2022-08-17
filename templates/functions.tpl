@@ -16,7 +16,7 @@
         <li>x: number of data elements supporting the function available in a record</li>
       </ul>
       <a>The data elements supporting this function (in the standard there are {$fieldCount} such fields, those which are not linked are not available in the catalogue):
-        {foreach $fields as $field name=fields}
+        {foreach from=$fields item=field name=fields}
           {if isset($field->link)}<a href="?tab=completeness#completeness-{$field->link}">{$field->name}</a>{else}{$field->name}{/if}{if !$smarty.foreach.fields.last},{/if}
         {/foreach}
       </p>

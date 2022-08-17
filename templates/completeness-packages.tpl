@@ -13,7 +13,7 @@
       <tr>
         <td colspan="5"><h4>Fields defined in MARC21</h4></td>
       </tr>
-      {foreach $packages as $package}
+      {foreach from=$packages item=package}
         {assign var=percent value="{$package->count * 100 / $max}"}
         {if !isset($package->iscoretag) || $package->iscoretag}
           <tr>
@@ -32,7 +32,7 @@
           <td colspan="5"><h4>Fields defined in extensions of MARC</h4></td>
         </tr>
       {/if}
-      {foreach $packages as $package}
+      {foreach from=$packages item=package}
         {assign var=percent value="{$package->count * 100 / $max}"}
         {if isset($package->iscoretag) && !$package->iscoretag}
           <tr>

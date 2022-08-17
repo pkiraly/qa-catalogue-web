@@ -33,7 +33,7 @@
       {/if}
 
       {if !empty($byTypeImages)}
-        {foreach $byTypeImages as $img}
+        {foreach from=$byTypeImages item=img}
           <p><img src="images/{$db}/{$img}" width="1000"/></p>
         {/foreach}
       {/if}

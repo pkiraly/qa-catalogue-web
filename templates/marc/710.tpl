@@ -4,7 +4,7 @@
 <tr>
   <td><em>additional corporate names</em>:</td>
   <td>
-  {foreach $fieldInstances as $field}
+  {foreach from=$fieldInstances item=field}
     <span class="710">
       <a href="{$record->filter('710a_AddedCorporateName_ss', $field->subfields->a)}" class="record-link" title="Corporate name or jurisdiction name as entry element">{$field->subfields->a}</a>
       {* 710b_AddedCorporateName_subordinateUnit_ss *}

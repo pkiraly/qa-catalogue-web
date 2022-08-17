@@ -13,7 +13,7 @@
             field: <input list="facet" name="facet" id="facetInput" style="width: 800px;" value="{if isset($facet) && !empty($facet)}{$facet}{else}- select a field! -{/if}">
             <datalist id="facet">
               <option value="">-- select --</option>
-                {foreach $solrFields as $field}
+                {foreach from=$solrFields item=field}
                   <option value="{$field}"{if $field == $facet} selected="selected"{/if}>{$field}</option>
                 {/foreach}
             </datalist>

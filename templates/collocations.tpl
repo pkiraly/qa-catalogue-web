@@ -13,7 +13,7 @@
                 field #1 <input list="facet1" name="facet1" id="facetInput1" style="width: 300px;"
                               value="{if isset($facet1) && !empty($facet1)}{$facet1}{else}- select a field! -{/if}">
                 <datalist id="facet1">
-                  {foreach $solrFields as $field}
+                  {foreach from=$solrFields item=field}
                     <option value="{$field}"{if $field == $facet1} selected="selected"{/if}>{$field}</option>
                   {/foreach}
                 </datalist>
@@ -22,7 +22,7 @@
                 field #2 <input list="facet2" name="facet2" id="facetInput2" style="width: 300px;"
                               value="{if isset($facet2) && !empty($facet2)}{$facet2}{else}- select a field! -{/if}">
                 <datalist id="facet2">
-                  {foreach $solrFields as $field}
+                  {foreach from=$solrFields item=field}
                     <option value="{$field}"{if $field == $facet2} selected="selected"{/if}>{$field}</option>
                   {/foreach}
                 </datalist>
@@ -38,7 +38,7 @@
 
       {if isset($results) && !empty($results)}
         <table>
-          {foreach $results as $result}
+          {foreach from=$results item=result}
             <tr>
               <td>{if preg_match('/(^\s|\s$)/', $result[0])}"{$result[0]}"{else}{$result[0]}{/if}</td>
               <td>{if preg_match('/(^\s|\s$)/', $result[1])}"{$result[1]}"{else}{$result[1]}{/if}</td>

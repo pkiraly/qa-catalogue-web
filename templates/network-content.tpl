@@ -1,7 +1,7 @@
 <p>Each record get a score based on a number of criteria. Each criteria results in a
   positive score. The final (rounded) score is the summary of these criteria scores.</p>
 
-{foreach $fields as $index => $field}
+{foreach from=$fields key=index item=field}
   <h3>{$field->tag} ({$field->count|number_format})</h3>
   <table>
     <tbody>

@@ -4,7 +4,7 @@
 <tr>
   <td><em>main meeting names</em>:</td>
   <td>
-  {foreach $fieldInstances as $field}
+  {foreach from=$fieldInstances item=field}
     <span class="111">
       <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
       <a href="{$record->filter('111a_MainMeetingName_ss', $field->subfields->a)}" class="record-link">{$field->subfields->a}</a>

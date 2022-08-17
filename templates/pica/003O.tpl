@@ -3,7 +3,7 @@
 <tr>
   <td class="record-field-label">Sonstige Nummern:</td>
   <td>
-    {foreach from=$fieldInstances item=$field name="fields"}
+    {foreach from=$fieldInstances item=field name="fields"}
       {if isset($field->subfields->a)}<span class="003O$a">{$field->subfields->a}</span>:{/if}
       {if isset($field->subfields->{'0'})}
         {if isset($field->subfields->a) && $field->subfields->a == 'OCoLC'}

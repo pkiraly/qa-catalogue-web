@@ -4,10 +4,10 @@
 {if !is_null($fieldInstances)}
   Series:
   <ul>
-  {foreach $fieldInstances as $field}
+  {foreach from=$fieldInstances item=field}
     <li>
       {if isset($field->subfields->a)}
-        {foreach $field->subfields->a as $value name="subfields"}
+        {foreach from=$field->subfields->a item=value name="subfields"}
           <a href="{$record->filter($controller->getSolrField('490', 'a'), $value)}"
              class="record-link tag-490a" data="490a_SeriesStatement_ss">{$value}</a>
             {if !$smarty.foreach.subfields.last}, {/if}
@@ -20,14 +20,14 @@
       {/if}
 
       {if isset($field->subfields->v)}
-        {foreach $field->subfields->v as $value}
+        {foreach from=$field->subfields->v item=value}
           <a href="#" class="record-link subarea" data="490v_SeriesStatement_volume_ss"
          title="Volume/sequential designation">{$value}</a>{if !$value@last}, {/if}
         {/foreach}
       {/if}
 
       {if isset($field->subfields->x)}
-        {foreach $field->subfields->x as $value}
+        {foreach from=$field->subfields->x item=value}
           <span class="issn" data="490x"
            title="International Standard Serial Number">{$value}</span>{if !$value@last}, {/if}
         {/foreach}

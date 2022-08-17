@@ -5,7 +5,7 @@
 <tr>
   <td><em>government document classifications</em>:</td>
   <td>
-  {foreach $fieldInstances as $field}
+  {foreach from=$fieldInstances item=field}
     <span class="086">
       {*  Classification number *}
       {if isset($field->subfields->a)}

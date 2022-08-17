@@ -5,7 +5,7 @@
 <tr>
   <td><em>subject category code</em>:</td>
   <td>
-  {foreach $fieldInstances as $field}
+  {foreach from=$fieldInstances item=field}
     <span class="072">
       {*  Subject category code *}
       {if isset($field->subfields->a)}

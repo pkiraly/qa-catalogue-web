@@ -7,7 +7,7 @@
       <h2>Completeness</h2>
       <div>
         by document types:
-        {foreach $types as $type name=types}
+        {foreach from=$types item=type name=types}
           {if $type == $selectedType}
             <strong>{$type}</strong>
           {else}

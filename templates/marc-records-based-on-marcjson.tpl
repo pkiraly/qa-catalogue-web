@@ -1,4 +1,4 @@
-{foreach $docs as $doc}
+{foreach from=$docs item=doc}
   {assign var="record" value=$controller->getRecord($doc)}
   {assign var="id" value=$doc->id|regex_replace:"/ +$/":""}
   {assign var="type" value=$record->getFirstField('type_ss')}
@@ -37,7 +37,7 @@
     {* 250a_Edition_editionStatement_ss *}
     {assign var="fieldInstances" value=$record->getFields('250')}
     {if !is_null($fieldInstances)}
-      {foreach $fieldInstances as $field}
+      {foreach from=$fieldInstances item=field}
         {if isset($field->subfields->a)}
           <span class="250a_Edition_editionStatement_ss">{$field->subfields->a}</span>
         {/if}
@@ -82,7 +82,7 @@
     {assign var="tag520s" value=$record->getFields('520')}
     {if !is_null($tag520s)}
       <em>summary:</em> <span class="520">
-        {foreach $tag520s as $field}
+        {foreach from=$tag520s item=field}
           {include 'conditional-foreach.tpl' obj=$field->subfields key='a' suffix='<br/>'}
         {/foreach}
       </span>
@@ -92,7 +92,7 @@
     {assign var="tag505s" value=$record->getFields('505')}
     {if !is_null($tag505s)}
       <!-- 505a_TableOfContents_ss -->
-      {foreach $tag505s as $field}
+      {foreach from=$tag505s item=field}
         {include 'conditional-foreach.tpl' obj=$field->subfields key='a' suffix='<br/>'}
       {/foreach}
     {/if}
@@ -237,9 +237,9 @@
           <div class="marc-details" id="marc-details-{$id}">
             {if isset($doc->record_sni)}
               <table>
-                {foreach $record->getMarcFields() as $row}
+                {foreach from=$record->getMarcFields() item=row}
                   <tr>
-                    {foreach $row as $cell}
+                    {foreach from=$row item=cell}
                       <td>{$cell}</td>
                     {/foreach}
                   </tr>
@@ -268,10 +268,10 @@
           <h4>Representation in Solr index</h4>
 
           <ul>
-            {foreach $record->getAllSolrFields() as $field}
+            {foreach from=$record->getAllSolrFields() item=field}
               <li>
                 <span class="label">{$field->label}:</span>
-                {foreach $field->value as $value}
+                {foreach from=$field->value item=value}
                   {$value}{if !$value@last} &mdash; {/if}
                 {/foreach}
               </li>

@@ -4,7 +4,7 @@
 <tr>
   <td><em>uncontrolled name</em>:</td>
   <td>
-  {foreach $fieldInstances as $field}
+  {foreach from=$fieldInstances item=field}
     <span class="720">
       <i class="fa fa-user" aria-hidden="true" title="Name"></i>
       <a href="{$record->filter('720a', $field->subfields->a)}" class="record-link" title="Name">{$field->subfields->a}</a>

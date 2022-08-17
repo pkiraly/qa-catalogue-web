@@ -3,7 +3,7 @@
 <tr>
   <td><em>Universal Decimal Classification</em>:</td>
   <td>
-  {foreach $fieldInstances as $field}
+  {foreach from=$fieldInstances item=field}
     <span class="080">
       {*  Personal name *}
       {if isset($field->subfields->a)}

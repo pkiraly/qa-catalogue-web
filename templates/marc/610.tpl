@@ -4,7 +4,7 @@
   <td><em>corporate names</em>:</td>
   <td>
   <em>Corporate names as subjects</em><br>
-    {foreach $fieldInstances as $field}
+    {foreach from=$fieldInstances item=field}
       <span class="600">
           {*  Personal name *}
           {if isset($field->subfields->a)}

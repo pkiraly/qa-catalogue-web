@@ -20,7 +20,7 @@
   </tr>
   </thead>
   <tbody>
-  {foreach $controller->get007Definition($type) as $id => $data}
+  {foreach from=$controller->get007Definition($type) key=id item=data}
     <tr>
       <td>{$id}</td>
       <td>{$data->label}</td>

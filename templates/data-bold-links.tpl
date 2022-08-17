@@ -1,4 +1,4 @@
-{foreach $items as $item}
+{foreach from=$items item=item}
   {if $item->url == ''}
     <strong>{$item->text}</strong>
   {else}

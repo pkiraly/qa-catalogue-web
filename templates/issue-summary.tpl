@@ -50,7 +50,7 @@
 <table id="issues-table">
   <thead>
     <tr>
-      {foreach $fieldNames item=field}
+      {foreach from=$fieldNames item=field}
         <th {if in_array($field, ['instances', 'records'])}class="text-right"{/if}>{if field == 'message'}value/explanation{else}{$field}{/if}</th>
       {/foreach}
       <th></th>
@@ -59,7 +59,7 @@
     </tr>
   </thead>
   <tbody>
-  {foreach $categories key=index item=category name=categories}
+  {foreach from=$categories key=index item=category name=categories}
     <tr class="category-header {$category->category}{if !$smarty.foreach.categories.first} padded{/if}">
       <td colspan="3" class="category">
         <span class="category">{$category->category}</span> level issues
@@ -73,7 +73,7 @@
       <td class="chart"><div style="width: {ceil($category->ratio * 200)}px;">&nbsp;</div></td>
       <td class="percent text-right" title="{$category->percent|number_format:8}%">{$category->percent|number_format:2}</td>
     </tr>
-    {foreach $category->types item=typeId name=types}
+    {foreach from=$category->types item=typeId name=types}
       {assign var="type" value=$types[$typeId]}
       <tr class="type-header {$type->type} h-{$category->id}-{$type->id}">
         <td colspan="3" class="type">

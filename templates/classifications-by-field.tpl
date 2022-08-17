@@ -13,7 +13,7 @@
   </thead>
   <tbody>
     {assign var=previous value=""}
-    {foreach $records as $record}
+    {foreach from=$records item=record}
       {if $previous != $record->field}
         <tr>
           <td colspan="4"><h4>{$record->field} &mdash; {$fields[$record->field]}</h4></td>
@@ -39,7 +39,7 @@
             <div id="classification-subfields-{$record->id}" class="classification-subfields">
               <p>Which subfields are available in the individual instances of this field?</p>
               <table class="matrix">
-                {foreach $matrices[$record->id]['codes'] as $code => $divs}
+                {foreach from=$matrices[$record->id]['codes'] key=code item=divs}
                   {assign var="total" value=0}
                   {assign var="key" value="{$record->field}{$code}"}
                   {assign var=MAX_WIDTH value=280 - count($divs)}
@@ -75,10 +75,10 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {foreach $subfields[$record->id]['list'] as $item}
+                  {foreach from=$subfields[$record->id]['list'] item=item}
                     <tr>
                       <td>
-                        {foreach $item->subfields as $subfield}
+                        {foreach from=$item->subfields item=subfield}
                           {assign var="sub" value={substr($subfield, 0, 2)}}
                           <a href="?tab=completeness#completeness-{$record->field}{$sub}" class="completeness" data-field="{$record->field}{$sub}"
                           >{$subfield}</a>{if !$subfield@last}, {/if}

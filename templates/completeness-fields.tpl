@@ -47,16 +47,16 @@
   </thead>
   <tbody>
     {if $sort == ''}
-      {foreach $records as $packageId => $tags name=packages}
+      {foreach from=$records key=packageId item=tags name=packages}
         <tr{if !$smarty.foreach.packages.first} class="padded"{/if}>
           <td colspan="11" class="package" id="package-{$packageId}">{$packageIndex[$packageId]}</td>
         </tr>
-        {foreach $tags as $tagName => $records}
+        {foreach from=$tags key=tagName item=records}
           <tr>
             <td colspan="4" class="tag" id="completeness-{$catalogue->getTag($tagName)}">{$tagName}</td>
           </tr>
           {assign var=prevComplexType value=""}
-          {foreach $records as $record}
+          {foreach from=$records item=record}
             {assign var=percent value="{$record->{'number-of-record'} * 100 / $max}"}
             {if $record->isComplexControlField && $prevComplexType != $record->complexType}
               <tr>
@@ -104,7 +104,7 @@
       {/foreach}
     {else}
       <tr><td colspan="5">sorted</td></tr>
-      {foreach $records as $record}
+      {foreach from=$records item=record}
         {assign var=percent value="{$record->{'number-of-record'} * 100 / $max}"}
         <tr>
           <td class="path" id="completeness-{$record->path}">

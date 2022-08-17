@@ -3,7 +3,7 @@
 <tr>
   <td class="record-field-label">Autorin/Autor:</td>
   <td>
-    {foreach from=$fieldInstances item=$field name="fields"}
+    {foreach from=$fieldInstances item=field name="fields"}
       {if isset($field->subfields->a)}<span class="028A$a">{$field->subfields->a},</span>{/if}
       {if isset($field->subfields->A)}<span class="028A$a">{$field->subfields->A},</span>{/if}
       {if isset($field->subfields->d)}<span class="028A$d">{$field->subfields->d}</span>{/if}

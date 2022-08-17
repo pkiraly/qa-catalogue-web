@@ -129,7 +129,7 @@ the summary of these criteria scores.
 <p>The histograms of the individual components:</p>
 
 <table>
-{foreach $fields as $index => $field}
+{foreach from=$fields key=index item=field}
   {if $index % 3 == 0}
       <tr>
   {/if}

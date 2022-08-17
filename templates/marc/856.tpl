@@ -4,7 +4,7 @@
   {assign var="count" value="{count($fieldInstances)}"}
   <p>
     {if $count > 1}<em>Links:</em><ul class="list-856">{/if}
-    {foreach $fieldInstances as $field name="fields"}
+    {foreach from=$fieldInstances item=field name="fields"}
       {if $count > 1}<li>{/if}
       <span class="856">
         {if property_exists($field->subfields, '3')}

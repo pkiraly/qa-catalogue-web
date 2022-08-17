@@ -10,9 +10,9 @@
 
       <div id="history-content">
         <ul>
-          {foreach $categories as $label => $files}
+          {foreach from=$categories key=label item=files}
             <li><strong>{$label}:</strong>
-              {foreach $files as $file => $property name=files}
+              {foreach from=$files key=file item=property name=files}
                 <a href="?tab=download&action=download&file={$file}">{$file}</a>
                 <span style="color: #999">{$property['size']}</span>{if !$smarty.foreach.files.last}, {/if}
               {/foreach}

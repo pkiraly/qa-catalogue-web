@@ -7,7 +7,7 @@
       <h2>Issues in MARC21 records</h2>
       {if isset($versions) && !empty($versions)}
         <p>versions:
-          {foreach $versions as $currentVersion name="versions"}
+          {foreach from=$versions item=currentVersion name="versions"}
             {if $version != $currentVersion}
               <a href="?tab=issues&version={$currentVersion}">{$currentVersion}</a>
                 {else}

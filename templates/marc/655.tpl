@@ -4,10 +4,10 @@
 <tr>
   <td><em>genres/forms</em>:</td>
   <td>
-  {foreach $fieldInstances as $field}
+  {foreach from=$fieldInstances item=field}
     <span class="655">
       <i class="fa fa-hashtag" aria-hidden="true" title="topical term"></i>
-      {foreach $field->subfields as $code => $value name=subfields}
+      {foreach from=$field->subfields key=code item=value name=subfields}
         {assign 'comma' value=(($smarty.foreach.subfields.last) ? '' : ',')}
         {if $code == 'a'}
           <a href="{$record->filter('655a_GenreForm_ss', $value)}" class="record-link">{$value}</a>{$comma}

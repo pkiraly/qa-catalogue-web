@@ -4,18 +4,18 @@
 <table id="issues-table">
   <thead>
     <tr>
-      {foreach $fieldNames as $field}
+      {foreach from=$fieldNames item=field}
         <th class="{$field}">{if $field == 'message'}value/explanation{else}{$field}{/if}</th>
       {/foreach}
     </tr>
   </thead>
   <tbody>
-    {foreach $types item=type name=types}
+    {foreach from=$types item=type name=types}
       <tr class="type-header {$type}">
         <td colspan="3" class="type"><span class="type">{$type}</span> ({count($issues[$type])} variant(s))
         <td class="count">{$typeCounter[$type]}</td>
       </tr>
-      {foreach $issues[$type] item=rowData name=foo}
+      {foreach from=$issues[$type] item=rowData name=foo}
         <tr class="t-{$smarty.foreach.types.index}">
           <td class="path">{$rowData->path}</td>
           <td class="message">

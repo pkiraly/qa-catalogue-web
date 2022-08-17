@@ -12,7 +12,7 @@
     </tr>
   </thead>
   <tbody>
-    {foreach $fieldHierarchy as $name => $category}
+    {foreach from=$fieldHierarchy key=name item=category}
       <tr class="category">
         <td colspan="2"><h4><i class="fa {$category->icon}" aria-hidden="true" title="{$name}" style="color: black"></i> {$name}</h4></td>
         <td title"instances" class="text-right">{$category->instancecount|number_format}</td>
@@ -20,12 +20,12 @@
         <td class="chart"><div style="width: {ceil($category->ratio * 200)}px;">&nbsp;</div></td>
         <td class="text-right" title="{$category->percent|number_format:8}%">{$category->percent|number_format:2}%</td>
       </tr>
-      {foreach $category->fields as $field => $fieldName}
+      {foreach from=$category->fields key=field item=fieldName}
         {if count($recordsByField[$field]) > 0}
           <tr>
             <td colspan="6"><h5>{$field} &mdash; {$fieldName}</h5></td>
           </tr>
-          {foreach $recordsByField[$field] as $record}
+          {foreach from=$recordsByField[$field] item=record}
             <tr>
               <td>{$record->location}</td>
               <td>
@@ -45,7 +45,7 @@
                   <div id="authority-subfields-{$record->id}" class="authority-subfields">
                     <p>Which subfields are available in the individual instances of this field?</p>
                     <table class="matrix">
-                      {foreach $matrices[$record->id]['codes'] as $code => $divs}
+                      {foreach from=$matrices[$record->id]['codes'] key=code item=divs}
                         {assign var="total" value=0}
                         {assign var="key" value="{$record->field}{$code}"}
                         {assign var=MAX_WIDTH value=280 - count($divs)}
@@ -80,10 +80,10 @@
                         </tr>
                       </thead>
                       <tbody>
-                        {foreach $subfields[$record->id]['list'] as $item}
+                        {foreach from=$subfields[$record->id]['list'] item=item}
                           <tr>
                             <td>
-                              {foreach $item->subfields as $subfield}
+                              {foreach from=$item->subfields item=subfield}
                                 {assign var="sub" value={substr($subfield, 0, 2)}}
                                 <a href="?tab=completeness#completeness-{$record->field}{$sub}" class="completeness" data-field="{$record->field}{$sub}"
                                   >{$subfield}</a>{if !$subfield@last}, {/if}

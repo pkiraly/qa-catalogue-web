@@ -19,7 +19,7 @@
     </tr>
   </thead>
   <tbody>
-  {foreach $fields as $index => $field}
+  {foreach from=$fields key=index item=field}
     <tr>
       <td><a href="#shelf-ready-component-{$index + 1}">{$index + 1}.</a> {$field->label}</td>
       <td>{$field->marcpath}</td>
@@ -34,7 +34,7 @@
 <p>The histograms of the individual components:</p>
 
 <table>
-{foreach $fields as $index => $field}
+{foreach from=$fields key=index item=field}
   {if $index % 3 == 0}
       <tr>
   {/if}

@@ -1,4 +1,4 @@
-{foreach $docs as $doc}
+{foreach from=$docs item=doc}
   {assign var="record" value=$controller->getRecord($doc)}
   {assign var="id" value=$doc->id|regex_replace:"/ +$/":""}
   {assign var="type" value=$record->getFirstField('type_ss')}
@@ -140,9 +140,9 @@
           <div class="marc-details" id="marc-details-{$id}">
             {if isset($doc->record_sni)}
               <table>
-                {foreach $record->getMarcFields('PICA') as $row}
+                {foreach from=$record->getMarcFields('PICA') item=row}
                   <tr>
-                    {foreach $row as $cell}
+                    {foreach from=$row item=cell}
                       <td>{$cell}</td>
                     {/foreach}
                   </tr>
@@ -171,10 +171,10 @@
           <h4>Representation in Solr index</h4>
 
           <ul>
-            {foreach $record->getAllSolrFields() as $field}
+            {foreach from=$record->getAllSolrFields() item=field}
               <li>
                 <span class="label">{$field->label}:</span>
-                {foreach $field->value as $value}
+                {foreach from=$field->value item=value}
                   {$value}{if !$value@last} &mdash; {/if}
                 {/foreach}
               </li>

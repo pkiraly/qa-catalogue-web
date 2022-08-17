@@ -3,7 +3,7 @@
 <tr>
   <td class="record-field-label">Schlagwortfolge:</td>
   <td>
-    {foreach from=$fieldInstances item=$field name="fields"}
+    {foreach from=$fieldInstances item=field name="fields"}
       {if isset($field->subfields->a) || isset($field->subfields->A)}
         {if isset($field->subfields->{'9'})}
           <a href="?tab=data&query=044K9_ss:{$field->subfields->{'9'}}">
