@@ -4,12 +4,10 @@
 <tr>
   <td class="record-field-label">Titel:</td>
   <td>
-  {foreach $fieldInstances as $field name=fields}
-    <span class="021A">
-      {foreach $field->subfields as $code => $value name=subfields}
-        <span class="{$code}">{$value}</span> {if !$smarty.foreach.subfields.last}/{/if}
-      {/foreach}
-    </span>
+  {foreach from=$fieldInstances item=$field name=fields}
+    {if isset($field->subfields->a)}<span class="021A$a">{$field->subfields->a}</span>{/if}
+    {if isset($field->subfields->d)} : <span class="021A$d">{$field->subfields->d}</span>{/if}
+    {if isset($field->subfields->h)} / <span class="021A$d">{$field->subfields->h}</span>{/if}
     {if !$smarty.foreach.fields.last}<br/>{/if}
   {/foreach}
   </td>
