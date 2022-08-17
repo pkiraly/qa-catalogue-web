@@ -3,12 +3,12 @@
 {/if}
 {if isset($var)}
   {if isset($label)}{$label}{/if}
-  {foreach from=$var item=value}
+  {foreach from=$var item=value name=values}
     {if isset($tag)}
       {if gettype($tag) != 'string'}{json_encode($tag)}{/if}
-      <span class="tag-{$tag}">{$value}</span>{if !$value@first}, {/if}
+      <span class="tag-{$tag}">{$value}</span>{if !$smarty.foreach.values.first}, {/if}
     {else}
-      {$value}{if !$value@first}, {/if}
+      {$value}{if !$smarty.foreach.values.first}, {/if}
     {/if}
   {/foreach}
   {if isset($suffix)}{$suffix}{/if}

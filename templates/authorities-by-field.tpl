@@ -83,10 +83,10 @@
                         {foreach from=$subfields[$record->id]['list'] item=item}
                           <tr>
                             <td>
-                              {foreach from=$item->subfields item=subfield}
+                              {foreach from=$item->subfields item=subfield name=subfields}
                                 {assign var="sub" value={substr($subfield, 0, 2)}}
                                 <a href="?tab=completeness#completeness-{$record->field}{$sub}" class="completeness" data-field="{$record->field}{$sub}"
-                                  >{$subfield}</a>{if !$subfield@last}, {/if}
+                                  >{$subfield}</a>{if !$smarty.foreach.subfields.last}, {/if}
                               {/foreach}
                             </td>
                             <td class="count">{$item->count|number_format}</td>

@@ -20,16 +20,16 @@
       {/if}
 
       {if isset($field->subfields->v)}
-        {foreach from=$field->subfields->v item=value}
+        {foreach from=$field->subfields->v item=value name=values}
           <a href="#" class="record-link subarea" data="490v_SeriesStatement_volume_ss"
-         title="Volume/sequential designation">{$value}</a>{if !$value@last}, {/if}
+         title="Volume/sequential designation">{$value}</a>{if !$smarty.foreach.values.last}, {/if}
         {/foreach}
       {/if}
 
       {if isset($field->subfields->x)}
-        {foreach from=$field->subfields->x item=value}
+        {foreach from=$field->subfields->x item=value name=values}
           <span class="issn" data="490x"
-           title="International Standard Serial Number">{$value}</span>{if !$value@last}, {/if}
+           title="International Standard Serial Number">{$value}</span>{if !$smarty.foreach.values.last}, {/if}
         {/foreach}
       {/if}
 

@@ -40,8 +40,8 @@
 
     {if isset($doc->{'490a_SeriesStatement_ss'})}
       Series:
-      {foreach from=$doc->{'490a_SeriesStatement_ss'} item=value}
-        <a href="#" class="record-link tag-490a" data="490a_SeriesStatement_ss">{$value}</a>{if !$value@last}, {/if}
+      {foreach from=$doc->{'490a_SeriesStatement_ss'} item=value name=values}
+        <a href="#" class="record-link tag-490a" data="490a_SeriesStatement_ss">{$value}</a>{if !$smarty.foreach.values.last}, {/if}
       {/foreach}
       {include 'conditional-foreach.tpl' obj=$doc key='490v_SeriesStatement_volume_ss' tag='490v'}
       <br/>
@@ -53,12 +53,12 @@
     {if hasMainPersonalName($doc)}
       <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
       {if isset($doc->{'100a_MainPersonalName_personalName_ss'})}
-        {foreach from=$doc->{'100a_MainPersonalName_personalName_ss'} item=value}
+        {foreach from=$doc->{'100a_MainPersonalName_personalName_ss'} item=value name=values}
           <a href="#" class="record-link" data="100a_MainPersonalName_personalName_ss">{$value}</a>
           {if isset($doc->{'100d_MainPersonalName_dates_ss'})}
-            {$doc->{'100d_MainPersonalName_dates_ss'}[$value@index]}
+            {$doc->{'100d_MainPersonalName_dates_ss'}[$smarty.foreach.values.index]}
           {/if}
-          {if !$value@last}, {/if}
+          {if !$smarty.foreach.values.last}, {/if}
         {/foreach}
       {/if}
       <br/>
@@ -66,70 +66,70 @@
 
     {if isset($doc->{'700a_AddedPersonalName_personalName_ss'})}
       <i class="fa fa-user" aria-hidden="true" title="personal name"></i>
-      {foreach from=$doc->{'700a_AddedPersonalName_personalName_ss'} item=value}
+      {foreach from=$doc->{'700a_AddedPersonalName_personalName_ss'} item=value name=values}
         <a href="#" class="record-link" data="700a_AddedPersonalName_personalName_ss">{$value}</a>
-        {if isset($doc->{'700d_AddedPersonalName_dates_ss'}) && isset($doc->{'700d_AddedPersonalName_dates_ss'}[$value@index])}
-          {$doc->{'700d_AddedPersonalName_dates_ss'}[$value@index]}
+        {if isset($doc->{'700d_AddedPersonalName_dates_ss'}) && isset($doc->{'700d_AddedPersonalName_dates_ss'}[$smarty.foreach.values.index])}
+          {$doc->{'700d_AddedPersonalName_dates_ss'}[$smarty.foreach.values.index]}
         {/if}
-        {if !$value@last}, {/if}
+        {if !$smarty.foreach.values.last}, {/if}
       {/foreach}
       <br/>
     {/if}
 
     {if isset($doc->{'710a_AddedCorporateName_ss'})}
-      {foreach from=$doc->{'710a_AddedCorporateName_ss'} item=value}
+      {foreach from=$doc->{'710a_AddedCorporateName_ss'} item=value name=values}
         {$value}
         {if isset($doc->{'710d_AddedCorporateName_dates'})}
-          {$doc->{'710d_AddedCorporateName_dates'}[$value@index]}
+          {$doc->{'710d_AddedCorporateName_dates'}[$smarty.foreach.values.index]}
         {/if}
-        {if !$value@last}, {/if}
+        {if !$smarty.foreach.values.last}, {/if}
       {/foreach}
       <br/>
     {/if}
 
     {if isset($doc->{'650a_Topic_topicalTerm_ss'})}
       <i class="fa fa-hashtag" aria-hidden="true" title="topical term"></i>
-      {foreach from=$doc->{'650a_Topic_topicalTerm_ss'} item=value}
-        <a href="#" class="record-link" data="650a_Topic_topicalTerm_ss">{$value}</a>{if !$value@last}, {/if}
+      {foreach from=$doc->{'650a_Topic_topicalTerm_ss'} item=value name=values}
+        <a href="#" class="record-link" data="650a_Topic_topicalTerm_ss">{$value}</a>{if !$smarty.foreach.values.last}, {/if}
       {/foreach}
       <br/>
     {/if}
 
     {if isset($doc->{'650z_Topic_geographicSubdivision_ss'})}
       <i class="fa fa-map" aria-hidden="true" title="geographic subdivision"></i>
-      {foreach from=$doc->{'650z_Topic_geographicSubdivision_ss'} item=value}
-        <a href="#" class="record-link" data="650z_Topic_geographicSubdivision_ss">{$value}</a>{if !$value@last}, {/if}
+      {foreach from=$doc->{'650z_Topic_geographicSubdivision_ss'} item=value name=values}
+        <a href="#" class="record-link" data="650z_Topic_geographicSubdivision_ss">{$value}</a>{if !$smarty.foreach.values.last}, {/if}
       {/foreach}
       <br/>
     {/if}
 
     {if isset($doc->{'650v_Topic_formSubdivision_ss'})}
       <i class="fa fa-tag" aria-hidden="true" title="form"></i>
-      {foreach from=$doc->{'650v_Topic_formSubdivision_ss'} item=value}
-        <a href="#" class="record-link" data="650v_Topic_formSubdivision_ss">{$value}</a>{if !$value@last}, {/if}
+      {foreach from=$doc->{'650v_Topic_formSubdivision_ss'} item=value name=values}
+        <a href="#" class="record-link" data="650v_Topic_formSubdivision_ss">{$value}</a>{if !$smarty.foreach.values.last}, {/if}
       {/foreach}
       <br/>
     {/if}
 
     {if isset($doc->{'6500_Topic_authorityRecordControlNumber_ss'})}
-      {foreach from=$doc->{'6500_Topic_authorityRecordControlNumber_ss'} item=value}
-        <a href="#" class="record-link" data="6500_Topic_authorityRecordControlNumber_ss">{$value}</a>{if !$value@last}, {/if}
+      {foreach from=$doc->{'6500_Topic_authorityRecordControlNumber_ss'} item=value name=values}
+        <a href="#" class="record-link" data="6500_Topic_authorityRecordControlNumber_ss">{$value}</a>{if !$smarty.foreach.values.last}, {/if}
       {/foreach}
       <br/>
     {/if}
 
     {if isset($doc->{'6510_Geographic_authorityRecordControlNumber_ss'})}
       <i class="fa fa-map" aria-hidden="true"></i>
-      {foreach from=$doc->{'6510_Geographic_authorityRecordControlNumber_ss'} item=value}
-        <a href="#" class="record-link" data="6510_Geographic_authorityRecordControlNumber_ss">{$value}</a>{if !$value@last}, {/if}
+      {foreach from=$doc->{'6510_Geographic_authorityRecordControlNumber_ss'} item=value name=values}
+        <a href="#" class="record-link" data="6510_Geographic_authorityRecordControlNumber_ss">{$value}</a>{if !$smarty.foreach.values.last}, {/if}
       {/foreach}
       <br/>
     {/if}
 
     {if isset($doc->{'6550_GenreForm_authorityRecordControlNumber_ss'})}
       <i class="fa fa-map" aria-hidden="true"></i>
-      {foreach from=$doc->{'6550_GenreForm_authorityRecordControlNumber_ss'} item=value}
-        <a href="#" class="record-link" data="6550_GenreForm_authorityRecordControlNumber_ss">{$value}</a>{if !$value@last}, {/if}
+      {foreach from=$doc->{'6550_GenreForm_authorityRecordControlNumber_ss'} item=value name=values}
+        <a href="#" class="record-link" data="6550_GenreForm_authorityRecordControlNumber_ss">{$value}</a>{if !$smarty.foreach.values.last}, {/if}
       {/foreach}
       <br/>
     {/if}
@@ -190,8 +190,8 @@
             {foreach getAllSolrFields($doc) as $field}
               <li>
                 <span class="label">{$field->label}:</span>
-                {foreach from=$field->value item=value}
-                  {$value}{if !$value@last} &mdash; {/if}
+                {foreach from=$field->value item=value name=values}
+                  {$value}{if !$smarty.foreach.values.last} &mdash; {/if}
                 {/foreach}
               </li>
             {/foreach}
