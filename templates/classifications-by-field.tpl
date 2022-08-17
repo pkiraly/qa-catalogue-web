@@ -47,11 +47,11 @@
                     <td class="labels">
                       <a href="?tab=completeness#completeness-{$key}" class="completeness" data-field="{$key}">{$code}</a>
                       {if isset($elements[$key]) && $elements[$key] != ''}
-                          {$elements[$key]}
+                        {$elements[$key]}
                       {elseif $item == '$9'}
                         &mdash; <span>(locally defined subfield)</span>
                       {else}
-                        &mdash; <span>(not defined in MARC21)</span>
+                        &mdash; <span>(not defined)</span>
                       {/if}
                     </td>
                     <td class="bars">

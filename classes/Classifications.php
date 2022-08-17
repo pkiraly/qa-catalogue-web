@@ -166,6 +166,11 @@ class Classifications extends AddedEntry {
           } else if ($record->field == '852') {
             $this->createFacets($record, '852a_Location_location');
             $this->ind1Orsubfield2($record, '852ind1_852_shelvingScheme_ss', '852__852___ss');
+          } else if (in_array($record->field, ['045A', '045B', '045F', '045R'])) {
+            $record->facet = $record->field . 'a_ss';
+            $record->facet2 = $record->field . 'a_ss';
+          } else {
+            error_log('strange field: ' . $record->field);
           }
 
           if (isset($record->facet2) && $record->facet2 != '')
