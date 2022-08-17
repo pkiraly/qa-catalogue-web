@@ -16,7 +16,7 @@ class K10plus_pica extends Catalogue {
   ];
 
   function getOpacLink($id, $record) {
-    return ' https://opac.k10plus.de/DB=2.299/PPNSET?PPN=' . trim($id) . '&PRS=HOL&HILN=888&INDEXSET=21';
+    return 'https://opac.k10plus.de/DB=2.299/PPNSET?PPN=' . trim($id) . '&PRS=HOL&HILN=888&INDEXSET=21';
   }
 
   public function getTag(string $input): string {

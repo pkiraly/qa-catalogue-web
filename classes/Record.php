@@ -194,7 +194,7 @@ class Record {
          || !empty($this->doc->{'9119_ManifestationIdentifier_ss'}));
   }
 
-  public function getMarcFields() {
+  public function getMarcFields($schemaType = 'MARC21'): array {
     /*
     if (is_string($doc->record_sni)) {
       $marc = json_decode($doc->record_sni);
@@ -205,22 +205,24 @@ class Record {
 
     $rows = [];
     foreach ($this->record as $tag => $value) {
-      if (preg_match('/^00/', $tag)) {
+      if ($schemaType == 'MARC21' && preg_match('/^00/', $tag)) {
         $rows[] = [$tag, '', '', '', $value];
       } else if ($tag == 'leader') {
         $rows[] = ['LDR', '', '', '', $value];
       } else {
-        foreach ($value as $instance) {
-          $firstRow = [$tag, $instance->ind1, $instance->ind2];
-          $i = 0;
-          foreach ($instance->subfields as $code => $s_value) {
-            $i++;
-            if ($i == 1) {
-              $firstRow[] = '$' . $code;
-              $firstRow[] = $s_value;
-              $rows[] = $firstRow;
-            } else {
-              $rows[] = ['', '', '', '$' . $code, $s_value];
+        if (!is_null($value) && is_array($value) && !empty($value)) {
+          foreach ($value as $instance) {
+            $firstRow = [$tag, $instance->ind1, $instance->ind2];
+            $i = 0;
+            foreach ($instance->subfields as $code => $s_value) {
+              $i++;
+              if ($i == 1) {
+                $firstRow[] = '$' . $code;
+                $firstRow[] = $s_value;
+                $rows[] = $firstRow;
+              } else {
+                $rows[] = ['', '', '', '$' . $code, $s_value];
+              }
             }
           }
         }

@@ -66,7 +66,11 @@
             </div>
 
             <div id="records">
-              {include 'marc-records-based-on-marcjson.tpl'}
+              {if $schemaType == 'PICA'}
+                {include 'pica-records-based-on-json.tpl'}
+              {else}
+                {include 'marc-records-based-on-marcjson.tpl'}
+              {/if}
             </div>
 
             <div class="row" id="navigation-footer">
