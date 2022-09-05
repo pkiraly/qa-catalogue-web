@@ -197,7 +197,7 @@ abstract class BaseTab implements Tab {
 
   public function getFieldDefinitions() {
     if (!isset($this->fieldDefinitions))
-      $this->fieldDefinitions = json_decode(file_get_contents('fieldmap.json'));
+      $this->fieldDefinitions = json_decode(file_get_contents('schemas/marc-schema-with-solr-and-extensions.json'));
     return $this->fieldDefinitions;
   }
 
@@ -228,7 +228,10 @@ abstract class BaseTab implements Tab {
         $solrField .= preg_match('/[0-9a-zA-Z]/', $subfield) ? $subfield : 'x' . bin2hex($subfield);
       $candidates = [];
       $found = FALSE;
+      $solrField = str_replace('?', '\?', $solrField);
+      $solrField = str_replace('/', '\/', $solrField);
       foreach ($this->getSolrFields() as $existingSolrField) {
+        // error_log('solrField: ' . $solrField);
         if (preg_match('/^' . $solrField . '_/', $existingSolrField)) {
           $parts = explode('_', $existingSolrField);
           if (count($parts) == 4) {
@@ -264,6 +267,10 @@ abstract class BaseTab implements Tab {
       if (substr($solrField, 0, 2) == '00') {
         $parts = explode('_', $solrField);
         if (isset($this->fieldDefinitions->fields->{$parts[0]}))
+          if (!isset($this->fieldDefinitions->fields->{$parts[0]}->types))
+            error_log('no types for ' . $parts[0]);
+          if (!is_array($this->fieldDefinitions->fields->{$parts[0]}->types))
+            error_log(sprintf('$s is not an array, but %s', $parts[0], gettype($this->fieldDefinitions->fields->{$parts[0]}->types)));
           foreach ($this->fieldDefinitions->fields->{$parts[0]}->types as $name => $type)
             foreach ($type->positions as $position => $definition)
               if ($position == $parts[1]) {

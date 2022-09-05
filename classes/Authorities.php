@@ -51,26 +51,50 @@ class Authorities extends AddedEntry {
   private function readByField(Smarty &$smarty) {
     global $solrFields;
 
-    $fields = [
-      '100' => 'Main Entry - Personal Name',
-      '110' => 'Main Entry - Corporate Name',
-      '111' => 'Main Entry - Meeting Name',
-      '130' => 'Main Entry - Uniform Title',
-      '700' => 'Added Entry - Personal Name',
-      '710' => 'Added Entry - Corporate Name',
-      '711' => 'Added Entry - Meeting Name',
-      '720' => 'Added Entry - Uncontrolled Name',
-      '730' => 'Added Entry - Uniform Title',
-      '740' => 'Added Entry - Uncontrolled Related/Analytical Title',
-      '751' => 'Added Entry - Geographic Name',
-      '752' => 'Added Entry - Hierarchical Place Name',
-      '753' => 'System Details Access to Computer Files',
-      '754' => 'Added Entry - Taxonomic Identification',
-      '800' => 'Series Added Entry - Personal Name',
-      '810' => 'Series Added Entry - Corporate Name',
-      '811' => 'Series Added Entry - Meeting Name',
-      '830' => 'Series Added Entry - Uniform Title'
-    ];
+    if ($this->catalogue->getSchemaType() == 'MARC21') {
+      $fields = [
+        '100' => 'Main Entry - Personal Name',
+        '110' => 'Main Entry - Corporate Name',
+        '111' => 'Main Entry - Meeting Name',
+        '130' => 'Main Entry - Uniform Title',
+        '700' => 'Added Entry - Personal Name',
+        '710' => 'Added Entry - Corporate Name',
+        '711' => 'Added Entry - Meeting Name',
+        '720' => 'Added Entry - Uncontrolled Name',
+        '730' => 'Added Entry - Uniform Title',
+        '740' => 'Added Entry - Uncontrolled Related/Analytical Title',
+        '751' => 'Added Entry - Geographic Name',
+        '752' => 'Added Entry - Hierarchical Place Name',
+        '753' => 'System Details Access to Computer Files',
+        '754' => 'Added Entry - Taxonomic Identification',
+        '800' => 'Series Added Entry - Personal Name',
+        '810' => 'Series Added Entry - Corporate Name',
+        '811' => 'Series Added Entry - Meeting Name',
+        '830' => 'Series Added Entry - Uniform Title'
+      ];
+    } else if ($this->catalogue->getSchemaType() == 'PICA') {
+      $fields = [
+        '022A' => 'Werktitel und sonstige unterscheidende Merkmale des Werks',
+        '022A' => 'Weiterer Werktitel und sonstige unterscheidende Merkmale',
+        '028A' => 'Person/Familie als 1. geistiger Schöpfer',
+        '028B' => '2. und weitere Verfasser',
+        '028C' => 'Person/Familie als 2. und weiterer geistiger Schöpfer, sonstige Personen/Familien, die mit dem Werk in Verbindung stehen, Mitwirkende, Hersteller, Verlage, Vertriebe',
+        '028E' => 'Interpret',
+        '028G' => 'Sonstige Person/Familie',
+        '029A' => 'Körperschaft als 1. geistiger Schöpfer',
+        '029E' => 'Körperschaft als Interpret',
+        '029F' => 'Körperschaft als 2. und weiterer geistiger Schöpfer, sonstige Körperschaften, die mit dem Werk in Verbindung stehen, Mitwirkende, Hersteller, Verlage, Vertriebe',
+        '029G' => 'Sonstige Körperschaft',
+        '032V' => 'Sonstige unterscheidende Eigenschaften des Werks',
+        '032W' => 'Form des Werks',
+        '032X' => 'Besetzung',
+        '033D' => 'Normierter Ort',
+        '033H' => 'Verbreitungsort in normierter Form',
+        '033J' => 'Drucker, Verleger oder Buchhändler (bei Alten Drucken)',
+        '037Q' => 'Beschreibung des Einbands',
+        '037R' => 'Buchschmuck (Druckermarken, Vignetten, Zierleisten etc.)',
+      ];
+    }
     $smarty->assign('fields', $fields);
     $smarty->assign('fieldHierarchy', $this->getFieldHierarchy());
 
@@ -190,56 +214,110 @@ class Authorities extends AddedEntry {
   private function getFieldHierarchy() {
     $categoryStatistics = readCsv($this->getFilePath('authorities-by-categories.csv'), 'category');
 
-    $categories = [
-      'Personal names' => (object)[
-        'icon' => 'fa-user',
-        'fields' => [
-          '100' => 'Main Entry - Personal Name',
-          '700' => 'Added Entry - Personal Name',
-          '800' => 'Series Added Entry - Personal Name',
+    if ($this->catalogue->getSchemaType() == 'MARC21') {
+      $categories = [
+        'Personal names' => (object)[
+          'icon' => 'fa-user',
+          'fields' => [
+            '100' => 'Main Entry - Personal Name',
+            '700' => 'Added Entry - Personal Name',
+            '800' => 'Series Added Entry - Personal Name',
+          ]
+        ],
+        'Corporate names' => (object)[
+          'icon' => 'fa-building',
+          'fields' => [
+            '110' => 'Main Entry - Corporate Name',
+            '710' => 'Added Entry - Corporate Name',
+            '810' => 'Series Added Entry - Corporate Name',
+          ]
+        ],
+        'Meeting names' => (object)[
+          'icon' => 'fa-calendar',
+          'fields' => [
+            '111' => 'Main Entry - Meeting Name',
+            '711' => 'Added Entry - Meeting Name',
+            '811' => 'Series Added Entry - Meeting Name',
+          ]
+        ],
+        'Geographic names' => (object)[
+          'icon' => 'fa-map',
+          'fields' => [
+            '751' => 'Added Entry - Geographic Name',
+            '752' => 'Added Entry - Hierarchical Place Name',
+          ]
+        ],
+        'Titles' => (object)[
+          'icon' => 'fa-book',
+          'fields' => [
+            '130' => 'Main Entry - Uniform Title',
+            '730' => 'Added Entry - Uniform Title',
+            '740' => 'Added Entry - Uncontrolled Related/Analytical Title',
+            '830' => 'Series Added Entry - Uniform Title'
+          ]
+        ],
+        'Other' => (object)[
+          'icon' => 'fa-archive',
+          'fields' => [
+            '720' => 'Added Entry - Uncontrolled Name',
+            '753' => 'System Details Access to Computer Files',
+            '754' => 'Added Entry - Taxonomic Identification',
+          ]
         ]
-      ],
-      'Corporate names' => (object)[
-        'icon' => 'fa-building',
-        'fields' => [
-          '110' => 'Main Entry - Corporate Name',
-          '710' => 'Added Entry - Corporate Name',
-          '810' => 'Series Added Entry - Corporate Name',
+      ];
+    } else if ($this->catalogue->getSchemaType() == 'PICA') {
+      $categories = [
+        'Personal names' => (object)[
+          'icon' => 'fa-user',
+          'fields' => [
+            '028A' => 'Person/Familie als 1. geistiger Schöpfer',
+            '028B' => '2. und weitere Verfasser',
+            '028C' => 'Person/Familie als 2. und weiterer geistiger Schöpfer, sonstige Personen/Familien, die mit dem Werk in Verbindung stehen, Mitwirkende, Hersteller, Verlage, Vertriebe',
+            '028E' => 'Interpret',
+            '028G' => 'Sonstige Person/Familie',
+          ]
+        ],
+        'Corporate names' => (object)[
+          'icon' => 'fa-building',
+          'fields' => [
+            '029A' => 'Körperschaft als 1. geistiger Schöpfer',
+            '033J' => 'Drucker, Verleger oder Buchhändler (bei Alten Drucken)',
+            '029E' => 'Körperschaft als Interpret',
+            '029F' => 'Körperschaft als 2. und weiterer geistiger Schöpfer, sonstige Körperschaften, die mit dem Werk in Verbindung stehen, Mitwirkende, Hersteller, Verlage, Vertriebe',
+            '029G' => 'Sonstige Körperschaft',
+          ]
+        ],
+        'Meeting names' => (object)[
+          'icon' => 'fa-calendar',
+          'fields' => []
+        ],
+        'Geographic names' => (object)[
+          'icon' => 'fa-map',
+          'fields' => [
+            '033D' => 'Normierter Ort',
+            '033H' => 'Verbreitungsort in normierter Form',
+          ]
+        ],
+        'Titles' => (object)[
+          'icon' => 'fa-book',
+          'fields' => [
+            '022A' => 'Werktitel und sonstige unterscheidende Merkmale des Werks',
+          ]
+        ],
+        'Other' => (object)[
+          'icon' => 'fa-archive',
+          'fields' => [
+            '032V' => 'Sonstige unterscheidende Eigenschaften des Werks',
+            '032W' => 'Form des Werks',
+            '032X' => 'Besetzung',
+            '037Q' => 'Beschreibung des Einbands',
+            '037R' => 'Buchschmuck (Druckermarken, Vignetten, Zierleisten etc.)',
+          ]
         ]
-      ],
-      'Meeting names' => (object)[
-        'icon' => 'fa-calendar',
-        'fields' => [
-          '111' => 'Main Entry - Meeting Name',
-          '711' => 'Added Entry - Meeting Name',
-          '811' => 'Series Added Entry - Meeting Name',
-        ]
-      ],
-      'Geographic names' => (object)[
-        'icon' => 'fa-map',
-        'fields' => [
-          '751' => 'Added Entry - Geographic Name',
-          '752' => 'Added Entry - Hierarchical Place Name',
-        ]
-      ],
-      'Titles' => (object)[
-        'icon' => 'fa-book',
-        'fields' => [
-          '130' => 'Main Entry - Uniform Title',
-          '730' => 'Added Entry - Uniform Title',
-          '740' => 'Added Entry - Uncontrolled Related/Analytical Title',
-          '830' => 'Series Added Entry - Uniform Title'
-        ]
-      ],
-      'Other' => (object)[
-        'icon' => 'fa-archive',
-        'fields' => [
-          '720' => 'Added Entry - Uncontrolled Name',
-          '753' => 'System Details Access to Computer Files',
-          '754' => 'Added Entry - Taxonomic Identification',
-        ]
-      ]
-    ];
+      ];
+    }
+
+
     foreach ($categories as $name => $obj) {
       $obj->recordcount = $categoryStatistics[$name]->recordcount;
       $obj->instancecount = $categoryStatistics[$name]->instancecount;

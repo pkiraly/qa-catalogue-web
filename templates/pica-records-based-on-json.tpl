@@ -124,9 +124,14 @@
              aria-controls="marc-raw-tab">PICA</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
+          <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
              id="marc-human-tab-{$id}" href="#marc-human-{$id}"
-             aria-controls="marc-human-tab">Solr</a>
+             aria-controls="marc-human-tab">for humans</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
+             id="marc-solr-tab-{$id}" href="#marc-solr-{$id}"
+             aria-controls="marc-solr-tab">Solr</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
@@ -151,6 +156,25 @@
             {/if}
           </div>
         </div>
+        <div class="tab-pane active record-tab" id="marc-human-{$id}" role="tabpanel" aria-labelledby="data-tab">
+          <div class="marc-human" id="marc-human-{$id}">
+            {if isset($doc->record_sni)}
+              <table>
+                {foreach from=$record->resolvePicaFields() item=row}
+                  <tr {if !empty($row[0])}class="tag"{/if}>
+                    {foreach from=$row item=cell}
+                      {if gettype($cell) == 'array'}
+                        <td colspan="{$cell[1]}" class="tag-title"><em>{$cell[0]}</em></td>
+                      {else}
+                        <td>{$cell}</td>
+                      {/if}
+                   {/foreach}
+                  </tr>
+                {/foreach}
+              </table>
+            {/if}
+          </div>
+        </div>
         <div class="tab-pane record-tab marc-leader control-field-explanation" id="marc-leader-{$id}" role="tabpanel" aria-labelledby="data-tab">
           {include 'marc/leader.tpl'}
         </div>
@@ -167,7 +191,7 @@
             {include 'marc/006.tpl'}
           </div>
         {/if}
-        <div class="tab-pane record-tab" id="marc-human-{$id}" role="tabpanel" aria-labelledby="data-tab">
+        <div class="tab-pane record-tab" id="marc-solr-{$id}" role="tabpanel" aria-labelledby="data-tab">
           <h4>Representation in Solr index</h4>
 
           <ul>

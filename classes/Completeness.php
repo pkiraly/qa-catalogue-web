@@ -47,7 +47,7 @@ class Completeness extends BaseTab {
       $lineNumber = 0;
       $header = [];
 
-      $fieldDefinitions = json_decode(file_get_contents('fieldmap.json'));
+      $fieldDefinitions = json_decode(file_get_contents('schemas/marc-schema-with-solr-and-extensions.json'));
 
       foreach (file($elementsFile) as $line) {
         $lineNumber++;
@@ -130,7 +130,7 @@ class Completeness extends BaseTab {
         "mixed" => "Mixed Materials"
       ];
 
-      $fieldDefinitions = json_decode(file_get_contents('fieldmap.json'));
+      $fieldDefinitions = json_decode(file_get_contents('schemas/marc-schema-with-solr-and-extensions.json'));
       foreach (file($elementsFile) as $line) {
         $lineNumber++;
         $values = str_getcsv($line);
@@ -138,7 +138,8 @@ class Completeness extends BaseTab {
           $header = $values;
         } else {
           if (count($header) != count($values)) {
-            error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
+            error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
+                              $elementsFile, $lineNumber, count($header), count($values)));
             error_log($line);
           }
           $record = (object)array_combine($header, $values);

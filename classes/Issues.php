@@ -105,7 +105,8 @@ class Issues extends BaseTab {
           $header[1] = 'path';
         } else {
           if (count($header) != count($values)) {
-            error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
+            error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
+              $elementsFile, $lineNumber, count($header), count($values)));
           }
           $record = (object)array_combine($header, $values);
           $typeId = $record->typeId;

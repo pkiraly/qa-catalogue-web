@@ -51,7 +51,9 @@ abstract class Catalogue {
     return substr($input, 0, 3);
   }
 
-  public function getSubfield(string $input): string {
+  public function getSubfield($input): string {
+    if (is_null($input))
+      return "";
     return substr($input, 3);
   }
 }

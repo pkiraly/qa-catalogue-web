@@ -23,7 +23,7 @@ class K10plus_pica extends Catalogue {
     return substr($input, 0, strpos($input, '$'));
   }
 
-  public function getSubfield(string $input): string {
+  public function getSubfield($input): string {
     return substr($input, strpos($input, '$'));
   }
 
