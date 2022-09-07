@@ -241,7 +241,7 @@
         <div class="tab-pane active record-tab" id="marc-raw-{$id}" role="tabpanel" aria-labelledby="data-tab">
           <div class="marc-details" id="marc-details-{$id}">
             {if isset($doc->record_sni)}
-              <table>
+              <table id="marc-details-{$id}-table">
                 {foreach from=$record->getMarcFields() item=row}
                   <tr>
                     {foreach from=$row item=cell}
@@ -256,7 +256,7 @@
         <div class="tab-pane active record-tab" id="marc-human-{$id}" role="tabpanel" aria-labelledby="data-tab">
           <div class="marc-human" id="marc-human-{$id}">
             {if isset($doc->record_sni)}
-              <table>
+              <table id="marc-human-{$id}-table">
                 {foreach from=$record->resolveMarcFields() item=row}
                   <tr>
                     {foreach from=$row item=cell}
