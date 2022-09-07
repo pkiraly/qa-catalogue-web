@@ -230,13 +230,15 @@ abstract class BaseTab implements Tab {
       $found = FALSE;
       $solrField = str_replace('?', '\?', $solrField);
       $solrField = str_replace('/', '\/', $solrField);
-      foreach ($this->getSolrFields() as $existingSolrField) {
+      $existingSolrFields = $this->getSolrFields();
+      foreach ($existingSolrFields as $existingSolrField) {
         // error_log('solrField: ' . $solrField);
         if (preg_match('/^' . $solrField . '_/', $existingSolrField)) {
           $parts = explode('_', $existingSolrField);
           if (count($parts) == 4) {
             $found = TRUE;
             $solrField = $existingSolrField;
+            unset($existingSolrFields[$existingSolrField]);
             break;
           } else {
             $candidates[] = $existingSolrField;
