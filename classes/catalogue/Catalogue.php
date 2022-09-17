@@ -13,7 +13,6 @@ abstract class Catalogue {
     'Books', 'Computer Files', 'Continuing Resources', 'Maps', 'Mixed Materials', 'Music', 'Visual Materials', 'all'
   ];
 
-
   abstract function getOpacLink($id, $record);
 
   public function getName() {

@@ -21,7 +21,7 @@
         <td class="text-right" title="{$category->percent|number_format:8}%">{$category->percent|number_format:2}%</td>
       </tr>
       {foreach from=$category->fields key=field item=fieldName}
-        {if count($recordsByField[$field]) > 0}
+        {if isset($recordsByField[$field]) && count($recordsByField[$field]) > 0}
           <tr>
             <td colspan="6"><h5>{$field} &mdash; {$fieldName}</h5></td>
           </tr>
@@ -31,7 +31,7 @@
               <td>
                 {if (isset($record->facet2))}
                   {if $record->facet2exists}
-                    <a href="?tab=terms&facet={$record->facet2}&query="*:*&scheme=%22{$record->scheme|urlencode}%22" class="term-link facet2">{$record->scheme}</a>
+                    <a href="?tab=terms&facet={$record->facet2}&query=*:*&scheme=%22{$record->scheme|urlencode}%22" class="term-link facet2">{$record->scheme}</a>
                   {else}
                     {$record->scheme}
                   {/if}
@@ -54,7 +54,7 @@
                             <a href="?tab=completeness#completeness-{$key}" class="completeness" data-field="{$key}">{$code}</a>
                             {if isset($elements[$key]) && $elements[$key] != ''}
                               {$elements[$key]}
-                            {elseif $item == '$9'}
+                            {elseif $code == '$9'}
                               &mdash; <span>(locally defined subfield)</span>
                             {else}
                               &mdash; <span>(not defined in MARC21)</span>
