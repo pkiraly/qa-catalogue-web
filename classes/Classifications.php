@@ -54,7 +54,8 @@ class Classifications extends AddedEntry {
 
     $solrFields = $this->getSolrFields($this->db);
 
-    $fields = [
+    if ($this->catalogue->getSchemaType() == 'MARC21') {
+      $fields = [
         '052' => 'Geographic Classification',
         '055' => 'Classification Numbers Assigned in Canada',
         '072' => 'Subject Category Code',
@@ -80,7 +81,29 @@ class Classifications extends AddedEntry {
         '658' => 'Index Term - Curriculum Objective',
         '662' => 'Subject Added Entry - Hierarchical Place Name',
         '852' => 'Location',
-    ];
+      ];
+    } elseif ($this->catalogue->getSchemaType() == 'PICA') {
+      include_once('pica/PicaSchemaManager.php');
+      $schema = new PicaSchemaManager();
+      $fields = [
+        "045A" => "LCC-Notation",
+        "045F" => "DDC-Notation",
+        "045R" => "Regensburger Verbundklassifikation (RVK)",
+        "045B" => "Allgemeine Systematik für Bibliotheken (ASB)",
+        "045B/00" => "Allgemeine Systematik für Bibliotheken (ASB)",
+        "045B/01" => "Systematik der Stadtbibliothek Duisburg (SSD)",
+        "045B/02" => "Systematik für Bibliotheken (SfB)",
+        "045B/03" => "Klassifikation für Allgemeinbibliotheken (KAB)",
+        "045B/04" => "Systematiken der ekz",
+        "045B/05" => "Gattungsbegriffe (DNB)",
+        "045C" => "Notation – Beziehung",
+        "045E" => "Sachgruppen der Deutschen Nationalbibliografie bis 2003",
+        "045G" => "Sachgruppen der Deutschen Nationalbibliografie ab 2004",
+        "041A" => "Sachbegriff - Bevorzugte Benennung",
+        "144Z/00-99" => "Lokale Schlagwörter",
+        "145S/00-99" => "Lesesaalsystematik der SBB"
+      ];
+    }
 
     $solrFieldMap = $this->getSolrFieldMap();
 

@@ -16,7 +16,7 @@
     {foreach from=$records item=record}
       {if $previous != $record->field}
         <tr>
-          <td colspan="4"><h4>{$record->field} &mdash; {$fields[$record->field]}</h4></td>
+          <td colspan="6"><h4>{$record->field} &mdash; {$fields[$record->field]}</h4></td>
         </tr>
       {/if}
       <tr>
