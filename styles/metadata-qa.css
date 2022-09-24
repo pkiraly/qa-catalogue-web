@@ -332,22 +332,47 @@ div.authority-subfields {
   min-width: 100%;
 }
 
-div.classification-subfields table,
-div.authority-subfields table {
-  width: 100%;
-  min-width: 100%;
+td.classification-subfields,
+td.authority-subfields {
+  display: none;
+  padding: 20px;
+  border-left: 1px solid #37ba00;
+  border-right: 1px solid #37ba00;
+  border-bottom: 1px solid #37ba00;
+  border-top: 2px dotted #37ba00;
 }
 
-div.classification-subfields table th.count,
-div.authority-subfields table th.count {
+td.classification-subfields table,
+td.authority-subfields table {
+  margin-top: 10px;
+}
+
+td.classification-subfields ul,
+td.authority-subfields ul {
+  margin-bottom: 0;
+}
+
+td.classification-subfields table,
+td.authority-subfields table {
+  /* width: 100%; */
+  /* min-width: 100%; */
+}
+
+td.classification-subfields table th.count,
+td.authority-subfields table th.count {
   width: 100px;
   min-width: 100px;
   max-width: 100px;
   text-align: right;
 }
 
-div.classification-subfields table td.count,
-div.authority-subfields table td.count {
+td.classification-subfields table.subfields td.subfields,
+td.authority-subfields table.subfields td.subfields {
+  min-width: 300px;
+}
+
+td.classification-subfields table td.count,
+td.authority-subfields table td.count {
   text-align: right;
 }
 
@@ -365,19 +390,19 @@ div#classifications-content th.records {
   text-align: right;
 }
 
-div.classification-subfields p,
-div.authority-subfields p {
+td.classification-subfields p,
+td.authority-subfields p {
   margin: 10px;
 }
 
-div.classification-subfields ul li,
-div.authority-subfields ul li {
+td.classification-subfields ul li,
+td.authority-subfields ul li {
   margin-left: 20px;
   list-style-type: square;
 }
 
-div.classification-subfields ul li span,
-div.authority-subfields ul li span {
+td.classification-subfields ul li span,
+td.authority-subfields ul li span {
   color: #999999;
 }
 
@@ -621,13 +646,16 @@ div#timeline ul {
 }
 
 table.matrix tr td.labels {
-  min-width: 220px;
-  max-width: 220px;
+  min-width: 300px;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 table.matrix tr td.bars {
-  min-width: 280px;
-  max-width: 280px;
+  min-width: 500px;
+  max-width: 500px;
 }
 table.matrix tr td.bars span {
   display: block;
