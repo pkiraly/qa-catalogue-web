@@ -176,7 +176,7 @@ class Authorities extends AddedEntry {
               $this->subfield0or2($record, 'SeriesAddedUniformTitle');
             }
           } elseif ($this->catalogue->getSchemaType() == 'PICA') {
-            $record->facet = $record->field . 'a_ss';
+            $record->facet = $record->field . '_full_ss';
             $record->facet2 = $record->facet;
             $record->q = '*:*';
           }

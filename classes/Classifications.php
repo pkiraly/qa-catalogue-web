@@ -190,10 +190,10 @@ class Classifications extends AddedEntry {
             $this->createFacets($record, '852a_Location_location');
             $this->ind1Orsubfield2($record, '852ind1_852_shelvingScheme_ss', '852__852___ss');
           } else if (in_array($record->field, ['045A', '045B', '045F', '045R', '045C', '045E', '045G'])) {
-            $record->facet = $record->field . 'a_ss';
-            $record->facet2 = $record->field . 'a_ss';
+            $record->facet = $record->field . '_full_ss';
+            $record->facet2 = $record->field . '_full_ss';
           } else {
-            error_log('strange field: ' . $record->field);
+            error_log('unhandled field in classification: ' . $record->field);
           }
 
           if (isset($record->facet2) && $record->facet2 != '')

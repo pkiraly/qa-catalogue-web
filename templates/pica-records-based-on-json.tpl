@@ -156,7 +156,7 @@
             {/if}
           </div>
         </div>
-        <div class="tab-pane active record-tab" id="marc-human-{$id}" role="tabpanel" aria-labelledby="data-tab">
+        <div class="tab-pane record-tab" id="marc-human-{$id}" role="tabpanel" aria-labelledby="data-tab">
           <div class="marc-human" id="marc-human-{$id}">
             {if isset($doc->record_sni)}
               <table>
