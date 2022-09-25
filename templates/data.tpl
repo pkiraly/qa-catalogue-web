@@ -30,7 +30,7 @@
                       <li>
                         <a href="?{$filter->removeLink->url}" title="remove it from the query"><i class="fa fa-minus" aria-hidden="true"></i></a>
                         {$filter->marcCode}: {$filter->removeLink->text}
-                        <a href="?{$filter->changeQuery->url}" title="make it the main query"><i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i></a>
+                        <a href="?{$filter->changeQuery->url}" title="make it the main query"><i class="fa-solid fa-arrows-rotate"></i></a>
                         <a href="?{$filter->termsLink}" title="check other terms of this field"><i class="fa fa-list-ol" aria-hidden="true"></i></a>
                       </li>
                     {/foreach}
