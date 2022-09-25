@@ -31,7 +31,7 @@ class PicaSchemaManager {
         foreach ($this->tagIndex[$tag] as $id) {
           $candidate = $this->fields->{$id};
           if (isset($candidate->range) && $candidate->range->inRange($occurence)) {
-            error_log("call in range");
+            // error_log("call in range");
             return $candidate;
           }
         }

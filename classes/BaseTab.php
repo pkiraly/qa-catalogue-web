@@ -303,6 +303,7 @@ abstract class BaseTab implements Tab {
 
   protected function solrToMarcCode($solrField) {
     $solrField = preg_replace('/_ss$/', '', $solrField);
+    // error_log('solrField: ' . $solrField);
     if ($solrField == 'type' || substr($solrField, 0, 2) == '00' || substr($solrField, 0, 6) == 'Leader') {
       if (substr($solrField, 0, 2) == '00' || substr($solrField, 0, 6) == 'Leader') {
         $parts = explode('_', $solrField);
@@ -311,8 +312,16 @@ abstract class BaseTab implements Tab {
         $label = $solrField;
       }
     } else {
-      $label = sprintf('%s$%s', substr($solrField, 0, 3), substr($solrField, 3, 1));
+      if ($this->catalogue->getSchemaType() == 'MARC21')
+        $label = sprintf('%s$%s', substr($solrField, 0, 3), substr($solrField, 3, 1));
+      else {
+        if (preg_match('/_full$/', $solrField))
+          $label = preg_replace('/_full$/', '', $solrField);
+        else
+          $label = sprintf('%s$%s', substr($solrField, 0, 4), substr($solrField, 4, 1));
+      }
     }
+    // error_log('label: ' . $label);
     return $label;
   }
 

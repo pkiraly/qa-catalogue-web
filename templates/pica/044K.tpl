@@ -10,7 +10,7 @@
     {if !is_null($fieldInstances)}
       {foreach from=$fieldInstances item=field name="fields"}
         {if isset($field->subfields->a) || isset($field->subfields->A)}
-          {if isset($field->subfields->{'9'})}
+          {if property_exists($field->subfields, '9')}
             <a href="?tab=data&query=044K9_ss:{$field->subfields->{'9'}}">
               {if isset($field->subfields->a)}<span class="044K$a">{$field->subfields->a}</span>{/if}
               {if isset($field->subfields->g)}(<span class="044K$g">{$field->subfields->g}</span>){/if}
@@ -29,7 +29,7 @@
     {if !is_null($fieldInstances)}
       {foreach from=$fieldInstances item=field name="fields"}
         {if isset($field->subfields->a) || isset($field->subfields->A)}
-          {if isset($field->subfields->{'9'})}
+          {if property_exists($field->subfields, '9')}
             <a href="?tab=data&query=045B9_ss:{$field->subfields->{'9'}}">
               {if isset($field->subfields->a)}<span class="044K$a">{$field->subfields->a}</span>{/if}
               {if isset($field->subfields->g)}(<span class="044K$g">{$field->subfields->g}</span>){/if}
@@ -48,7 +48,7 @@
     {if !is_null($fieldInstances)}
       {foreach from=$fieldInstances item=field name="fields"}
         {if isset($field->subfields->a) || isset($field->subfields->A)}
-          {if isset($field->subfields->{'9'})}
+          {if property_exists($field->subfields, '9')}
             <a href="?tab=data&query=045B9_ss:{$field->subfields->{'9'}}">
               {if isset($field->subfields->a)}<span class="044K$a">{$field->subfields->a}</span>{/if}
               {if isset($field->subfields->g)}(<span class="044K$g">{$field->subfields->g}</span>){/if}
@@ -67,7 +67,7 @@
     {if !is_null($fieldInstances)}
       {foreach from=$fieldInstances item=field name="fields"}
         {if isset($field->subfields->a) || isset($field->subfields->A)}
-          {if isset($field->subfields->{'9'})}
+          {if property_exists($field->subfields, '9')}
             <a href="?tab=data&query=045B9_ss:{$field->subfields->{'9'}}">
               {if isset($field->subfields->a)}<span class="044K$a">{$field->subfields->a}</span>{/if}
               {if isset($field->subfields->g)}(<span class="044K$g">{$field->subfields->g}</span>){/if}
@@ -86,7 +86,7 @@
     {if !is_null($fieldInstances)}
       {foreach from=$fieldInstances item=field name="fields"}
         {if isset($field->subfields->a) || isset($field->subfields->A)}
-          {if isset($field->subfields->{'9'})}
+          {if property_exists($field->subfields, '9')}
             <a href="?tab=data&query=045B9_ss:{$field->subfields->{'9'}}">
               {if isset($field->subfields->a)}<span class="044K$a">{$field->subfields->a}</span>{/if}
               {if isset($field->subfields->g)}(<span class="044K$g">{$field->subfields->g}</span>){/if}
