@@ -11,7 +11,7 @@ abstract class BaseTab implements Tab {
   protected $solrFields;
   protected $fieldDefinitions;
   protected $catalogueName;
-  protected $catalogue;
+  protected Catalogue $catalogue;
   protected $marcVersion ;
   protected $lastUpdate = '';
   protected $output = 'html';
@@ -114,7 +114,6 @@ abstract class BaseTab implements Tab {
   protected function getSolrResponse($params) {
     $solrPath = $this->getIndexName();
     $url = 'http://localhost:8983/solr/' . $solrPath . '/select?' . join('&', $this->encodeSolrParams($params));
-    // error_log($url);
     $solrResponse = json_decode(file_get_contents($url));
     $response = (object)[
       'numFound' => $solrResponse->response->numFound,
@@ -221,6 +220,12 @@ abstract class BaseTab implements Tab {
       }
     }
 
+    if ($this->catalogue->getSchemaType() == 'PICA'
+        && !isset($solrField)
+        && preg_match('/[^a-zA-Z0-9]/', $tag)) {
+      $solrField = $this->picaToSolr($tag . $subfield) . '_ss';
+    }
+
     if (!isset($solrField) || !in_array($solrField, $this->getSolrFields())) {
       $solrField1 = isset($solrField) ? $solrField : false;
       $solrField = $tag;
@@ -232,7 +237,6 @@ abstract class BaseTab implements Tab {
       $solrField = str_replace('/', '\/', $solrField);
       $existingSolrFields = $this->getSolrFields();
       foreach ($existingSolrFields as $existingSolrField) {
-        // error_log('solrField: ' . $solrField);
         if (preg_match('/^' . $solrField . '_/', $existingSolrField)) {
           $parts = explode('_', $existingSolrField);
           if (count($parts) == 4) {
@@ -252,19 +256,30 @@ abstract class BaseTab implements Tab {
       }
 
       if (!$found) {
-        // error_log(sprintf('Solr field not found: %s (%s) - %s', $solrField1, $solrField, join(', ', $candidates)));
+        error_log(sprintf('Solr field not found: %s (%s) - %s', $solrField1, $solrField, join(', ', $candidates)));
         $solrField = FALSE;
       }
     }
     return $solrField;
   }
 
+  private function picaToSolr($input) {
+    return preg_replace_callback('/([^a-zA-Z0-9])/', function ($matches) { return 'x' . dechex(ord($matches[1])); }, $input);
+  }
+
+  private function solrToPica($input) {
+    return preg_replace_callback('/x([0-9a-f]{2})/', function ($matches) { return chr(hexdec($matches[1])); }, $input);
+  }
+
   public function resolveSolrField($solrField) {
     $this->getFieldDefinitions();
 
     $solrField = preg_replace('/_ss$/', '', $solrField);
-    if ($solrField == 'type' || substr($solrField, 0, 2) == '00'
-       || substr($solrField, 0, 6) == 'Leader' || substr($solrField, 0, 6) == 'leader') {
+    if ($solrField == 'type'
+        || ($this->catalogue->getSchemaType() == 'MARC21'
+            && (substr($solrField, 0, 2) == '00'
+                || substr($solrField, 0, 6) == 'Leader'
+                || substr($solrField, 0, 6) == 'leader'))) {
       $found = false;
       if (substr($solrField, 0, 2) == '00') {
         $parts = explode('_', $solrField);
@@ -287,24 +302,46 @@ abstract class BaseTab implements Tab {
         $label = $solrField;
       }
     } else {
-      $label = sprintf('%s$%s', substr($solrField, 0, 3), substr($solrField, 3, 1));
-      foreach ($this->fieldDefinitions->fields as $field)
-        if (isset($field->subfields))
-          foreach ($field->subfields as $code => $subfield)
-            if (isset($subfield->solr) && $subfield->solr == $solrField) {
-              $label = sprintf('%s$%s %s', $field->tag, $code, $field->label);
-              if ($field->label != $subfield->label)
-                $label .= ' / ' . $subfield->label;
-              break;
-            }
+      if ($this->catalogue->getSchemaType() == 'MARC21') {
+        $label = sprintf('%s$%s', substr($solrField, 0, 3), substr($solrField, 3, 1));
+        foreach ($this->fieldDefinitions->fields as $field)
+          if (isset($field->subfields))
+            foreach ($field->subfields as $code => $subfield)
+              if (isset($subfield->solr) && $subfield->solr == $solrField) {
+                $label = sprintf('%s$%s %s', $field->tag, $code, $field->label);
+                if ($field->label != $subfield->label)
+                  $label .= ' / ' . $subfield->label;
+                break;
+              }
+      } elseif ($this->catalogue->getSchemaType() == 'PICA') {
+        $isFull = preg_match('/_full$/', $solrField);
+        if ($isFull) {
+          $solrField = preg_replace('/_full$/', '', $solrField);
+        }
+
+        $solrField = $this->solrToPica($solrField);
+
+        $field = $isFull ? $solrField : substr($solrField, 0, -1);
+        $subfield = $isFull ? '' : substr($solrField, -1);
+        $label = $isFull ? $field : sprintf('%s$%s', $field, $subfield);
+
+        include_once('classes/pica/PicaSchemaManager.php');
+        $manager = new PicaSchemaManager();
+        $f = $manager->lookup($field);
+        if ($f !== FALSE) {
+          $label .= ': ' . $f->label;
+          if ($subfield != ''
+              && property_exists($f->subfields, $subfield)
+              && isset($f->subfields->{$subfield}->label))
+            $label .= ' / ' . $f->subfields->{$subfield}->label;
+        }
+      }
     }
     return $label;
   }
 
-  protected function solrToMarcCode($solrField)
-  {
+  protected function solrToMarcCode($solrField) {
     $solrField = preg_replace('/_ss$/', '', $solrField);
-    error_log('solrField: ' . $solrField);
     if ($this->catalogue->getSchemaType() == 'MARC21') {
       if ($solrField == 'type' || substr($solrField, 0, 2) == '00' || substr($solrField, 0, 6) == 'Leader') {
         if (substr($solrField, 0, 2) == '00' || substr($solrField, 0, 6) == 'Leader') {
@@ -317,12 +354,13 @@ abstract class BaseTab implements Tab {
         $label = sprintf('%s$%s', substr($solrField, 0, 3), substr($solrField, 3, 1));
       }
     } else if ($this->catalogue->getSchemaType() == 'PICA') {
+      $solrField = preg_replace('/_ss$/', '', $solrField);
+      $solrField = $this->solrToPica($solrField);
       if (preg_match('/_full$/', $solrField))
         $label = preg_replace('/_full$/', '', $solrField);
       else
-        $label = sprintf('%s$%s', substr($solrField, 0, 4), substr($solrField, 4, 1));
+        $label = sprintf('%s$%s', substr($solrField, 0, -1), substr($solrField, -1));
     }
-    error_log('label: ' . $label);
     return $label;
   }
 

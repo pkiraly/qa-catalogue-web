@@ -2,7 +2,7 @@
   {if count(get_object_vars($values)) > 0}
     {assign var="facet" value=$controller->createFacet($facetName, $values)}
     <div id="{$facetName}" class="facet-block">
-      <div><strong>{$controller->resolveSolrField($facetName)}</strong></div>
+      <div class="facet-name"><strong>{$controller->resolveSolrField($facetName)}</strong></div>
       <ul>
         {foreach from=$values key=term item=count}
           <li><a href='{$facet->createLink($term)}' class="facet-term">{if preg_match('/(^\s|\s{2,}|\s$)/', $term)}"{preg_replace('/\s/', '&nbsp;', $term)}"{else}{$term}{/if}</a> ({$count|number_format})</li>

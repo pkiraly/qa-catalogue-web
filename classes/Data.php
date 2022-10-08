@@ -182,8 +182,8 @@ class Data extends Facetable {
     $changeQueryUrlParams = $this->getBasicUrl(['query', 'facet', 'filters', 'start']);
     $filterLinks = [];
     foreach ($this->filters as $filter) {
-      $solrField = preg_replace('/^([^:]+):"(.*)"$/', "$1", $filter);
-      $label = preg_replace('/^[^:]+:"(.*)"/', "$1", $filter);
+      $solrField = preg_replace('/^([^:]+):(\*|"(.*)")$/', "$1", $filter);
+      $label = preg_replace('/^[^:]+:(\*|"(.*)")/', "$1", $filter);
       $marcCode = $this->solrToMarcCode($solrField);
 
       $otherFilters = array_diff($this->filters, [$filter]);
