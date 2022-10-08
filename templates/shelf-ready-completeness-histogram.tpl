@@ -13,6 +13,7 @@
 <table>
   <thead>
     <tr>
+      <th></th>
       <th>Record Element</th>
       <th>MARC field/position/subfield</th>
       <th>Score</th>
@@ -21,9 +22,10 @@
   <tbody>
   {foreach from=$fields key=index item=field}
     <tr>
-      <td><a href="#shelf-ready-component-{$index + 1}">{$index + 1}.</a> {$field->label}</td>
-      <td>{$field->marcpath}</td>
-      <td>{$field->score}</td>
+      <td><a href="#shelf-ready-component-{$index + 1}">{$index + 1}.</a></td>
+      <td>{$field->label}</td>
+      <td width="60%">{str_replace(',', ', ', $field->marcpath)}</td>
+      <td align="right">{$field->score}</td>
     </tr>
   {/foreach}
   </tbody>
@@ -39,11 +41,11 @@
       <tr>
   {/if}
     <td>
+      <svg class="shelf-ready-completeness-histogram-chart-{$field->name}" width="320" height="200"></svg>
       <p id="shelf-ready-component-{$index+1}">
-        {$index+1}. {$field->label}<br/>
+          {$index+1}. {$field->label}<br/>
         score: 0&mdash;{$field->score}
       </p>
-      <svg class="shelf-ready-completeness-histogram-chart-{$field->name}" width="320" height="200"></svg>
     </td>
   {if $index % 3 == 2 || $index == count($fields) - 1}
     </tr>
