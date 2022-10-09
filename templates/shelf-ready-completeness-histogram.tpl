@@ -10,7 +10,7 @@
 <p>Each record get a score based on a number of criteria. Each criteria results in a
   positive score. The final (rounded) score is the summary of these criteria scores.</p>
 
-<table>
+<table id="criteria-list">
   <thead>
     <tr>
       <th></th>
@@ -22,7 +22,7 @@
   <tbody>
   {foreach from=$fields key=index item=field}
     <tr>
-      <td align="right"><a href="#shelf-ready-component-{$index + 1}">{$index + 1}.</a>&nbsp;</td>
+      <td class="id"><a href="#shelf-ready-component-{$index + 1}">{$index + 1}.</a></td>
       <td>{$field->label}</td>
       <td width="60%">
         {foreach from=$field->paths key=index item=path name=paths}
