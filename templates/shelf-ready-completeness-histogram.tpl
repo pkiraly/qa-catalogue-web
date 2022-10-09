@@ -22,9 +22,13 @@
   <tbody>
   {foreach from=$fields key=index item=field}
     <tr>
-      <td><a href="#shelf-ready-component-{$index + 1}">{$index + 1}.</a></td>
+      <td align="right"><a href="#shelf-ready-component-{$index + 1}">{$index + 1}.</a>&nbsp;</td>
       <td>{$field->label}</td>
-      <td width="60%">{str_replace(',', ', ', $field->marcpath)}</td>
+      <td width="60%">
+        {foreach from=$field->paths key=index item=path name=paths}
+          <a href="?tab=completeness#completeness-{$path}">{$path}</a>{if !$smarty.foreach.paths.last}, {/if}
+        {/foreach}
+      </td>
       <td align="right">{$field->score}</td>
     </tr>
   {/foreach}
