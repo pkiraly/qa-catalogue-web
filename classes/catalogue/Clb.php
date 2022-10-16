@@ -1,9 +1,9 @@
 <?php
 
 
-class Ucl extends Catalogue {
+class Clb extends Catalogue {
 
-  protected $name = 'ucl';
+  protected $name = 'clb';
   protected $label = 'Česká literární bibliografie';
   protected $url = 'https://clb.ucl.cas.cz/';
   protected $marcVersion = 'NKCR';
