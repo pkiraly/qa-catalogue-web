@@ -10,7 +10,7 @@ class Nkp extends Catalogue {
 
   function getOpacLink($id, $record) {
     return 'https://aleph.nkp.cz/F/?func=direct'
-         . '&doc_number=00' . preg_replace('/^[a-z]{1,3}\d{4}/', '00', trim($id))
+         . '&doc_number=' . preg_replace('/^[a-z]{1,3}\d{4}/', '00', trim($id))
          . '&local_base=CNB';
   }
 }
