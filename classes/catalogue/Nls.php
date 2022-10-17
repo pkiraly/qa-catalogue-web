@@ -9,6 +9,6 @@ class Nls extends Catalogue {
 
   function getOpacLink($id, $record) {
     return 'https://search.nls.uk/primo-explore/search?query=any,contains,%22' 
-           . $id . '%22&tab=tab1_local&search_scope=SCOPE1&vid=44NLS_VU1&lang=en_US&offset=0'
+           . $id . '%22&tab=tab1_local&search_scope=SCOPE1&vid=44NLS_VU1&lang=en_US&offset=0';
   }
 }
