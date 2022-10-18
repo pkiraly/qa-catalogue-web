@@ -4,7 +4,7 @@
 class Nls extends Catalogue {
 
   protected $name = 'nls';
-  protected $label = 'National Library of Scotland';
+  protected $label = 'The National Bibliography of Scotland (from the National Library of Scotland)';
   protected $url = 'https://www.nls.uk/';
 
   function getOpacLink($id, $record) {
