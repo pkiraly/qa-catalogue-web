@@ -9,6 +9,6 @@ class Oszk extends Catalogue {
   // protected $marcVersion = 'B3KAT';
 
   function getOpacLink($id, $record) {
-    return 'http://gateway-bayern.de/' . trim($id);
+    return 'https://nektar.oszk.hu/hu/manifestation/' . preg_replace('/^0+/', '', trim($id));
   }
 }
