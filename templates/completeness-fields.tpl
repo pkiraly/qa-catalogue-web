@@ -65,20 +65,22 @@
             {/if}
             <tr>
               <td class="path" id="completeness-{$record->path}">
-                {if isset($record->solr) && !empty($record->solr)}
-                  <a href="?tab=data&query=&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}&filters[]={$record->solr}:*">
-                    {if $record->isComplexControlField || $record->isLeader}
-                      {$record->complexPosition}
-                    {elseif preg_match('/ind[12]$/', $record->path)}
-                      {$catalogue->getSubfield($record->path)}
-                    {else}
-                      {$catalogue->getSubfield($record->path)}
-                    {/if}
-                  </a>
-                {elseif $record->isComplexControlField || $record->isLeader}
-                  {$record->complexPosition}
-                {else}
-                  {$catalogue->getSubfield($record->path)}
+                {if $record->isLeader || $record->isComplexControlField || $record->subfield != ''}
+                  {if isset($record->solr) && !empty($record->solr)}
+                    <a href="?tab=data&query=&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}&filters[]={$record->solr}:*">
+                      {if $record->isComplexControlField || $record->isLeader}
+                        {$record->complexPosition}
+                      {elseif preg_match('/ind[12]$/', $record->path)}
+                        {$catalogue->getSubfield($record->path)}
+                      {else}
+                        {$catalogue->getSubfield($record->path)}
+                      {/if}
+                    </a>
+                  {elseif $record->isComplexControlField || $record->isLeader}
+                    {$record->complexPosition}
+                  {else}
+                    {$catalogue->getSubfield($record->path)}
+                  {/if}
                 {/if}
               </td>
               <td class="subfield">{$record->subfield}</td>
