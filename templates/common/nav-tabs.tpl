@@ -47,11 +47,13 @@
         <a class="dropdown-item" href="?tab=authorities">Authority name analysis</a>
       </div>
     </li>
-    <li class="nav-item1">
-      <a class="nav-link1{if $tab == 'pareto'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="pareto-tab" aria-controls="pareto"
-         href="?tab=pareto">Pareto</a>
-    </li>
+    {if $catalogue->getSchemaType() == 'MARC21'}
+      <li class="nav-item1">
+        <a class="nav-link1{if $tab == 'pareto'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+           id="pareto-tab" aria-controls="pareto"
+           href="?tab=pareto">Pareto</a>
+      </li>
+    {/if}
     <li class="nav-item1">
       <a class="nav-link1{if $tab == 'history'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
          id="history-tab" aria-controls="history"
