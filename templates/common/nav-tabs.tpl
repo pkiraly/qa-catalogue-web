@@ -7,18 +7,24 @@
          href="?tab=data">Data</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link1 {if $isCompleteness}active{/if} dropdown-toggle"
-         data-toggle="dropdown" role="tab1" aria-selected="true"
-         id="completeness-tab" aria-controls="completeness"
-         href="#">Completeness</a>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" href="?tab=completeness">completeness</a>
-        <div class="dropdown-divider"></div>
-        <div style="padding: .25rem 1.5rem; color: #999999"><em>Weighted completeness versions</em></div>
-        <a class="dropdown-item" href="?tab=serials"> &nbsp; Carlstone's serials analysis</a>
-        <a class="dropdown-item" href="?tab=tt-completeness"> &nbsp; Thompson—Traill's e-book completeness</a>
-        <a class="dropdown-item" href="?tab=shelf-ready-completeness"> &nbsp; Booth's shelf-ready completeness</a>
-      </div>
+      {if $catalogue->getSchemaType() == 'PICA'}
+        <a class="nav-link1 {if $tab == 'completeness'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+           id="completeness-tab" aria-controls="completeness"
+           href="?tab=completeness">Completeness</a>
+      {else}
+        <a class="nav-link1 {if $isCompleteness}active{/if} dropdown-toggle"
+           data-toggle="dropdown" role="tab1" aria-selected="true"
+           id="completeness-tab" aria-controls="completeness"
+           href="#">Completeness</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="?tab=completeness">completeness</a>
+          <div class="dropdown-divider"></div>
+          <div style="padding: .25rem 1.5rem; color: #999999"><em>Weighted completeness versions</em></div>
+          <a class="dropdown-item" href="?tab=serials"> &nbsp; Carlstone's serials analysis</a>
+          <a class="dropdown-item" href="?tab=tt-completeness"> &nbsp; Thompson—Traill's e-book completeness</a>
+          <a class="dropdown-item" href="?tab=shelf-ready-completeness"> &nbsp; Booth's shelf-ready completeness</a>
+        </div>
+      {/if}
     </li>
     <li class="nav-item1">
       <a class="nav-link1 {if $tab == 'issues'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
