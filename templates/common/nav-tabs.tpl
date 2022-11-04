@@ -7,11 +7,7 @@
          href="?tab=data">Data</a>
     </li>
     <li class="nav-item">
-      {if $catalogue->getSchemaType() == 'PICA'}
-        <a class="nav-link1 {if $tab == 'completeness'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-           id="completeness-tab" aria-controls="completeness"
-           href="?tab=completeness">Completeness</a>
-      {else}
+      {if $catalogue->getSchemaType() == 'MARC21'}
         <a class="nav-link1 {if $isCompleteness}active{/if} dropdown-toggle"
            data-toggle="dropdown" role="tab1" aria-selected="true"
            id="completeness-tab" aria-controls="completeness"
@@ -24,6 +20,10 @@
           <a class="dropdown-item" href="?tab=tt-completeness"> &nbsp; Thompson—Traill's e-book completeness</a>
           <a class="dropdown-item" href="?tab=shelf-ready-completeness"> &nbsp; Booth's shelf-ready completeness</a>
         </div>
+      {elseif $catalogue->getSchemaType() == 'PICA'}
+        <a class="nav-link1 {if $tab == 'completeness'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+           id="completeness-tab" aria-controls="completeness"
+           href="?tab=completeness">Completeness</a>
       {/if}
     </li>
     <li class="nav-item1">
@@ -31,11 +31,13 @@
          id="issues-tab" aria-controls="issues"
          href="?tab=issues">Issues</a>
     </li>
-    <li class="nav-item1">
-      <a class="nav-link1 {if $tab == 'functions'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="functions-tab" aria-controls="functions"
-         href="?tab=functions">Functions</a>
-    </li>
+    {if $catalogue->getSchemaType() == 'MARC21'}
+      <li class="nav-item1">
+        <a class="nav-link1 {if $tab == 'functions'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+           id="functions-tab" aria-controls="functions"
+           href="?tab=functions">Functions</a>
+      </li>
+    {/if}
     <li class="nav-item1">
       <a class="nav-link1 {if $isAuthority}active{/if} dropdown-toggle" data-toggle="dropdown" role="tab1" aria-selected="false"
          id="classifications-tab" aria-controls="classifications"
