@@ -19,6 +19,7 @@ class Issues extends BaseTab {
   private $limit;
   private $listType;
   private $version;
+  private $hiddenTypes = [];
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
@@ -59,6 +60,8 @@ class Issues extends BaseTab {
       $this->readIssuesAjaxByTag($this->categoryId, $this->typeId, $this->order, $this->page, $this->limit);
       $this->assignAjax($smarty);
     } else {
+      if ($this->catalogue->getSchemaType() == 'PICA')
+        $this->hiddenTypes = ['undefined field' => 1];
       $this->readCategories();
       $this->readTypes();
       $this->readIssues();
@@ -294,6 +297,8 @@ class Issues extends BaseTab {
     $this->types = $this->readIssueCsv('issue-by-type.csv', 'id');
 
     foreach ($this->types as $type) {
+      if (!empty($this->hiddenTypes) && isset($this->hiddenTypes[$type->type]))
+        continue;
       if (!isset($this->categories[$type->categoryId]->types))
         $this->categories[$type->categoryId]->types = [];
       $this->categories[$type->categoryId]->types[] = $type->id;

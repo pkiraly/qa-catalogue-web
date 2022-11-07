@@ -65,7 +65,7 @@
             {/if}
             <tr>
               <td class="path" id="completeness-{$record->path}">
-                {if $record->isLeader || $record->isComplexControlField || $record->subfield != ''}
+                {if $record->isLeader || $record->isComplexControlField || $record->subfield != '' || strpos($record->path, '$') !== false}
                   {if isset($record->solr) && !empty($record->solr)}
                     <a href="?tab=data&query=&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}&filters[]={$record->solr}:*">
                       {if $record->isComplexControlField || $record->isLeader}
