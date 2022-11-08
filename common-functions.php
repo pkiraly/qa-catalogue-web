@@ -31,8 +31,6 @@ function getPath() {
 }
 
 function createSmarty($templateDir) {
-  // define('APPLICATION', 'szte');
-  // define('APPLICATION_DIR', $_SERVER['DOCUMENT_ROOT'] . '/' . APPLICATION);
   define('APPLICATION_DIR', __DIR__);
   define('SMARTY_DIR', APPLICATION_DIR . '/libs/smarty-3.1.44/libs/');
   define('_SMARTY', APPLICATION_DIR . '/libs/_smarty/');
@@ -76,4 +74,13 @@ function readCsv($csvFile, $id = '') {
     error_log('file does not exist! ' . $csvFile);
   }
   return $records;
+}
+
+function setLanguage($language) {
+  global $languages;
+  $lang = isset($languages[$language]) ? $languages[$language] : $languages['en'];
+  // putenv('LANG=' . $lang);
+  setlocale(LC_ALL, $lang);
+  bindtextdomain('messages', './locale');
+  textdomain('messages');
 }

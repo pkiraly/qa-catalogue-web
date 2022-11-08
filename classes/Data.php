@@ -65,7 +65,6 @@ class Data extends Facetable {
     $smarty->assign('basicFacetParams', $this->getBasicUrl());
     $smarty->assign('ajaxFacet', $this->ajaxFacet);
 
-    $smarty->assign('controller', $this);
     $smarty->assign('schemaType', $this->catalogue->getSchemaType());
   }
 

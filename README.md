@@ -162,6 +162,19 @@ msgfmt locale/en_GB/LC_MESSAGES/messages.po -o locale/en_GB/LC_MESSAGES/messages
 
 Please let me know if you would like to see more languages supported.
 
+Troubleshouting: if the translation would not work you can check if a given 
+language (locale) is available in your system. In Linux you can check it with
+
+```bash
+locale -a
+```
+
+If the locale (e.g. 'de_DE.UTF-8') is not available, you can install it with
+
+```bash
+locale-gen de_DE.UTF-8
+```
+
 Note: translation is in a very early phase.
 
 # Customization

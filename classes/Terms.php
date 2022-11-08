@@ -32,7 +32,6 @@ class Terms extends Facetable {
     $smarty->assign('offset',    $this->offset);
     $smarty->assign('ajaxFacet', $this->ajaxFacet);
 
-    $smarty->assign('controller', $this);
     $facets = $this->createTermList();
     if ($this->action == 'download') {
       $this->output = 'none';

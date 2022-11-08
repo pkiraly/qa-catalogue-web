@@ -57,7 +57,6 @@
           </tr>
           {assign var=prevComplexType value=""}
           {foreach from=$records item=record}
-            {assign var=percent value="{$record->{'number-of-record'} * 100 / $max}"}
             {if $record->isComplexControlField && $prevComplexType != $record->complexType}
               <tr>
                 <td colspan="5" style="text-align: left">{$record->complexType}</td>
@@ -84,14 +83,14 @@
                 {/if}
               </td>
               <td class="subfield">{$record->subfield}</td>
-              <td class="chart"><div style="width: {ceil($percent * 2)}px;">&nbsp;</div></td>
+              <td class="chart"><div style="width: {ceil($record->percent * 2)}px;">&nbsp;</div></td>
               <td class="terms">
                 {if isset($record->solr) && !empty($record->solr)}
                   <a href="?tab=terms&facet={$record->solr}&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}"><img src="styles/list.png" width="20" height="20"></a>
                 {/if}
               </td>
               <td class="number-of-record">{$record->{'number-of-record'}|number_format}</td>
-              <td class="percent-of-record">{$percent|number_format:2}</td>
+              <td class="percent-of-record">{$record->percent|number_format:2}</td>
               <td class="number-of-instances">{$record->{'number-of-instances'}|number_format}</td>
               <td class="min">{$record->min}</td>
               <td class="max">{$record->max}</td>
@@ -107,7 +106,6 @@
     {else}
       <tr><td colspan="5">sorted</td></tr>
       {foreach from=$records item=record}
-        {assign var=percent value="{$record->{'number-of-record'} * 100 / $max}"}
         <tr>
           <td class="path" id="completeness-{$record->path}">
             {if isset($record->solr) && !empty($record->solr)}
@@ -127,14 +125,14 @@
             {/if}
           </td>
           <td class="subfield">{$record->subfield}</td>
-          <td class="chart"><div style="width: {ceil($percent * 2)}px;">&nbsp;</div></td>
+          <td class="chart"><div style="width: {ceil($record->percent * 2)}px;">&nbsp;</div></td>
           <td class="terms">
             {if isset($record->solr) && !empty($record->solr)}
               <a href="?tab=terms&facet={$record->solr}&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}"><i class="fa fa-list-ol"></i></a>
             {/if}
           </td>
           <td class="number-of-record">{$record->{'number-of-record'}|number_format}</td>
-          <td class="percent-of-record">{$percent|number_format:2}</td>
+          <td class="percent-of-record">{$record->percent|number_format:2}</td>
           <td class="number-of-instances">{$record->{'number-of-instances'}|number_format}</td>
           <td class="min">{$record->min}</td>
           <td class="max">{$record->max}</td>

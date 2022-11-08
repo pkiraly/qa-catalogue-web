@@ -22,7 +22,6 @@ class Collocations extends BaseTab {
 
     $smarty->assign('facet1', $this->facet1);
     $smarty->assign('facet2', $this->facet2);
-    $smarty->assign('controller', $this);
     $smarty->assign('solrFields', $this->getFields());
     $smarty->assign('results', $this->collocateFields());
   }

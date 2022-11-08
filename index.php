@@ -17,8 +17,10 @@ $smarty->assign('tab', $tab);
 $smarty->assign('isCompleteness', in_array($tab, ['completeness', 'serials', 'tt-completeness', 'shelf-ready-completeness']));
 $smarty->assign('isAuthority', in_array($tab, ['classifications', 'authorities']));
 $smarty->assign('isTool', in_array($tab, ['terms', 'control-fields', 'collocations', 'download', 'settings']));
-
-setLanguage(getOrDefault('lang', 'en', ['en', 'de']));
+$languages = [
+  'en' => 'en_GB.UTF-8',
+  'de' => 'de_DE.UTF-8'
+];
 
 include_once('classes/Tab.php');
 include_once('classes/BaseTab.php');
@@ -82,16 +84,4 @@ function getFacetLabel($facet) {
   if (isset($facetLabels[$facet]))
     return $facetLabels[$facet];
   return str_replace('_', ' ', preg_replace('/_ss$/', '', $facet));
-}
-
-function setLanguage($language) {
-  $languages = [
-    'en' => 'en_GB.UTF-8',
-    'de' => 'de_DE.UTF-8'
-  ];
-  $lang = isset($languages[$language]) ? $languages[$language] : $languages['en'];
-  // putenv('LANG=' . $lang);
-  setlocale(LC_ALL, $lang);
-  bindtextdomain('messages', './locale');
-  textdomain('messages');
 }

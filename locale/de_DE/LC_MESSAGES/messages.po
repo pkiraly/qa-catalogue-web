@@ -1,3 +1,11 @@
+# header
+msgid "for analysing library data"
+msgstr "für die Analyse von Bibliotheksdaten"
+msgid "last data update"
+msgstr "letzte Datenaktualisierung"
+msgid "number of records"
+msgstr "Anzahl der Datensätze"
+
 # navigation
 msgid "Data"
 msgstr "Data"
@@ -36,5 +44,3 @@ msgstr "Über"
 # completeness
 msgid "by document types"
 msgstr "nach Dokumenttypen"
-msgid "number of records"
-msgstr "Anzahl der Datensätze"

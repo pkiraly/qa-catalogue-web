@@ -18,6 +18,7 @@ abstract class BaseTab implements Tab {
   protected $displayNetwork = false;
   protected $historicalDataDir = null;
   protected $versioning = false;
+  protected $lang = 'en';
 
   /**
    * BaseTab constructor.
@@ -36,9 +37,13 @@ abstract class BaseTab implements Tab {
     $this->count = $this->readCount();
     $this->readLastUpdate();
     $this->handleHistoricalData();
+    $this->lang = getOrDefault('lang', $this->catalogue->getDefaultLang(), ['en', 'de']);
+    setLanguage($this->lang);
   }
 
   public function prepareData(Smarty &$smarty) {
+    global $languages;
+
     $smarty->assign('db', $this->db);
     $smarty->assign('catalogueName', $this->catalogueName);
     $smarty->assign('catalogue', $this->catalogue);
@@ -46,9 +51,12 @@ abstract class BaseTab implements Tab {
     $smarty->assign('lastUpdate', $this->lastUpdate);
     $smarty->assign('displayNetwork', $this->displayNetwork);
     $smarty->assign('historicalDataDir', $this->historicalDataDir);
+    $smarty->assign('controller', $this);
+    $smarty->assign('lang', $this->lang);
+    $smarty->assign('languages', $languages);
   }
 
-  private function createCatalogue() {
+  public function createCatalogue() {
     $className = strtoupper(substr($this->catalogueName, 0, 1)) . substr($this->catalogueName, 1);
     include_once 'catalogue/' . $className . '.php';
     return new $className();
@@ -450,5 +458,14 @@ abstract class BaseTab implements Tab {
       && isset($tagDefinition->versionSpecificSubfields->{$this->marcVersion})
       && isset($tagDefinition->versionSpecificSubfields->{$this->marcVersion}->{$subfield})
       && isset($tagDefinition->versionSpecificSubfields->{$this->marcVersion}->{$subfield}->solr);
+  }
+
+  public function selectLanguage($lang) {
+    parse_str($_SERVER['QUERY_STRING'], $params);
+    if (isset($lang)) {
+      unset($params['lang']);
+      $params['lang'] = $lang;
+    }
+    return http_build_query($params);
   }
 }

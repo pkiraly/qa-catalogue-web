@@ -81,6 +81,9 @@ class Completeness extends BaseTab {
           $this->packages[] = $record;
         }
       }
+      foreach ($this->packages as $package)
+        $package->percent = $package->count * 100 / $this->max;
+
       usort($this->packages, function($a, $b){
         return ($a->packageid == $b->packageid)
           ? 0
@@ -153,6 +156,8 @@ class Completeness extends BaseTab {
           // $this->max = max($this->max, $record->{'number-of-record'});
           $record->mean = sprintf('%.2f', $record->mean);
           $record->stddev = sprintf('%.2f', $record->stddev);
+          $record->percent = $record->{'number-of-record'} * 100 / $this->max;
+
           $histogram = new stdClass();
           foreach (explode('; ', $record->histogram) as $entry) {
             list($k,$v) = explode('=', $entry);
@@ -164,6 +169,7 @@ class Completeness extends BaseTab {
           $tag = substr($record->path, 0, $position);
           $record->isLeader = false;
           $record->isComplexControlField = in_array($tag, $complexControlFields);
+
           if ($record->isComplexControlField) {
             if (preg_match('/^...([a-zA-Z]+)(\d+)$/', $record->path, $matches)) {
               $record->complexType = $matches[1];

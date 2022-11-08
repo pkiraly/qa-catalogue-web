@@ -12,6 +12,7 @@ abstract class Catalogue {
   public static $supportedTypes = [
     'Books', 'Computer Files', 'Continuing Resources', 'Maps', 'Mixed Materials', 'Music', 'Visual Materials', 'all'
   ];
+  protected $defaultLang = 'en';
 
   abstract function getOpacLink($id, $record);
 
@@ -54,5 +55,12 @@ abstract class Catalogue {
     if (is_null($input))
       return "";
     return substr($input, 3);
+  }
+
+  /**
+   * @return string
+   */
+  public function getDefaultLang(): string {
+    return $this->defaultLang;
   }
 }

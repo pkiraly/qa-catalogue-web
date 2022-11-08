@@ -14,6 +14,7 @@ class K10plus_pica extends Catalogue {
     'Lokales Katalogisat (nur GBV)', 'Elektronische Ressource im Fernzugriff', 'Elektronische Ressource auf Datenträger',
     'Objekt', 'Medienkombination', 'Mailboxsatz'
   ];
+  protected $defaultLang = 'de';
 
   function getOpacLink($id, $record) {
     return 'https://opac.k10plus.de/DB=2.299/PPNSET?PPN=' . trim($id) . '&PRS=HOL&HILN=888&INDEXSET=21';
