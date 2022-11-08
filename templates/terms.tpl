@@ -13,9 +13,9 @@
             field: <input list="facet" name="facet" id="facetInput" style="width: 800px;" value="{if isset($facet) && !empty($facet)}{$facet}{else}- select a field! -{/if}">
             <datalist id="facet">
               <option value="">-- select --</option>
-                {foreach from=$solrFields item=field}
-                  <option value="{$field}"{if $field == $facet} selected="selected"{/if}>{$field}</option>
-                {/foreach}
+              {foreach from=$solrFields item=field}
+                <option value="{$field}"{if $field == $facet} selected="selected"{/if}>{$field}</option>
+              {/foreach}
             </datalist>
           </p>
 
@@ -36,6 +36,10 @@
       {/if}
       <div id="terms-content">
         {include 'marc-facets.tpl'}
+      </div>
+      <div>
+        <a href="{$controller->createDownloadLink()}"><i class="fa-solid fa-file-arrow-down"></i></a>
+        <a href="{$controller->createDownloadLink()}">download this list</a>
       </div>
     </div>
   </div>
