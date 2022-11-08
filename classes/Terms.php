@@ -85,7 +85,7 @@ class Terms extends Facetable {
   }
 
   public function createDownloadLink() {
-    return $this->createNavLink($this->offset) . '&action=download';
+    return $this->createNavLink($this->offset) . '&action=download&ajax=1';
   }
 
   private function createNextLink($count) {
