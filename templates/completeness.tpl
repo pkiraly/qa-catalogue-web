@@ -4,9 +4,10 @@
   {include 'common/nav-tabs.tpl'}
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane active" id="completeness" role="tabpanel" aria-labelledby="completeness-tab">
-      <h2>Completeness</h2>
+      <h2>{_('Completeness')}</h2>
+
       <div>
-        by document types:
+        {_('by document types')}:
         {foreach from=$types item=type name=types}
           {if $type == $selectedType}
             <strong>{$type}</strong>
@@ -17,7 +18,7 @@
         {/foreach}
       </div>
       <div>
-        number of records: <strong>{$max|number_format}</strong>
+        {_('number of records')}: <strong>{$max|number_format}</strong>
       </div>
 
       <h3>field groups</h3>
