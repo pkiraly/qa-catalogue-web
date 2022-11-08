@@ -53,7 +53,7 @@ class Terms extends Facetable {
   }
 
   private function download($facets) {
-    $attachment = sprintf('attachment; filename="facet-terms-for-%s-at-%s.csv"', $this->facet, date("Y-m-d"));
+    $attachment = sprintf('attachment; filename="facet-terms-for-%s-%d-at-%s.csv"', $this->facet, $this->offset, date("Y-m-d"));
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: ' . $attachment);
     echo "term,count\n";
