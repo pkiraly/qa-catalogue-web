@@ -79,7 +79,9 @@
          href="#">Tools</a>
       <div class="dropdown-menu">
         <a class="dropdown-item" href="?tab=terms">Terms</a>
-        <a class="dropdown-item" href="?tab=control-fields">Value distribution in control fields</a>
+        {if $catalogue->getSchemaType() == 'MARC21'}
+          <a class="dropdown-item" href="?tab=control-fields">Value distribution in control fields</a>
+        {/if}
         <a class="dropdown-item" href="?tab=collocations">Collocations</a>
         <a class="dropdown-item" href="?tab=download">Download</a>
         <a class="dropdown-item" href="?tab=settings">Settings</a>
