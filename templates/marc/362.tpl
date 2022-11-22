@@ -2,7 +2,7 @@
 {assign var="fieldInstances" value=$record->getFields('362')}
 {if !is_null($fieldInstances)}
   <em>Dates of Publication</em><br>
-  {foreach $fieldInstances as $field}
+  {foreach from=$fieldInstances item=field}
     <span class="362">
       {if isset($field->subfields->a)}
         <span class="dates">{$field->subfields->a}</span>

@@ -119,6 +119,64 @@ the same file (before the `<Directory/>` element):
 RedirectMatch ^/$ /metadata-qa/
 ```
 
+# Translation
+
+Now the user interface is translatable via gettext methods. We provide
+two language files (German and English). In `.tpl` files you can add translatable text as
+
+```
+{_('translatable text')}
+```
+You should add the translations into `locale/de_DE/LC_MESSAGES/messages.po` as
+
+
+```
+msgid "translatable text"
+msgstr "übersetzbarer Text"
+```
+
+and into `locale/en_GB/LC_MESSAGES/messages.po` as
+
+```
+msgid "translatable text"
+msgstr "translatable text"
+```
+
+Of course the message identifier could be different, and dense but now
+I think that it is more understandable (so translatable) this way. When
+you add a translation please add a comment to denote which page the original
+text appears, such as 
+
+```
+# completeness
+msgid "by document types"
+msgstr "nach Dokumenttypen"
+```
+
+Once you have done, you should generate the `.mo` files from the `.po` files with the following commands:
+
+```bash
+msgfmt locale/de_DE/LC_MESSAGES/messages.po -o locale/de_DE/LC_MESSAGES/messages.mo
+msgfmt locale/en_GB/LC_MESSAGES/messages.po -o locale/en_GB/LC_MESSAGES/messages.mo
+```
+
+Please let me know if you would like to see more languages supported.
+
+Troubleshouting: if the translation would not work you can check if a given 
+language (locale) is available in your system. In Linux you can check it with
+
+```bash
+locale -a
+```
+
+If the locale (e.g. 'de_DE.UTF-8') is not available, you can install it with
+
+```bash
+locale-gen de_DE.UTF-8
+```
+
+Note: translation is in a very early phase.
+
 # Customization
 
 The name, catalogue link and the record levele catalogue link are different 

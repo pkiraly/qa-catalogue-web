@@ -14,6 +14,13 @@ else
 $tab = getOrDefault('tab', 'completeness');
 $ajax = getOrDefault('ajax', 0, [0, 1]);
 $smarty->assign('tab', $tab);
+$smarty->assign('isCompleteness', in_array($tab, ['completeness', 'serials', 'tt-completeness', 'shelf-ready-completeness']));
+$smarty->assign('isAuthority', in_array($tab, ['classifications', 'authorities']));
+$smarty->assign('isTool', in_array($tab, ['terms', 'control-fields', 'collocations', 'download', 'settings']));
+$languages = [
+  'en' => 'en_GB.UTF-8',
+  'de' => 'de_DE.UTF-8'
+];
 
 include_once('classes/Tab.php');
 include_once('classes/BaseTab.php');

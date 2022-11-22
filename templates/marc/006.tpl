@@ -40,7 +40,7 @@
   </thead>
   <tbody>
   {assign var="prevType" value=0}
-  {foreach $controller->get006Definition($type) as $id => $data}
+  {foreach from=$controller->get006Definition($type) key=id item=data}
     <tr>
       <td>{$id}</td>
       <td>{$data->label}</td>

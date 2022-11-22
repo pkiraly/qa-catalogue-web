@@ -3,6 +3,7 @@ configuration.cnf
 images/
 libs/
 cache/
+translate.sh
 
 # eidtor files
 .idea/

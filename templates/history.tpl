@@ -15,7 +15,7 @@
       </p>
 
       <div id="history-content">
-        {foreach $files as $index => $file}
+        {foreach from=$files key=index item=file}
           <p><img src="images/{$db}/{$file}" width="1000"/></p>
         {/foreach}
       </div>

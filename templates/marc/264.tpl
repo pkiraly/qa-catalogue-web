@@ -2,7 +2,7 @@
    https://www.loc.gov/marc/bibliographic/bd264.html *}
 {assign var="fieldInstances" value=$record->getFields('264')}
 {if !is_null($fieldInstances)}
-  {foreach $fieldInstances as $field}
+  {foreach from=$fieldInstances item=field}
     <span class="264">
       {* 264a_ProvisionActivity_place_ss *}
       {if isset($field->subfields->a)}

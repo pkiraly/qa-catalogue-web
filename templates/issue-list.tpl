@@ -40,7 +40,7 @@
     <td class="percent text-right"></td>
   </tr>
 {/if}
-{foreach $records item="rowData" name="foo"}
+{foreach from=$records item="rowData" name="foo"}
   <tr class="t t-{$categoryId}-{$typeId} x-{$categoryId}-{$typeId} {if $smarty.foreach.foo.index % 2 == 1}odd{/if}">
     <td class="path">{$rowData->path}</td>
     <td class="message">

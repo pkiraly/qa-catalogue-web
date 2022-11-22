@@ -4,7 +4,7 @@
     {include 'common/nav-tabs.tpl'}
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane active" id="authorities" role="tabpanel" aria-labelledby="authorities-tab">
-      <h2>Authority analysis</h2>
+      <h2>Authority name analysis</h2>
       <div id="authorities-content">
         {include 'authorities-by-records.tpl'}
         {include 'authorities-histogram.tpl'}

@@ -4,7 +4,7 @@
 <tr>
   <td><em>uniform title</em>:</td>
   <td>
-  {foreach $fieldInstances as $field}
+  {foreach from=$fieldInstances item=field}
     <span class="730">
       <i class="fa fa-user" aria-hidden="true" title="Uniform title"></i>
       <a href="{$record->filter('730a_AddedUniformTitle_ss', $field->subfields->a)}" class="record-link" title="Uniform title">{$field->subfields->a}</a>

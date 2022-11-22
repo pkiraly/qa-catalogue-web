@@ -3,7 +3,7 @@
 {if !is_null($fieldInstances)}
   <p>
     Host Item{if count($fieldInstances) > 1}s{/if}:
-    {foreach $fieldInstances as $field name="fields"}
+    {foreach from=$fieldInstances item=field name="fields"}
       <span class="773">
         {if isset($field->subfields->i)}
           <span class="relationship-information" title="Relationship information">{$field->subfields->i}</span>,

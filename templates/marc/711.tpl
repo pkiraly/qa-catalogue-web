@@ -4,7 +4,7 @@
 <tr>
   <td><em>additional meeting names</em>:</td>
   <td>
-  {foreach $fieldInstances as $field}
+  {foreach from=$fieldInstances item=field}
     <span class="711">
       <i class="fa fa-user" aria-hidden="true" title="Meeting name or jurisdiction name as entry element"></i>
       <a href="{$record->filter('711a_AddedMeetingName_ss', $field->subfields->a)}" class="record-link" title="Meeting name or jurisdiction name as entry element">{$field->subfields->a}</a>

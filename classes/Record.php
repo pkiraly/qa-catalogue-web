@@ -194,7 +194,7 @@ class Record {
          || !empty($this->doc->{'9119_ManifestationIdentifier_ss'}));
   }
 
-  public function getMarcFields() {
+  public function getMarcFields($schemaType = 'MARC21'): array {
     /*
     if (is_string($doc->record_sni)) {
       $marc = json_decode($doc->record_sni);
@@ -205,23 +205,95 @@ class Record {
 
     $rows = [];
     foreach ($this->record as $tag => $value) {
-      if (preg_match('/^00/', $tag)) {
+      if ($schemaType == 'MARC21' && preg_match('/^00/', $tag)) {
         $rows[] = [$tag, '', '', '', $value];
       } else if ($tag == 'leader') {
         $rows[] = ['LDR', '', '', '', $value];
       } else {
-        foreach ($value as $instance) {
-          $firstRow = [$tag, $instance->ind1, $instance->ind2];
-          $i = 0;
-          foreach ($instance->subfields as $code => $s_value) {
-            $i++;
-            if ($i == 1) {
-              $firstRow[] = '$' . $code;
-              $firstRow[] = $s_value;
-              $rows[] = $firstRow;
-            } else {
-              $rows[] = ['', '', '', '$' . $code, $s_value];
+        if (!is_null($value) && is_array($value) && !empty($value)) {
+          foreach ($value as $instance) {
+            $firstRow = [$tag, $instance->ind1, $instance->ind2];
+            $i = 0;
+            foreach ($instance->subfields as $code => $s_value) {
+              $i++;
+              if ($i == 1) {
+                $firstRow[] = '$' . $code;
+                $firstRow[] = $s_value;
+                $rows[] = $firstRow;
+              } else {
+                $rows[] = ['', '', '', '$' . $code, $s_value];
+              }
             }
+          }
+        }
+      }
+    }
+    return $rows;
+  }
+
+  public function resolveMarcFields($schemaType = 'MARC21'): array {
+    $fields = json_decode(file_get_contents('schemas/marc-schema-with-solr-and-extensions.json'))->fields;
+
+    $rows = [];
+    foreach ($this->record as $tag => $value) {
+      $tag_defined = isset($fields->{$tag});
+      if ($tag_defined && !isset($fields->{$tag}->label))
+        error_log(' no tag label for ' . $tag);
+      $tagLabel = $tag_defined ? $fields->{$tag}->label : '';
+      if ($schemaType == 'MARC21' && preg_match('/^00/', $tag)) {
+        $rows[] = [$tag, '', $tagLabel, '', $value];
+      } else if ($tag == 'leader') {
+        $rows[] = ['LDR', '', 'leader', '', $value];
+      } else {
+        if (!is_null($value) && is_array($value) && !empty($value)) {
+          foreach ($value as $instance) {
+            $rows[] = [$tag, '', $tagLabel, '', ''];
+            $hasInd1 = $tag_defined && !is_null($fields->{$tag}->indicator1);
+            $ind1Label = $hasInd1 ? $fields->{$tag}->indicator1->label : '';
+            $ind1Value = $hasInd1 && isset($fields->{$tag}->indicator1->codes->{$instance->ind1})
+              ? $fields->{$tag}->indicator1->codes->{$instance->ind1}->label : '';
+            if ($ind1Label != '' || $ind1Value != '' || $instance->ind1 != ' ')
+              $rows[] = ['', 'ind1', $ind1Label, $instance->ind1, $ind1Value];
+
+            $hasInd2 = $tag_defined && !is_null($fields->{$tag}->indicator2);
+            $ind2Label = $hasInd2 ? $fields->{$tag}->indicator2->label : '';
+            $ind2Value = $hasInd2 && isset($fields->{$tag}->indicator2->codes->{$instance->ind2})
+              ? $fields->{$tag}->indicator2->codes->{$instance->ind2}->label : '';
+            if ($ind2Label != '' || $ind2Value != '' || $instance->ind2 != ' ')
+              $rows[] = ['', 'ind2', $ind2Label, $instance->ind2, $ind2Value];
+
+            foreach ($instance->subfields as $code => $s_value) {
+              $hasCode = $tag_defined && isset($fields->{$tag}->subfields) && isset($fields->{$tag}->subfields->{$code});
+              $codeLabel = $hasCode ? $fields->{$tag}->subfields->{$code}->label : '';
+              $rows[] = ['', '$' . $code, $codeLabel, '', $s_value];
+            }
+          }
+        }
+      }
+    }
+    return $rows;
+  }
+
+  public function resolvePicaFields($schemaType = 'PICA'): array {
+    include_once('pica/PicaSchemaManager.php');
+    $schema = new PicaSchemaManager();
+    // $fields = json_decode(file_get_contents('schemas/avram-k10plus.json'))->fields;
+
+    $rows = [];
+    foreach ($this->record as $tag => $value) {
+      $definition = $schema->lookup($tag);
+      $tag_defined = $definition != false;
+      if ($tag_defined && !isset($definition->label))
+        error_log(' no tag label for ' . $tag);
+      $tagLabel = $tag_defined ? $definition->label : '';
+      if (!is_null($value) && is_array($value) && !empty($value)) {
+        foreach ($value as $instance) {
+          $rows[] = [$tag, '', [$tagLabel, 3]];
+
+          foreach ($instance->subfields as $code => $s_value) {
+            $hasCode = $tag_defined && isset($definition->subfields) && isset($definition->subfields->{$code});
+            $codeLabel = $hasCode ? $definition->subfields->{$code}->label : '';
+            $rows[] = ['', '$' . $code, $codeLabel, '', $s_value];
           }
         }
       }

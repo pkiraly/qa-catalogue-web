@@ -49,7 +49,6 @@ class ControlFields extends BaseTab {
       $smarty->assign('supportedPositions', $this->supportedPositions);
       $smarty->assign('solrFieldsMap', $this->solrFieldsMap);
       $smarty->assign('solrField', $solrField);
-      $smarty->assign('controller', $this);
     }
   }
 

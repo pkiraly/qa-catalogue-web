@@ -14,7 +14,11 @@ class TtCompleteness extends BaseTab {
   }
 
   private function readTTHistogram() {
-    return $this->readHistogram($this->getFilePath('tt-completeness-fields.csv'));
+    $fields = $this->readHistogram($this->getFilePath('tt-completeness-fields.csv'));
+    foreach ($fields as $field) {
+      if (isset($field->fields))
+        $field->paths = explode(',', $field->fields);
+    }
+    return $fields;
   }
-
 }

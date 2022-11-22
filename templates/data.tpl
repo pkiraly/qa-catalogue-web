@@ -26,14 +26,14 @@
                 <h3>Filters</h3>
                 <div id="filter-list">
                   <ul>
-                      {foreach $filters as $filter}
-                        <li>
-                          <a href="?{$filter->removeLink->url}" title="remove it from the query"><i class="fa fa-minus" aria-hidden="true"></i></a>
-                          {$filter->marcCode}: {$filter->removeLink->text}
-                          <a href="?{$filter->changeQuery->url}" title="make it the main query"><i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i></a>
-                          <a href="?{$filter->termsLink}" title="check other terms of this field"><i class="fa fa-list-ol" aria-hidden="true"></i></a>
-                        </li>
-                      {/foreach}
+                    {foreach from=$filters item=filter}
+                      <li>
+                        <a href="?{$filter->removeLink->url}" title="remove it from the query"><i class="fa fa-minus" aria-hidden="true"></i></a>
+                        {$filter->marcCode}: {$filter->removeLink->text}
+                        <a href="?{$filter->changeQuery->url}" title="make it the main query"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+                        <a href="?{$filter->termsLink}" title="check other terms of this field"><i class="fa fa-list-ol" aria-hidden="true"></i></a>
+                      </li>
+                    {/foreach}
                   </ul>
                 </div>
               {/if}
@@ -66,7 +66,11 @@
             </div>
 
             <div id="records">
-              {include 'marc-records-based-on-marcjson.tpl'}
+              {if $schemaType == 'PICA'}
+                {include 'pica-records-based-on-json.tpl'}
+              {else}
+                {include 'marc-records-based-on-marcjson.tpl'}
+              {/if}
             </div>
 
             <div class="row" id="navigation-footer">
@@ -82,8 +86,6 @@
     </div>
   </div>
 </div>
-<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 
 {literal}
 <script>

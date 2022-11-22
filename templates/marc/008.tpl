@@ -29,7 +29,7 @@
   </thead>
   <tbody>
   {assign var="prevType" value=0}
-  {foreach $controller->get008Definition($type) as $id => $data}
+  {foreach from=$controller->get008Definition($type) key=id item=data}
     {if $prevType != $data->type}
       {if $data->type == 1}
         <tr>

@@ -3,11 +3,11 @@
 <tr>
   <td><em>personal names</em>:</td>
   <td>
-  {foreach $fieldInstances as $field}
+  {foreach from=$fieldInstances item=field}
     <span class="600">
       <i class="fa fa-hashtag" aria-hidden="true" title="Personal name"></i>
       {*  Personal name *}
-      {foreach $field->subfields as $code => $value name=subfields}
+      {foreach from=$field->subfields key=code item=value name=subfields}
         {assign 'comma' value=(($smarty.foreach.subfields.last) ? '' : ',')}
         {if $code == 'a'}
           <a href="{$record->filter('600a_PersonalNameSubject_personalName_ss', $value)}" class="record-link">{$value}</a>{$comma}

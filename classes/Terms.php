@@ -6,6 +6,7 @@ include_once 'Facetable.php';
 class Terms extends Facetable {
 
   private $facet;
+  private $action = 'list';
 
   public function __construct($configuration, $db) {
     parent::__construct($configuration, $db);
@@ -16,6 +17,7 @@ class Terms extends Facetable {
     $this->termFilter = getOrDefault('termFilter', '');
     $this->ajaxFacet = getOrDefault('ajax', 0, [0, 1]);
     $this->facetLimit = getOrDefault('limit', 100, [10, 25, 50, 100]);
+    $this->action = getOrDefault('action', 'list', ['list', 'download']);
   }
 
   public function prepareData(Smarty &$smarty) {
@@ -30,19 +32,37 @@ class Terms extends Facetable {
     $smarty->assign('offset',    $this->offset);
     $smarty->assign('ajaxFacet', $this->ajaxFacet);
 
-    $smarty->assign('controller',$this);
     $facets = $this->createTermList();
-    $smarty->assign('facets',    $facets);
-    $smarty->assign('label',     $this->resolveSolrField($this->facet));
-    $smarty->assign('basicFacetParams', ['tab=data', 'query=' . $this->query]);
-    $smarty->assign('prevLink',  $this->createPrevLink());
-    if (isset($facets->{$this->facet}))
-      $smarty->assign('nextLink',  $this->createNextLink(get_object_vars($facets->{$this->facet})));
-    else
-      $smarty->assign('nextLink',  '');
+    if ($this->action == 'download') {
+      $this->output = 'none';
+      $this->download($facets);
+    } else {
+      $smarty->assign('facets',    $facets);
+      $smarty->assign('label',     $this->resolveSolrField($this->facet));
+      $smarty->assign('basicFacetParams', ['tab=data', 'query=' . $this->query]);
+      $smarty->assign('prevLink',  $this->createPrevLink());
+      if (isset($facets->{$this->facet}))
+        $smarty->assign('nextLink',  $this->createNextLink(get_object_vars($facets->{$this->facet})));
+      else
+        $smarty->assign('nextLink',  '');
 
-    // if ($this->facet == '' && $this->query == '')
-    $smarty->assign('solrFields', $this->getFields());
+      // if ($this->facet == '' && $this->query == '')
+      $smarty->assign('solrFields', $this->getFields());
+    }
+  }
+
+  private function download($facets) {
+    $attachment = sprintf('attachment; filename="facet-terms-for-%s-%d-at-%s.csv"', $this->facet, $this->offset, date("Y-m-d"));
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: ' . $attachment);
+    echo "term,count\n";
+    foreach ($facets as $key => $values) {
+      foreach ($values as $term => $count) {
+        if (strpos($term, ','))
+          $term = sprintf('"%s"', $term);
+        echo "$term,$count\n";
+      }
+    }
   }
 
   public function getTemplate() {
@@ -61,6 +81,10 @@ class Terms extends Facetable {
     if ($this->offset - $this->facetLimit > 0)
       return $this->createNavLink($this->offset-$this->facetLimit);
     return '';
+  }
+
+  public function createDownloadLink() {
+    return $this->createNavLink($this->offset) . '&action=download&ajax=1';
   }
 
   private function createNextLink($count) {

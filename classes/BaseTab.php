@@ -11,13 +11,14 @@ abstract class BaseTab implements Tab {
   protected $solrFields;
   protected $fieldDefinitions;
   protected $catalogueName;
-  protected $catalogue;
+  protected Catalogue $catalogue;
   protected $marcVersion ;
   protected $lastUpdate = '';
   protected $output = 'html';
   protected $displayNetwork = false;
   protected $historicalDataDir = null;
   protected $versioning = false;
+  protected $lang = 'en';
 
   /**
    * BaseTab constructor.
@@ -31,14 +32,18 @@ abstract class BaseTab implements Tab {
     $this->catalogue = $this->createCatalogue();
     $this->marcVersion = $this->catalogue->getMarcVersion();
     $this->displayNetwork = isset($configuration['display-network']) && (int) $configuration['display-network'] == 1;
-    $this->versioning = ($this->configuration['versions'][$this->db] === true);
+    $this->versioning = (isset($this->configuration['versions'][$this->db]) && $this->configuration['versions'][$this->db] === true);
 
     $this->count = $this->readCount();
     $this->readLastUpdate();
     $this->handleHistoricalData();
+    $this->lang = getOrDefault('lang', $this->catalogue->getDefaultLang(), ['en', 'de']);
+    setLanguage($this->lang);
   }
 
   public function prepareData(Smarty &$smarty) {
+    global $languages;
+
     $smarty->assign('db', $this->db);
     $smarty->assign('catalogueName', $this->catalogueName);
     $smarty->assign('catalogue', $this->catalogue);
@@ -46,9 +51,12 @@ abstract class BaseTab implements Tab {
     $smarty->assign('lastUpdate', $this->lastUpdate);
     $smarty->assign('displayNetwork', $this->displayNetwork);
     $smarty->assign('historicalDataDir', $this->historicalDataDir);
+    $smarty->assign('controller', $this);
+    $smarty->assign('lang', $this->lang);
+    $smarty->assign('languages', $languages);
   }
 
-  private function createCatalogue() {
+  public function createCatalogue() {
     $className = strtoupper(substr($this->catalogueName, 0, 1)) . substr($this->catalogueName, 1);
     include_once 'catalogue/' . $className . '.php';
     return new $className();
@@ -114,7 +122,6 @@ abstract class BaseTab implements Tab {
   protected function getSolrResponse($params) {
     $solrPath = $this->getIndexName();
     $url = 'http://localhost:8983/solr/' . $solrPath . '/select?' . join('&', $this->encodeSolrParams($params));
-    // error_log($url);
     $solrResponse = json_decode(file_get_contents($url));
     $response = (object)[
       'numFound' => $solrResponse->response->numFound,
@@ -197,7 +204,7 @@ abstract class BaseTab implements Tab {
 
   public function getFieldDefinitions() {
     if (!isset($this->fieldDefinitions))
-      $this->fieldDefinitions = json_decode(file_get_contents('fieldmap.json'));
+      $this->fieldDefinitions = json_decode(file_get_contents('schemas/marc-schema-with-solr-and-extensions.json'));
     return $this->fieldDefinitions;
   }
 
@@ -221,6 +228,12 @@ abstract class BaseTab implements Tab {
       }
     }
 
+    if ($this->catalogue->getSchemaType() == 'PICA'
+        && !isset($solrField)
+        && preg_match('/[^a-zA-Z0-9]/', $tag)) {
+      $solrField = $this->picaToSolr($tag . $subfield) . '_ss';
+    }
+
     if (!isset($solrField) || !in_array($solrField, $this->getSolrFields())) {
       $solrField1 = isset($solrField) ? $solrField : false;
       $solrField = $tag;
@@ -228,12 +241,16 @@ abstract class BaseTab implements Tab {
         $solrField .= preg_match('/[0-9a-zA-Z]/', $subfield) ? $subfield : 'x' . bin2hex($subfield);
       $candidates = [];
       $found = FALSE;
-      foreach ($this->getSolrFields() as $existingSolrField) {
+      $solrField = str_replace('?', '\?', $solrField);
+      $solrField = str_replace('/', '\/', $solrField);
+      $existingSolrFields = $this->getSolrFields();
+      foreach ($existingSolrFields as $existingSolrField) {
         if (preg_match('/^' . $solrField . '_/', $existingSolrField)) {
           $parts = explode('_', $existingSolrField);
           if (count($parts) == 4) {
             $found = TRUE;
             $solrField = $existingSolrField;
+            unset($existingSolrFields[$existingSolrField]);
             break;
           } else {
             $candidates[] = $existingSolrField;
@@ -247,23 +264,38 @@ abstract class BaseTab implements Tab {
       }
 
       if (!$found) {
-        error_log(sprintf('Solr field not found: %s (%s) - %s', $solrField1, $solrField, join(', ', $candidates)));
+        // error_log(sprintf('Solr field not found: %s (%s) - %s', $solrField1, $solrField, join(', ', $candidates)));
         $solrField = FALSE;
       }
     }
     return $solrField;
   }
 
+  private function picaToSolr($input) {
+    return preg_replace_callback('/([^a-zA-Z0-9])/', function ($matches) { return 'x' . dechex(ord($matches[1])); }, $input);
+  }
+
+  private function solrToPica($input) {
+    return preg_replace_callback('/x([0-9a-f]{2})/', function ($matches) { return chr(hexdec($matches[1])); }, $input);
+  }
+
   public function resolveSolrField($solrField) {
     $this->getFieldDefinitions();
 
     $solrField = preg_replace('/_ss$/', '', $solrField);
-    if ($solrField == 'type' || substr($solrField, 0, 2) == '00'
-       || substr($solrField, 0, 6) == 'Leader' || substr($solrField, 0, 6) == 'leader') {
+    if ($solrField == 'type'
+        || ($this->catalogue->getSchemaType() == 'MARC21'
+            && (substr($solrField, 0, 2) == '00'
+                || substr($solrField, 0, 6) == 'Leader'
+                || substr($solrField, 0, 6) == 'leader'))) {
       $found = false;
       if (substr($solrField, 0, 2) == '00') {
         $parts = explode('_', $solrField);
         if (isset($this->fieldDefinitions->fields->{$parts[0]}))
+          if (!isset($this->fieldDefinitions->fields->{$parts[0]}->types))
+            error_log('no types for ' . $parts[0]);
+          if (!is_array($this->fieldDefinitions->fields->{$parts[0]}->types))
+            error_log(sprintf('$s is not an array, but %s', $parts[0], gettype($this->fieldDefinitions->fields->{$parts[0]}->types)));
           foreach ($this->fieldDefinitions->fields->{$parts[0]}->types as $name => $type)
             foreach ($type->positions as $position => $definition)
               if ($position == $parts[1]) {
@@ -278,31 +310,64 @@ abstract class BaseTab implements Tab {
         $label = $solrField;
       }
     } else {
-      $label = sprintf('%s$%s', substr($solrField, 0, 3), substr($solrField, 3, 1));
-      foreach ($this->fieldDefinitions->fields as $field)
-        if (isset($field->subfields))
-          foreach ($field->subfields as $code => $subfield)
-            if (isset($subfield->solr) && $subfield->solr == $solrField) {
-              $label = sprintf('%s$%s %s', $field->tag, $code, $field->label);
-              if ($field->label != $subfield->label)
-                $label .= ' / ' . $subfield->label;
-              break;
-            }
+      if ($this->catalogue->getSchemaType() == 'MARC21') {
+        $label = sprintf('%s$%s', substr($solrField, 0, 3), substr($solrField, 3, 1));
+        foreach ($this->fieldDefinitions->fields as $field)
+          if (isset($field->subfields))
+            foreach ($field->subfields as $code => $subfield)
+              if (isset($subfield->solr) && $subfield->solr == $solrField) {
+                $label = sprintf('%s$%s %s', $field->tag, $code, $field->label);
+                if ($field->label != $subfield->label)
+                  $label .= ' / ' . $subfield->label;
+                break;
+              }
+      } elseif ($this->catalogue->getSchemaType() == 'PICA') {
+        $isFull = preg_match('/_full$/', $solrField);
+        if ($isFull) {
+          $solrField = preg_replace('/_full$/', '', $solrField);
+        }
+
+        $solrField = $this->solrToPica($solrField);
+
+        $field = $isFull ? $solrField : substr($solrField, 0, -1);
+        $subfield = $isFull ? '' : substr($solrField, -1);
+        $label = $isFull ? $field : sprintf('%s$%s', $field, $subfield);
+
+        include_once('classes/pica/PicaSchemaManager.php');
+        $manager = new PicaSchemaManager();
+        $f = $manager->lookup($field);
+        if ($f !== FALSE) {
+          $label .= ': ' . $f->label;
+          if ($subfield != ''
+              && property_exists($f->subfields, $subfield)
+              && isset($f->subfields->{$subfield}->label))
+            $label .= ' / ' . $f->subfields->{$subfield}->label;
+        }
+      }
     }
     return $label;
   }
 
   protected function solrToMarcCode($solrField) {
     $solrField = preg_replace('/_ss$/', '', $solrField);
-    if ($solrField == 'type' || substr($solrField, 0, 2) == '00' || substr($solrField, 0, 6) == 'Leader') {
-      if (substr($solrField, 0, 2) == '00' || substr($solrField, 0, 6) == 'Leader') {
-        $parts = explode('_', $solrField);
-        $label = sprintf('%s/%s', $parts[0], $parts[1]);
+    if ($this->catalogue->getSchemaType() == 'MARC21') {
+      if ($solrField == 'type' || substr($solrField, 0, 2) == '00' || substr($solrField, 0, 6) == 'Leader') {
+        if (substr($solrField, 0, 2) == '00' || substr($solrField, 0, 6) == 'Leader') {
+          $parts = explode('_', $solrField);
+          $label = sprintf('%s/%s', $parts[0], $parts[1]);
+        } else {
+          $label = $solrField;
+        }
       } else {
-        $label = $solrField;
+        $label = sprintf('%s$%s', substr($solrField, 0, 3), substr($solrField, 3, 1));
       }
-    } else {
-      $label = sprintf('%s$%s', substr($solrField, 0, 3), substr($solrField, 3, 1));
+    } else if ($this->catalogue->getSchemaType() == 'PICA') {
+      $solrField = preg_replace('/_ss$/', '', $solrField);
+      $solrField = $this->solrToPica($solrField);
+      if (preg_match('/_full$/', $solrField))
+        $label = preg_replace('/_full$/', '', $solrField);
+      else
+        $label = sprintf('%s$%s', substr($solrField, 0, -1), substr($solrField, -1));
     }
     return $label;
   }
@@ -393,5 +458,14 @@ abstract class BaseTab implements Tab {
       && isset($tagDefinition->versionSpecificSubfields->{$this->marcVersion})
       && isset($tagDefinition->versionSpecificSubfields->{$this->marcVersion}->{$subfield})
       && isset($tagDefinition->versionSpecificSubfields->{$this->marcVersion}->{$subfield}->solr);
+  }
+
+  public function selectLanguage($lang) {
+    parse_str($_SERVER['QUERY_STRING'], $params);
+    if (isset($lang)) {
+      unset($params['lang']);
+      $params['lang'] = $lang;
+    }
+    return http_build_query($params);
   }
 }

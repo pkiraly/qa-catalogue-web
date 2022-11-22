@@ -17,11 +17,11 @@
       <div id="set-facet-list">
         <form id="facetselection" method="post">
           <input type="hidden" name="tab" value="settings" />
-          {foreach $categories as $category => $fields}
+          {foreach from=$categories key=category item=fields}
             <p><strong>{$category}</strong> ({count($fields)} fields)</p>
             <select name="facet[]" multiple="multiple" size="15">
               <option value="">-- select --</option>
-              {foreach $fields as $field}
+              {foreach from=$fields item=field}
                 <option value="{$field->name}"{if $field->checked} selected="selected"{/if}>{$field->name}</option>
               {/foreach}
             </select>

@@ -10,20 +10,26 @@
 <p>Each record get a score based on a number of criteria. Each criteria results in a
   positive score. The final (rounded) score is the summary of these criteria scores.</p>
 
-<table>
+<table id="criteria-list">
   <thead>
     <tr>
+      <th></th>
       <th>Record Element</th>
       <th>MARC field/position/subfield</th>
       <th>Score</th>
     </tr>
   </thead>
   <tbody>
-  {foreach $fields as $index => $field}
+  {foreach from=$fields key=index item=field}
     <tr>
-      <td><a href="#shelf-ready-component-{$index + 1}">{$index + 1}.</a> {$field->label}</td>
-      <td>{$field->marcpath}</td>
-      <td>{$field->score}</td>
+      <td class="id"><a href="#shelf-ready-component-{$index + 1}">{$index + 1}.</a></td>
+      <td>{$field->label}</td>
+      <td width="60%">
+        {foreach from=$field->paths key=index item=path name=paths}
+          <a href="?tab=completeness#completeness-{$path}">{$path}</a>{if !$smarty.foreach.paths.last}, {/if}
+        {/foreach}
+      </td>
+      <td align="right">{$field->score}</td>
     </tr>
   {/foreach}
   </tbody>
@@ -34,16 +40,16 @@
 <p>The histograms of the individual components:</p>
 
 <table>
-{foreach $fields as $index => $field}
+{foreach from=$fields key=index item=field}
   {if $index % 3 == 0}
       <tr>
   {/if}
     <td>
+      <svg class="shelf-ready-completeness-histogram-chart-{$field->name}" width="320" height="200"></svg>
       <p id="shelf-ready-component-{$index+1}">
-        {$index+1}. {$field->label}<br/>
+          {$index+1}. {$field->label}<br/>
         score: 0&mdash;{$field->score}
       </p>
-      <svg class="shelf-ready-completeness-histogram-chart-{$field->name}" width="320" height="200"></svg>
     </td>
   {if $index % 3 == 2 || $index == count($fields) - 1}
     </tr>

@@ -3,7 +3,7 @@
 <tr>
   <td><em>uniform titles</em>:</td>
   <td>
-    {foreach $fieldInstances as $field}
+    {foreach from=$fieldInstances item=field}
       <span class="630">
         {if isset($field->subfields->a)}
           <i class="fa fa-hashtag" aria-hidden="true" title="uniform title"></i>

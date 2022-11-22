@@ -14,7 +14,12 @@ class ShelfReadyCompleteness extends BaseTab {
   }
 
   private function readSRHistogram() {
-    return $this->readHistogram($this->getFilePath('shelf-ready-completeness-fields.csv'));
+    $fields = $this->readHistogram($this->getFilePath('shelf-ready-completeness-fields.csv'));
+    foreach ($fields as $field) {
+      $field->paths = explode(',', $field->marcpath);
+    }
+
+    return $fields;
   }
 
 }

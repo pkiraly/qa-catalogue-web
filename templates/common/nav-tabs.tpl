@@ -4,101 +4,93 @@
     <li class="nav-item">
       <a class="nav-link1{if $tab == 'data'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
          id="data-tab" aria-controls="data"
-         href="?tab=data">Data</a>
+         href="?tab=data">{_('Data')}</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link1{if $tab == 'completeness'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="true"
-         id="completeness-tab" aria-controls="completeness"
-         href="?tab=completeness">Completeness</a>
+      {if $catalogue->getSchemaType() == 'MARC21'}
+        <a class="nav-link1 {if $isCompleteness}active{/if} dropdown-toggle"
+           data-toggle="dropdown" role="tab1" aria-selected="true"
+           id="completeness-tab" aria-controls="completeness"
+           href="#">{_('Completeness')}</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="?tab=completeness">{_('Completeness')}</a>
+          <div class="dropdown-divider"></div>
+          <div style="padding: .25rem 1.5rem; color: #999999"><em>Weighted completeness versions</em></div>
+          <a class="dropdown-item" href="?tab=serials"> &nbsp; Carlstone's serials analysis</a>
+          <a class="dropdown-item" href="?tab=tt-completeness"> &nbsp; Thompson—Traill's e-book completeness</a>
+          <a class="dropdown-item" href="?tab=shelf-ready-completeness"> &nbsp; Booth's shelf-ready completeness</a>
+        </div>
+      {elseif $catalogue->getSchemaType() == 'PICA'}
+        <a class="nav-link1 {if $tab == 'completeness'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+           id="completeness-tab" aria-controls="completeness"
+           href="?tab=completeness">{_('Completeness')}</a>
+      {/if}
     </li>
     <li class="nav-item1">
-      <a class="nav-link1{if $tab == 'issues'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+      <a class="nav-link1 {if $tab == 'issues'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
          id="issues-tab" aria-controls="issues"
-         href="?tab=issues">Issues</a>
+         href="?tab=issues">{_('Issues')}</a>
     </li>
-    <li class="nav-item1">
-      <a class="nav-link1{if $tab == 'functions'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="functions-tab" aria-controls="functions"
-         href="?tab=functions">Functions</a>
-    </li>
-    <li class="nav-item1">
-      <a class="nav-link1{if $tab == 'classifications'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="classifications-tab" aria-controls="classifications"
-         href="?tab=classifications">Subjects</a>
-    </li>
-    <li class="nav-item1">
-      <a class="nav-link1{if $tab == 'authorities'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="authorities-tab" aria-controls="authorities"
-         href="?tab=authorities">Names</a>
-    </li>
-    <li class="nav-item1">
-      <a class="nav-link1{if $tab == 'serials'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="serials-tab" aria-controls="serials"
-         href="?tab=serials">Serials</a>
-    </li>
-    <li class="nav-item1">
-      <a class="nav-link1{if $tab == 'tt-completeness'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="tt-completeness-tab" aria-controls="tt-completeness"
-         href="?tab=tt-completeness">T&amp;T</a>
-    </li>
-    <li class="nav-item1">
-      <a class="nav-link1{if $tab == 'shelf-ready-completeness'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="shelf-ready-completeness-tab" aria-controls="shelf-ready-completeness"
-         href="?tab=shelf-ready-completeness">Booth</a>
-    </li>
-    {if $displayNetwork}
+    {if $catalogue->getSchemaType() == 'MARC21'}
       <li class="nav-item1">
-        <a class="nav-link1{if $tab == 'network'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-           id="network-tab" aria-controls="network"
-           href="?tab=network">Network</a>
+        <a class="nav-link1 {if $tab == 'functions'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+           id="functions-tab" aria-controls="functions"
+           href="?tab=functions">Functions</a>
       </li>
     {/if}
     <li class="nav-item1">
-      <a class="nav-link1{if $tab == 'terms'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="terms-tab" aria-controls="terms"
-         href="?tab=terms">Terms</a>
+      <a class="nav-link1 {if $isAuthority}active{/if} dropdown-toggle" data-toggle="dropdown" role="tab1" aria-selected="false"
+         id="classifications-tab" aria-controls="classifications"
+         href="#">{_('Authorities')}</a>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="?tab=classifications">{_('Subject analysis')}</a>
+        <a class="dropdown-item" href="?tab=authorities">{_('Authority name analysis')}</a>
+      </div>
     </li>
-    <li class="nav-item1">
-      <a class="nav-link1{if $tab == 'pareto'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="pareto-tab" aria-controls="pareto"
-         href="?tab=pareto">Pareto</a>
-    </li>
+    {if $catalogue->getSchemaType() == 'MARC21'}
+      <li class="nav-item1">
+        <a class="nav-link1{if $tab == 'pareto'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+           id="pareto-tab" aria-controls="pareto"
+           href="?tab=pareto">Pareto</a>
+      </li>
+    {/if}
     <li class="nav-item1">
       <a class="nav-link1{if $tab == 'history'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
          id="history-tab" aria-controls="history"
-         href="?tab=history">History</a>
+         href="?tab=history">{_('History')}</a>
     </li>
     {if !is_null($historicalDataDir)}
       <li class="nav-item1">
         <a class="nav-link1{if $tab == 'timeline'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="timeline-tab" aria-controls="timeline"
-         href="?tab=timeline">Timeline</a>
+           id="timeline-tab" aria-controls="timeline"
+           href="?tab=timeline">{_('Timeline')}</a>
+      </li>
+    {/if}
+    {if $displayNetwork}
+      <li class="nav-item1">
+        <a class="nav-link1{if $tab == 'network'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+           id="network-tab" aria-controls="network"
+           href="?tab=network">{_('Network')}</a>
       </li>
     {/if}
     <li class="nav-item1">
-      <a class="nav-link1{if $tab == 'control-fields'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="control-fields-tab" aria-controls="control-fields"
-         href="?tab=control-fields">CRTL fields</a>
-    </li>
-    <li class="nav-item1">
-      <a class="nav-link1{if $tab == 'collocations'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="collocations-tab" aria-controls="collocations"
-         href="?tab=collocations">Collocations</a>
-    </li>
-    <li class="nav-item1">
-      <a class="nav-link1{if $tab == 'download'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="download-tab" aria-controls="download"
-         href="?tab=download">Download</a>
-    </li>
-    <li class="nav-item1">
-      <a class="nav-link1{if $tab == 'settings'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="settings-tab" aria-controls="settings"
-         href="?tab=settings">Settings</a>
+      <a class="nav-link1 {if $isTool}active{/if} dropdown-toggle" data-toggle="dropdown" role="tab1" aria-selected="false"
+         id="terms-tab" aria-controls="terms"
+         href="#">{_('Tools')}</a>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="?tab=terms">{_('Terms')}</a>
+        {if $catalogue->getSchemaType() == 'MARC21'}
+          <a class="dropdown-item" href="?tab=control-fields">{_('Value distribution in control fields')}</a>
+        {/if}
+        <a class="dropdown-item" href="?tab=collocations">{_('Collocations')}</a>
+        <a class="dropdown-item" href="?tab=download">{_('Download')}</a>
+        <a class="dropdown-item" href="?tab=settings">{_('Settings')}</a>
+      </div>
     </li>
     <li class="nav-item1">
       <a class="nav-link1{if $tab == 'about'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
          id="about-tab" aria-controls="about"
-         href="?tab=about">About</a>
+         href="?tab=about">{_('About')}</a>
     </li>
   </ul>
 </nav>

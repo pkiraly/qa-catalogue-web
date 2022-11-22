@@ -5,7 +5,7 @@
 <tr>
   <td><em>synthesized classifications</em>:</td>
   <td>
-  {foreach $fieldInstances as $field}
+  {foreach from=$fieldInstances item=field}
     <span class="085">
       {*  Classification number *}
       {if isset($field->subfields->a)}

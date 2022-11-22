@@ -1,4 +1,4 @@
-{foreach $docs as $doc}
+{foreach from=$docs item=doc}
   {assign var="record" value=$controller->getRecord($doc)}
   {assign var="id" value=$doc->id|regex_replace:"/ +$/":""}
   {assign var="type" value=$record->getFirstField('type_ss')}
@@ -37,7 +37,7 @@
     {* 250a_Edition_editionStatement_ss *}
     {assign var="fieldInstances" value=$record->getFields('250')}
     {if !is_null($fieldInstances)}
-      {foreach $fieldInstances as $field}
+      {foreach from=$fieldInstances item=field}
         {if isset($field->subfields->a)}
           <span class="250a_Edition_editionStatement_ss">{$field->subfields->a}</span>
         {/if}
@@ -82,7 +82,7 @@
     {assign var="tag520s" value=$record->getFields('520')}
     {if !is_null($tag520s)}
       <em>summary:</em> <span class="520">
-        {foreach $tag520s as $field}
+        {foreach from=$tag520s item=field}
           {include 'conditional-foreach.tpl' obj=$field->subfields key='a' suffix='<br/>'}
         {/foreach}
       </span>
@@ -92,7 +92,7 @@
     {assign var="tag505s" value=$record->getFields('505')}
     {if !is_null($tag505s)}
       <!-- 505a_TableOfContents_ss -->
-      {foreach $tag505s as $field}
+      {foreach from=$tag505s item=field}
         {include 'conditional-foreach.tpl' obj=$field->subfields key='a' suffix='<br/>'}
       {/foreach}
     {/if}
@@ -198,6 +198,11 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
+             id="marc-human-tab-{$id}" href="#marc-human-{$id}"
+             aria-controls="marc-human-tab">for humans</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
              id="marc-leader-tab-{$id}" href="#marc-leader-{$id}"
              aria-controls="marc-leader-tab">Leader</a>
         </li>
@@ -222,8 +227,8 @@
         {/if}
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
-             id="marc-human-tab-{$id}" href="#marc-human-{$id}"
-             aria-controls="marc-human-tab">Solr</a>
+             id="marc-solr-tab-{$id}" href="#marc-solr-{$id}"
+             aria-controls="marc-solr-tab">Solr</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
@@ -236,10 +241,25 @@
         <div class="tab-pane active record-tab" id="marc-raw-{$id}" role="tabpanel" aria-labelledby="data-tab">
           <div class="marc-details" id="marc-details-{$id}">
             {if isset($doc->record_sni)}
-              <table>
-                {foreach $record->getMarcFields() as $row}
+              <table id="marc-details-{$id}-table">
+                {foreach from=$record->getMarcFields() item=row}
                   <tr>
-                    {foreach $row as $cell}
+                    {foreach from=$row item=cell}
+                      <td>{$cell}</td>
+                    {/foreach}
+                  </tr>
+                {/foreach}
+              </table>
+            {/if}
+          </div>
+        </div>
+        <div class="tab-pane record-tab" id="marc-human-{$id}" role="tabpanel" aria-labelledby="data-tab">
+          <div class="marc-human" id="marc-human-{$id}">
+            {if isset($doc->record_sni)}
+              <table id="marc-human-{$id}-table">
+                {foreach from=$record->resolveMarcFields() item=row}
+                  <tr>
+                    {foreach from=$row item=cell}
                       <td>{$cell}</td>
                     {/foreach}
                   </tr>
@@ -264,15 +284,15 @@
             {include 'marc/006.tpl'}
           </div>
         {/if}
-        <div class="tab-pane record-tab" id="marc-human-{$id}" role="tabpanel" aria-labelledby="data-tab">
+        <div class="tab-pane record-tab" id="marc-solr-{$id}" role="tabpanel" aria-labelledby="data-tab">
           <h4>Representation in Solr index</h4>
 
           <ul>
-            {foreach $record->getAllSolrFields() as $field}
+            {foreach from=$record->getAllSolrFields() item=field}
               <li>
                 <span class="label">{$field->label}:</span>
-                {foreach $field->value as $value}
-                  {$value}{if !$value@last} &mdash; {/if}
+                {foreach from=$field->value item=value name=values}
+                  {$value}{if !$smarty.foreach.values.last} &mdash; {/if}
                 {/foreach}
               </li>
             {/foreach}

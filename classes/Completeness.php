@@ -9,26 +9,30 @@ class Completeness extends BaseTab {
   private $records = [];
   private $types = [];
   private $type = 'all';
+  private $sort;
   private $max = 0;
-  private static $supportedTypes = [
-    'Books', 'Computer Files', 'Continuing Resources', 'Maps', 'Mixed Materials', 'Music', 'Visual Materials', 'all'
-  ];
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 
-    $this->type = getOrDefault('type', 'all', self::$supportedTypes);
+    $this->type = getOrDefault('type', 'all', $this->catalogue::$supportedTypes);
+    $this->sort = getOrDefault('sort', '', ['number-of-record', 'number-of-instances', 'min', 'max', 'mean', 'stddev']);
 
     $this->readPackages();
     $this->readCompleteness();
 
     $smarty->assign('packages', $this->packages);
     $smarty->assign('packageIndex', $this->packageIndex);
-    $smarty->assign('records', $this->records);
+    if ($this->sort != '') {
+      $smarty->assign('records', $this->orderBy());
+    } else {
+      $smarty->assign('records', $this->records);
+    }
     $smarty->assign('types', $this->types);
     $smarty->assign('selectedType', $this->type);
     $smarty->assign('max', $this->max);
     $smarty->assign('hasNonCoreTags', $this->hasNonCoreTags);
+    $smarty->assign('sort', $this->sort);
   }
 
   public function getTemplate() {
@@ -43,7 +47,7 @@ class Completeness extends BaseTab {
       $lineNumber = 0;
       $header = [];
 
-      $fieldDefinitions = json_decode(file_get_contents('fieldmap.json'));
+      $fieldDefinitions = json_decode(file_get_contents('schemas/marc-schema-with-solr-and-extensions.json'));
 
       foreach (file($elementsFile) as $line) {
         $lineNumber++;
@@ -77,12 +81,15 @@ class Completeness extends BaseTab {
           $this->packages[] = $record;
         }
       }
+      foreach ($this->packages as $package)
+        $package->percent = $package->count * 100 / $this->max;
+
       usort($this->packages, function($a, $b){
         return ($a->packageid == $b->packageid)
-         ? 0
-         : ($a->packageid < $b->packageid)
+          ? 0
+          : (($a->packageid < $b->packageid)
             ? -1
-            : 1;
+            : 1);
       });
     } else {
       $msg = sprintf("file %s is not existing", $elementsFile);
@@ -126,7 +133,7 @@ class Completeness extends BaseTab {
         "mixed" => "Mixed Materials"
       ];
 
-      $fieldDefinitions = json_decode(file_get_contents('fieldmap.json'));
+      $fieldDefinitions = json_decode(file_get_contents('schemas/marc-schema-with-solr-and-extensions.json'));
       foreach (file($elementsFile) as $line) {
         $lineNumber++;
         $values = str_getcsv($line);
@@ -134,7 +141,8 @@ class Completeness extends BaseTab {
           $header = $values;
         } else {
           if (count($header) != count($values)) {
-            error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
+            error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
+                              $elementsFile, $lineNumber, count($header), count($values)));
             error_log($line);
           }
           $record = (object)array_combine($header, $values);
@@ -148,6 +156,8 @@ class Completeness extends BaseTab {
           // $this->max = max($this->max, $record->{'number-of-record'});
           $record->mean = sprintf('%.2f', $record->mean);
           $record->stddev = sprintf('%.2f', $record->stddev);
+          $record->percent = $record->{'number-of-record'} * 100 / $this->max;
+
           $histogram = new stdClass();
           foreach (explode('; ', $record->histogram) as $entry) {
             list($k,$v) = explode('=', $entry);
@@ -155,9 +165,11 @@ class Completeness extends BaseTab {
           }
           $record->histogram = $histogram;
           $record->solr = $this->getSolrField($record->path);
-          $tag = substr($record->path, 0, 3);
+          $position = $this->catalogue->getSchemaType() == 'MARC21' ? 3 : 4;
+          $tag = substr($record->path, 0, $position);
           $record->isLeader = false;
           $record->isComplexControlField = in_array($tag, $complexControlFields);
+
           if ($record->isComplexControlField) {
             if (preg_match('/^...([a-zA-Z]+)(\d+)$/', $record->path, $matches)) {
               $record->complexType = $matches[1];
@@ -176,9 +188,9 @@ class Completeness extends BaseTab {
             $record->package = 'other';
 
           if ($record->tag == '')
-            $record->tag = substr($record->path, 0, 3);
+            $record->tag = substr($record->path, 0, $position);
           elseif (!$record->isLeader)
-            $record->tag = substr($record->path, 0, 3) . ' &mdash; ' . $record->tag;
+            $record->tag = substr($record->path, 0, $position) . ' &mdash; ' . $record->tag;
 
           $record->packageid = (int) $record->packageid;
           if (!isset($this->records[$record->packageid]))
@@ -208,4 +220,18 @@ class Completeness extends BaseTab {
     return sprintf('?tab=data&query=*:*&filters[]=%s:*', $field);
   }
 
+  private function orderBy() {
+    $records = [];
+    foreach ($this->records as $packageId => $package) {
+      foreach ($package as $tag => $_records) {
+        foreach ($_records as $record) {
+          $records[] = $record;
+        }
+      }
+    }
+    usort($records, function ($item1, $item2) {
+      return [$item2->{$this->sort}, $item1->path] <=> [$item1->{$this->sort}, $item2->path];
+    });
+    return $records;
+  }
 }

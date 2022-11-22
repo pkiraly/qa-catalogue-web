@@ -30,11 +30,11 @@
             </script>
           </td>
           <td style="padding-left: 50px;">
-            {foreach $solrFieldsMap as $field => $properties}
+            {foreach from=$solrFieldsMap key=field item=properties}
               <h4>{$field}</h4>
               {if $field == 'Leader'}
                 <ul>
-                  {foreach $properties as $position => $positionProperties}
+                  {foreach from=$properties key=position item=positionProperties}
                     <li>
                       {if $selectedField == $field && $selectedPosition == $position}
                         <strong>{$position} {$positionProperties->label}</strong>
@@ -45,10 +45,10 @@
                   {/foreach}
                 </ul>
               {else}
-                {foreach $properties as $type => $typeProperties}
+                {foreach from=$properties key=type item=typeProperties}
                   <h5>{$type}</h5>
                   <ul>
-                    {foreach $typeProperties as $position => $positionProperties}
+                    {foreach from=$typeProperties key=position item=positionProperties}
                       <li>
                         {if $selectedField == $field && $selectedPosition == $position}
                           <strong>{$position} {$positionProperties->label}</strong>
