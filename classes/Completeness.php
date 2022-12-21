@@ -11,13 +11,22 @@ class Completeness extends BaseTab {
   private $type = 'all';
   private $sort;
   private $max = 0;
+  public $groupped = false;
+  public $groupId = false;
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
+    parent::readAnalysisParameters('completeness.params.json');
+    $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
 
     $this->type = getOrDefault('type', 'all', $this->catalogue::$supportedTypes);
     $this->sort = getOrDefault('sort', '', ['number-of-record', 'number-of-instances', 'min', 'max', 'mean', 'stddev']);
+    $this->groupId = getOrDefault('groupId', 'all');
 
+    if ($this->groupped) {
+      $smarty->assign('groups', readCsv($this->getFilePath('completeness-groups.csv')));
+      $smarty->assign('groupId', $this->groupId);
+    }
     $this->readPackages();
     $this->readCompleteness();
 
@@ -40,7 +49,8 @@ class Completeness extends BaseTab {
   }
 
   private function readPackages() {
-    $elementsFile = $this->getFilePath('packages.csv');
+    $fileName = $this->groupped ? 'completeness-groupped-packages.csv' : 'packages.csv';
+    $elementsFile = $this->getFilePath($fileName);
 
     if (file_exists($elementsFile)) {
       // name,label,count
@@ -62,6 +72,9 @@ class Completeness extends BaseTab {
           $record = (object)array_combine($header, $values);
 
           if (isset($record->documenttype) && $record->documenttype != $this->type)
+            continue;
+
+          if ($this->groupped && $record->group != $this->groupId)
             continue;
 
           $record->packageid = (int) $record->packageid;
@@ -98,7 +111,8 @@ class Completeness extends BaseTab {
   }
 
   private function readCompleteness() {
-    $elementsFile = $this->getFilePath('marc-elements.csv');
+    $fileName = $this->groupped ? 'completeness-groupped-marc-elements.csv' : 'marc-elements.csv';
+    $elementsFile = $this->getFilePath($fileName);
     if (file_exists($elementsFile)) {
       // $keys = ['element','number-of-record',number-of-instances,min,max,mean,stddev,histogram]; // "sum",
       $lineNumber = 0;
@@ -153,15 +167,21 @@ class Completeness extends BaseTab {
           if (isset($record->documenttype) && $record->documenttype != $this->type)
             continue;
 
+          if ($this->groupped && $record->groupId != $this->groupId)
+            continue;
+
           // $this->max = max($this->max, $record->{'number-of-record'});
+          $record->{'number-of-record'} = $record->{'number-of-record'} == '' ? 0 : $record->{'number-of-record'};
           $record->mean = sprintf('%.2f', $record->mean);
           $record->stddev = sprintf('%.2f', $record->stddev);
           $record->percent = $record->{'number-of-record'} * 100 / $this->max;
 
           $histogram = new stdClass();
-          foreach (explode('; ', $record->histogram) as $entry) {
-            list($k,$v) = explode('=', $entry);
-            $histogram->$k = $v;
+          if ($record->histogram != '') {
+            foreach (explode('; ', $record->histogram) as $entry) {
+              list($k,$v) = explode('=', $entry);
+              $histogram->$k = $v;
+            }
           }
           $record->histogram = $histogram;
           $record->solr = $this->getSolrField($record->path);

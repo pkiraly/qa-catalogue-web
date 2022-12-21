@@ -6,15 +6,30 @@
     <div class="tab-pane active" id="completeness" role="tabpanel" aria-labelledby="completeness-tab">
       <h2>{_('Completeness')}</h2>
 
+      {if $controller->groupped}
+        <div id="group-selector">
+          <form>
+            <input type="hidden" name="tab" value="{$tab}">
+            <input type="hidden" name="type" value="{$selectedType}">
+            <select name="groupId">
+              {foreach from=$groups item=group}
+                <option value="{$group->id}" {if ($group->id == $groupId)}selected="selected"{/if}>{$group->group} ({$group->count})</option>
+              {/foreach}
+            </select>
+            <button type="submit">submit</button>
+          </form>
+        </div>
+      {/if}
+
       <div>
         {_('by document types')}:
         {foreach from=$types item=type name=types}
+          {if !$smarty.foreach.types.first}·{/if}
           {if $type == $selectedType}
             <strong>{$type}</strong>
           {else}
             <a href="?tab=completeness&type={urlencode($type)}">{$type}</a>
           {/if}
-          {if !$smarty.foreach.types.last}·{/if}
         {/foreach}
       </div>
       <div>

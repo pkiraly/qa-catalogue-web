@@ -19,6 +19,7 @@ abstract class BaseTab implements Tab {
   protected $historicalDataDir = null;
   protected $versioning = false;
   protected $lang = 'en';
+  public $analysisParameters = null;
 
   /**
    * BaseTab constructor.
@@ -77,12 +78,16 @@ abstract class BaseTab implements Tab {
   protected function readCount($countFile = null) {
     if (is_null($countFile))
       $countFile = $this->getFilePath('count.csv');
-    $counts = readCsv($countFile);
-    if (empty($counts)) {
-      $count = trim(file_get_contents($countFile));
+    if (file_exists($countFile)) {
+      $counts = readCsv($countFile);
+      if (empty($counts)) {
+        $count = trim(file_get_contents($countFile));
+      } else {
+        $counts = $counts[0];
+        $count = isset($counts->processed) ? $counts->processed : $counts->total;
+      }
     } else {
-      $counts = $counts[0];
-      $count = isset($counts->processed) ? $counts->processed : $counts->total;
+      $count = 0;
     }
     return $count;
   }
@@ -467,5 +472,11 @@ abstract class BaseTab implements Tab {
       $params['lang'] = $lang;
     }
     return http_build_query($params);
+  }
+
+  protected function readAnalysisParameters($paramFile) {
+    $path = $this->getFilePath($paramFile);
+    if (file_exists($path))
+      $this->analysisParameters = json_decode(file_get_contents($path));
   }
 }
