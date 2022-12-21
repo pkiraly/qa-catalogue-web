@@ -24,7 +24,15 @@ class Completeness extends BaseTab {
     $this->groupId = getOrDefault('groupId', 'all');
 
     if ($this->groupped) {
-      $smarty->assign('groups', readCsv($this->getFilePath('completeness-groups.csv')));
+      $groups = readCsv($this->getFilePath('completeness-groups.csv'));
+      usort($groups, function ($a, $b) {
+        if ($a->group == $b->group) {
+          return 0;
+        }
+        return ($a->group < $b->group) ? -1 : 1;
+      });
+
+      $smarty->assign('groups', $groups);
       $smarty->assign('groupId', $this->groupId);
     }
     $this->readPackages();
