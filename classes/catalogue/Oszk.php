@@ -4,7 +4,7 @@
 class Oszk extends Catalogue {
 
   protected $name = 'oszk';
-  protected $label = 'Orszägos Széchényi Könyvtár';
+  protected $label = 'Országos Széchényi Könyvtár';
   protected $url = 'https://www.oszk.hu/';
   // protected $marcVersion = 'B3KAT';
 

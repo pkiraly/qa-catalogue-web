@@ -316,16 +316,41 @@ abstract class BaseTab implements Tab {
       }
     } else {
       if ($this->catalogue->getSchemaType() == 'MARC21') {
-        $label = sprintf('%s$%s', substr($solrField, 0, 3), substr($solrField, 3, 1));
-        foreach ($this->fieldDefinitions->fields as $field)
-          if (isset($field->subfields))
-            foreach ($field->subfields as $code => $subfield)
-              if (isset($subfield->solr) && $subfield->solr == $solrField) {
-                $label = sprintf('%s$%s %s', $field->tag, $code, $field->label);
-                if ($field->label != $subfield->label)
-                  $label .= ' / ' . $subfield->label;
-                break;
-              }
+        $field = substr($solrField, 0, 3);
+        $pos3_7 = substr($solrField, 3, 4);
+
+        if ($pos3_7 == 'ind1' || $pos3_7 == 'ind2')
+          $label = sprintf('%s/%s', $field, substr($solrField, 3, 4));
+        else
+          $label = sprintf('%s$%s', $field, substr($solrField, 3, 1));
+        $found = false;
+        if (isset($this->fieldDefinitions->fields->{$field})) {
+          $fieldDefinition = $this->fieldDefinitions->fields->{$field};
+          if ($pos3_7 == 'ind1' && isset($fieldDefinition->indicator1)) {
+            $label .= ': ' . $fieldDefinition->label . ' / ' . $fieldDefinition->indicator1->label;
+            $found = true;
+          } else if ($pos3_7 == 'ind2' && isset($fieldDefinition->indicator2)) {
+            $label .= ': ' . $fieldDefinition->label . ' / ' . $fieldDefinition->indicator2->label;
+            $found = true;
+          } else if (isset($fieldDefinition->subfields->{substr($solrField, 3, 1)})) {
+            $subfieldDefinition = $fieldDefinition->subfields->{substr($solrField, 3, 1)};
+            $label .= ': ' . $fieldDefinition->label;
+            if ($fieldDefinition->label != $subfieldDefinition->label)
+              $label .= ' / ' . $subfieldDefinition->label;
+            $found = true;
+          }
+        }
+        if (!$found) {
+          foreach ($this->fieldDefinitions->fields as $fieldDefinition)
+            if (isset($fieldDefinition->subfields))
+              foreach ($fieldDefinition->subfields as $code => $subfieldDefinition)
+                if (isset($subfieldDefinition->solr) && $subfieldDefinition->solr == $solrField) {
+                  $label = sprintf('%s$%s %s', $fieldDefinition->tag, $code, $fieldDefinition->label);
+                  if ($fieldDefinition->label != $subfieldDefinition->label)
+                    $label .= ' / ' . $subfieldDefinition->label;
+                  break;
+                }
+        }
       } elseif ($this->catalogue->getSchemaType() == 'PICA') {
         $isFull = preg_match('/_full$/', $solrField);
         if ($isFull) {
