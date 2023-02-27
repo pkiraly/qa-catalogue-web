@@ -47,6 +47,7 @@
       {if preg_match('/^ +$/', $rowData->message)}"{$rowData->message}"{else}{$rowData->message}{/if}
     </td>
     <td class="url">
+      hello {$rowData->url}
       <a href="{showMarcUrl($rowData->url)}" target="_blank"><i class="fa fa-info" aria-hidden="true"></i></a>
     </td>
     <td class="count instances">{$rowData->instances|number_format}</td>

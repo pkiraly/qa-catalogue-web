@@ -352,27 +352,7 @@ abstract class BaseTab implements Tab {
                 }
         }
       } elseif ($this->catalogue->getSchemaType() == 'PICA') {
-        $isFull = preg_match('/_full$/', $solrField);
-        if ($isFull) {
-          $solrField = preg_replace('/_full$/', '', $solrField);
-        }
-
-        $solrField = $this->solrToPica($solrField);
-
-        $field = $isFull ? $solrField : substr($solrField, 0, -1);
-        $subfield = $isFull ? '' : substr($solrField, -1);
-        $label = $isFull ? $field : sprintf('%s$%s', $field, $subfield);
-
-        include_once('classes/pica/PicaSchemaManager.php');
-        $manager = new PicaSchemaManager();
-        $f = $manager->lookup($field);
-        if ($f !== FALSE) {
-          $label .= ': ' . $f->label;
-          if ($subfield != ''
-              && property_exists($f->subfields, $subfield)
-              && isset($f->subfields->{$subfield}->label))
-            $label .= ' / ' . $f->subfields->{$subfield}->label;
-        }
+        $label = $this->getLabelForPica($solrField);
       }
     }
     return $label;
@@ -503,5 +483,34 @@ abstract class BaseTab implements Tab {
     $path = $this->getFilePath($paramFile);
     if (file_exists($path))
       $this->analysisParameters = json_decode(file_get_contents($path));
+  }
+
+  /**
+   * @param $solrField
+   * @return array|false|string|string[]|null
+   */
+  private function getLabelForPica($solrField) {
+    $isFull = preg_match('/_full$/', $solrField);
+    if ($isFull) {
+      $solrField = preg_replace('/_full$/', '', $solrField);
+    }
+
+    $solrField = $this->solrToPica($solrField);
+
+    $field = $isFull ? $solrField : substr($solrField, 0, -1);
+    $subfield = $isFull ? '' : substr($solrField, -1);
+    $label = $isFull ? $field : sprintf('%s$%s', $field, $subfield);
+
+    include_once('classes/pica/PicaSchemaManager.php');
+    $manager = new PicaSchemaManager();
+    $f = $manager->lookup($field);
+    if ($f !== FALSE) {
+      $label .= ': ' . $f->label;
+      if ($subfield != ''
+        && property_exists($f->subfields, $subfield)
+        && isset($f->subfields->{$subfield}->label))
+        $label .= ' / ' . $f->subfields->{$subfield}->label;
+    }
+    return $label;
   }
 }

@@ -96,6 +96,7 @@ class Issues extends BaseTab {
       $elementsFile = $this->getFilePath('issue-summary.csv');
     }
     if (file_exists($elementsFile)) {
+      error_log('elementsFile: ' . $elementsFile);
       // $keys = ['path', 'type', 'message', 'url', 'count']; // "sum",
       // control subfield: invalid value
       $header = [];

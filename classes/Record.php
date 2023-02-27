@@ -9,6 +9,8 @@ class Record {
   private $basicQueryParameters;
   private $basicFilterParameters;
   private $catalogue;
+  private static $schema = null;
+  private static $fields = null;
 
   /**
    * Record constructor.
@@ -195,13 +197,7 @@ class Record {
   }
 
   public function getMarcFields($schemaType = 'MARC21'): array {
-    /*
-    if (is_string($doc->record_sni)) {
-      $marc = json_decode($doc->record_sni);
-    } else {
-      $marc = json_decode($doc->record_sni[0]);
-    }
-    */
+    $this->initializeSchemaManager();
 
     $rows = [];
     foreach ($this->record as $tag => $value) {
@@ -212,7 +208,13 @@ class Record {
       } else {
         if (!is_null($value) && is_array($value) && !empty($value)) {
           foreach ($value as $instance) {
-            $firstRow = [$tag, $instance->ind1, $instance->ind2];
+            $tagToDisplay = $tag;
+            if ($schemaType == 'PICA') {
+              $field = self::$schema->lookup($tag);
+              if (isset($field->url))
+                $tagToDisplay = (object)['url' => $field->url, 'text' => $tag];
+            }
+            $firstRow = [$tagToDisplay, $instance->ind1, $instance->ind2];
             $i = 0;
             foreach ($instance->subfields as $code => $s_value) {
               $i++;
@@ -232,6 +234,7 @@ class Record {
   }
 
   public function resolveMarcFields($schemaType = 'MARC21'): array {
+    $this->initializeSchemaManager();
     $fields = json_decode(file_get_contents('schemas/marc-schema-with-solr-and-extensions.json'))->fields;
 
     $rows = [];
@@ -247,7 +250,14 @@ class Record {
       } else {
         if (!is_null($value) && is_array($value) && !empty($value)) {
           foreach ($value as $instance) {
-            $rows[] = [$tag, '', $tagLabel, '', ''];
+            $tagToDisplay = $tag;
+            if ($schemaType == 'PICA') {
+              $field = self::$schema->lookup($tag);
+              if (isset($field->url)) {
+                $tagToDisplay = [$field->url, $tag];
+              }
+            }
+            $rows[] = [$tagToDisplay, '', $tagLabel, '', ''];
             $hasInd1 = $tag_defined && !is_null($fields->{$tag}->indicator1);
             $ind1Label = $hasInd1 ? $fields->{$tag}->indicator1->label : '';
             $ind1Value = $hasInd1 && isset($fields->{$tag}->indicator1->codes->{$instance->ind1})
@@ -274,26 +284,44 @@ class Record {
     return $rows;
   }
 
+  public function initializeSchemaManager() {
+    if (is_null(self::$schema)) {
+      include_once('pica/PicaSchemaManager.php');
+      self::$schema = new PicaSchemaManager();
+    }
+  }
+
+  public static function initializeMarcFields() {
+    if (is_null(self::$fields)) {
+      self::$fields = json_decode(file_get_contents('schemas/marc-schema-with-solr-and-extensions.json'))->fields;
+    }
+  }
+
   public function resolvePicaFields($schemaType = 'PICA'): array {
-    include_once('pica/PicaSchemaManager.php');
-    $schema = new PicaSchemaManager();
-    // $fields = json_decode(file_get_contents('schemas/avram-k10plus.json'))->fields;
+    $this->initializeSchemaManager();
 
     $rows = [];
     foreach ($this->record as $tag => $value) {
-      $definition = $schema->lookup($tag);
+      $definition = self::$schema->lookup($tag);
       $tag_defined = $definition != false;
       if ($tag_defined && !isset($definition->label))
         error_log(' no tag label for ' . $tag);
       $tagLabel = $tag_defined ? $definition->label : '';
       if (!is_null($value) && is_array($value) && !empty($value)) {
         foreach ($value as $instance) {
-          $rows[] = [$tag, '', [$tagLabel, 3]];
+          $tagToDisplay = $tag;
+          if (isset($definition->url))
+            $tagToDisplay = (object)['url' => $definition->url, 'text' => $tag];
+
+          $rows[] = [$tagToDisplay, '', (object)['span' => 3, 'text' => $tagLabel]];
 
           foreach ($instance->subfields as $code => $s_value) {
             $hasCode = $tag_defined && isset($definition->subfields) && isset($definition->subfields->{$code});
             $codeLabel = $hasCode ? $definition->subfields->{$code}->label : '';
-            $rows[] = ['', '$' . $code, $codeLabel, '', $s_value];
+            $codeToDisplay = '$' . $code;
+            // if (isset($definition->url))
+            //   $codeToDisplay = (object)['url' => $definition->url . '#$' . $code, 'text' => '$' . $code];
+            $rows[] = ['', $codeToDisplay, $codeLabel, '', $s_value];
           }
         }
       }

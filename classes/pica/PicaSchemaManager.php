@@ -8,7 +8,9 @@ class PicaSchemaManager {
   private $tagIndex = [];
 
   public function __construct() {
-    $this->fields = json_decode(file_get_contents('schemas/avram-k10plus.json'))->fields;
+    // $schemaFile = 'schemas/avram-k10plus.json';
+    $schemaFile = 'schemas/avram-k10plus-title.json';
+    $this->fields = json_decode(file_get_contents($schemaFile))->fields;
     foreach ($this->fields as $id => $field) {
       $this->createRange($field);
 
@@ -23,7 +25,7 @@ class PicaSchemaManager {
     if (isset($this->fields->{$searchTerm}))
       return $this->fields->{$searchTerm};
 
-    if (strstr($searchTerm, '/')) {
+    if ($this->hasOccurrence($searchTerm)) {
       $parts = explode('/', $searchTerm);
       $tag = $parts[0];
       $occurence = $parts[1];
@@ -52,5 +54,13 @@ class PicaSchemaManager {
       $field->range = new Range($field->counter);
     else
       $field->range = null;
+  }
+
+  /**
+   * @param $searchTerm
+   * @return false|string
+   */
+  private function hasOccurrence($searchTerm) {
+    return strstr($searchTerm, '/');
   }
 }
