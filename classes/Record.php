@@ -9,6 +9,7 @@ class Record {
   private $basicQueryParameters;
   private $basicFilterParameters;
   private $catalogue;
+  private static bool $isSchemaInitialized = false;
   private static $schema = null;
   private static $fields = null;
 
@@ -197,23 +198,23 @@ class Record {
   }
 
   public function getMarcFields($schemaType = 'MARC21'): array {
-    $this->initializeSchemaManager();
+    self::initializeSchema($schemaType);
+    error_log('-------');
 
     $rows = [];
     foreach ($this->record as $tag => $value) {
+      if ($tag == 'leader')
+        $tag = 'LDR';
+      $tag_defined = isset(self::$fields->{$tag});
+      $definition = $tag_defined ? self::$fields->{$tag} : null;
+      $tagToDisplay = $schemaType == 'PICA' ? $this->picaTagLink($tag) : $this->marcTagLink($tag, $definition);
       if ($schemaType == 'MARC21' && preg_match('/^00/', $tag)) {
-        $rows[] = [$tag, '', '', '', $value];
-      } else if ($tag == 'leader') {
-        $rows[] = ['LDR', '', '', '', $value];
+        $rows[] = [$tagToDisplay, '', '', '', $value];
+      } else if ($tag == 'LDR') {
+        $rows[] = [$tagToDisplay, '', '', '', $value];
       } else {
         if (!is_null($value) && is_array($value) && !empty($value)) {
           foreach ($value as $instance) {
-            $tagToDisplay = $tag;
-            if ($schemaType == 'PICA') {
-              $field = self::$schema->lookup($tag);
-              if (isset($field->url))
-                $tagToDisplay = (object)['url' => $field->url, 'text' => $tag];
-            }
             $firstRow = [$tagToDisplay, $instance->ind1, $instance->ind2];
             $i = 0;
             foreach ($instance->subfields as $code => $s_value) {
@@ -234,47 +235,44 @@ class Record {
   }
 
   public function resolveMarcFields($schemaType = 'MARC21'): array {
-    $this->initializeSchemaManager();
-    $fields = json_decode(file_get_contents('schemas/marc-schema-with-solr-and-extensions.json'))->fields;
+    self::initializeSchema($schemaType);
 
     $rows = [];
     foreach ($this->record as $tag => $value) {
-      $tag_defined = isset($fields->{$tag});
-      if ($tag_defined && !isset($fields->{$tag}->label))
-        error_log(' no tag label for ' . $tag);
-      $tagLabel = $tag_defined ? $fields->{$tag}->label : '';
+      if ($tag == 'leader')
+        $tag = 'LDR';
+      $tag_defined = isset(self::$fields->{$tag});
+      $definition = $tag_defined ? self::$fields->{$tag} : null;
+      $tagToDisplay = $schemaType == 'PICA' ? $this->picaTagLink($tag) : $this->marcTagLink($tag, $definition);
+
+      if ($tag_defined && !isset($definition->label))
+        error_log('no tag label for ' . $tag);
+      $tagLabel = $tag_defined && isset($definition->label) ? $definition->label : '';
       if ($schemaType == 'MARC21' && preg_match('/^00/', $tag)) {
-        $rows[] = [$tag, '', $tagLabel, '', $value];
+        $rows[] = [$tagToDisplay, '', $tagLabel, '', $value];
       } else if ($tag == 'leader') {
         $rows[] = ['LDR', '', 'leader', '', $value];
       } else {
         if (!is_null($value) && is_array($value) && !empty($value)) {
           foreach ($value as $instance) {
-            $tagToDisplay = $tag;
-            if ($schemaType == 'PICA') {
-              $field = self::$schema->lookup($tag);
-              if (isset($field->url)) {
-                $tagToDisplay = [$field->url, $tag];
-              }
-            }
             $rows[] = [$tagToDisplay, '', $tagLabel, '', ''];
-            $hasInd1 = $tag_defined && !is_null($fields->{$tag}->indicator1);
-            $ind1Label = $hasInd1 ? $fields->{$tag}->indicator1->label : '';
-            $ind1Value = $hasInd1 && isset($fields->{$tag}->indicator1->codes->{$instance->ind1})
-              ? $fields->{$tag}->indicator1->codes->{$instance->ind1}->label : '';
+            $hasInd1 = $tag_defined && isset($definition->indicator1) && !is_null($definition->indicator1);
+            $ind1Label = $hasInd1 ? $definition->indicator1->label : '';
+            $ind1Value = $hasInd1 && isset($definition->indicator1->codes->{$instance->ind1})
+              ? $definition->indicator1->codes->{$instance->ind1}->label : '';
             if ($ind1Label != '' || $ind1Value != '' || $instance->ind1 != ' ')
               $rows[] = ['', 'ind1', $ind1Label, $instance->ind1, $ind1Value];
 
-            $hasInd2 = $tag_defined && !is_null($fields->{$tag}->indicator2);
-            $ind2Label = $hasInd2 ? $fields->{$tag}->indicator2->label : '';
-            $ind2Value = $hasInd2 && isset($fields->{$tag}->indicator2->codes->{$instance->ind2})
-              ? $fields->{$tag}->indicator2->codes->{$instance->ind2}->label : '';
+            $hasInd2 = $tag_defined && isset($definition->indicator2) && !is_null($definition->indicator2);
+            $ind2Label = $hasInd2 ? $definition->indicator2->label : '';
+            $ind2Value = $hasInd2 && isset($definition->indicator2->codes->{$instance->ind2})
+              ? $definition->indicator2->codes->{$instance->ind2}->label : '';
             if ($ind2Label != '' || $ind2Value != '' || $instance->ind2 != ' ')
               $rows[] = ['', 'ind2', $ind2Label, $instance->ind2, $ind2Value];
 
             foreach ($instance->subfields as $code => $s_value) {
-              $hasCode = $tag_defined && isset($fields->{$tag}->subfields) && isset($fields->{$tag}->subfields->{$code});
-              $codeLabel = $hasCode ? $fields->{$tag}->subfields->{$code}->label : '';
+              $hasCode = $tag_defined && isset($definition->subfields) && isset($definition->subfields->{$code});
+              $codeLabel = $hasCode ? $definition->subfields->{$code}->label : '';
               $rows[] = ['', '$' . $code, $codeLabel, '', $s_value];
             }
           }
@@ -284,7 +282,18 @@ class Record {
     return $rows;
   }
 
-  public function initializeSchemaManager() {
+  public static function initializeSchema($schemaType) {
+    if (!self::$isSchemaInitialized) {
+      if ($schemaType == 'MARC21') {
+        self::initializeMarcFields();
+      } elseif ($schemaType == 'PICA') {
+        self::initializeSchemaManager();
+      }
+      self::$isSchemaInitialized = true;
+    }
+  }
+
+  public static function initializeSchemaManager() {
     if (is_null(self::$schema)) {
       include_once('pica/PicaSchemaManager.php');
       self::$schema = new PicaSchemaManager();
@@ -298,7 +307,7 @@ class Record {
   }
 
   public function resolvePicaFields($schemaType = 'PICA'): array {
-    $this->initializeSchemaManager();
+    self::initializeSchema($schemaType);
 
     $rows = [];
     foreach ($this->record as $tag => $value) {
@@ -447,4 +456,20 @@ class Record {
   public function getDoc() {
     return $this->doc;
   }
+
+  private function marcTagLink($tag, $definition) {
+    $tagToDisplay = $tag;
+    if (!is_null($definition) && isset($definition->url))
+      $tagToDisplay = (object)['url' => $definition->url, 'text' => $tag];
+    return $tagToDisplay;
+  }
+
+  private function picaTagLink($tag) {
+    $tagToDisplay = $tag;
+    $field = self::$schema->lookup($tag);
+    if (isset($field->url))
+      $tagToDisplay = (object)['url' => $field->url, 'text' => $tag];
+    return $tagToDisplay;
+  }
+
 }

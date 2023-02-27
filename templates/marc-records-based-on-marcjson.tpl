@@ -245,7 +245,11 @@
                 {foreach from=$record->getMarcFields() item=row}
                   <tr>
                     {foreach from=$row item=cell}
-                      <td>{$cell}</td>
+                      {if is_object($cell)}
+                        <td><a href="{$cell->url}" target="_blank">{$cell->text}</a></td>
+                      {else}
+                        <td>{$cell}</td>
+                      {/if}
                     {/foreach}
                   </tr>
                 {/foreach}
@@ -260,7 +264,11 @@
                 {foreach from=$record->resolveMarcFields() item=row}
                   <tr>
                     {foreach from=$row item=cell}
-                      <td>{$cell}</td>
+                      {if is_object($cell)}
+                        <td><a href="{$cell->url}" target="_blank">{$cell->text}</a></td>
+                      {else}
+                        <td>{$cell}</td>
+                      {/if}
                     {/foreach}
                   </tr>
                 {/foreach}
