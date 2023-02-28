@@ -55,27 +55,27 @@
 
             <div class="row" id="navigation">
               <div class="col-8" id="prev-next">
-                {include 'data-bold-links.tpl' items=$prevNextLinks}
+                {include 'data/data-bold-links.tpl' items=$prevNextLinks}
               </div>
               <div class="col-4" id="per-page">
                 <span class="label">Items per page:</span>
                 <span id="items-per-page">
-                  {include 'data-bold-links.tpl' items=$itemsPerPage}
+                  {include 'data/data-bold-links.tpl' items=$itemsPerPage}
                 </span>
               </div>
             </div>
 
             <div id="records">
               {if $schemaType == 'PICA'}
-                {include 'pica-records-based-on-json.tpl'}
+                {include 'data/pica-records-based-on-json.tpl'}
               {else}
-                {include 'marc-records-based-on-marcjson.tpl'}
+                {include 'data/marc-records-based-on-marcjson.tpl'}
               {/if}
             </div>
 
             <div class="row" id="navigation-footer">
               <div class="col-8" id="prev-next-footer">
-                {include 'data-bold-links.tpl' items=$prevNextLinks}
+                {include 'data/data-bold-links.tpl' items=$prevNextLinks}
               </div>
               <div class="col-4"></div>
             </div>

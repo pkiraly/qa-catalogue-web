@@ -10,7 +10,7 @@ class Network extends BaseTab {
   }
 
   public function getTemplate() {
-    return 'network.tpl';
+    return 'network/network.tpl';
   }
 
   private function readTags() {

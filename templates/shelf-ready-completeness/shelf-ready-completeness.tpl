@@ -29,7 +29,7 @@
         data elements are available in the record.
       </p>
       <div id="shelf-ready-completeness-content">
-        {include 'shelf-ready-completeness-histogram.tpl'}
+        {include 'shelf-ready-completeness/shelf-ready-completeness-histogram.tpl'}
       </div>
     </div>
   </div>

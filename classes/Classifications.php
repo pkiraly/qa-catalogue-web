@@ -15,7 +15,7 @@ class Classifications extends AddedEntry {
   }
 
   public function getTemplate() {
-    return 'classifications.tpl';
+    return 'classifications/classifications.tpl';
   }
 
   private function readByRecords(Smarty &$smarty) {

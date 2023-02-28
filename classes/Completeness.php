@@ -1,5 +1,6 @@
 <?php
 
+include_once 'SchemaUtil.php';
 
 class Completeness extends BaseTab {
 
@@ -45,7 +46,7 @@ class Completeness extends BaseTab {
   }
 
   public function getTemplate() {
-    return 'completeness.tpl';
+    return 'completeness/completeness.tpl';
   }
 
   private function readPackages() {
@@ -111,6 +112,7 @@ class Completeness extends BaseTab {
   }
 
   private function readCompleteness() {
+    SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
     $fileName = $this->groupped ? 'completeness-groupped-marc-elements.csv' : 'marc-elements.csv';
     $elementsFile = $this->getFilePath($fileName);
     if (file_exists($elementsFile)) {
@@ -146,6 +148,7 @@ class Completeness extends BaseTab {
         "computer" => "Computer Files",
         "mixed" => "Mixed Materials"
       ];
+      $prevControlField = '';
 
       $fieldDefinitions = json_decode(file_get_contents('schemas/marc-schema-with-solr-and-extensions.json'));
       foreach (file($elementsFile) as $line) {
@@ -185,8 +188,20 @@ class Completeness extends BaseTab {
           }
           $record->histogram = $histogram;
           $record->solr = $this->getSolrField($record->path);
-          $position = $this->catalogue->getSchemaType() == 'MARC21' ? 3 : 4;
-          $tag = substr($record->path, 0, $position);
+
+          if ($this->catalogue->getSchemaType() == 'MARC21' && preg_match('/^(leader|00.)(.+)$/', $record->path, $matches)) {
+            $tag = $matches[1];
+            $record->isField = false;
+          } else {
+            $parts = explode('$', $record->path, 2);
+            $record->isField = count($parts) == 1;
+            $tag = $parts[0];
+            if (!$record->isField)
+              $this->subfieldCode = $parts[1];
+          }
+          $record->extractedTag = $tag;
+          $definition = SchemaUtil::getDefinition($tag);
+
           $record->isLeader = false;
           $record->isComplexControlField = in_array($tag, $complexControlFields);
 
@@ -207,10 +222,14 @@ class Completeness extends BaseTab {
           if ($record->package == '')
             $record->package = 'other';
 
-          if ($record->tag == '')
-            $record->tag = substr($record->path, 0, $position);
-          elseif (!$record->isLeader)
-            $record->tag = substr($record->path, 0, $position) . ' &mdash; ' . $record->tag;
+          $pica3 = ($definition != null && isset($definition->pica3) ? '=' . $definition->pica3 : '');
+          if ($record->tag == '') {
+            // $record->tag = substr($record->path, 0, $position);
+            $record->tag = $tag . $pica3;
+          } elseif (!$record->isLeader) {
+            // $record->tag = substr($record->path, 0, $position) . ' &mdash; ' . $record->tag;
+            $record->tag = $tag . $pica3 . ' &mdash; ' . $record->tag;
+          }
 
           $record->packageid = (int) $record->packageid;
           if (!isset($this->records[$record->packageid]))

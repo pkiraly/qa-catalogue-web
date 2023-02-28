@@ -178,6 +178,7 @@ table#issues-table td.chart div
   height: 15px;
   border-right: 1px solid maroon;
   border-bottom: 2px solid maroon;
+  margin-bottom: 4px;
 }
 
 table#authorities-by-field td.chart div,
@@ -688,4 +689,13 @@ td.record-field-label {
 }
 .marc-human .tag-title {
   color: #37ba00;
+}
+
+#completeness-field-table table tr td {
+  vertical-align: bottom;
+}
+
+#completeness-field-table table tr.field-level td {
+  padding-top: 25px;
+  border-bottom: 1px solid #37ba00;
 }

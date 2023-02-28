@@ -10,7 +10,7 @@ class Serials extends BaseTab {
   }
 
   public function getTemplate() {
-    return 'serials.tpl';
+    return 'serials/serials.tpl';
   }
 
   private function readSerialHistogram() {

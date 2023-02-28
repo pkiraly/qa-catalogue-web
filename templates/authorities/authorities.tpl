@@ -6,9 +6,9 @@
     <div class="tab-pane active" id="authorities" role="tabpanel" aria-labelledby="authorities-tab">
       <h2>Authority name analysis</h2>
       <div id="authorities-content">
-        {include 'authorities-by-records.tpl'}
-        {include 'authorities-histogram.tpl'}
-        {include 'authorities-by-field.tpl'}
+        {include 'authorities/authorities-by-records.tpl'}
+        {include 'authorities/authorities-histogram.tpl'}
+        {include 'authorities/authorities-by-field.tpl'}
       </div>
     </div>
   </div>

@@ -1,6 +1,7 @@
 <?php
 
 include_once 'Range.php';
+include_once __DIR__ . '/../catalogue/Catalogue.php';
 
 class PicaSchemaManager {
 
@@ -8,6 +9,11 @@ class PicaSchemaManager {
   private $tagIndex = [];
 
   public function __construct() {
+    global $tab;
+    $catalogue = $tab->getCatalogue();
+    $schemaType = $catalogue->getSchemaType();
+    error_log("schemType: $schemaType");
+
     // $schemaFile = 'schemas/avram-k10plus.json';
     $schemaFile = 'schemas/avram-k10plus-title.json';
     $this->fields = json_decode(file_get_contents($schemaFile))->fields;

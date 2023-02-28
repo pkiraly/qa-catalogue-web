@@ -47,7 +47,6 @@
       {if preg_match('/^ +$/', $rowData->message)}"{$rowData->message}"{else}{$rowData->message}{/if}
     </td>
     <td class="url">
-      hello {$rowData->url}
       <a href="{showMarcUrl($rowData->url)}" target="_blank"><i class="fa fa-info" aria-hidden="true"></i></a>
     </td>
     <td class="count instances">{$rowData->instances|number_format}</td>
@@ -60,4 +59,4 @@
     <td class="percent text-right" title="{$rowData->percent|number_format:8}%">{$rowData->percent|number_format:2}</td>
   </tr>
 {/foreach}
-{include file="issue-list-navigation.tpl"}
+{include file="issues/issue-list-navigation.tpl"}

@@ -199,7 +199,6 @@ class Record {
 
   public function getMarcFields($schemaType = 'MARC21'): array {
     self::initializeSchema($schemaType);
-    error_log('-------');
 
     $rows = [];
     foreach ($this->record as $tag => $value) {
@@ -317,11 +316,8 @@ class Record {
         error_log(' no tag label for ' . $tag);
       $tagLabel = $tag_defined ? $definition->label : '';
       if (!is_null($value) && is_array($value) && !empty($value)) {
+        $tagToDisplay = $this->picaTagLink($tag);
         foreach ($value as $instance) {
-          $tagToDisplay = $tag;
-          if (isset($definition->url))
-            $tagToDisplay = (object)['url' => $definition->url, 'text' => $tag];
-
           $rows[] = [$tagToDisplay, '', (object)['span' => 3, 'text' => $tagLabel]];
 
           foreach ($instance->subfields as $code => $s_value) {
@@ -465,10 +461,16 @@ class Record {
   }
 
   private function picaTagLink($tag) {
-    $tagToDisplay = $tag;
+    $text = $tag;
     $field = self::$schema->lookup($tag);
+    if (isset($field->pica3))
+      $text .= '=' . $field->pica3;
+
     if (isset($field->url))
-      $tagToDisplay = (object)['url' => $field->url, 'text' => $tag];
+      $tagToDisplay = (object)['url' => $field->url, 'text' => $text];
+    else
+      $tagToDisplay = $text;
+
     return $tagToDisplay;
   }
 

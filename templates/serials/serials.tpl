@@ -19,7 +19,7 @@
       </blockquote>
 
       <div id="serials-content">
-        {include 'serial-histogram.tpl'}
+        {include 'serials/serial-histogram.tpl'}
       </div>
     </div>
   </div>

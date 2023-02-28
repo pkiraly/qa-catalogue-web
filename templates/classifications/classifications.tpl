@@ -6,9 +6,9 @@
     <div class="tab-pane active" id="classifications" role="tabpanel" aria-labelledby="classifications-tab">
       <h2>Subject analysis</h2>
       <div id="classifications-content">
-        {include 'classifications-by-records.tpl'}
-        {include 'classifications-histogram.tpl'}
-        {include 'classifications-by-field.tpl'}
+        {include 'classifications/classifications-by-records.tpl'}
+        {include 'classifications/classifications-histogram.tpl'}
+        {include 'classifications/classifications-by-field.tpl'}
       </div>
     </div>
   </div>

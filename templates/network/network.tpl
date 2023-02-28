@@ -6,7 +6,7 @@
     <div class="tab-pane active" id="network" role="tabpanel" aria-labelledby="network-tab">
       <h2>Network analysis</h2>
       <div id="network-content">
-        {include 'network-content.tpl'}
+        {include 'network/network-content.tpl'}
       </div>
     </div>
   </div>

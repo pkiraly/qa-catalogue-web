@@ -52,37 +52,43 @@
           <td colspan="11" class="package" id="package-{$packageId}">{$packageIndex[$packageId]}</td>
         </tr>
         {foreach from=$tags key=tagName item=records}
-          <tr>
-            <td colspan="4" class="tag" id="completeness-{$catalogue->getTag($tagName)}">{$tagName}</td>
-          </tr>
+          {if preg_match('/^(Leader|00[678])/', $tagName)}
+            <tr class="field-level">
+              <td colspan="11" class="tag" id="completeness-{$catalogue->getTag($tagName)}">{$tagName}</td>
+            </tr>
+          {/if}
           {assign var=prevComplexType value=""}
           {foreach from=$records item=record}
             {if $record->isComplexControlField && $prevComplexType != $record->complexType}
-              <tr>
-                <td colspan="5" style="text-align: left">{$record->complexType}</td>
+              <tr class="complex-type">
+                <td colspan="11" style="text-align: left">{$record->complexType}</td>
               </tr>
             {/if}
-            <tr>
-              <td class="path" id="completeness-{$record->path}">
-                {if $record->isLeader || $record->isComplexControlField || $record->subfield != '' || strpos($record->path, '$') !== false}
-                  {if isset($record->solr) && !empty($record->solr)}
-                    <a href="?tab=data&query=&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}&filters[]={$record->solr}:*">
-                      {if $record->isComplexControlField || $record->isLeader}
-                        {$record->complexPosition}
-                      {elseif preg_match('/ind[12]$/', $record->path)}
-                        {$catalogue->getSubfield($record->path)}
-                      {else}
-                        {$catalogue->getSubfield($record->path)}
-                      {/if}
-                    </a>
-                  {elseif $record->isComplexControlField || $record->isLeader}
-                    {$record->complexPosition}
-                  {else}
-                    {$catalogue->getSubfield($record->path)}
+            <tr class="{if $record->isField}field-level{else}subfield-level{/if}">
+              {if $record->isField}
+                <td colspan="2" class="field-level tag" id="completeness-{$catalogue->getTag($tagName)}">{$tagName}</td>
+              {else}
+                <td class="path" id="completeness-{$record->path}">
+                  {if $record->isLeader || $record->isComplexControlField || !$record->isField || strpos($record->path, '$') !== false}
+                    {if isset($record->solr) && !empty($record->solr)}
+                      <a href="?tab=data&query=&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}&filters[]={$record->solr}:*">
+                        {if $record->isComplexControlField || $record->isLeader}
+                          {$record->complexPosition}
+                        {elseif preg_match('/ind[12]$/', $record->path)}
+                          {$catalogue->getSubfield($record->path)}
+                        {else}
+                          {$catalogue->getSubfield($record->path)}
+                        {/if}
+                      </a>
+                    {elseif $record->isComplexControlField || $record->isLeader}
+                      {$record->complexPosition}
+                    {else}
+                      {$catalogue->getSubfield($record->path)}
+                    {/if}
                   {/if}
-                {/if}
-              </td>
-              <td class="subfield">{$record->subfield}</td>
+                </td>
+                <td class="subfield">{$record->subfield}</td>
+              {/if}
               <td class="chart"><div style="width: {ceil($record->percent * 2)}px;">&nbsp;</div></td>
               <td class="terms">
                 {if isset($record->solr) && !empty($record->solr)}

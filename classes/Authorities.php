@@ -13,7 +13,7 @@ class Authorities extends AddedEntry {
   }
 
   public function getTemplate() {
-    return 'authorities.tpl';
+    return 'authorities/authorities.tpl';
   }
 
   private function readByRecords(Smarty &$smarty) {

@@ -23,11 +23,11 @@ class RecordIssues extends BaseTab {
   }
 
   public function getTemplate() {
-    return 'record-issues.tpl';
+    return 'data/record-issues.tpl';
   }
 
   public function getAjaxTemplate() {
-    return 'record-issues.tpl';
+    return 'data/record-issues.tpl';
   }
 
   private function getRecordIssues() {

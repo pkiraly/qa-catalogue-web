@@ -277,6 +277,7 @@ abstract class BaseTab implements Tab {
   }
 
   private function picaToSolr($input) {
+    $input = str_replace('/', '_', $input);
     return preg_replace_callback('/([^a-zA-Z0-9])/', function ($matches) { return 'x' . dechex(ord($matches[1])); }, $input);
   }
 
@@ -512,5 +513,12 @@ abstract class BaseTab implements Tab {
         $label .= ' / ' . $f->subfields->{$subfield}->label;
     }
     return $label;
+  }
+
+  /**
+   * @return Catalogue
+   */
+  public function getCatalogue(): Catalogue {
+    return $this->catalogue;
   }
 }

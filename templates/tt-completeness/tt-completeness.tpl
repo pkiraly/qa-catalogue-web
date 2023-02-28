@@ -15,7 +15,7 @@
       </blockquote>
       <p>Their approach to calculate the quality of ebook records comming from different data sources.</p>
       <div id="tt-completeness-content">
-        {include 'tt-completeness-histogram.tpl'}
+        {include 'tt-completeness/tt-completeness-histogram.tpl'}
       </div>
     </div>
   </div>

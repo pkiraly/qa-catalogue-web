@@ -79,13 +79,13 @@ class Issues extends BaseTab {
   }
 
   public function getTemplate() {
-    return 'issues.tpl';
+    return 'issues/issues.tpl';
   }
 
   public function getAjaxTemplate() {
     if ($this->action == 'ajaxIssueByTag')
-      return 'issue-by-tag.tpl';
-    return 'issue-list.tpl';
+      return 'issues/issue-by-tag.tpl';
+    return 'issues/issue-list.tpl';
   }
 
   private function readIssues() {
@@ -165,7 +165,6 @@ class Issues extends BaseTab {
   }
 
   private function readIssuesAjax($categoryId, $typeId, $path = null, $order = 'records DESC', $page = 0, $limit = 100) {
-    error_log('readIssuesAjax sqliteExists? ' . $this->sqliteExists());
     if ($this->sqliteExists())
       $this->readIssuesAjaxDB($categoryId, $typeId, $path, $order, $page, $limit);
     else

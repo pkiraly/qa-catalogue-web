@@ -38,12 +38,12 @@
 
       <h3>field groups</h3>
       <div id="completeness-group-table">
-        {include 'completeness-packages.tpl'}
+        {include 'completeness/completeness-packages.tpl'}
       </div>
 
       <h3>fields</h3>
       <div id="completeness-field-table">
-        {include 'completeness-fields.tpl'}
+        {include 'completeness/completeness-fields.tpl'}
       </div>
     </div>
   </div>

@@ -18,7 +18,7 @@
         </p>
       {/if}
       <div id="issues-table-placeholder">
-        {include 'issue-summary.tpl'}
+        {include 'issues/issue-summary.tpl'}
       </div>
     </div>
   </div>

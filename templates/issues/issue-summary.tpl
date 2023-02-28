@@ -89,7 +89,7 @@
         <td class="chart"><div style="width: {ceil($type->ratio * 200)}px;">&nbsp;</div></td>
         <td class="percent text-right" title="{$type->percent|number_format:8}%">{$type->percent|number_format:2}</td>
       </tr>
-      {include file="issue-list.tpl" records=$records[$type->id]
+      {include file="issues/issue-list.tpl" records=$records[$type->id]
                                      categoryId=$category->id
                                      typeId=$type->id
                                      pages=$type->pages

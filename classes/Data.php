@@ -69,7 +69,7 @@ class Data extends Facetable {
   }
 
   public function getTemplate() {
-    return 'data.tpl';
+    return 'data/data.tpl';
   }
 
   private function getBasicUrl(array $excluded = []) {
