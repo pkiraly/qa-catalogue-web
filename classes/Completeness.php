@@ -200,6 +200,7 @@ class Completeness extends BaseTab {
               $this->subfieldCode = $parts[1];
           }
           $record->extractedTag = $tag;
+          $record->websafeTag = $this->safe($tag);
           $definition = SchemaUtil::getDefinition($tag);
 
           $record->isLeader = false;
@@ -287,5 +288,9 @@ class Completeness extends BaseTab {
       return ($a->group < $b->group) ? -1 : 1;
     });
     return $groups;
+  }
+
+  private function safe($input) {
+    return preg_replace_callback('/([^a-zA-Z0-9])/', function ($matches) { return 'x' . dechex(ord($matches[1])); }, $input);
   }
 }

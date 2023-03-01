@@ -692,10 +692,21 @@ td.record-field-label {
 }
 
 #completeness-field-table table tr td {
-  vertical-align: bottom;
+  vertical-align: top;
 }
 
 #completeness-field-table table tr.field-level td {
   padding-top: 25px;
   border-bottom: 1px solid #37ba00;
+  vertical-align: bottom;
+}
+
+
+#completeness-field-table table tr.subfield-level,
+#completeness-field-table table tr.complex-type-level {
+  display: none;
+}
+
+#completeness-field-table table tr td a.trigger {
+  color: #999999;
 }

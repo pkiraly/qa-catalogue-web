@@ -1,7 +1,7 @@
 <table>
   <colgroup>
     <col>
-    <col>
+    <col style="width: 25%; min-width: 25%; max-width: 25%;">
     <col>
     <col>
     <col>
@@ -54,19 +54,25 @@
         {foreach from=$tags key=tagName item=records}
           {if preg_match('/^(Leader|00[678])/', $tagName)}
             <tr class="field-level">
-              <td colspan="11" class="tag" id="completeness-{$catalogue->getTag($tagName)}">{$tagName}</td>
+              <td colspan="11" class="tag" id="completeness-{$record->websafeTag}">
+                <a href="#" class="trigger" data-id="completeness-{$record->websafeTag}" title="Show subfields"><i class="fa fa-folder-closed"></i></a>
+                {$tagName}
+              </td>
             </tr>
           {/if}
           {assign var=prevComplexType value=""}
           {foreach from=$records item=record}
             {if $record->isComplexControlField && $prevComplexType != $record->complexType}
-              <tr class="complex-type">
+              <tr class="complex-type complex-type-level">
                 <td colspan="11" style="text-align: left">{$record->complexType}</td>
               </tr>
             {/if}
-            <tr class="{if $record->isField}field-level{else}subfield-level{/if}">
+            <tr class="{if $record->isField}field-level{else}subfield-level completeness-{$record->websafeTag}{/if}">
               {if $record->isField}
-                <td colspan="2" class="field-level tag" id="completeness-{$catalogue->getTag($tagName)}">{$tagName}</td>
+                <td colspan="2" class="field-level tag" id="completeness-{$record->websafeTag}">
+                  <a href="#" class="trigger" data-id="completeness-{$record->websafeTag}" title="Show subfields"><i class="fa fa-folder-closed"></i></a>
+                  {$tagName}
+                </td>
               {else}
                 <td class="path" id="completeness-{$record->path}">
                   {if $record->isLeader || $record->isComplexControlField || !$record->isField || strpos($record->path, '$') !== false}
@@ -149,3 +155,15 @@
     {/if}
   </tbody>
 </table>
+
+<script>
+var openedIcon = '<i class="fa fa-folder-open">';
+var closedIcon = '<i class="fa fa-folder-closed">';
+
+$('a.trigger').click(function (event) {
+  event.preventDefault();
+  var id = $(this).attr('data-id');
+  $('tr.' + id).toggle();
+  $(this).html($(this).html().includes('open') ? closedIcon : openedIcon);
+});
+</script>
