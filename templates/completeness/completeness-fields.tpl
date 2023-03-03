@@ -54,16 +54,16 @@
         {foreach from=$tags key=tagName item=records}
           {if preg_match('/^(Leader|00[678])/', $tagName)}
             <tr class="field-level">
-              <td colspan="11" class="tag" id="completeness-{$record->websafeTag}">
-                <a href="#" class="trigger" data-id="completeness-{$record->websafeTag}" title="Show subfields"><i class="fa fa-folder-closed"></i></a>
-                {$tagName}
+              <td colspan="11" class="tag" id="completeness-{$records[0]->websafeTag}">
+                <a href="#" class="trigger" data-id="completeness-{$records[0]->websafeTag}" title="Show subfields"><i class="fa fa-folder-closed"></i></a>
+                  {$tagName}
               </td>
             </tr>
           {/if}
           {assign var=prevComplexType value=""}
           {foreach from=$records item=record}
             {if $record->isComplexControlField && $prevComplexType != $record->complexType}
-              <tr class="complex-type complex-type-level">
+              <tr class="complex-type complex-type-level completeness-{$record->websafeTag}">
                 <td colspan="11" style="text-align: left">{$record->complexType}</td>
               </tr>
             {/if}
