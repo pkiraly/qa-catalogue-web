@@ -20,10 +20,10 @@
         <td class="chart"><div style="width: {ceil($category->ratio * 200)}px;">&nbsp;</div></td>
         <td class="text-right" title="{$category->percent|number_format:8}%">{$category->percent|number_format:2}%</td>
       </tr>
-      {foreach from=$category->fields key=field item=fieldName}
+      {foreach from=$category->fields key=field item=fieldObj}
         {if isset($recordsByField[$field]) && count($recordsByField[$field]) > 0}
           <tr>
-            <td colspan="6"><h5>{$field} &mdash; {$fieldName}</h5></td>
+            <td colspan="6"><h5>{if isset($fieldObj->pica3)}{$fieldObj->pica3}{else}{$field}{/if} &mdash; {$fieldObj->name}</h5></td>
           </tr>
           {foreach from=$recordsByField[$field] item=record}
             <tr>

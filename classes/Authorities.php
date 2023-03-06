@@ -1,5 +1,6 @@
 <?php
 
+include_once 'SchemaUtil.php';
 
 class Authorities extends AddedEntry {
 
@@ -51,8 +52,9 @@ class Authorities extends AddedEntry {
   private function readByField(Smarty &$smarty) {
     // global $solrFields;
 
-    $solrFields = $this->getSolrFields($this->db);
 
+    $solrFields = $this->getSolrFields($this->db);
+    SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
     if ($this->catalogue->getSchemaType() == 'MARC21') {
       $fields = [
         '100' => 'Main Entry - Personal Name',
@@ -77,9 +79,10 @@ class Authorities extends AddedEntry {
     } else if ($this->catalogue->getSchemaType() == 'PICA') {
       $fields = [
         '022A' => 'Werktitel und sonstige unterscheidende Merkmale des Werks',
-        '022A' => 'Weiterer Werktitel und sonstige unterscheidende Merkmale',
+        '022A/01' => 'Weiterer Werktitel und sonstige unterscheidende Merkmale',
         '028A' => 'Person/Familie als 1. geistiger Schöpfer',
-        '028B' => '2. und weitere Verfasser',
+        '028B/01' => '2. und weitere Verfasser',
+        '028B/02' => '2. und weitere Verfasser',
         '028C' => 'Person/Familie als 2. und weiterer geistiger Schöpfer, sonstige Personen/Familien, die mit dem Werk in Verbindung stehen, Mitwirkende, Hersteller, Verlage, Vertriebe',
         '028E' => 'Interpret',
         '028G' => 'Sonstige Person/Familie',
@@ -176,9 +179,12 @@ class Authorities extends AddedEntry {
               $this->subfield0or2($record, 'SeriesAddedUniformTitle');
             }
           } elseif ($this->catalogue->getSchemaType() == 'PICA') {
-            $record->facet = $record->field . '_full_ss';
+            $record->facet = $this->picaToSolr($record->field) . '_full_ss';
             $record->facet2 = $record->facet;
             $record->q = '*:*';
+            $definition = SchemaUtil::getDefinition($record->field);
+            $pica3 = ($definition != null && isset($definition->pica3) ? '=' . $definition->pica3 : '');
+            $record->withPica3 = $record->field . $pica3;
           }
 
           if (isset($record->facet2) && $record->facet2 != '') {
@@ -195,9 +201,10 @@ class Authorities extends AddedEntry {
           if ($record->scheme == 'undetectable')
             $record->scheme = 'source not specified';
 
-          if (!isset($records[$record->field]))
-            $records[$record->field] = [];
-          $records[$record->field][] = $record;
+          $key = $record->field;
+          if (!isset($records[$key]))
+            $records[$key] = [];
+          $records[$key][] = $record;
         }
       }
       $smarty->assign('recordsByField', $records);
@@ -280,7 +287,8 @@ class Authorities extends AddedEntry {
           'icon' => 'fa-user',
           'fields' => [
             '028A' => 'Person/Familie als 1. geistiger Schöpfer',
-            '028B' => '2. und weitere Verfasser',
+            '028B/01' => '2. und weitere Verfasser',
+            '028B/02' => '2. und weitere Verfasser',
             '028C' => 'Person/Familie als 2. und weiterer geistiger Schöpfer, sonstige Personen/Familien, die mit dem Werk in Verbindung stehen, Mitwirkende, Hersteller, Verlage, Vertriebe',
             '028E' => 'Interpret',
             '028G' => 'Sonstige Person/Familie',
@@ -311,6 +319,7 @@ class Authorities extends AddedEntry {
           'icon' => 'fa-book',
           'fields' => [
             '022A' => 'Werktitel und sonstige unterscheidende Merkmale des Werks',
+            '022A/01' => 'Weiterer Werktitel und sonstige unterscheidende Merkmale',
           ]
         ],
         'Other' => (object)[
@@ -331,6 +340,15 @@ class Authorities extends AddedEntry {
       $obj->instancecount = isset($categoryStatistics[$name]) ? $categoryStatistics[$name]->instancecount : 0;
       $obj->ratio = $obj->recordcount / $this->count;
       $obj->percent = $obj->ratio * 100;
+      foreach ($obj->fields as $key => $value) {
+        $obj->fields[$key] = (object)['name' => $value];
+        if ($this->catalogue->getSchemaType() == 'PICA') {
+          $definition = SchemaUtil::getDefinition($key);
+          if ($definition != null && isset($definition->pica3)) {
+            $obj->fields[$key]->pica3 = $key . '=' . $definition->pica3;
+          }
+        }
+      }
     }
     return $categories;
   }

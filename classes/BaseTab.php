@@ -276,12 +276,12 @@ abstract class BaseTab implements Tab {
     return $solrField;
   }
 
-  private function picaToSolr($input) {
+  protected function picaToSolr($input) {
     $input = str_replace('/', '_', $input);
     return preg_replace_callback('/([^a-zA-Z0-9])/', function ($matches) { return 'x' . dechex(ord($matches[1])); }, $input);
   }
 
-  private function solrToPica($input) {
+  protected function solrToPica($input) {
     return preg_replace_callback('/x([0-9a-f]{2})/', function ($matches) { return chr(hexdec($matches[1])); }, $input);
   }
 
