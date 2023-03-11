@@ -166,4 +166,12 @@ $('a.trigger').click(function (event) {
   $('tr.' + id).toggle();
   $(this).html($(this).html().includes('open') ? closedIcon : openedIcon);
 });
+
+var anchor = window.location.hash;
+var subfield = anchor.substring(1);
+var subfieldStartsAt = subfield.indexOf('$');
+var field = (subfieldStartsAt == -1) ? subfield : subfield.substring(0, subfieldStartsAt);
+$('tr.' + field).show();
+$('td#' + field + ' a').html(openedIcon);
+
 </script>
