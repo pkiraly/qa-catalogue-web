@@ -52,7 +52,6 @@ class Authorities extends AddedEntry {
   private function readByField(Smarty &$smarty) {
     // global $solrFields;
 
-
     $solrFields = $this->getSolrFields($this->db);
     SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
     if ($this->catalogue->getSchemaType() == 'MARC21') {

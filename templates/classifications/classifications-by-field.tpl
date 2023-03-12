@@ -16,7 +16,8 @@
     {foreach from=$records item=record}
       {if $previous != $record->field}
         <tr>
-          <td colspan="6"><h4>{$record->field} &mdash; {$fields[$record->field]}</h4></td>
+          <td colspan="6"><h4>{if isset($record->withPica3)}{$record->withPica3}{else}{$record->field}{/if}
+              &mdash; {$fields[$record->field]}</h4></td>
         </tr>
       {/if}
       <tr>

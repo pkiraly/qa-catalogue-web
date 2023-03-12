@@ -168,10 +168,11 @@ $('a.trigger').click(function (event) {
 });
 
 var anchor = window.location.hash;
-var subfield = anchor.substring(1);
-var subfieldStartsAt = subfield.indexOf('$');
-var field = (subfieldStartsAt == -1) ? subfield : subfield.substring(0, subfieldStartsAt);
-$('tr.' + field).show();
-$('td#' + field + ' a').html(openedIcon);
-
+if (anchor != '') {
+  var subfield = anchor.substring(1);
+  var subfieldStartsAt = subfield.indexOf('$');
+  var field = (subfieldStartsAt == -1) ? subfield : subfield.substring(0, subfieldStartsAt);
+  $('tr.' + field).show();
+  $('td#' + field + ' a').html(openedIcon);
+}
 </script>

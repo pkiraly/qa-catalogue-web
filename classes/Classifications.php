@@ -1,5 +1,6 @@
 <?php
 
+include_once 'SchemaUtil.php';
 
 class Classifications extends AddedEntry {
 
@@ -53,6 +54,7 @@ class Classifications extends AddedEntry {
   private function readByField(Smarty &$smarty) {
 
     $solrFields = $this->getSolrFields($this->db);
+    SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
 
     if ($this->catalogue->getSchemaType() == 'MARC21') {
       $fields = [
@@ -189,15 +191,23 @@ class Classifications extends AddedEntry {
           } else if ($record->field == '852') {
             $this->createFacets($record, '852a_Location_location');
             $this->ind1Orsubfield2($record, '852ind1_852_shelvingScheme_ss', '852__852___ss');
-          } else if (in_array($record->field, ['045A', '045B', '045F', '045R', '045C', '045E', '045G'])) {
-            $record->facet = $record->field . '_full_ss';
-            $record->facet2 = $record->field . '_full_ss';
+          } else if (in_array($record->field, ['045A', '045B', '045F', '045R', '045C', '045E', '045G'])
+              || preg_match('/^(045B|144Z|145S)/', $record->field)) {
+            $record->facet = $this->picaToSolr($record->field) . '_full_ss';
+            $record->facet2 = $record->facet; // . '_full_ss';
+
+            $definition = SchemaUtil::getDefinition($record->field);
+            $pica3 = ($definition != null && isset($definition->pica3) ? '=' . $definition->pica3 : '');
+            $record->withPica3 = $record->field . $pica3;
           } else {
             error_log('unhandled field in classification: ' . $record->field);
           }
 
-          if (isset($record->facet2) && $record->facet2 != '')
+          if (isset($record->facet2) && $record->facet2 != '') {
             $record->facet2exists = in_array($record->facet2, $solrFields);
+            if (!$record->facet2exists)
+              error_log($record->facet2 . ' is not existing');
+          }
 
           if (preg_match('/(^ |  +| $)/', $record->scheme))
             $record->scheme = '"' . str_replace(' ', '&nbsp;', $record->scheme) . '"';
