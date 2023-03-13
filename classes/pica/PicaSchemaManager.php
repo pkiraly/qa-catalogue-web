@@ -48,6 +48,8 @@ class PicaSchemaManager {
       if (isset($this->tagIndex[$searchTerm]) && count($this->tagIndex[$searchTerm]) == 1) {
         $id = $this->tagIndex[$searchTerm][0];
         return $this->fields->{$id};
+      } else {
+        return $this->lookup($searchTerm . '/00');
       }
     }
     return false;
