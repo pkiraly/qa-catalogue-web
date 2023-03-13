@@ -41,7 +41,7 @@
 {/if}
 {foreach from=$records item="rowData" name="foo"}
   <tr class="t t-{$categoryId}-{$typeId} x-{$categoryId}-{$typeId} {if $smarty.foreach.foo.index % 2 == 1}odd{/if}">
-    <td class="path" colspan="2">{$rowData->path}</td>
+    <td class="path" colspan="2">{if isset($rowData->withPica3)}{$rowData->withPica3}{else}{$rowData->path}{/if}</td>
     <td class="message">
       <a href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}&path={$rowData->path}" class="byPath" data-id="{$categoryId}-{$typeId}">
         {$rowData->variants|number_format} variants
@@ -54,4 +54,4 @@
     <td class="percent text-right" title="{$rowData->percent|number_format:8}%">{$rowData->percent|number_format:2}</td>
   </tr>
 {/foreach}
-{include file="issue-list-navigation.tpl"}
+{include file="issues/issue-list-navigation.tpl"}

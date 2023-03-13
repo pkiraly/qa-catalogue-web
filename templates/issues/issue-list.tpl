@@ -42,7 +42,7 @@
 {/if}
 {foreach from=$records item="rowData" name="foo"}
   <tr class="t t-{$categoryId}-{$typeId} x-{$categoryId}-{$typeId} {if $smarty.foreach.foo.index % 2 == 1}odd{/if}">
-    <td class="path">{$rowData->path}</td>
+    <td class="path">{if isset($rowData->withPica3)}{$rowData->withPica3}{else}{$rowData->path}{/if}</td>
     <td class="message">
       {if preg_match('/^ +$/', $rowData->message)}"{$rowData->message}"{else}{$rowData->message}{/if}
     </td>

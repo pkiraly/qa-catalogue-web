@@ -1,6 +1,5 @@
 <?php
 
-
 class Issues extends BaseTab {
 
   private $categories;
@@ -113,6 +112,7 @@ class Issues extends BaseTab {
               $elementsFile, $lineNumber, count($header), count($values)));
           }
           $record = (object)array_combine($header, $values);
+          $this->injectPica3($record);
           $typeId = $record->typeId;
           unset($record->categoryId);
           unset($record->typeId);
@@ -241,6 +241,7 @@ class Issues extends BaseTab {
     $result = $db->getByCategoryAndTypeGrouppedByPath($categoryId, $typeId, $order, $page * $limit, $limit);
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
       $record = (object) $row;
+      $this->injectPica3($record);
       $this->calculateRatio($record);
       $this->records[] = $record;
     }
@@ -257,6 +258,8 @@ class Issues extends BaseTab {
     $record->url = str_replace('https://www.loc.gov/marc/bibliographic/', '', $record->url);
     $record->downloadUrl = $this->getDownloadUrl($record);
     $record->queryUrl = $this->getQueryUrl($record);
+
+    $this->injectPica3($record);
   }
 
   private function calculateRatio(&$record) {
@@ -371,7 +374,6 @@ class Issues extends BaseTab {
       'tab=data',
       'query=' . urlencode('id:("' . join('" OR "', $recordIds) . '")')
     ]);
-    error_log($url);
 
     header('Location: ' . $url);
   }
@@ -469,5 +471,15 @@ class Issues extends BaseTab {
       $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
     }
     return $dir;
+  }
+
+  private function injectPica3(&$record) {
+    if ($this->catalogue->getSchemaType() == 'PICA') {
+      include_once 'SchemaUtil.php';
+      SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
+      $definition = SchemaUtil::getDefinition($record->path);
+      $pica3 = ($definition != null && isset($definition->pica3) ? '=' . $definition->pica3 : '');
+      $record->withPica3 = $record->path . $pica3;
+    }
   }
 }
