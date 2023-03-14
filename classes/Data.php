@@ -288,7 +288,8 @@ class Data extends Facetable {
 
     if ($idType == 'errorId') {
       $this->numFound = $db->getRecordIdsByErrorIdCount($id)->fetchArray(SQLITE3_ASSOC)['count'];
-      $result = $db->getRecordIdsByErrorId($id, $this->start, $this->rows);
+      $groupId = '';
+      $result = $db->getRecordIdsByErrorId($id, $groupId, $this->start, $this->rows);
     } else if ($idType == 'categoryId') {
       include_once 'Issues.php';
       $issues = new Issues($this->configuration, $this->db);
@@ -297,7 +298,8 @@ class Data extends Facetable {
       $result = $db->getRecordIdsByCategoryId($id, $this->start, $this->rows);
     } else if ($idType == 'typeId') {
       $this->numFound = $db->getRecordIdsByTypeIdCount($id)->fetchArray(SQLITE3_ASSOC)['count'];
-      $result = $db->getRecordIdsByTypeId($id, $this->start, $this->rows);
+      $groupId = '';
+      $result = $db->getRecordIdsByTypeId($id, $groupId, $this->start, $this->rows);
     }
 
     $recordIds = [];

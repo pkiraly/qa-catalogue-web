@@ -146,10 +146,14 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function getRecordIdsByErrorId($errorId, $offset = 0, $limit = -1) {
-    $sql = 'SELECT distinct(id) FROM issue_details WHERE errorId = :id';
-    return $this->getRecordIdsById($sql, $errorId, $offset, $limit);
+  public function getRecordIdsByErrorId($errorId, $groupId = '', $offset = 0, $limit = -1) {
+    if ($groupId == '')
+      $sql = 'SELECT distinct(id) FROM issue_details WHERE errorId = :id';
+    else
+      $sql = 'SELECT distinct(id) FROM issue_details JOIN id_groupid USING (id) WHERE errorId = :id AND groupId = :groupId';
+    return $this->getRecordIdsById($sql, $errorId, $groupId, $offset, $limit);
   }
+  // SELECT distinct(id) FROM issue_details JOIN id_groupid USING (id) WHERE errorId = 1 AND groupId = 77 LIMIT 30;
 
   public function getRecordIdsByCategoryIdCount($categoryId) {
     $stmt = $this->prepare(
@@ -163,12 +167,13 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function getRecordIdsByCategoryId($categoryId, $offset = 0, $limit = -1) {
+  public function getRecordIdsByCategoryId($categoryId, $groupId = '', $offset = 0, $limit = -1) {
+    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
     $sql = 'SELECT distinct(id)
        FROM issue_details
        WHERE errorId IN 
-            (SELECT distinct(id) FROM issue_summary WHERE categoryId = :id)';
-    return $this->getRecordIdsById($sql, $categoryId, $offset, $limit);
+            (SELECT distinct(id) FROM issue_summary WHERE categoryId = :id' . $groupCriterium . ')';
+    return $this->getRecordIdsById($sql, $categoryId, $groupId, $offset, $limit);
   }
 
   public function getRecordIdsByTypeIdCount($typeId) {
@@ -183,15 +188,16 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function getRecordIdsByTypeId($typeId, $offset = 0, $limit = -1) {
+  public function getRecordIdsByTypeId($typeId, $groupId = '', $offset = 0, $limit = -1) {
+    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
     $sql = 'SELECT distinct(id)
        FROM issue_details
        WHERE errorId IN 
-            (SELECT distinct(id) FROM issue_summary WHERE typeId = :id)';
-    return $this->getRecordIdsById($sql, $typeId, $offset, $limit);
+            (SELECT distinct(id) FROM issue_summary WHERE typeId = :id' . $groupCriterium . ')';
+    return $this->getRecordIdsById($sql, $typeId, $groupId, $offset, $limit);
   }
 
-  private function getRecordIdsById($sql, $id, $offset = 0, $limit = -1) {
+  private function getRecordIdsById($sql, $id, $groupId = '', $offset = 0, $limit = -1) {
     if ($limit != -1) {
       $sql .= ' LIMIT :limit OFFSET :offset';
     }
@@ -201,8 +207,13 @@ class IssuesDB extends SQLite3 {
       $stmt->bindValue(':limit', $limit, SQLITE3_INTEGER);
       $stmt->bindValue(':offset', $offset, SQLITE3_INTEGER);
     }
+    if ($groupId != '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
+
     error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
+
+  // select * from issue_details JOIN id_groupid USING (id) WHERE errorId = 1 AND groupId = 77 LIMIT 30;
 }

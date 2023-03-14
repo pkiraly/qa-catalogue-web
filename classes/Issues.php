@@ -147,17 +147,23 @@ class Issues extends BaseTab {
 
           $record->url = str_replace('https://www.loc.gov/marc/bibliographic/', '', $record->url);
 
-          $record->downloadUrl = '?' . join('&', [
+          $downloadParams = [
             'tab=' . 'issues',
             'errorId=' . $record->id,
             'action=download'
-          ]);
+          ];
+          if ($this->groupped)
+            $downloadParams[] = 'groupId=' . $this->groupId;
+          $record->downloadUrl = '?' . join('&', $downloadParams);
 
-          $record->queryUrl = '?' . join('&', [
+          $queryParams = [
             'tab=' . 'data',
             'type=' . 'issues',
             'query=' . 'errorId:' . $record->id
-          ]);
+          ];
+          if ($this->groupped)
+            $queryParams[] = 'groupId=' . $this->groupId;
+          $record->queryUrl = '?' . join('&', $queryParams);
 
           if (!isset($this->records[$typeId])) {
             $this->records[$typeId] = [];
@@ -435,11 +441,11 @@ class Issues extends BaseTab {
 
     $groupId = $this->groupped ? $this->groupId : '';
     if ($type == 'errorId')
-      $result = $db->getRecordIdsByErrorId($id);
+      $result = $db->getRecordIdsByErrorId($id, $groupId);
     else if ($type == 'categoryId')
-      $result = $db->getRecordIdsByCategoryId($id);
+      $result = $db->getRecordIdsByCategoryId($id, $groupId);
     else if ($type == 'typeId')
-      $result = $db->getRecordIdsByTypeId($id);
+      $result = $db->getRecordIdsByTypeId($id, $groupId);
 
     $recordIds = [];
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {

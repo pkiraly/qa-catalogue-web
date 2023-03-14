@@ -79,7 +79,9 @@ class Completeness extends BaseTab {
             continue;
 
           $record->packageid = (int) $record->packageid;
-          $this->packageIndex[$record->packageid] = ($record->iscoretag == 'true' ? $record->name . ': ' . $record->label : $record->label);
+          $this->packageIndex[$record->packageid] = $record->iscoretag == 'true'
+            ? $record->name . ': ' . $record->label
+            : $record->label;
 
           $this->max = max($this->max, $record->count);
           // $record->percent = $record->count * 100 / $this->count;
