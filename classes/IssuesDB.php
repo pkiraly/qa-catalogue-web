@@ -27,24 +27,51 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function getByCategoryAndTypeCount($categoryId, $typeId) {
-    $stmt = $this->prepare('SELECT COUNT(*) AS count
+  public function getByCategoryTypeAndGroup($categoryId, $typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
+    $default_order = 'records DESC';
+    if (!preg_match('/^(MarcPath|message|instances|records) (ASC|DESC)$/', $order))
+      $order = $default_order;
+    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+
+    $stmt = $this->prepare('SELECT *
        FROM issue_summary
-       WHERE categoryId = :categoryId AND typeId = :typeId
+       WHERE categoryId = :categoryId AND typeId = :typeId' . $groupCriterium . '
+       ORDER BY ' . $order . ' 
+       LIMIT :limit
+       OFFSET :offset
     ');
     $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
     $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
+    $stmt->bindValue(':offset', $offset, SQLITE3_INTEGER);
+    $stmt->bindValue(':limit', $limit, SQLITE3_INTEGER);
+    if ($groupId != '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
     return $stmt->execute();
   }
 
-  public function getByCategoryTypeAndPath($categoryId, $typeId, $path = null, $order = 'records DESC', $offset = 0, $limit) {
+  public function getByCategoryTypeAndGroupCount($categoryId, $typeId, $groupId = '') {
+    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+    $stmt = $this->prepare('SELECT COUNT(*) AS count
+       FROM issue_summary
+       WHERE categoryId = :categoryId AND typeId = :typeId ' . $groupCriterium
+    );
+    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
+    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
+    if ($groupId != '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
+
+    return $stmt->execute();
+  }
+
+  public function getByCategoryTypePathAndGroup($categoryId, $typeId, $path = null, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
     $default_order = 'records DESC';
     if (!preg_match('/^(MarcPath|message|instances|records) (ASC|DESC)$/', $order))
       $order = $default_order;
+    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
     $stmt = $this->prepare('SELECT *
        FROM issue_summary
-       WHERE categoryId = :categoryId AND typeId = :typeId AND MarcPath = :path
+       WHERE categoryId = :categoryId AND typeId = :typeId AND MarcPath = :path' . $groupCriterium . '
        ORDER BY ' . $order . '
        LIMIT :limit
        OFFSET :offset
@@ -54,44 +81,59 @@ class IssuesDB extends SQLite3 {
     $stmt->bindValue(':path', $path, SQLITE3_TEXT);
     $stmt->bindValue(':offset', $offset, SQLITE3_INTEGER);
     $stmt->bindValue(':limit', $limit, SQLITE3_INTEGER);
+    if ($groupId != '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
     return $stmt->execute();
   }
 
-  public function getByCategoryTypeAndPathCount($categoryId, $typeId, $path) {
+  public function getByCategoryTypePathAndGroupCount($categoryId, $typeId, $path, $groupId = '') {
+    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
     $stmt = $this->prepare('SELECT COUNT(*) AS count
        FROM issue_summary
-       WHERE categoryId = :categoryId AND typeId = :typeId AND MarcPath = :path
-    ');
-    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
-    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
-    $stmt->bindValue(':path', $path, SQLITE3_TEXT);
-
-    return $stmt->execute();
-  }
-
-  public function getByCategoryAndTypeGrouppedByPath($categoryId, $typeId, $order = 'records DESC', $offset = 0, $limit) {
-    $default_order = 'records DESC';
-    if (!preg_match('/^(path|variants|instances|records) (ASC|DESC)$/', $order))
-      $order = $default_order;
-    $stmt = $this->prepare('SELECT path, variants, instances, records
-FROM issue_groups AS s
-WHERE categoryId = :categoryId AND typeId = :typeId
-ORDER BY ' . $order . ';');
-    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
-    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
-
-    return $stmt->execute();
-  }
-
-  public function getByCategoryAndTypeGrouppedByPathCount($categoryId, $typeId) {
-    $stmt = $this->prepare(
-      'SELECT COUNT(*) AS count
-      FROM issue_groups AS s
-      WHERE categoryId = :categoryId AND typeId = :typeId'
+       WHERE categoryId = :categoryId AND typeId = :typeId AND MarcPath = :path' . $groupCriterium
     );
     $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
     $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
+    $stmt->bindValue(':path', $path, SQLITE3_TEXT);
+    if ($groupId != '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
+
+    return $stmt->execute();
+  }
+
+  public function getByCategoryAndTypeGrouppedByPath($categoryId, $typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
+    error_log("categoryId: $categoryId, typeId: $typeId, groupId: $groupId");
+    $default_order = 'records DESC';
+    if (!preg_match('/^(path|variants|instances|records) (ASC|DESC)$/', $order))
+      $order = $default_order;
+    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+    $stmt = $this->prepare(
+      'SELECT path, variants, instances, records
+      FROM issue_groups AS s
+      WHERE categoryId = :categoryId AND typeId = :typeId' . $groupCriterium . '
+      ORDER BY ' . $order
+    );
+    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
+    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
+    if ($groupId != '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
+    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+
+    return $stmt->execute();
+  }
+
+  public function getByCategoryAndTypeGrouppedByPathCount($categoryId, $typeId, $groupId = '') {
+    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+    $stmt = $this->prepare(
+      'SELECT COUNT(*) AS count
+      FROM issue_groups AS s
+      WHERE categoryId = :categoryId AND typeId = :typeId' . $groupCriterium
+    );
+    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
+    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
+    if ($groupId != '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
     return $stmt->execute();
   }

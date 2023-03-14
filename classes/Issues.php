@@ -19,16 +19,36 @@ class Issues extends BaseTab {
   private $listType;
   private $version;
   private $hiddenTypes = [];
+  public $groupped = false;
+  public $groupId = false;
+  public $groups;
+  public $currentGroup;
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
+    parent::readAnalysisParameters('validation.params.json');
     if ($this->versioning) {
       $versions = $this->getVersions();
       $smarty->assign('versions', $versions);
       $this->version = getOrDefault('version', $versions[count($versions)-1], $versions);
     }
     $smarty->assign('version', $this->version);
+
     $this->action = getOrDefault('action', 'list', ['list', 'query', 'download', 'record', 'ajaxIssue', 'ajaxIssueByTag']);
+    error_log('action: ' . $this->action);
+    $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
+    $this->groupId = getOrDefault('groupId', 'all');
+    error_log('groupId: ' . $this->groupId);
+
+    if ($this->groupped) {
+      $this->groups = $this->readGroups();
+      $this->currentGroup = $this->selectCurrentGroup();
+      if (isset($this->currentGroup->count))
+        $this->count = $this->currentGroup->count;
+      $smarty->assign('groups', $this->groups);
+      $smarty->assign('groupId', $this->groupId);
+    }
+
     if ($this->action == 'download' || $this->action == 'query') {
       $errorId = getOrDefault('errorId', '');
       $categoryId = getOrDefault('categoryId', '');
@@ -105,13 +125,18 @@ class Issues extends BaseTab {
         $values = str_getcsv($line);
         if ($lineNumber == 1) {
           $header = $values;
-          $header[1] = 'path';
+          $i = ($this->groupped) ? 2 : 1;
+          $header[$i] = 'path';
         } else {
           if (count($header) != count($values)) {
             error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
               $elementsFile, $lineNumber, count($header), count($values)));
           }
           $record = (object)array_combine($header, $values);
+
+          if ($this->groupped && $record->groupId != $this->groupId)
+            continue;
+
           $this->injectPica3($record);
           $typeId = $record->typeId;
           unset($record->categoryId);
@@ -212,18 +237,20 @@ class Issues extends BaseTab {
       $msg = sprintf("file %s is not existing", $elementsFile);
       error_log($msg);
     }
-    error_log('records: ' . count($this->records));
+    // error_log('records: ' . count($this->records));
   }
 
   private function readIssuesAjaxDB($categoryId, $typeId, $path = null, $order = 'records DESC', $page = 0, $limit = 100) {
+    error_log('readIssuesAjaxDB()');
     include_once 'IssuesDB.php';
     $db = new IssuesDB($this->getDbDir());
+    $groupId = $this->groupped ? $this->groupId : '';
     if (is_null($path) || empty($path)) {
-      $this->recordCount = $db->getByCategoryAndTypeCount($categoryId, $typeId)->fetchArray(SQLITE3_ASSOC)['count'];
-      $result = $db->getByCategoryAndType($categoryId, $typeId, $order, $page * $limit, $limit);
+      $this->recordCount = $db->getByCategoryTypeAndGroupCount($categoryId, $typeId, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+      $result = $db->getByCategoryTypeAndGroup($categoryId, $typeId, $groupId, $order, $page * $limit, $limit);
     } else {
-      $this->recordCount = $db->getByCategoryTypeAndPathCount($categoryId, $typeId, $path)->fetchArray(SQLITE3_ASSOC)['count'];
-      $result = $db->getByCategoryTypeAndPath($categoryId, $typeId, $path, $order, $page * $limit, $limit);
+      $this->recordCount = $db->getByCategoryTypePathAndGroupCount($categoryId, $typeId, $path, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+      $result = $db->getByCategoryTypePathAndGroup($categoryId, $typeId, $path, $groupId, $order, $page * $limit, $limit);
     }
 
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
@@ -237,8 +264,9 @@ class Issues extends BaseTab {
   private function readIssuesAjaxByTag($categoryId, $typeId, $order = 'records DESC', $page = 0, $limit = 100) {
     include_once 'IssuesDB.php';
     $db = new IssuesDB($this->getDbDir());
-    $this->recordCount = $db->getByCategoryAndTypeGrouppedByPathCount($categoryId, $typeId)->fetchArray(SQLITE3_ASSOC)['count'];
-    $result = $db->getByCategoryAndTypeGrouppedByPath($categoryId, $typeId, $order, $page * $limit, $limit);
+    $groupId = $this->groupped ? $this->groupId : '';
+    $this->recordCount = $db->getByCategoryAndTypeGrouppedByPathCount($categoryId, $typeId, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+    $result = $db->getByCategoryAndTypeGrouppedByPath($categoryId, $typeId, $groupId, $order, $page * $limit, $limit);
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
       $record = (object) $row;
       $this->injectPica3($record);
@@ -276,9 +304,11 @@ class Issues extends BaseTab {
   }
 
   private function getQueryUrl($record) {
-    return '?' . join('&', ['tab=' . 'issues',
+    return '?' . join('&', [
+      'tab=' . 'issues',
       'errorId=' . $record->id,
-      'action=query']);
+      'action=query'
+      ]);
   }
 
   public static function showMarcUrl($content) {
@@ -289,15 +319,27 @@ class Issues extends BaseTab {
   }
 
   private function readCategories() {
-    $this->categories = $this->readIssueCsv('issue-by-category.csv', 'id');
+    if ($this->groupped) {
+      $this->categories = $this->filterByGroup($this->readIssueCsv('issue-by-category.csv', ''), 'id');
+      $total = $this->currentGroup->count;
+    } else {
+      $this->categories = $this->readIssueCsv('issue-by-category.csv', 'id');
+      $total = $this->count;
+    }
     foreach ($this->categories as $category) {
-      $category->ratio = $category->records / $this->count;
+      $category->ratio = $category->records / $total;
       $category->percent = $category->ratio * 100;
     }
   }
 
   private function readTypes() {
-    $this->types = $this->readIssueCsv('issue-by-type.csv', 'id');
+    if ($this->groupped) {
+      $this->types = $this->filterByGroup($this->readIssueCsv('issue-by-type.csv', ''), 'id');
+      $total = $this->currentGroup->count;
+    } else {
+      $this->types = $this->readIssueCsv('issue-by-type.csv', 'id');
+      $total = $this->count;
+    }
 
     foreach ($this->types as $type) {
       if (!empty($this->hiddenTypes) && isset($this->hiddenTypes[$type->type]))
@@ -307,33 +349,34 @@ class Issues extends BaseTab {
       $this->categories[$type->categoryId]->types[] = $type->id;
       $type->variants = [];
       $type->variantCount = 0;
-      $type->ratio = $type->records / $this->count;
+      $type->ratio = $type->records / $total;
       $type->percent = $type->ratio * 100;
     }
+    // error_log('categories: ' . json_encode($this->categories));
   }
 
   private function readTotal() {
-    $statistics = $this->readIssueCsv('issue-total.csv', 'type');
-    $this->total = $this->count;
-    /*
-    foreach ($statistics as $item)
-      if ($item->type != 2)
-        $this->total += $item->records;
-    */
+    if ($this->groupped) {
+      $statistics = $this->filterByGroup($this->readIssueCsv('issue-total.csv', ''), 'type');
+      $this->total = $this->currentGroup->count;
+    } else {
+      $statistics = $this->readIssueCsv('issue-total.csv', 'type');
+      $this->total = $this->count;
+    }
 
     foreach ($statistics as &$item) {
-      $item->good = $this->count - $item->records;
-      $item->goodPercent = ($item->good / $this->count) * 100;
+      $item->good = $this->total - $item->records;
+      $item->goodPercent = ($item->good / $this->total) * 100;
       $item->bad = $item->records;
-      $item->badPercent = ($item->bad / $this->count) * 100;
+      $item->badPercent = ($item->bad / $this->total) * 100;
     }
 
     if (!isset($statistics["0"]))
       $statistics["0"] = (object)[
-          "type" => "0",
-          "instances" => "0",
-          "records" => "0",
-          "percent" => 0
+        "type" => "0",
+        "instances" => "0",
+        "records" => "0",
+        "percent" => 0
       ];
 
     return $statistics;
@@ -390,6 +433,7 @@ class Issues extends BaseTab {
     include_once 'IssuesDB.php';
     $db = new IssuesDB($this->getDbDir());
 
+    $groupId = $this->groupped ? $this->groupId : '';
     if ($type == 'errorId')
       $result = $db->getRecordIdsByErrorId($id);
     else if ($type == 'categoryId')
@@ -481,5 +525,25 @@ class Issues extends BaseTab {
       $pica3 = ($definition != null && isset($definition->pica3) ? '=' . $definition->pica3 : '');
       $record->withPica3 = $record->path . $pica3;
     }
+  }
+
+  private function selectCurrentGroup() {
+    foreach ($this->groups as $group) {
+      if ($group->id == $this->groupId) {
+        return $group;
+        break;
+      }
+    }
+  }
+
+  private function filterByGroup($statistics, $key) {
+    $filtered = [];
+    foreach ($statistics as $record) {
+      if ($this->groupped && $record->groupId != $this->groupId)
+        continue;
+      unset($record->groupId);
+      $filtered[$record->{$key}] = $record;
+    }
+    return $filtered;
   }
 }

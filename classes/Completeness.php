@@ -275,21 +275,6 @@ class Completeness extends BaseTab {
     return $records;
   }
 
-  /**
-   * Get the list of groups
-   * @return sorted array of groups
-   */
-  private function readGroups(): array {
-    $groups = readCsv($this->getFilePath('completeness-groups.csv'));
-    usort($groups, function ($a, $b) {
-      if ($a->group == $b->group) {
-        return 0;
-      }
-      return ($a->group < $b->group) ? -1 : 1;
-    });
-    return $groups;
-  }
-
   private function safe($input) {
     return preg_replace_callback('/([^a-zA-Z0-9])/', function ($matches) { return 'x' . dechex(ord($matches[1])); }, $input);
   }

@@ -5,13 +5,29 @@
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane active" id="issues" role="tabpanel" aria-labelledby="issues-tab">
       <h2>Issues in MARC21 records</h2>
+
+      {if $controller->groupped}
+        <div id="group-selector">
+          <form>
+            <input type="hidden" name="tab" value="{$tab}">
+            <input type="hidden" name="type" value="{$selectedType}">
+            <select name="groupId">
+                {foreach from=$groups item=group}
+                  <option value="{$group->id}" {if ($group->id == $groupId)}selected="selected"{/if}>{$group->group} ({$group->count})</option>
+                {/foreach}
+            </select>
+            <button type="submit">submit</button>
+          </form>
+        </div>
+      {/if}
+
       {if isset($versions) && !empty($versions)}
         <p>versions:
           {foreach from=$versions item=currentVersion name="versions"}
             {if $version != $currentVersion}
               <a href="?tab=issues&version={$currentVersion}">{$currentVersion}</a>
-                {else}
-                {$currentVersion}
+            {else}
+              {$currentVersion}
             {/if}
             {if !$smarty.foreach.versions.last}·{/if}
           {/foreach}

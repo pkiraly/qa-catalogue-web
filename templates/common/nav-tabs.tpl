@@ -23,13 +23,13 @@
       {elseif $catalogue->getSchemaType() == 'PICA'}
         <a class="nav-link1 {if $tab == 'completeness'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
            id="completeness-tab" aria-controls="completeness"
-           href="?tab=completeness">{_('Completeness')}</a>
+           href="?tab=completeness{if isset($groupId)}&groupId={$groupId}{/if}">{_('Completeness')}</a>
       {/if}
     </li>
     <li class="nav-item1">
       <a class="nav-link1 {if $tab == 'issues'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
          id="issues-tab" aria-controls="issues"
-         href="?tab=issues">{_('Issues')}</a>
+         href="?tab=issues{if isset($groupId)}&groupId={$groupId}{/if}">{_('Issues')}</a>
     </li>
     {if $catalogue->getSchemaType() == 'MARC21'}
       <li class="nav-item1">

@@ -18,7 +18,7 @@
            id="clickMore-{$categoryId}-{$typeId}-{$page}"
            data-id="{$categoryId}-{$typeId}"
            data-page="{$categoryId}-{$typeId}-{$page}"
-           href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if !is_null({$path})}{if isset($order)}&order={$order}{/if}&path={$path}{/if}&page={$page}{if isset($version) && !empty($version)}&version={$version}{/if}">[{$page+1}]</a>
+           href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if !is_null({$path})}{if isset($order)}&order={$order}{/if}&path={$path}{/if}&page={$page}{if isset($version) && !empty($version)}&version={$version}{/if}{if isset($groupId) && !empty($groupId)}&groupId={$groupId}{/if}">[{$page+1}]</a>
       {/foreach}
       {if $listType == 'filtered-list'}
         |
@@ -27,7 +27,7 @@
            id="clickMore-{$categoryId}-{$typeId}-0"
            data-id="{$categoryId}-{$typeId}"
            data-page="{$categoryId}-{$typeId}-0"
-           href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if isset($order)}&order={$order}{/if}{if isset($version) && !empty($version)}&version={$version}{/if}">list all</a>
+           href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if isset($order)}&order={$order}{/if}{if isset($version) && !empty($version)}&version={$version}{/if}{if isset($groupId) && !empty($groupId)}&groupId={$groupId}{/if}">list all</a>
       {/if}
     {else}
       <a class="clickMore clickMore-{$categoryId}-{$typeId}"
@@ -35,11 +35,11 @@
          id="clickMore-{$categoryId}-{$typeId}-0"
          data-id="{$categoryId}-{$typeId}"
          data-page="{$categoryId}-{$typeId}-0"
-         href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if isset($order)}&order={$order}{/if}{if isset($version) && !empty($version)}&version={$version}{/if}">list all</a>
+         href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if isset($order)}&order={$order}{/if}{if isset($version) && !empty($version)}&version={$version}{/if}{if isset($groupId) && !empty($groupId)}&groupId={$groupId}{/if}">list all</a>
     {/if} |
     <a class="byTag byTag-{$categoryId}-{$typeId}"
        id="byTag-{$categoryId}-{$typeId}"
        data-id="{$categoryId}-{$typeId}"
-       href="?tab=issues&ajax=1&action=ajaxIssueByTag&categoryId={$categoryId}&typeId={$typeId}{if isset($version) && !empty($version)}&version={$version}{/if}">grouped by tag</a>
+       href="?tab=issues&ajax=1&action=ajaxIssueByTag&categoryId={$categoryId}&typeId={$typeId}{if isset($version) && !empty($version)}&version={$version}{/if}{if isset($groupId) && !empty($groupId)}&groupId={$groupId}{/if}">grouped by tag</a>
   </td>
 </tr>
