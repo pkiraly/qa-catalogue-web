@@ -1,10 +1,10 @@
 # header
 msgid "for analysing library data"
-msgstr "zur Analyse von Daten in PICA+"
+msgstr "zur Analyse von Bibliotheksdaten"
 msgid "last data update"
-msgstr "letzte Aktualisierung"
+msgstr "Stand"
 msgid "number of records"
-msgstr "Anzahl der Datensätze"
+msgstr "Datensätze"
 
 # navigation
 msgid "Data"
