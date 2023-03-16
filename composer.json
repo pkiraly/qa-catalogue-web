@@ -1,5 +1,7 @@
 {
   "name": "pkiraly/metadata-qa-marc-web",
+  "type": "project",
+  "license": "GPL-3.0-or-later",
   "scripts": {
     "post-install-cmd": [
       "mkdir -p cache libs images _smarty/templates_c _smarty/cache",
@@ -11,6 +13,12 @@
       "msgfmt locale/en_GB/LC_MESSAGES/messages.po -o locale/en_GB/LC_MESSAGES/messages.mo"
     ]
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/pkiraly/metadata-qa-marc-web"
+    }
+  ],
   "require": {
     "smarty/smarty": "^3.1"
   }
