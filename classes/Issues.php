@@ -19,8 +19,6 @@ class Issues extends BaseTab {
   private $listType;
   private $version;
   private $hiddenTypes = [];
-  public $groupped = false;
-  public $groupId = false;
   public $groups;
   public $currentGroup;
 
@@ -37,7 +35,9 @@ class Issues extends BaseTab {
     $this->action = getOrDefault('action', 'list', ['list', 'query', 'download', 'record', 'ajaxIssue', 'ajaxIssueByTag']);
     error_log('action: ' . $this->action);
     $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
+    $smarty->assign('groupped', $this->groupped);
     $this->groupId = getOrDefault('groupId', 'all');
+    $smarty->assign('groupId', $this->groupId);
     error_log('groupId: ' . $this->groupId);
 
     if ($this->groupped) {
@@ -46,7 +46,6 @@ class Issues extends BaseTab {
       if (isset($this->currentGroup->count))
         $this->count = $this->currentGroup->count;
       $smarty->assign('groups', $this->groups);
-      $smarty->assign('groupId', $this->groupId);
     }
 
     if ($this->action == 'download' || $this->action == 'query') {
@@ -530,15 +529,6 @@ class Issues extends BaseTab {
       $definition = SchemaUtil::getDefinition($record->path);
       $pica3 = ($definition != null && isset($definition->pica3) ? '=' . $definition->pica3 : '');
       $record->withPica3 = $record->path . $pica3;
-    }
-  }
-
-  private function selectCurrentGroup() {
-    foreach ($this->groups as $group) {
-      if ($group->id == $this->groupId) {
-        return $group;
-        break;
-      }
     }
   }
 

@@ -7,36 +7,74 @@ class Terms extends Facetable {
 
   private $facet;
   private $action = 'list';
+  public $groupped = false;
+  public $groupId = false;
+  public $groups;
+  public $currentGroup;
+  public $params;
 
   public function __construct($configuration, $db) {
     parent::__construct($configuration, $db);
+    parent::readAnalysisParameters('validation.params.json');
+    $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
+    if ($this->groupped) {
+      $this->groupBy = $this->analysisParameters->groupBy;
+      $this->groupId = getOrDefault('groupId', 'all');
+    }
+
     $this->facet = getOrDefault('facet', '');
     $this->query = getOrDefault('query', '*:*');
+    $this->filters = getOrDefault('filters', []);
     $this->scheme = getOrDefault('scheme', '');
     $this->offset = getOrDefault('offset', 0);
     $this->termFilter = getOrDefault('termFilter', '');
     $this->ajaxFacet = getOrDefault('ajax', 0, [0, 1]);
     $this->facetLimit = getOrDefault('limit', 100, [10, 25, 50, 100]);
     $this->action = getOrDefault('action', 'list', ['list', 'download']);
+
+    $this->params = [
+      'facet' => $this->facet,
+      'query' => $this->query,
+      'filters' => $this->filters,
+      'scheme' => $this->scheme,
+      'termFilter' => $this->termFilter,
+      'facetLimit' => $this->facetLimit,
+    ];
+
   }
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 
+    $smarty->assign('groupped', $this->groupped);
+    if ($this->groupped && $this->groupId != 'all')
+      $this->filters[] = $this->getRawGroupQuery();
+
+    $smarty->assign('groupId',   $this->groupId);
     $smarty->assign('facet',     $this->facet);
     $smarty->assign('query',     $this->query);
+    $smarty->assign('filters',   $this->filters);
     $smarty->assign('scheme',    $this->scheme);
 
     $smarty->assign('termFilter',$this->termFilter);
     $smarty->assign('facetLimit',$this->facetLimit);
     $smarty->assign('offset',    $this->offset);
     $smarty->assign('ajaxFacet', $this->ajaxFacet);
+    $smarty->assign('params',    $this->params);
 
     $facets = $this->createTermList();
     if ($this->action == 'download') {
       $this->output = 'none';
       $this->download($facets);
     } else {
+      if ($this->groupped) {
+        $this->groups = $this->readGroups();
+        $this->currentGroup = $this->selectCurrentGroup();
+        if (isset($this->currentGroup->count))
+          $this->count = $this->currentGroup->count;
+        $smarty->assign('groups', $this->groups);
+      }
+
       $smarty->assign('facets',    $facets);
       $smarty->assign('label',     $this->resolveSolrField($this->facet));
       $smarty->assign('basicFacetParams', ['tab=data', 'query=' . $this->query]);
@@ -74,7 +112,7 @@ class Terms extends Facetable {
   }
 
   private function createTermList() {
-    return $this->getFacets($this->facet, $this->query, $this->facetLimit, $this->offset, $this->termFilter);
+    return $this->getFacets($this->facet, $this->query, $this->facetLimit, $this->offset, $this->termFilter, $this->filters);
   }
 
   private function createPrevLink() {
@@ -113,10 +151,15 @@ class Terms extends Facetable {
   }
 
   public function getBasicFacetParams() {
-    return [
+    $params = [
       'tab=data',
       'query=' . urlencode($this->query)
     ];
+    if ($this->filters)
+      foreach ($this->filters as $filter)
+        $params[] = 'filters[]=' . $filter;
+
+    return $params;
   }
 
   private function getFields() {

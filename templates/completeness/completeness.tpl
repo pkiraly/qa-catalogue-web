@@ -6,19 +6,7 @@
     <div class="tab-pane active" id="completeness" role="tabpanel" aria-labelledby="completeness-tab">
       <h2>{_('Completeness')}</h2>
 
-      {if $controller->groupped}
-        <div id="group-selector">
-          <form>
-            <input type="hidden" name="tab" value="{$tab}">
-            <input type="hidden" name="type" value="{$selectedType}">
-            <select name="groupId" onchange="this.form.submit()">
-              {foreach from=$groups item=group}
-                <option value="{$group->id}" {if ($group->id == $groupId)}selected="selected"{/if}>{$group->group} ({$group->count})</option>
-              {/foreach}
-            </select>
-          </form>
-        </div>
-      {/if}
+      {include 'common/group-selector.tpl'}
 
       <div>
         {_('by document types')}:

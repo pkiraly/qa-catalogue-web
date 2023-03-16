@@ -5,6 +5,9 @@
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane active" id="terms" role="tabpanel" aria-labelledby="terms-tab">
       <h2>Terms</h2>
+
+      {include 'common/group-selector.tpl'}
+
       {if $scheme == ''}
         <form id="facetselection">
           <input type="hidden" name="tab" value="terms" />
@@ -12,7 +15,7 @@
           <p>
             field: <input list="facet" name="facet" id="facetInput" style="width: 800px;" value="{if isset($facet) && !empty($facet)}{$facet}{else}- select a field! -{/if}">
             <datalist id="facet">
-              <option value="">-- select --</option>
+              <option value=""></option>
               {foreach from=$solrFields item=field}
                 <option value="{$field}"{if $field == $facet} selected="selected"{/if}>{$field}</option>
               {/foreach}
@@ -33,6 +36,13 @@
         <div>vocabulary: <strong>{$scheme|htmlentities}</strong></div>
       {elseif $facet != ''}
         <div>query: {$query|htmlentities}</div>
+          {if !empty($filters)}
+            <div>filters:
+              {foreach from=$filters item="filter" name="filters"}
+                {$filter|urldecode}{if !$smarty.foreach.filters.last}, {/if}
+              {/foreach}
+            </div>
+          {/if}
       {/if}
       <div id="terms-content">
         {include 'marc-facets.tpl'}

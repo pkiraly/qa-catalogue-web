@@ -20,6 +20,9 @@ abstract class BaseTab implements Tab {
   protected $versioning = false;
   protected $lang = 'en';
   public $analysisParameters = null;
+  protected $groupped = false;
+  protected $groupId = false;
+  protected $groupBy;
 
   /**
    * BaseTab constructor.
@@ -127,6 +130,7 @@ abstract class BaseTab implements Tab {
   protected function getSolrResponse($params) {
     $solrPath = $this->getIndexName();
     $url = 'http://localhost:8983/solr/' . $solrPath . '/select?' . join('&', $this->encodeSolrParams($params));
+    error_log($url);
     $solrResponse = json_decode(file_get_contents($url));
     $response = (object)[
       'numFound' => $solrResponse->response->numFound,
@@ -138,7 +142,7 @@ abstract class BaseTab implements Tab {
     return $response;
   }
 
-  protected function getFacets($facet, $query, $limit, $offset = 0, $termFilter = '') {
+  protected function getFacets($facet, $query, $limit, $offset = 0, $termFilter = '', $filters = []) {
     $parameters = [
       'q=' . $query,
       'facet=on',
@@ -155,6 +159,10 @@ abstract class BaseTab implements Tab {
       $parameters[] = sprintf('f.%s.facet.contains=%s', $facet, $termFilter);
       $parameters[] = sprintf('f.%s.facet.contains.ignoreCase=true', $facet);
     }
+    if (!empty($filters))
+      foreach ($filters as $filter)
+        $parameters[] = 'fq=' . $filter;
+
     $response = $this->getSolrResponse($parameters);
     return $response->facets;
   }
@@ -536,4 +544,23 @@ abstract class BaseTab implements Tab {
   public function getCatalogue(): Catalogue {
     return $this->catalogue;
   }
+
+  protected function selectCurrentGroup() {
+    foreach ($this->groups as $group) {
+      if ($group->id == $this->groupId) {
+        return $group;
+        break;
+      }
+    }
+  }
+
+  protected function getRawGroupQuery() {
+    if ($this->groupped && $this->groupId != 'all')
+      return sprintf('%s:%s',
+        $this->picaToSolr(str_replace('$', '', $this->groupBy)) . '_ss',
+        urlencode(sprintf('"%s"', $this->groupId)));
+    return '';
+  }
+
+
 }
