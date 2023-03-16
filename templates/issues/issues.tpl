@@ -11,12 +11,11 @@
           <form>
             <input type="hidden" name="tab" value="{$tab}">
             <input type="hidden" name="type" value="{$selectedType}">
-            <select name="groupId">
+            <select name="groupId" onchange="this.form.submit()">
                 {foreach from=$groups item=group}
                   <option value="{$group->id}" {if ($group->id == $groupId)}selected="selected"{/if}>{$group->group} ({$group->count})</option>
                 {/foreach}
             </select>
-            <button type="submit">submit</button>
           </form>
         </div>
       {/if}
