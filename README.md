@@ -47,8 +47,15 @@ prepare configuration file:
 ```
 cd /var/www/html/[catalogue]
 ```
- You can also add the [catalogue] infor the configuration if the 
- application path does not equals to the [catalogue]:
+
+You can also add the [catalogue] infor the configuration if the 
+application path does not equals to the [catalogue]:
+
+install PHP dependencies and create required cache directories and permissions:
+
+```
+composer install
+```
 
 prepare configuration file:
 ```
@@ -76,27 +83,11 @@ indexName[bvb]=bayern
 dirName[bvb]=bayern
 ```
 
-setup directories and permissions, download the Smarty templating library.
+setup additional directories and permissions:
 
 ```
-mkdir cache
-touch selected-facets.js
 sudo chown www-data:www-data -R cache
-chmod g+w -R cache
-mkdir libs
-mkdir images
-
 ln -s [data directory]/[catalogue]/img images/[catalogue]
-
-# download Smarty templating library
-export SMARTY_VERSION=3.1.44
-cd libs/
-curl -s -L https://github.com/smarty-php/smarty/archive/v${SMARTY_VERSION}.zip --output v$SMARTY_VERSION.zip
-unzip -q v${SMARTY_VERSION}.zip
-rm v${SMARTY_VERSION}.zip
-mkdir -p _smarty/templates_c
-chmod a+w -R _smarty/templates_c/
-cd ..
 ```
 
 Add these lines to Apache configuration (`/etc/apache2/sites-available/000-default.conf`)

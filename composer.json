@@ -1,0 +1,13 @@
+{
+  "name": "pkiraly/metadata-qa-marc-web",
+  "scripts": {
+    "post-install-cmd": [
+      "mkdir -p cache libs images _smarty/templates_c _smarty/cache",
+      "touch cache/selected-facets.js",
+      "chmod g+w -R _smarty cache"
+    ]
+  },
+  "require": {
+    "smarty/smarty": "^3.1"
+  }
+}
