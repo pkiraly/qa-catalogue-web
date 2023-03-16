@@ -144,11 +144,10 @@ msgid "by document types"
 msgstr "nach Dokumenttypen"
 ```
 
-Once you have done, you should generate the `.mo` files from the `.po` files with the following commands:
+Once you have done, you should generate the `.mo` files from the `.po` files with the following command:
 
 ```bash
-msgfmt locale/de_DE/LC_MESSAGES/messages.po -o locale/de_DE/LC_MESSAGES/messages.mo
-msgfmt locale/en_GB/LC_MESSAGES/messages.po -o locale/en_GB/LC_MESSAGES/messages.mo
+composer run translate
 ```
 
 Please let me know if you would like to see more languages supported.
