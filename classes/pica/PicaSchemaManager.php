@@ -12,7 +12,6 @@ class PicaSchemaManager {
     global $tab;
     $catalogue = $tab->getCatalogue();
     $schemaType = $catalogue->getSchemaType();
-    error_log("schemType: $schemaType");
 
     // $schemaFile = 'schemas/avram-k10plus.json';
     $schemaFile = 'schemas/avram-k10plus-title.json';
@@ -38,10 +37,8 @@ class PicaSchemaManager {
       if (isset($this->tagIndex[$tag])) {
         foreach ($this->tagIndex[$tag] as $id) {
           $candidate = $this->fields->{$id};
-          if (isset($candidate->range) && $candidate->range->inRange($occurence)) {
-            // error_log("call in range");
+          if (isset($candidate->range) && $candidate->range->inRange($occurence))
             return $candidate;
-          }
         }
       }
     } else {

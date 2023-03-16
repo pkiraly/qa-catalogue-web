@@ -242,7 +242,6 @@ class Issues extends BaseTab {
       $msg = sprintf("file %s is not existing", $elementsFile);
       error_log($msg);
     }
-    // error_log('records: ' . count($this->records));
   }
 
   private function readIssuesAjaxDB($categoryId, $typeId, $path = null, $order = 'records DESC', $page = 0, $limit = 100) {
@@ -357,7 +356,6 @@ class Issues extends BaseTab {
       $type->ratio = $type->records / $total;
       $type->percent = $type->ratio * 100;
     }
-    // error_log('categories: ' . json_encode($this->categories));
   }
 
   private function readTotal() {

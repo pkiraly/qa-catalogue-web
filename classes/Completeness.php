@@ -293,7 +293,6 @@ class Completeness extends BaseTab {
       $query = urlencode(' AND ') . sprintf('%s:%s',
         $this->picaToSolr(str_replace('$', '', $this->groupBy)) . '_ss',
         urlencode(sprintf('"%s"', $this->groupId)));
-      error_log('query: ' . $query);
       return $query;
     }
     return '';

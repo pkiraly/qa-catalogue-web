@@ -62,7 +62,6 @@ class Record {
   }
 
   public function resolve008($definition, $code) {
-    // error_log('code: ' . json_encode($code));
     if ($code == '')
       return 'missing value';
     if ($code == '" "')

@@ -130,7 +130,6 @@ abstract class BaseTab implements Tab {
   protected function getSolrResponse($params) {
     $solrPath = $this->getIndexName();
     $url = 'http://localhost:8983/solr/' . $solrPath . '/select?' . join('&', $this->encodeSolrParams($params));
-    error_log($url);
     $solrResponse = json_decode(file_get_contents($url));
     $response = (object)[
       'numFound' => $solrResponse->response->numFound,
