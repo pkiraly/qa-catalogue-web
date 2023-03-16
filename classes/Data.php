@@ -21,15 +21,23 @@ class Data extends Facetable {
   private $typeCache006 = [];
   private $type = 'solr';
   private $numFound = null;
+  public $groupped = false;
+  public $groupId = false;
+  public $groupBy = false;
 
   public function __construct($configuration, $db) {
     parent::__construct($configuration, $db);
+    parent::readAnalysisParameters('validation.params.json');
     $this->facet = getOrDefault('facet', '');
     $this->query = getOrDefault('query', '*:*');
     $this->filters = getOrDefault('filters', []);
     $this->start = (int) getOrDefault('start', 0);
     $this->rows = (int) getOrDefault('rows', 10, $this->itemsPerPageSelectors);
     $this->type = getOrDefault('type', 'solr', ['solr', 'issues']);
+    $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
+    if ($this->groupped)
+      $this->groupBy = $this->analysisParameters->groupBy;
+    $this->groupId = getOrDefault('groupId', 'all');
 
     $this->parameters = [
       'wt=json',
@@ -50,6 +58,8 @@ class Data extends Facetable {
     $smarty->assign('facetLimit', $this->facetLimit);
     $smarty->assign('filters', $this->getFilters());
     $smarty->assign('offset', $this->offset);
+    if ($this->groupped)
+      $smarty->assign('groupId', $this->groupId);
 
     $solrParams = $this->buildParameters();
     $smarty->assign('solrUrl', join('&', $solrParams));
@@ -74,7 +84,7 @@ class Data extends Facetable {
 
   private function getBasicUrl(array $excluded = []) {
     $urlParams = ['tab=data'];
-    $baseParams = ['query', 'facet', 'filters', 'start', 'rows', 'type'];
+    $baseParams = ['query', 'facet', 'filters', 'start', 'rows', 'type', 'groupId'];
     foreach ($baseParams as $p) {
       if (!in_array($p, $excluded))
         if (is_array($this->$p))
@@ -95,7 +105,13 @@ class Data extends Facetable {
     if ($this->type == 'issues') {
       if (preg_match('/^(categoryId|typeId|errorId):(\d+)$/', $this->query, $matches)) {
         $recordIds = $this->prepareParametersForIssueQueries($matches);
-        $solrParams[] = 'q=' . urlencode('id:("' . join('" OR "', $recordIds) . '")');
+        $query = 'id:("' . join('" OR "', $recordIds) . '")';
+        /*
+        if ($this->groupped) {
+          $query .= sprintf(' AND %s_ss:"%s"', $this->groupBy, $this->groupId);
+        }
+        */
+        $solrParams[] = 'q=' . urlencode($query);
         $solrParams[] = 'start=' . 0;
       }
     } else {
@@ -130,7 +146,7 @@ class Data extends Facetable {
     $baseParams = $this->getBasicUrl(['start', 'rows']);
     foreach ($this->itemsPerPageSelectors as $rows) {
       if ($rows === $this->rows)
-        $items[] = new Link($rows,'');
+        $items[] = new Link($rows, '');
       else
         $items[] = Link::withRows($rows, $baseParams, $rows);
     }
@@ -278,27 +294,28 @@ class Data extends Facetable {
    * @param $matches
    * @return array
    */
-  private function prepareParametersForIssueQueries($matches): array
-  {
+  private function prepareParametersForIssueQueries($matches): array {
     $idType = $matches[1];
     $id = $matches[2];
     include_once 'IssuesDB.php';
     $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
     $db = new IssuesDB($dir);
 
+    $groupId = $this->groupped ? $this->groupId : '';
     if ($idType == 'errorId') {
-      $this->numFound = $db->getRecordIdsByErrorIdCount($id)->fetchArray(SQLITE3_ASSOC)['count'];
-      $groupId = '';
+      $this->numFound = $db->getRecordIdsByErrorIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
       $result = $db->getRecordIdsByErrorId($id, $groupId, $this->start, $this->rows);
     } else if ($idType == 'categoryId') {
+      /*
       include_once 'Issues.php';
       $issues = new Issues($this->configuration, $this->db);
       $categories = $issues->readIssueCsv('issue-by-category.csv', 'id');
       $this->numFound = $categories[$id]->records; // $db->getRecordIdsByCategoryIdCount($id)->fetchArray(SQLITE3_ASSOC)['count'];
-      $result = $db->getRecordIdsByCategoryId($id, $this->start, $this->rows);
+      */
+      $this->numFound = $db->getRecordIdsByCategoryIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+      $result = $db->getRecordIdsByCategoryId($id, $groupId, $this->start, $this->rows);
     } else if ($idType == 'typeId') {
-      $this->numFound = $db->getRecordIdsByTypeIdCount($id)->fetchArray(SQLITE3_ASSOC)['count'];
-      $groupId = '';
+      $this->numFound = $db->getRecordIdsByTypeIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
       $result = $db->getRecordIdsByTypeId($id, $groupId, $this->start, $this->rows);
     }
 

@@ -138,9 +138,17 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function getRecordIdsByErrorIdCount($errorId) {
-    $stmt = $this->prepare('SELECT COUNT(distinct(id)) AS count FROM issue_details WHERE errorId = :errorId;');
+  public function getRecordIdsByErrorIdCount($errorId, $groupId = '') {
+    if ($groupId == '')
+      $sql = 'SELECT COUNT(distinct(id)) AS count FROM issue_details WHERE errorId = :errorId';
+    else
+      $sql = 'SELECT COUNT(distinct(id)) AS count 
+              FROM issue_details JOIN id_groupid USING (id) 
+              WHERE errorId = :errorId AND groupId = :groupId';
+    $stmt = $this->prepare($sql);
     $stmt->bindValue(':errorId', $errorId, SQLITE3_INTEGER);
+    if ($groupId != '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
     error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
@@ -153,36 +161,51 @@ class IssuesDB extends SQLite3 {
       $sql = 'SELECT distinct(id) FROM issue_details JOIN id_groupid USING (id) WHERE errorId = :id AND groupId = :groupId';
     return $this->getRecordIdsById($sql, $errorId, $groupId, $offset, $limit);
   }
-  // SELECT distinct(id) FROM issue_details JOIN id_groupid USING (id) WHERE errorId = 1 AND groupId = 77 LIMIT 30;
 
-  public function getRecordIdsByCategoryIdCount($categoryId) {
-    $stmt = $this->prepare(
-      'SELECT COUNT(distinct(id)) AS count
-       FROM issue_details
-       WHERE errorId IN 
-            (SELECT distinct(id) FROM issue_summary WHERE categoryId = :categoryId)');
+  public function getRecordIdsByCategoryIdCount($categoryId, $groupId = '') {
+    if ($groupId == '')
+      $sql = 'SELECT COUNT(distinct(id)) AS count
+              FROM issue_details
+              WHERE errorId IN (SELECT distinct(id) FROM issue_summary WHERE categoryId = :categoryId)';
+    else
+      $sql = 'SELECT COUNT(distinct(id)) AS count 
+              FROM issue_details JOIN id_groupid USING(id) 
+              WHERE errorId IN (SELECT distinct(id) FROM issue_summary WHERE categoryId = :categoryId AND groupId = :groupId) 
+                AND groupId = :groupId';
+    $stmt = $this->prepare($sql);
     $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
+    if ($groupId != '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
+
     error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
 
   public function getRecordIdsByCategoryId($categoryId, $groupId = '', $offset = 0, $limit = -1) {
-    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
-    $sql = 'SELECT distinct(id)
-       FROM issue_details
-       WHERE errorId IN 
-            (SELECT distinct(id) FROM issue_summary WHERE categoryId = :id' . $groupCriterium . ')';
+    if ($groupId == '')
+      $sql = 'SELECT distinct(id)
+              FROM issue_details
+              WHERE errorId IN (SELECT distinct(id) FROM issue_summary WHERE categoryId = :id)';
+    else
+      $sql = 'SELECT distinct(id)
+              FROM issue_details JOIN id_groupid USING(id)
+              WHERE errorId IN (SELECT distinct(id) FROM issue_summary WHERE categoryId = :id AND groupId = :groupId)
+                AND groupId = :groupId';
     return $this->getRecordIdsById($sql, $categoryId, $groupId, $offset, $limit);
   }
 
-  public function getRecordIdsByTypeIdCount($typeId) {
+  public function getRecordIdsByTypeIdCount($typeId, $groupId = '') {
+    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
     $stmt = $this->prepare(
       'SELECT COUNT(distinct(id)) AS count
        FROM issue_details
        WHERE errorId IN 
-            (SELECT distinct(id) FROM issue_summary WHERE typeId = :typeId);');
+            (SELECT distinct(id) FROM issue_summary WHERE typeId = :typeId' . $groupCriterium . ')');
     $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
+    if ($groupId != '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
+
     error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();

@@ -19,6 +19,8 @@ class Completeness extends BaseTab {
     parent::prepareData($smarty);
     parent::readAnalysisParameters('completeness.params.json');
     $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
+    if ($this->groupped)
+      $this->groupBy = $this->analysisParameters->groupBy;
 
     $this->type = getOrDefault('type', 'all', $this->catalogue::$supportedTypes);
     $this->sort = getOrDefault('sort', '', ['number-of-record', 'number-of-instances', 'min', 'max', 'mean', 'stddev']);
@@ -43,6 +45,8 @@ class Completeness extends BaseTab {
     $smarty->assign('max', $this->max);
     $smarty->assign('hasNonCoreTags', $this->hasNonCoreTags);
     $smarty->assign('sort', $this->sort);
+    $smarty->assign('groupFilter', $this->getQueryGroupFilter());
+
   }
 
   public function getTemplate() {
@@ -275,6 +279,14 @@ class Completeness extends BaseTab {
       return [$item2->{$this->sort}, $item1->path] <=> [$item1->{$this->sort}, $item2->path];
     });
     return $records;
+  }
+
+  private function getQueryGroupFilter() {
+    if ($this->groupped && $this->groupId != 'all')
+      return sprintf('&filters[]=%s:%s',
+                     $this->picaToSolr(str_replace('$', '', $this->groupBy)) . '_ss',
+                     urlencode(sprintf('"%s"', $this->groupId)));
+    return '';
   }
 
   private function safe($input) {
