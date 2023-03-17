@@ -4,6 +4,7 @@ images/
 libs/
 cache/
 translate.sh
+config/
 
 # eidtor files
 .idea/

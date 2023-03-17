@@ -5,6 +5,8 @@
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane active" id="about" role="tabpanel" aria-labelledby="about-tab">
       <div id="about-tab">
+        {assign var=file value="config/about.$lang.tpl"}
+        {if file_exists($file)}{include $file}{/if}
         <h3>Software</h3>
         <p>
           QA Catalogue is an open source application developed as part of the research project
