@@ -179,6 +179,12 @@ Note: translation is in a very early phase.
 
 # Customization
 
+Some parts of the web interface can be customized with local files in directory
+`config` (not existing by default):
+
+- `config/about.en.tpl` and `config/about.de.tpl`: Additional information shown
+  in the "about" tab.
+
 The name, catalogue link and the record levele catalogue link are different 
 per libraries. The tool has prepared for a number of libraries, but there's
 high chance, that you would like to apply it for another library. 
