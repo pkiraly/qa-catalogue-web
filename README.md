@@ -80,7 +80,7 @@ setup directories and permissions, download the Smarty templating library.
 
 ```
 mkdir cache
-touch selected-facets.js
+echo [] > cache/selected-facets.js
 sudo chown www-data:www-data -R cache
 chmod g+w -R cache
 mkdir libs
