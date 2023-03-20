@@ -4,7 +4,7 @@
   {include 'common/nav-tabs.tpl'}
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane active" id="issues" role="tabpanel" aria-labelledby="issues-tab">
-      <h2>Issues in MARC21 records</h2>
+      <h2>{_('Violations of record format specification')}</h2>
 
       {include 'common/group-selector.tpl'}
 

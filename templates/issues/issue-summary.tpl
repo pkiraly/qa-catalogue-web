@@ -1,9 +1,9 @@
 <div class="row" style="width: 500px; margin: 0 0 0 0">
   <div class="col-sm" style="margin: 0; padding: 0">
-    <span style="color: #37ba00">records without issues</span>
+    <span style="color: #37ba00">{_('records without issues')}</span>
   </div>
   <div class="col-sm text-right" style="margin: 0; padding: 0">
-    <span style="color: maroon">with</span>
+    <span style="color: maroon">{_('with'})</span>
   </div>
 </div>
 
@@ -26,10 +26,10 @@
   <p>excluding undefined field issues</p>
   <div class="row" style="width: 500px; margin: 0 0 0 0">
     <div class="col-sm" style="margin: 0; padding: 0">
-      <span style="color: #37ba00">records without issues</span>
+      <span style="color: #37ba00">{_('records without issues')}</span>
     </div>
     <div class="col-sm text-right" style="margin: 0; padding: 0">
-      <span style="color: maroon">with</span>
+      <span style="color: maroon">{_('with'})</span>
     </div>
   </div>
 

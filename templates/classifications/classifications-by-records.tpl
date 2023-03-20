@@ -2,10 +2,10 @@
 
 <div class="row" style="width: 500px; margin: 0 0 0 0">
   <div class="col-sm" style="margin: 0; padding: 0">
-    <span style="color: #37ba00">with</span>
+    <span style="color: #37ba00">{_('with')}</span>
   </div>
   <div class="col-sm text-right" style="margin: 0; padding: 0">
-    <span style="color: maroon">without</span>
+    <span style="color: maroon">{_('without')}</span>
   </div>
 </div>
 

@@ -50,10 +50,10 @@
           <tr>
             <th>version</th>
             <th>records</th>
-            <th>without</th>
-            <th>with</th>
-            <th>without</th>
-            <th>with</th>
+            <th>{_('without'})</th>
+            <th>{_('with'})</th>
+            <th>{_('without'})</th>
+            <th>{_('with'})</th>
             <th title="the difference in the number of 'good' records (not having the first issue
             type) between the previous and current measurement">in records</th>
             <th title="the difference in the percentage of 'good' records (no having the first issue type) between the previous and current measurement">

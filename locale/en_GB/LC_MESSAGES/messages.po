@@ -43,3 +43,16 @@ msgstr "About"
 # completeness
 msgid "by document types"
 msgstr "by document types"
+
+# issues
+msgid "Violations of record format specification"
+msgstr "Violations of record format specification"
+msgid "records without issues"
+msgstr "records without issues"
+
+# used at multiple places
+msgid "with"
+msgstr "mit"
+msgid "without"
+msgstr "ohne"
+
