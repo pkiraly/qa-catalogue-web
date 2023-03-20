@@ -160,6 +160,8 @@ msgfmt locale/de_DE/LC_MESSAGES/messages.po -o locale/de_DE/LC_MESSAGES/messages
 msgfmt locale/en_GB/LC_MESSAGES/messages.po -o locale/en_GB/LC_MESSAGES/messages.mo
 ```
 
+If translations have been changed, Webserver or FastCGI respectively may need to be restarted to clear the translation cache.
+
 Please let me know if you would like to see more languages supported.
 
 Troubleshouting: if the translation would not work you can check if a given 
