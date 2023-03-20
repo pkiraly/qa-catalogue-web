@@ -46,6 +46,9 @@ class Issues extends BaseTab {
       if (isset($this->currentGroup->count))
         $this->count = $this->currentGroup->count;
       $smarty->assign('groups', $this->groups);
+      $smarty->assign('params', [
+        'action' => $this->action
+      ]);
     }
 
     if ($this->action == 'download' || $this->action == 'query') {

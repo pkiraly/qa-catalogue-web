@@ -6,7 +6,7 @@
         {foreach from=$params key="key" item="value"}
           {if is_array($value)}
             {foreach from=$value item="v"}
-              <input type="hidden" name="{$key}[]" value="{if strstr($v, '"')}{$v|urlencode}{else}{$v}{/if}">
+              <input type="hidden" name="{$key}[]" value="{if strstr($v, '"')}{$v|htmlspecialchars}{else}{$v}{/if}">
             {/foreach}
           {else}
             <input type="hidden" name="{$key}" value="{$value}">

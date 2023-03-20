@@ -28,6 +28,10 @@ class Completeness extends BaseTab {
     if ($this->groupped) {
       $smarty->assign('groups', $this->readGroups());
       $smarty->assign('groupId', $this->groupId);
+      $smarty->assign('params', [
+        'type' => $this->type,
+        'sort' => $this->sort,
+      ]);
     }
     $this->readPackages();
     $this->readCompleteness();
