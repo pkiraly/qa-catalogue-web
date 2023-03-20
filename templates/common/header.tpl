@@ -4,10 +4,10 @@
     <i class="fa fa-book" aria-hidden="true"></i>
   <a href="{$catalogue->getUrl()}" target="_blank">{$catalogue->getLabel()}</a>
   <span class="header-info">
+    &nbsp; &nbsp; {_('number of records')}: <strong>{$count|number_format}</strong>
     {if $lastUpdate != ''}
       &nbsp; &nbsp; {_('last data update')}: <strong>{$lastUpdate}</strong>
     {/if}
-    &nbsp; &nbsp; {_('number of records')}: <strong>{$count|number_format}</strong>
   </span>
   </div>
   <div class="col-md-3 text-right">
