@@ -80,7 +80,7 @@ setup directories and permissions, download the Smarty templating library.
 
 ```
 mkdir cache
-touch selected-facets.js
+echo [] > cache/selected-facets.js
 sudo chown www-data:www-data -R cache
 chmod g+w -R cache
 mkdir libs
@@ -178,6 +178,12 @@ locale-gen de_DE.UTF-8
 Note: translation is in a very early phase.
 
 # Customization
+
+Some parts of the web interface can be customized with local files in directory
+`config` (not existing by default):
+
+- `config/about.en.tpl` and `config/about.de.tpl`: Additional information shown
+  in the "about" tab.
 
 The name, catalogue link and the record levele catalogue link are different 
 per libraries. The tool has prepared for a number of libraries, but there's
