@@ -7,6 +7,7 @@
       <h2>{_('Completeness')}</h2>
 
       {include 'common/group-selector.tpl'}
+      {* include 'common/autocomplete.tpl' *}
 
       <div>
         {_('by document types')}:

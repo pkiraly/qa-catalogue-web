@@ -4,6 +4,7 @@ include_once 'SchemaUtil.php';
 
 class Completeness extends BaseTab {
 
+  private $action = 'list';
   private $hasNonCoreTags = FALSE;
   private $packages = [];
   private $packageIndex = [];
@@ -12,6 +13,8 @@ class Completeness extends BaseTab {
   private $type = 'all';
   private $sort;
   private $max = 0;
+  public $groups;
+  public $currentGroup;
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
@@ -21,39 +24,62 @@ class Completeness extends BaseTab {
     if ($this->groupped)
       $this->groupBy = $this->analysisParameters->groupBy;
 
+    $this->action = getOrDefault('action', 'list', ['list', 'ajaxGroups']);
     $this->type = getOrDefault('type', 'all', $this->catalogue::$supportedTypes);
     $this->sort = getOrDefault('sort', '', ['number-of-record', 'number-of-instances', 'min', 'max', 'mean', 'stddev']);
     $this->groupId = getOrDefault('groupId', 'all');
 
-    if ($this->groupped) {
-      $smarty->assign('groups', $this->readGroups());
-      $smarty->assign('groupId', $this->groupId);
-      $smarty->assign('params', [
-        'type' => $this->type,
-        'sort' => $this->sort,
-      ]);
-    }
-    $this->readPackages();
-    $this->readCompleteness();
+    if ($this->action == 'list') {
+      if ($this->groupped) {
+        $this->groups = $this->readGroups();
+        $smarty->assign('groups', $this->groups);
+        $smarty->assign('groupId', $this->groupId);
+        $smarty->assign('params', [
+          'type' => $this->type,
+          'sort' => $this->sort,
+        ]);
+        $this->currentGroup = $this->selectCurrentGroup();
+        if (isset($this->currentGroup->count))
+          $this->count = $this->currentGroup->count;
+        $smarty->assign('currentGroup', $this->currentGroup);
+      }
+      $this->readPackages();
+      $this->readCompleteness();
+      $smarty->assign('packages', $this->packages);
+      $smarty->assign('packageIndex', $this->packageIndex);
+      if ($this->sort != '') {
+        $smarty->assign('records', $this->orderBy());
+      } else {
+        $smarty->assign('records', $this->records);
+      }
+      $smarty->assign('types', $this->types);
+      $smarty->assign('selectedType', $this->type);
+      $smarty->assign('max', $this->max);
+      $smarty->assign('hasNonCoreTags', $this->hasNonCoreTags);
+      $smarty->assign('sort', $this->sort);
+      $smarty->assign('groupFilter', $this->getGroupFilter());
+      $smarty->assign('groupQuery', $this->getGroupQuery());
 
-    $smarty->assign('packages', $this->packages);
-    $smarty->assign('packageIndex', $this->packageIndex);
-    if ($this->sort != '') {
-      $smarty->assign('records', $this->orderBy());
-    } else {
-      $smarty->assign('records', $this->records);
+    } else if ($this->action == 'ajaxGroups') {
+      $term = getOrDefault('term', '');
+      if ($term == '' || $term == ' ')
+        $term = 'all';
+      $this->output = 'none';
+      $groups = $this->readGroups();
+      $labels = [];
+      foreach ($groups as $group)
+        if (($term == 'all' && $group->group == $term) || ($term != 'all' && strpos(strtoupper($group->group), strtoupper($term)) !== false))
+          $labels[] = ['label' => $group->group . ' (' . $group->count . ')', 'value' => $group->id];
+      print json_encode($labels);
     }
-    $smarty->assign('types', $this->types);
-    $smarty->assign('selectedType', $this->type);
-    $smarty->assign('max', $this->max);
-    $smarty->assign('hasNonCoreTags', $this->hasNonCoreTags);
-    $smarty->assign('sort', $this->sort);
-    $smarty->assign('groupFilter', $this->getGroupFilter());
-    $smarty->assign('groupQuery', $this->getGroupQuery());
   }
 
   public function getTemplate() {
     return 'completeness/completeness.tpl';
+  }
+
+  public function getAjaxTemplate() {
+    return null;
   }
 
   private function readPackages() {

@@ -13,11 +13,29 @@
           {/if}
         {/foreach}
       {/if}
-      <select name="groupId" onchange="this.form.submit()">
-        {foreach from=$groups item=group}
-          <option value="{$group->id}"{if ($group->id == $groupId)} selected="selected"{/if}>{$group->group} ({$group->count})</option>
-        {/foreach}
-      </select>
+      <input name="groupId" id="groupId" onchange="this.form.submit()" type="hidden" value="{$groupId}">
+
+      <p>
+        <label for="groupName">{_('library')}</label>
+        <input id="groupName" value="{$currentGroup->group}" size="80">
+      </p>
     </form>
   </div>
+  <script>
+    $(function() {
+      $("#groupName").autocomplete({
+        source: '?tab=completeness&ajax=1&action=ajaxGroups',
+        select: function(event, ui) {
+          $("#groupName").val(ui.item.label);
+          $("#groupId").val(ui.item.value);
+          return false;
+        },
+        focus: function(event, ui) {
+          $("#groupName").val(ui.item.label);
+          $("#groupId").val(ui.item.value);
+          return false;
+        },
+      });
+    });
+  </script>
 {/if}

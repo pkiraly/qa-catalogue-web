@@ -49,6 +49,7 @@ class Terms extends Facetable {
     $smarty->assign('groupped', $this->groupped);
     if ($this->groupped && $this->groupId != 'all')
       $this->filters[] = $this->getRawGroupQuery();
+    $smarty->assign('currentGroup', $this->currentGroup);
 
     $smarty->assign('groupId',   $this->groupId);
     $smarty->assign('facet',     $this->facet);
@@ -72,6 +73,7 @@ class Terms extends Facetable {
         $this->currentGroup = $this->selectCurrentGroup();
         if (isset($this->currentGroup->count))
           $this->count = $this->currentGroup->count;
+        $smarty->assign('currentGroup', $this->currentGroup);
         $smarty->assign('groups', $this->groups);
       }
 

@@ -54,9 +54,10 @@ $class = isset($map[$tab]) ? $map[$tab] : 'Completeness';
 $tab = createTab($class);
 $tab->prepareData($smarty);
 
-if ($ajax == 1)
-  $smarty->display($tab->getAjaxTemplate());
-elseif ($tab->getOutputType() == 'html')
+if ($ajax == 1) {
+  if (!is_null($tab->getAjaxTemplate()))
+    $smarty->display($tab->getAjaxTemplate());
+} elseif ($tab->getOutputType() == 'html')
   $smarty->display($tab->getTemplate());
 
 function createTab($name) {

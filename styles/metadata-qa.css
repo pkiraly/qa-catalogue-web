@@ -709,3 +709,9 @@ td.record-field-label {
 #completeness-field-table table tr td a.trigger {
   color: #999999;
 }
+
+/* autocomplete */
+.ui-menu-item {
+  background-color: #eeeeee;
+  padding-left: 5px;
+}
