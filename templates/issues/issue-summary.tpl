@@ -3,7 +3,7 @@
     <span style="color: #37ba00">{_('records without issues')}</span>
   </div>
   <div class="col-sm text-right" style="margin: 0; padding: 0">
-    <span style="color: maroon">{_('with'})</span>
+    <span style="color: maroon">{_('with')}</span>
   </div>
 </div>
 
@@ -29,7 +29,7 @@
       <span style="color: #37ba00">{_('records without issues')}</span>
     </div>
     <div class="col-sm text-right" style="margin: 0; padding: 0">
-      <span style="color: maroon">{_('with'})</span>
+      <span style="color: maroon">{_('with')}</span>
     </div>
   </div>
 
