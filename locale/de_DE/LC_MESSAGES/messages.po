@@ -57,3 +57,6 @@ msgstr "mit"
 msgid "without"
 msgstr "ohne"
 
+# used in group selector
+msgid "Library"
+msgstr "Bibliothek"

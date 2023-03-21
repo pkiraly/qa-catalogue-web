@@ -52,7 +52,10 @@ msgstr "records without issues"
 
 # used at multiple places
 msgid "with"
-msgstr "mit"
+msgstr "with"
 msgid "without"
-msgstr "ohne"
+msgstr "without"
 
+# used in group selector
+msgid "Library"
+msgstr "Library"

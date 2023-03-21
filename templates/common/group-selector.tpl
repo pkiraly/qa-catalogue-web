@@ -16,7 +16,7 @@
       <input name="groupId" id="groupId" onchange="this.form.submit()" type="hidden" value="{$groupId}">
 
       <p>
-        <label for="groupName">{_('library')}</label>
+        <label for="groupName">{_('Library')}</label>
         <input id="groupName" value="{$currentGroup->group}" size="80">
       </p>
     </form>
