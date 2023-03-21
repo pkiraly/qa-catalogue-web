@@ -715,3 +715,7 @@ td.record-field-label {
   background-color: #eeeeee;
   padding-left: 5px;
 }
+
+.ui-helper-hidden-accessible {
+  display: none;
+}
