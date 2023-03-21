@@ -177,7 +177,7 @@ abstract class BaseTab implements Tab {
         continue;
       }
       if ($k == 'q') {
-        error_log('query: ' . $v);
+        // error_log('query: ' . $v);
       }
       if (!preg_match('/%/', $v))
         $v = urlencode($v);
@@ -297,6 +297,9 @@ abstract class BaseTab implements Tab {
   }
 
   public function resolveSolrField($solrField) {
+    if ($solrField == '')
+      return '';
+
     $this->getFieldDefinitions();
 
     $solrField = preg_replace('/_ss$/', '', $solrField);
@@ -367,6 +370,7 @@ abstract class BaseTab implements Tab {
         $label = $this->getLabelForPica($solrField);
       }
     }
+
     return $label;
   }
 
