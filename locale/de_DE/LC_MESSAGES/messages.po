@@ -60,3 +60,7 @@ msgstr "ohne"
 # used in group selector
 msgid "Library"
 msgstr "Bibliothek"
+
+# used in terms
+msgid "Field"
+msgstr "Feld"

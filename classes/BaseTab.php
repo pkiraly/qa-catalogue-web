@@ -199,6 +199,10 @@ abstract class BaseTab implements Tab {
     return $records;
   }
 
+  protected function getFieldMapFileName() {
+    return 'cache/field-map-' . $this->db . '.js';
+  }
+
   protected function getSelectedFacets() {
     $selectedFacets = [];
     $file = 'cache/selected-facets-' . $this->db . '.js';

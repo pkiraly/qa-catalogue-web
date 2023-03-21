@@ -30,7 +30,7 @@ class Terms extends Facetable {
     $this->termFilter = getOrDefault('termFilter', '');
     $this->ajaxFacet = getOrDefault('ajax', 0, [0, 1]);
     $this->facetLimit = getOrDefault('limit', 100, [10, 25, 50, 100]);
-    $this->action = getOrDefault('action', 'list', ['list', 'download']);
+    $this->action = getOrDefault('action', 'list', ['list', 'download', 'fields']);
 
     $this->params = [
       'facet' => $this->facet,
@@ -40,7 +40,6 @@ class Terms extends Facetable {
       'termFilter' => $this->termFilter,
       'facetLimit' => $this->facetLimit,
     ];
-
   }
 
   public function prepareData(Smarty &$smarty) {
@@ -67,6 +66,28 @@ class Terms extends Facetable {
     if ($this->action == 'download') {
       $this->output = 'none';
       $this->download($facets);
+    } else if ($this->action == 'fields') {
+      $term = getOrDefault('term', '');
+      $this->output = 'none';
+      $fileName = $this->getFieldMapFileName();
+      if (!file_exists($fileName)) {
+        $allFields = [];
+        foreach ($this->getFields() as $field) {
+          $label = $this->resolveSolrField($field);
+          $allFields[] = ['label' => $label, 'value' => $field];
+        }
+        file_put_contents($fileName, json_encode($allFields));
+      } else {
+        $allFields = json_decode(file_get_contents($fileName));
+      }
+      $fields = [];
+      foreach ($allFields as $field) {
+        if ($term == ''
+            || strpos(strtoupper($field->label), strtoupper($term)) !== false
+            || strpos(strtoupper($field->value), strtoupper($term)) !== false)
+          $fields[] = ['label' => $field->label, 'value' => $field->value];
+      }
+      print json_encode($fields);
     } else {
       if ($this->groupped) {
         $this->groups = $this->readGroups();

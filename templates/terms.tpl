@@ -12,15 +12,29 @@
         <form id="facetselection">
           <input type="hidden" name="tab" value="terms" />
           <input type="hidden" name="query" value="{$query}" />
+
           <p>
-            field: <input list="facet" name="facet" id="facetInput" style="width: 800px;" value="{if isset($facet) && !empty($facet)}{$facet}{else}- select a field! -{/if}">
-            <datalist id="facet">
-              <option value=""></option>
-              {foreach from=$solrFields item=field}
-                <option value="{$field}"{if $field == $facet} selected="selected"{/if}>{$field}</option>
-              {/foreach}
-            </datalist>
+            <input name="facet" id="facet" onchange="this.form.submit()" type="hidden" value="{$facet}">
+            <label for="facetName">{_('Field')}:</label>
+            <input id="facetName" value="{$label}" size="80">
           </p>
+          <script>
+            $(function() {
+              $("#facetName").autocomplete({
+                source: '?tab=terms&action=fields',
+                select: function(event, ui) {
+                  $("#facetName").val(ui.item.label);
+                  $("#facet").val(ui.item.value);
+                  return false;
+                },
+                focus: function(event, ui) {
+                  $("#facetName").val(ui.item.label);
+                  $("#facet").val(ui.item.value);
+                  return false;
+                },
+              });
+            });
+          </script>
 
           <p>
             filter term list: <input type="text" name="termFilter" value="{$termFilter}" /><br/>

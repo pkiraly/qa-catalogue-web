@@ -59,3 +59,7 @@ msgstr "without"
 # used in group selector
 msgid "Library"
 msgstr "Library"
+
+# used in terms
+msgid "Field"
+msgstr "Field"
