@@ -6,6 +6,10 @@
     <div class="tab-pane active" id="issues" role="tabpanel" aria-labelledby="issues-tab">
       <h2>{_('Violations of record format specification')}</h2>
 
+      <p class="metric-definition">
+        {_('issues_definition')}
+      </p>
+
       {include 'common/group-selector.tpl'}
 
       {if isset($versions) && !empty($versions)}

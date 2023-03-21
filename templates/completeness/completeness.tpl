@@ -6,8 +6,11 @@
     <div class="tab-pane active" id="completeness" role="tabpanel" aria-labelledby="completeness-tab">
       <h2>{_('Completeness')}</h2>
 
+      <p class="metric-definition">
+        {_('completeness_definition')}
+      </p>
+
       {include 'common/group-selector.tpl'}
-      {* include 'common/autocomplete.tpl' *}
 
       <div>
         {_('by document types')}:

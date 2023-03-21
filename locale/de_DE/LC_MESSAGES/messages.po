@@ -44,12 +44,30 @@ msgstr "Über"
 # completeness
 msgid "by document types"
 msgstr "nach Dokumenttyp"
+msgid "completeness_definition"
+msgstr "Vollständigkeit ist der Grad, in dem die Katalogeinträge alle im Metadatenschema definierten Datenelemente enthalten (einschließlich der lokal definierten Datenelemente)"
 
 # issues
 msgid "Violations of record format specification"
 msgstr "Abweichungen gegenüber den Formatvorgaben"
 msgid "records without issues"
 msgstr "Datensätze ohne Abweichungen"
+msgid "issues_definition"
+msgstr "Genauigkeit ist der Grad der Übereinstimmung der Katalogdatensätze mit der Syntax, der Semantik, den Regeln und Richtlinien des Metadatenschemas (einschließlich der lokal definierten Datenelemente). Für die Metadatenfelder, die nicht in der verfügbaren Dokumentation des Metadatenschemas definiert sind, kann das Tool nicht entscheiden, ob die Daten korrekt sind oder nicht. Die Seite gibt einen Überblick und Details zu den erfassten Problemen. Der Benutzer kann jeden einzelnen Datensatz, der ein bestimmtes Problem aufweist, überprüfen und dessen Kennungen herunterladen."
+
+# classifications
+msgid "classifications_definition"
+msgstr "Die Sacherschließungsanalyse misst, inwieweit die Katalogdatensätze Informationen zur Sacherschließung in den vom Metadatenschema definierten Datenelementen enthalten. Für die Sacherschließung können mehrere Datenelemente verwendet werden - jedes für einen bestimmten Zweck. Ein Schlagwort kann ein Freitextschlagwort sein oder aus einem kontrollierten Wörterbuch stammen. Neben dem Begriff kann das Feld zusätzliche Informationen wie Unterkategorien, die Version des Wörterbuchs, Identifikatoren und Links enthalten."
+
+# authority names
+msgid "authorities_definition"
+msgstr "Die Analyse der Autoritätsnamen misst, inwieweit die Katalogeinträge Informationen über Autoritätsnamen (Personen-, Firmen-, Versammlungs-, geografische Namen, einheitliche Titel) in den vom Metadatenschema definierten Datenelementen enthalten. Ein Autoritätsname ist ein einheitlicher Name eines Urhebers, eines Publikationsortes oder sogar eines Subjekts, der mit dem Datensatz verbunden ist. Der Autoritätsname kann ein Freitextschlüsselwort sein oder aus einem kontrollierten Wörterbuch stammen. Neben dem Namen kann das Feld zusätzliche Informationen wie biografische Informationen, Kategorien, die Version des Wörterbuchs, Kennungen und Links enthalten."
+
+# data
+msgid "Search"
+msgstr "Suche"
+msgid "data_definition"
+msgstr "Die analysierten Datensätze können hier durchsucht und gefiltert werden."
 
 # used at multiple places
 msgid "with"

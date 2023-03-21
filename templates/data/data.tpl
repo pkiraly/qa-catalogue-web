@@ -7,17 +7,22 @@
       <div class="container" id="content">
         <div class="row">
           <div class="col-3 search-block">
-            <h3>Search</h3>
+            <h3>{_('Search')}</h3>
           </div>
           <div class="col search-block">
+            <p class="metric-definition">
+                {_('data_definition')}
+            </p>
             <form id="search">
               <input type="hidden" name="tab" value="data">
-              <input type="text" name="query" id="query" value="{htmlentities($query)}" size="65">
+              <input type="text" name="query" id="query" value="{htmlentities($query)}" size="60">
               <button type="submit" class="btn">
                 <i class="fa fa-search" aria-hidden="true"></i> search
               </button>
             </form>
           </div>
+        </div>
+        <div class="row">
         </div>
         <div class="row">
           <div id="left" class="col-3">

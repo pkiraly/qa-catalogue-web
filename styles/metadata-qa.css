@@ -719,3 +719,14 @@ td.record-field-label {
 .ui-helper-hidden-accessible {
   display: none;
 }
+
+p.metric-definition {
+  color: #999999;
+  margin: 20px 0 40px 100px;
+  padding-left: 20px;
+  border-left: 5px dotted #cccccc;
+}
+
+#data p.metric-definition {
+  margin: 5px 0 10px 40px;
+}

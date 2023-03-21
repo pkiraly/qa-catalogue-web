@@ -43,12 +43,30 @@ msgstr "About"
 # completeness
 msgid "by document types"
 msgstr "by document types"
+msgid "completeness_definition"
+msgstr "Completeness is the degree to which the catalogue records contain all data elements defined in the metadata schema (including the locally defined data elements)"
 
 # issues
 msgid "Violations of record format specification"
 msgstr "Violations of record format specification"
 msgid "records without issues"
 msgstr "records without issues"
+msgid "issues_definition"
+msgstr "Accuracy is the degree to which the catalogue records conform to the syntax, the semantics, the rules and guidelines of the metadata schema (including the locally defined data elements). For those metadata fields which are not defined in the metadata schema's available documentation the tool is not able to decide if the data are correct or not. The page gives an overview and details of the captured issues. The user can check each individual records haveing a particular problem, and download their identifiers."
+
+# classifications
+msgid "classifications_definition"
+msgstr "Subject indexing analysis measures the degree to which the catalogue records contain subject indexing information in data elements defined by the metadata schema. Multiple data elements might be used for subject indexing - each for a particular purpose. A subject term might be a free text keyword or might come from a controlled dictionary. Beside the term the field might contain additional information such as subcategories, version of the dictionary, identifiers and links."
+
+# authority names
+msgid "authorities_definition"
+msgstr "Authority name analysis measures the degree to which the catalogue records contain information about authority names (personal, corporate, meeting, geographic names, uniform titles) in data elements defined by the metadata schema. Authority name is a uniform name of a creator, publication place or even a subject of the record, which is attached to it. Am authority name might be a free text keyword or it might come from a controlled dictionary. Beside the name the field might contain additional information such as biographical information, categories, version of the dictionary, identifiers and links."
+
+# data
+msgid "Search"
+msgstr "Search"
+msgid "data_definition"
+msgstr "Search and filter the analyzed data sets, display the details of each individual records."
 
 # used at multiple places
 msgid "with"
@@ -63,3 +81,4 @@ msgstr "Library"
 # used in terms
 msgid "Field"
 msgstr "Field"
+
