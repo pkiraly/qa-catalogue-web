@@ -48,7 +48,8 @@ class Issues extends BaseTab {
       $smarty->assign('currentGroup', $this->currentGroup);
       $smarty->assign('groups', $this->groups);
       $smarty->assign('params', [
-        'action' => $this->action
+        'action' => $this->action,
+        'lang' => $this->lang
       ]);
     }
 

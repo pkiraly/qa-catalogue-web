@@ -39,6 +39,7 @@ class Terms extends Facetable {
       'scheme' => $this->scheme,
       'termFilter' => $this->termFilter,
       'facetLimit' => $this->facetLimit,
+      'lang' => $this->lang
     ];
   }
 

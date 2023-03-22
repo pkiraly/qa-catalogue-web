@@ -37,6 +37,7 @@ class Completeness extends BaseTab {
         $smarty->assign('params', [
           'type' => $this->type,
           'sort' => $this->sort,
+          'lang' => $this->lang
         ]);
         $this->currentGroup = $this->selectCurrentGroup();
         if (isset($this->currentGroup->count))
