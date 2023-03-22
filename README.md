@@ -4,12 +4,12 @@
 
 ![Output sample](https://github.com/pkiraly/metadata-qa-marc-web/raw/gh-pages/img/issues-v1.gif)
 
-This web interface is created mainly for research purposes. 
-It is a lightweight web allication (PHP, JavaScript, HTML and CSS). The data
-are stored in CSV files and in an optional Solr index, which is created 
-by the [metadata-qa-marc](https://github.com/pkiraly/metadata-qa-marc) 
-project. Solr contains not pure MARC21 fields, but the so called
-[Self-descriptive MARC21 codes](http://pkiraly.github.io/2017/09/24/mapping/).
+This web application provides a web interface to results of
+[QA Catalogue](https://github.com/pkiraly/metadata-qa-marc)
+for quality analysis and statistics of metadata from library catalogues.
+
+The results in form of CSV files, JSON files, a SQLite database, images and
+a Solr index are made browseable on the Web with PHP and JavaScript.
 
 ## Table of Contents
 
@@ -21,63 +21,64 @@ project. Solr contains not pure MARC21 fields, but the so called
 
 ## Installation
 
-Notes: 
-* `[catalogue]` denotes the name of a catalogue (such as loc, bl, gnd, etc.) in this document.
-* `[data directory]` denotes the path into which you save the result into the data analyses.
+In the following:
 
-1. Analyse your catalog with [metadata-qa-marc](https://github.com/pkiraly/metadata-qa-marc) tool
+- `$DATADIR` denotes the base output directory of data analysis with QA Catalogue
+- `$CATALOG` denotes the name of a catalogue (such as loc, bl, k10plus...)
 
-The data will be saved to `[data directory]/[catalogue]`
+Analyse your catalog with [QA Catalogue Backend](https://github.com/pkiraly/metadata-qa-marc)),
+the result will be saved in `$DATADIR/$CATALOG` and in Solr.
 
-2. Install this software into Apache web server (it might work with other web servers)
+### Download
 
-create a temporary directory
+Install this software into a web server with PHP enabled (Apache or Nginx with PHP-FPM).
+
+Create a temporary directory and download the software to an application
+directory served by your webserver (here we use `/var/www/html/$CATALOG`):
+
 ```
-mkdir temp
-cd temp
-```
-
-download the software
-```
+mkdir tmp
+cd tmp
 wget https://github.com/pkiraly/metadata-qa-marc-web/archive/master.zip
 unzip master.zip
-mv metadata-marc-web-master /var/www/html/[catalogue]
+mv metadata-marc-web-master /var/www/html/$CATALOG
 ```
 
-or clone thw git repository
-```
-git clone https://github.com/pkiraly/metadata-qa-marc-web.git
-mv metadata-marc-web /var/www/html/[catalogue]
-```
+or clone the git repository:
 
-3. Setup
-
-prepare configuration file:
-```
-cd /var/www/html/[catalogue]
-```
- You can also add the [catalogue] infor the configuration if the 
- application path does not equals to the [catalogue]:
-
-prepare configuration file:
-```
-echo "dir=[data directory]" > configuration.cnf
-```
- You can also add the [catalogue] infor the configuration if the 
- application path does not equals to the [catalogue]:
 
 ```
-echo "catalogue=[catalogue]" >> configuration.cnf
+git clone https://github.com/pkiraly/metadata-qa-marc-web.git /var/www/html/$CATALOG
 ```
 
-other configuration parameters:
+### Setup
 
-* `display-network`: to show or hide the network tab. 
+Change into the application directory:
+
+```
+cd /var/www/html/$CATALOG
+```
+
+Prepare configuration file:
+
+```
+echo "dir=$DATADIR" > configuration.cnf
+```
+
+If the application path does not equals `$CATALOG`, add:
+
+```
+echo "catalogue=$CATALOG" >> configuration.cnf
+```
+
+Other configuration parameters:
+
+- `display-network`: to show or hide the network tab. 
   Possible values: 1 (to display the tab), or 0 (not to display)
-* `indexName[<catalogue>]`: the name of the Solr index, it it is different than the name of the catalogue. 
-* `dirName[<catalogue>]`: the name of the data directory, it it is different than the name of the catalogue.
+- `indexName[<catalogue>]`: name of the Solr index, it it is different than the name of the catalogue. 
+- `dirName[<catalogue>]`: name of the data directory, it it is different than the name of the catalogue.
 
-example:
+Example:
 
 ```
 display-network=0
@@ -85,7 +86,7 @@ indexName[bvb]=bayern
 dirName[bvb]=bayern
 ```
 
-setup directories and permissions, download the Smarty templating library.
+Setup directories and permissions and download the Smarty templating library.
 
 ```
 mkdir cache
@@ -95,7 +96,7 @@ chmod g+w -R cache
 mkdir libs
 mkdir images
 
-ln -s [data directory]/[catalogue]/img images/[catalogue]
+ln -s $DATADIR/$CATALOG/img images/$CATALOG
 
 ## download Smarty templating library
 export SMARTY_VERSION=3.1.44
@@ -108,25 +109,17 @@ chmod a+w -R _smarty/templates_c/
 cd ..
 ```
 
-Add these lines to Apache configuration (`/etc/apache2/sites-available/000-default.conf`)
+On Apache webserver add these lines to its configuration (`/etc/apache2/sites-available/000-default.conf`):
 
 ```
-<Directory /var/www/html/[catalogue]>
+<Directory /var/www/html/$CATALOG>
   AllowOverride All
   Order allow,deny
   allow from all
 </Directory>
 ```
 
-You can access the site at `http://localhost/[catalogue]`
-
-If this is the only application on the site, you can redirect
-all requests to QA Catalogue by adding the following line to 
-the same file (before the `<Directory/>` element):
-
-```
-RedirectMatch ^/$ /metadata-qa/
-```
+You can access the application at `http://localhost/$CATALOG`.
 
 ## Customization
 
