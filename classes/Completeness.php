@@ -10,8 +10,8 @@ class Completeness extends BaseTab {
   private $packageIndex = [];
   private $records = [];
   private $types = [];
-  private $type = 'all';
-  private $sort;
+  protected $type = 'all';
+  protected $sort;
   private $max = 0;
   public $groups;
   public $currentGroup;
@@ -42,6 +42,7 @@ class Completeness extends BaseTab {
         if (isset($this->currentGroup->count))
           $this->count = $this->currentGroup->count;
         $smarty->assign('currentGroup', $this->currentGroup);
+        // $smarty->assign('tabSpecificParameters', $this->getTabSpecificParameters());
       }
       $this->readPackages();
       $this->readCompleteness();
@@ -330,5 +331,17 @@ class Completeness extends BaseTab {
 
   private function safe($input) {
     return preg_replace_callback('/([^a-zA-Z0-9])/', function ($matches) { return 'x' . dechex(ord($matches[1])); }, $input);
+  }
+
+  public function getTabSpecificParameters($key, $value) : string {
+    $params = [];
+    $params[] = sprintf('%s=%s', $key, $value);
+    $params = array_merge($params, $this->getGeneralParams());
+    $this->addParam($params, $this, 'type', 'all', [$key]);
+    $this->addParam($params, $this, 'sort', '', [$key]);
+    $this->addParam($params, $this, 'groupId', 'all', [$key]);
+    if (!empty($params))
+      return '&' . join('&', $params);
+    return '';
   }
 }

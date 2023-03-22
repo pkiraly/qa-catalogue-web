@@ -19,7 +19,7 @@
           {if $type == $selectedType}
             <strong>{$type}</strong>
           {else}
-            <a href="?tab=completeness&type={urlencode($type)}">{$type}</a>
+            <a href="?tab=completeness{$controller->getTabSpecificParameters('type', $type)}">{$type}</a>
           {/if}
         {/foreach}
       </div>

@@ -25,23 +25,23 @@
       <th class="left chart"></th>
       <th class="terms">terms</th>
       <th class="number-of-record">
-        <a href="?tab=completeness&type={urlencode($selectedType)}{if $sort != 'number-of-record'}&sort=number-of-record{/if}">count</a>
+        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'number-of-record')}">count</a>
       </th>
       <th class="percent-of-record">%</th>
       <th class="number-of-instances">
-        <a href="?tab=completeness&type={urlencode($selectedType)}{if $sort != 'number-of-instances'}&sort=number-of-instances{/if}">count</a>
+        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'number-of-instances')}">count</a>
       </th>
       <th class="min">
-        <a href="?tab=completeness&type={urlencode($selectedType)}{if $sort != 'min'}&sort=min{/if}">min</a>
+        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'min')}">min</a>
       </th>
       <th class="max">
-        <a href="?tab=completeness&type={urlencode($selectedType)}{if $sort != 'max'}&sort=max{/if}">max</a>
+        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'max')}">max</a>
       </th>
       <th class="mean">
-        <a href="?tab=completeness&type={urlencode($selectedType)}{if $sort != 'mean'}&sort=mean{/if}">mean</a>
+        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'mean')}">mean</a>
       </th>
       <th class="stddev">
-        <a href="?tab=completeness&type={urlencode($selectedType)}{if $sort != 'stddev'}&sort=stddev{/if}">stddev</a>
+        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'stddev')}">stddev</a>
       </th>
     </tr>
   </thead>
