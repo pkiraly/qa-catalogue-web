@@ -1,6 +1,6 @@
-# QA Catalogue
+# QA Catalogue Web
 
-> A data quality dashboard for MARC catalogues
+> A data quality dashboard for library catalogues
 
 ![Output sample](https://github.com/pkiraly/metadata-qa-marc-web/raw/gh-pages/img/issues-v1.gif)
 
