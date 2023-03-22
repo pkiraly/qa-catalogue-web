@@ -1,5 +1,6 @@
 # QA Catalogue
-## A data quality dashboard for MARC catalogues
+
+> A data quality dashboard for MARC catalogues
 
 ![Output sample](https://github.com/pkiraly/metadata-qa-marc-web/raw/gh-pages/img/issues-v1.gif)
 
@@ -10,7 +11,15 @@ by the [metadata-qa-marc](https://github.com/pkiraly/metadata-qa-marc)
 project. Solr contains not pure MARC21 fields, but the so called
 [Self-descriptive MARC21 codes](http://pkiraly.github.io/2017/09/24/mapping/).
 
-# Installation
+## Table of Contents
+
+- [Installation](#installation)
+- [Customization](#customization)
+- [Translation](#translation)
+- [Contributing](#contributing)
+- [Maintainers](#maintainers)
+
+## Installation
 
 Notes: 
 * `[catalogue]` denotes the name of a catalogue (such as loc, bl, gnd, etc.) in this document.
@@ -88,7 +97,7 @@ mkdir images
 
 ln -s [data directory]/[catalogue]/img images/[catalogue]
 
-# download Smarty templating library
+## download Smarty templating library
 export SMARTY_VERSION=3.1.44
 cd libs/
 curl -s -L https://github.com/smarty-php/smarty/archive/v${SMARTY_VERSION}.zip --output v$SMARTY_VERSION.zip
@@ -119,67 +128,7 @@ the same file (before the `<Directory/>` element):
 RedirectMatch ^/$ /metadata-qa/
 ```
 
-# Translation
-
-Now the user interface is translatable via gettext methods. We provide
-two language files (German and English). In `.tpl` files you can add translatable text as
-
-```
-{_('translatable text')}
-```
-You should add the translations into `locale/de_DE/LC_MESSAGES/messages.po` as
-
-
-```
-msgid "translatable text"
-msgstr "übersetzbarer Text"
-```
-
-and into `locale/en_GB/LC_MESSAGES/messages.po` as
-
-```
-msgid "translatable text"
-msgstr "translatable text"
-```
-
-Of course the message identifier could be different, and dense but now
-I think that it is more understandable (so translatable) this way. When
-you add a translation please add a comment to denote which page the original
-text appears, such as 
-
-```
-# completeness
-msgid "by document types"
-msgstr "nach Dokumenttypen"
-```
-
-Once you have done, you should generate the `.mo` files from the `.po` files with the following commands:
-
-```bash
-msgfmt locale/de_DE/LC_MESSAGES/messages.po -o locale/de_DE/LC_MESSAGES/messages.mo
-msgfmt locale/en_GB/LC_MESSAGES/messages.po -o locale/en_GB/LC_MESSAGES/messages.mo
-```
-
-If translations have been changed, Webserver or FastCGI respectively may need to be restarted to clear the translation cache.
-
-Please let me know if you would like to see more languages supported.
-
-Troubleshouting: if the translation would not work you can check if a given 
-language (locale) is available in your system. In Linux you can check it with
-
-```bash
-locale -a
-```
-
-If the locale (e.g. 'de_DE.UTF-8') is not available, you can install it with
-
-```bash
-locale-gen de_DE.UTF-8
-```
-
-Note: translation is in a very early phase.
-
-# Customization
+## Customization
 
 Some parts of the web interface can be customized with local files in directory
 `config` (not existing by default):
@@ -216,9 +165,78 @@ either the application path or the `catalogue` property of the
 website, `$marcVersion` is the abbreviation of MARC version used in the
 analyses.
 
-You can also share the code with me, and then I will incorporate it into the 
-code base. 
+## Translation
+
+Now the user interface is translatable via gettext methods. We provide
+two language files (German and English). In `.tpl` files you can add translatable text as
+
+```
+{_('translatable text')}
+```
+You should add the translations into `locale/de_DE/LC_MESSAGES/messages.po` as
+
+
+```
+msgid "translatable text"
+msgstr "übersetzbarer Text"
+```
+
+and into `locale/en_GB/LC_MESSAGES/messages.po` as
+
+```
+msgid "translatable text"
+msgstr "translatable text"
+```
+
+Of course the message identifier could be different, and dense but now
+I think that it is more understandable (so translatable) this way. When
+you add a translation please add a comment to denote which page the original
+text appears, such as 
+
+```
+## completeness
+msgid "by document types"
+msgstr "nach Dokumenttypen"
+```
+
+Once you have done, you should generate the `.mo` files from the `.po` files with the following commands:
+
+```bash
+msgfmt locale/de_DE/LC_MESSAGES/messages.po -o locale/de_DE/LC_MESSAGES/messages.mo
+msgfmt locale/en_GB/LC_MESSAGES/messages.po -o locale/en_GB/LC_MESSAGES/messages.mo
+```
+
+If translations have been changed, Webserver or FastCGI respectively may need to be restarted to clear the translation cache.
+
+Please let me know if you would like to see more languages supported.
+
+Troubleshouting: if the translation would not work you can check if a given 
+language (locale) is available in your system. In Linux you can check it with
+
+```bash
+locale -a
+```
+
+If the locale (e.g. 'de_DE.UTF-8') is not available, you can install it with
+
+```bash
+locale-gen de_DE.UTF-8
+```
+
+Note: translation is in a very early phase.
+
+## Maintainers
+
+QA Catalogue Web is developed by Péter Király.
 
 Please notify me if you would like to use it. Happy searching!
 
--- Péter
+## Contributing
+
+QA Catalogue Web is managed in a public git repository at <https://github.com/pkiraly/metadata-qa-marc-web>.
+Contributions are welcome!
+
+## License
+
+GNU General Public License
+
