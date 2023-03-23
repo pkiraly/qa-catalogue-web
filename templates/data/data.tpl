@@ -134,7 +134,18 @@ $(document).ready(function() {
       .done(function(result) {
         $('#marc-issue-' + id).html(result);
       });
+  });
+
+  $('a[aria-controls="pica-issue-tab"]').click(function (event) {
+    event.preventDefault();
+    var id = $(this).attr('data-id');
+    var url = $(this).attr('href');
+    activateTab(id);
+    $.ajax(url)
+     .done(function(result) {
+       $('#pica-issue-' + id).html(result);
     });
+  });
 
   setFacetNavigationClickBehaviour();
 });

@@ -744,3 +744,7 @@ p.metric-definition {
 .marc-labels-table .label {
   width: 35%;
 }
+
+.details .nav-link {
+  padding: .2rem 1rem;
+}
