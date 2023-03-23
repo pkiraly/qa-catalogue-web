@@ -366,4 +366,20 @@ class Completeness extends BaseTab {
     $params[] = 'filters[]=' . $record->solr . ':*';
     return '?' . join('&', $params);
   }
+
+  public function termsLink($record) : string {
+    static $baseParams;
+    if (!isset($baseParams)) {
+      $baseParams = [
+        'tab=terms',
+        'query=' . ($this->type == 'all' ? '*:*' : 'type_ss:' . urlencode(sprintf('"%s"', $this->type))),
+      ];
+      $baseParams = array_merge($baseParams, $this->getGeneralParams());
+      if ($this->groupped && $this->groupId != 'all')
+        $baseParams[] = 'groupId=' . $this->groupId;
+    }
+    $params = $baseParams;
+    $params[] = 'facet=' . $record->solr;
+    return '?' . join('&', $params);
+  }
 }
