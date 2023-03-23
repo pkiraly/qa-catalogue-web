@@ -56,7 +56,7 @@
                     <a href="{$controller->completenessLink($key)}" class="completeness" data-field="{$key}">{$code}</a>
                     {if isset($elements[$key]) && $elements[$key] != ''}
                       <span title="{$elements[$key]}">{$elements[$key]}</span>
-                    {elseif $item == '$9'}
+                    {elseif $code == '$9'}
                       &mdash; <span>(locally defined subfield)</span>
                     {else}
                       &mdash; <span>(not defined)</span>

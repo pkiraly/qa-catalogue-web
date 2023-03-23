@@ -124,8 +124,6 @@ class Classifications extends AddedEntry {
           $header = $values;
         } else {
           $record = (object)array_combine($header, $values);
-          if (!isset($record->field))
-            error_log('empty? ' . $line);
 
           if ($record->field == '052') {
             $this->createFacets($record, '052a_GeographicClassification');
@@ -214,9 +212,6 @@ class Classifications extends AddedEntry {
 
           $record->ratio = $record->recordcount / $this->count;
           $record->percent = $record->ratio * 100;
-
-          if ($record->field == '653')
-            error_log(json_encode($record));
 
           $records[] = $record;
         }

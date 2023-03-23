@@ -117,9 +117,6 @@ class Authorities extends AddedEntry {
           $header = $values;
         } else {
           $record = (object)array_combine($header, $values);
-          if (!isset($record->field))
-            error_log('empty? ' . $line);
-
           $record->q = '*:*';
           if ($this->catalogue->getSchemaType() == 'MARC21') {
             if ($record->field == '100') {

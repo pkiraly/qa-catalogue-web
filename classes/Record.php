@@ -144,13 +144,20 @@ class Record {
 
   public function type2icon($type) {
     switch ($type) {
-      case 'Books': $icon = 'book'; break;
+      case 'Books':
+      case 'Druckschriften (einschließlich Bildbänden)':
+        $icon = 'book'; break;
       case 'Maps': $icon = 'map'; break;
       case 'Computer Files': $icon = 'save'; break;
       case 'Music': $icon = 'music'; break;
       case 'Continuing Resources': $icon = 'clone'; break;
       case 'Visual Materials': $icon = 'image'; break;
-      case 'Mixed Materials': $icon = 'archive'; break;
+      case 'Mixed Materials':
+      case 'Medienkombination':
+      case 'Tonträger, Videodatenträger, Bildliche Darstellungen':
+        $icon = 'archive'; break;
+      default:
+        $icon = 'book'; break;
     }
     return $icon;
   }

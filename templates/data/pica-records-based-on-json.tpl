@@ -184,22 +184,6 @@
             {/if}
           </div>
         </div>
-        <div class="tab-pane record-tab marc-leader control-field-explanation" id="marc-leader-{$id}" role="tabpanel" aria-labelledby="data-tab">
-          {include 'marc/leader.tpl'}
-        </div>
-        <div class="tab-pane record-tab marc-008 control-field-explanation" id="marc-008-{$id}" role="tabpanel" aria-labelledby="data-tab">
-          {include 'marc/008.tpl'}
-        </div>
-        {if !is_null($record->getFields('007'))}
-          <div class="tab-pane record-tab marc-007 control-field-explanation" id="marc-007-{$id}" role="tabpanel" aria-labelledby="data-tab">
-            {include 'marc/007.tpl'}
-          </div>
-        {/if}
-        {if !is_null($record->getFields('006'))}
-          <div class="tab-pane record-tab marc-006 control-field-explanation" id="marc-006-{$id}" role="tabpanel" aria-labelledby="data-tab">
-            {include 'marc/006.tpl'}
-          </div>
-        {/if}
         <div class="tab-pane record-tab" id="marc-solr-{$id}" role="tabpanel" aria-labelledby="data-tab">
           <h4>Representation in Solr index</h4>
 

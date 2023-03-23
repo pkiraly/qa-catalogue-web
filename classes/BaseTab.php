@@ -582,10 +582,6 @@ abstract class BaseTab implements Tab {
   }
 
   protected function addParam(&$params, $object, $key, $defaulValue, $excludeKeys = []) {
-    error_log((int) !in_array($key, $excludeKeys));
-    error_log((int) isset($object->{$key}));
-    error_log((int) $object->{$key} != $defaulValue);
-
     if (!in_array($key, $excludeKeys) && isset($object->{$key}) && $object->{$key} != $defaulValue)
       $params[] = sprintf('%s=%s', $key, urlencode($object->{$key}));
   }
