@@ -35,17 +35,21 @@ class Collocations extends BaseTab {
   }
 
   private function collocateFields() {
+    if (!$this->facet1 || !$this->facet2) {
+        return [];
+    }
+
     $params = 'q=*:*&start=0&rows=0&wt=json&q.op=AND&json.nl=map&facet=on&facet.limit=100&facet.mincount=1';
     $params .= '&facet.field=' . $this->facet1;
     $params .= '&facet.field=' . $this->facet2;
 
-    $response = $this->search($params);
+    $facets = $this->searchFacets($params);
 
     $results = [];
-    $f1_values = $response->facets->{$this->facet1};
+    $f1_values = $facets->{$this->facet1};
     foreach ($f1_values as $value1 => $count1) {
-      $response = $this->search($params . '&fq=' . $this->facet1 . ':' . urlencode('"' . $value1 . '"'));
-      foreach ($response->facets->{$this->facet2} as $value2 => $count2) {
+      $facets = $this->searchFacets($params . '&fq=' . $this->facet1 . ':' . urlencode('"' . $value1 . '"'));
+      foreach ($facets->{$this->facet2} as $value2 => $count2) {
         $results[] = [$value1, $value2, $count2, $this->createSearchUrl($value1, $value2)];
         if (count($results) > 1000)
           break;
@@ -66,18 +70,15 @@ class Collocations extends BaseTab {
     return urlencode(sprintf('%s:"%s"', $field, $value));
   }
 
-  private function search($params) {
+  private function searchFacets($params) {
     $solrPath = $this->getIndexName();
     $url = 'http://localhost:8983/solr/' . $solrPath . '/select?' . $params;
-    $solrResponse = json_decode(file_get_contents($url));
-    $response = (object)[
-      'numFound' => $solrResponse->response->numFound,
-      'docs' => $solrResponse->response->docs,
-      'facets' => (isset($solrResponse->facet_counts) ? $solrResponse->facet_counts->facet_fields : []),
-      'params' => $solrResponse->responseHeader->params,
-    ];
-
-    return $response;
+    $response = json_decode(file_get_contents($url));
+    if ($response && isset($response->facet_counts)) {
+        return $response->facet_counts->facet_fields;
+    } else {
+        return (object)[];
+    }
   }
 
   function str_putcsv(array $input, $delimiter = ',', $enclosure = '"') {
@@ -105,11 +106,11 @@ class Collocations extends BaseTab {
   }
 
   private function getFields() {
-    error_log('getFields');
+    // error_log('getFields');
     $fieldNames = $this->getSolrFields();
-    error_log('nr: ' . count($fieldNames));
+    // error_log('nr: ' . count($fieldNames));
     sort($fieldNames);
-    error_log('nr: ' . count($fieldNames));
+    // error_log('nr: ' . count($fieldNames));
     return $fieldNames;
   }
 }
