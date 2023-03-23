@@ -13,120 +13,41 @@
       <ul class="nav nav-tabs" id="record-views-{$id}">
         <li class="nav-item">
           <a class="nav-link active" data-toggle="tab" role="tab" aria-selected="true"
-             id="marc-record-tab-{$id}" href="#marc-record-{$id}" aria-controls="marc-record-tab">Record</a>
+             id="pica-human-tab-{$id}" href="#pica-human-{$id}" aria-controls="pica-human-tab">Record</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
-             id="marc-raw-tab-{$id}" href="#marc-raw-{$id}" aria-controls="marc-raw-tab">PICA</a>
+             id="pica-raw-tab-{$id}" href="#pica-raw-{$id}" aria-controls="pica-raw-tab">PICA</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
-             id="marc-human-tab-{$id}" href="#marc-human-{$id}" aria-controls="marc-human-tab">for humans</a>
+             id="pica-labels-tab-{$id}" href="#pica-labels-{$id}" aria-controls="pica-labels-tab">for humans</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
-             id="marc-solr-tab-{$id}" href="#marc-solr-{$id}" aria-controls="marc-solr-tab">Solr</a>
+             id="pica-solr-tab-{$id}" href="#pica-solr-{$id}" aria-controls="pica-solr-tab">Solr</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
-             id="marc-issue-tab-{$id}" href="{$record->issueLink($id)}" aria-controls="marc-issue-tab" data-id="{$id}">issues</a>
+             id="pica-issue-tab-{$id}" href="{$record->issueLink($id)}" aria-controls="pica-issue-tab" data-id="{$id}">issues</a>
         </li>
       </ul>
 
       <div class="tab-content" id="details-tab-{$id}">
-        <div class="tab-pane active" id="marc-record-{$id}" role="tabpanel" aria-labelledby="data-tab">
-          <table style="width:100%">
-            {include 'pica/titel.tpl'}
-            {include 'pica/028A.tpl'}{* Autorin/Autor *}
-            {include 'pica/028C.tpl'}{* Beteiligt *}
-            {include 'pica/029F.tpl'}{* Körperschaft *}
-            {include 'pica/032@.tpl'}{* Ausgabe *}
-            {include 'pica/033A.tpl'}{* Erschienen *}
-            {include 'pica/034D.tpl'}{* Umfang *}
-            {include 'pica/010@.tpl'}{* Sprache(n) *}
-            {include 'pica/037A.tpl'}{* Anmerkung *}
-            {include 'pica/022A.tpl'}{* Einheitssachtitel *}
-            {include 'pica/004A.tpl'}{* ISBN *}
-            {include 'pica/006G.tpl'}{* DNB-Nr. *}
-            {include 'pica/006U.tpl'}{* WV-Nr. *}
-            {include 'pica/036E.tpl'}{* Schriftenreihe *}
-            {include 'pica/003O.tpl'}{* Sonstige Nummern *}
-            {include 'pica/013D.tpl'}{* Art und Inhalt *}
-            {include 'pica/045Q.tpl'}{* Sachgebiete *}
-            {include 'pica/044K.tpl'}{* Schlagwortfolge *}
-          </table>
-
-          {if $record->hasAuthorityNames() || $record->hasSubjectHeadings()}
-            <table class="authority-names">
-              {if $record->hasAuthorityNames()}
-                <tr><td colspan="2" class="heading">Authority names</td></tr>
-              {/if}
-
-              {if $record->hasSubjectHeadings()}
-                <tr><td colspan="2" class="heading">Subjects</td></tr>
-              {/if}
-            </table>
-          {/if}
-
+        <div class="tab-pane active" id="pica-human-{$id}" role="tabpanel" aria-labelledby="data-tab">
+          {include 'data/pica/human-view.tpl'}
         </div>
-        <div class="tab-pane record-tab" id="marc-raw-{$id}" role="tabpanel" aria-labelledby="data-tab">
-          <div class="marc-details" id="marc-details-{$id}">
-            {if isset($doc->record_sni)}
-              <table>
-                {foreach from=$record->getMarcFields('PICA') item=row}
-                  <tr>
-                    {foreach from=$row item=cell}
-                      {if is_object($cell)}
-                        <td><a href="{$cell->url}" target="_blank">{$cell->text}</a></td>
-                      {else}
-                        <td>{$cell}</td>
-                      {/if}
-                    {/foreach}
-                  </tr>
-                {/foreach}
-              </table>
-            {/if}
-          </div>
+        <div class="tab-pane record-tab" id="pica-raw-{$id}" role="tabpanel" aria-labelledby="data-tab">
+          {include 'data/pica/raw-view.tpl'}
         </div>
-        <div class="tab-pane record-tab" id="marc-human-{$id}" role="tabpanel" aria-labelledby="data-tab">
-          <div class="marc-human" id="marc-human-{$id}">
-            {if isset($doc->record_sni)}
-              <table>
-                {foreach from=$record->resolvePicaFields() item=row}
-                  <tr {if !empty($row[0])}class="tag"{/if}>
-                    {foreach from=$row item=cell}
-                      {if is_object($cell)}
-                        {if isset($cell->url)}
-                          <td><a href="{$cell->url}" target="_blank">{$cell->text}</a></td>
-                        {else}
-                          <td colspan="{$cell->span}" class="tag-title"><em>{$cell->text}</em></td>
-                        {/if}
-                      {else}
-                        <td>{$cell}</td>
-                      {/if}
-                   {/foreach}
-                  </tr>
-                {/foreach}
-              </table>
-            {/if}
-          </div>
+        <div class="tab-pane record-tab" id="pica-labels-{$id}" role="tabpanel" aria-labelledby="data-tab">
+          {include 'data/pica/labels-view.tpl'}
         </div>
-        <div class="tab-pane record-tab" id="marc-solr-{$id}" role="tabpanel" aria-labelledby="data-tab">
-          <h4>Representation in Solr index</h4>
-
-          <ul>
-            {foreach from=$record->getAllSolrFields() item=field}
-              <li>
-                <span class="label">{$field->label}:</span>
-                {foreach from=$field->value item=value name=values}
-                  {$value}{if !$smarty.foreach.values.last} &mdash; {/if}
-                {/foreach}
-              </li>
-            {/foreach}
-          </ul>
+        <div class="tab-pane record-tab" id="pica-solr-{$id}" role="tabpanel" aria-labelledby="data-tab">
+          {include 'data/pica/solr-view.tpl'}
         </div>
-        <div class="tab-pane record-tab" id="marc-issue-{$id}" role="tabpanel" aria-labelledby="data-tab">
-          <p>Retrieving issues detected in this MARC record (if any). It might take for a while.</p>
+        <div class="tab-pane record-tab" id="pica-issue-{$id}" role="tabpanel" aria-labelledby="data-tab">
+          <p>Retrieving issues detected in this bibliographic record (if any). It might take for a while.</p>
         </div>
       </div>
     </div>
