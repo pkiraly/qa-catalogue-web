@@ -77,7 +77,7 @@
                 <td class="path" id="completeness-{$record->path}">
                   {if $record->isLeader || $record->isComplexControlField || !$record->isField || strpos($record->path, '$') !== false}
                     {if isset($record->solr) && !empty($record->solr)}
-                      <a href="?tab=data&query=&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}&filters[]={$record->solr}:*{$groupFilter}">
+                      <a href="{$controller->queryLink($record)}">
                         {if $record->isComplexControlField || $record->isLeader}
                           {$record->complexPosition}
                         {elseif preg_match('/ind[12]$/', $record->path)}

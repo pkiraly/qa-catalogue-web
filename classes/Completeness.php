@@ -313,11 +313,16 @@ class Completeness extends BaseTab {
   }
 
   private function getGroupFilter() {
-    if ($this->groupped && $this->groupId != 'all')
-      return sprintf('&filters[]=%s:%s',
-                     $this->picaToSolr(str_replace('$', '', $this->groupBy)) . '_ss',
-                     urlencode(sprintf('"%s"', $this->groupId)));
-    return '';
+    static $groupFilter;
+    if (!isset($groupFilter)) {
+      if ($this->groupped && $this->groupId != 'all')
+        $groupFilter = sprintf('filters[]=%s:%s',
+          $this->picaToSolr(str_replace('$', '', $this->groupBy)) . '_ss',
+          urlencode(sprintf('"%s"', $this->groupId)));
+      else
+        $groupFilter = '';
+    }
+    return $groupFilter;
   }
 
   private function getGroupQuery() {
@@ -344,5 +349,21 @@ class Completeness extends BaseTab {
     if (!empty($params))
       return '&' . join('&', $params);
     return '';
+  }
+
+  public function queryLink($record) : string {
+    static $baseParams;
+    if (!isset($baseParams)) {
+      $baseParams = [
+        'tab=data',
+        'query=' . ($this->type == 'all' ? '*:*' : 'type_ss:' . urlencode(sprintf('"%s"', $this->type))),
+      ];
+      $baseParams = array_merge($baseParams, $this->getGeneralParams());
+      if ($this->getGroupFilter() != '')
+        $baseParams[] = $this->getGroupFilter();
+    }
+    $params = $baseParams;
+    $params[] = 'filters[]=' . $record->solr . ':*';
+    return '?' . join('&', $params);
   }
 }
