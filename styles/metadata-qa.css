@@ -1,5 +1,10 @@
+:root {
+  --highlight-color: #37ba00;
+  --dim-color: #888;
+}
+
 #per-page .label {
-  color: #888;
+  color: var(--dim-color);
 }
 
 #content {
@@ -10,7 +15,7 @@
 }
 
 h1 {
-  color: #37ba00;
+  color: var(--highlight-color);
   padding: 15px 5px 5px 5px;
   border-bottom: 1px solid #cccccc;
   border-radius: 10px;
@@ -25,15 +30,14 @@ h1 span {
 
 h1 a.header-link {
   text-decoration: none;
+  color: var(--highlight-color);
 }
 
-h1,
 h3,
 h4,
 h5
 {
-  color: #37ba00;
-  color: #37ba00;
+  color: var(--highlight-color);
 }
 
 .nav-tabs {
@@ -45,7 +49,7 @@ h5
 }
 
 #message {
-  color: #37ba00;
+  color: var(--highlight-color);
 }
 
 #navigation {
@@ -75,7 +79,7 @@ h5
 }
 
 .record h2 a .fa {
-  color: #37ba00;
+  color: var(--highlight-color);
 }
 
 .record h2 a .fa-info-circle {
@@ -88,7 +92,7 @@ h5
 
 .record .similarity {
   text-align: right;
-  color: #888;
+  color: var(--dim-color);
 }
 
 .record .details {
@@ -103,7 +107,7 @@ ul {
 }
 
 #numFound {
-  color: #37ba00;
+  color: var(--highlight-color);
   font-weight: 900;
 }
 
@@ -111,7 +115,7 @@ ul {
   overflow: auto;
   overflow-wrap: break-word;
   word-break: break-all;
-  color: #37ba00;
+  color: var(--highlight-color);
   font-size: small;
 }
 
@@ -179,7 +183,7 @@ table#classification-by-field td.chart div,
 table#authorities-by-field td.chart div,
 table#issues-table td.chart div
 {
-  background-color: #37ba00;
+  background-color: var(--highlight-color);
   height: 15px;
   border-right: 1px solid maroon;
   border-bottom: 2px solid maroon;
@@ -201,7 +205,7 @@ table#issues-table td.chart div
 
 #completeness-field-table table td.tag {
   text-align: left;
-  color: #37ba00;
+  color: var(--highlight-color);
 }
 
 #completeness-field-table table tr th,
@@ -239,7 +243,7 @@ table#issues-table thead tr th.count {
 }
 
 table#issues-table tr td.type span.type {
-  color: #37ba00;
+  color: var(--highlight-color);
   font-weight: bold;
 }
 
@@ -341,10 +345,10 @@ td.classification-subfields,
 td.authority-subfields {
   display: none;
   padding: 20px;
-  border-left: 1px solid #37ba00;
-  border-right: 1px solid #37ba00;
-  border-bottom: 1px solid #37ba00;
-  border-top: 2px dotted #37ba00;
+  border-left: 1px solid var(--highlight-color);
+  border-right: 1px solid var(--highlight-color);
+  border-bottom: 1px solid var(--highlight-color);
+  border-top: 2px dotted var(--highlight-color);
 }
 
 td.classification-subfields table,
@@ -408,7 +412,7 @@ td.authority-subfields ul li {
 
 td.classification-subfields ul li span,
 td.authority-subfields ul li span {
-  color: #888;
+  color: var(--dim-color);
 }
 
 div#about-tab ul li {
@@ -418,14 +422,14 @@ div#about-tab ul li {
 
 fieldset {
   border: 0;
-  border-left: 1px solid #37ba00;
+  border-left: 1px solid var(--highlight-color);
   margin: 0 0 5px 0;
   padding: 0 0 5px 5px;
 }
 
 fieldset legend {
   font-size: 100%;
-  color: #37ba00;
+  color: var(--highlight-color);
   margin: 0;
   padding: 0 0 0 5px;
 }
@@ -497,11 +501,11 @@ table tr td {
   /*
   height: 200px;
   width: 270px;
-  border: 1px solid #37ba00;
+  border: 1px solid var(--highlight-color);
   */
 }
 #functions .bar-chart g rect {
-  background-color: #37ba00;
+  background-color: var(--highlight-color);
 }
 #functions div.row label {
   font-weight: bold;
@@ -526,15 +530,15 @@ div#completeness-field-table table tr td.number-of-instances {
 
 .nav-link1.active {
   /* background-color: #eeeeee; */
-  color: #37ba00;
-  border-bottom: 5px solid #37ba00;
-  border-top-color: #888;
-  border-left-color: #888;
-  border-right-color: #888;
+  color: var(--highlight-color);
+  border-bottom: 5px solid var(--highlight-color);
+  border-top-color: var(--dim-color);
+  border-left-color: var(--dim-color);
+  border-right-color: var(--dim-color);
 }
 
 .header-info {
-  color: #888;
+  color: var(--dim-color);
   font-size: 90%;
 }
 
@@ -557,11 +561,11 @@ form#search {
 input#query, input#facetInput, input#facetInput1, input#facetInput2 {
   padding: 5px 5px 5px 10px;
   border-radius: 10px;
-  border-color: #37ba00;
+  border-color: var(--highlight-color);
 }
 
 form#search button {
-  border: 1px solid #888;
+  border: 1px solid var(--dim-color);
   padding-top: 5px;
   padding-bottom: 5px;
   border-radius: 10px;
@@ -589,18 +593,18 @@ div#terms.tab-pane form {
 div#terms.tab-pane form select {
   padding: 5px 5px 5px 10px;
   border-radius: 10px;
-  border-color: #37ba00;
+  border-color: var(--highlight-color);
 }
 
 div#terms.tab-pane form button {
-  border: 1px solid #888;
+  border: 1px solid var(--dim-color);
   padding-top: 5px;
   padding-bottom: 5px;
   border-radius: 10px;
 }
 
 #functions div.selected-function {
-  border: 1px solid #37ba00;
+  border: 1px solid var(--highlight-color);
   background-color: #fafafa;
 }
 
@@ -634,11 +638,11 @@ table#timeline td div.barchart {
 }
 
 table#timeline td div.barchart div.greenchart {
-  float: left; background-color: #37ba00; text-align: left; height: 10px;
+  float: left; background-color: var(--highlight-color); text-align: left; height: 10px;
 }
 
 table#timeline td.change-positive {
-  color: #37ba00;
+  color: var(--highlight-color);
 }
 
 table#timeline td.change-negative {
@@ -666,7 +670,7 @@ table.matrix tr td.bars span {
   display: block;
   float: left;
 }
-table.matrix tr td.bars span.green {background-color: #37ba00}
+table.matrix tr td.bars span.green {background-color: var(--highlight-color)}
 table.matrix tr td.total {
   min-width: 80px;
   max-width: 80px;
@@ -692,7 +696,7 @@ td.record-field-label {
   padding: 10px;
 }
 .marc-human .tag-title {
-  color: #37ba00;
+  color: var(--highlight-color);
 }
 
 #completeness-field-table table tr td {
@@ -701,7 +705,7 @@ td.record-field-label {
 
 #completeness-field-table table tr.field-level td {
   padding-top: 25px;
-  border-bottom: 1px solid #37ba00;
+  border-bottom: 1px solid var(--highlight-color);
   vertical-align: bottom;
 }
 
@@ -712,7 +716,7 @@ td.record-field-label {
 }
 
 #completeness-field-table table tr td a.trigger {
-  color: #888;
+  color: var(--dim-color);
 }
 
 /* autocomplete */
@@ -726,7 +730,7 @@ td.record-field-label {
 }
 
 p.metric-definition {
-  color: #888;
+  color: var(--dim-color);
   margin-left: 5px;
   padding-left: 15px;
   border-left: 5px dotted #cccccc;    
