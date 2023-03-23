@@ -126,8 +126,8 @@ You can access the application at `http://localhost/$CATALOG`.
 Some parts of the web interface can be customized with local files in directory
 `config` (not existing by default):
 
-- `config/about.en.tpl` and `config/about.de.tpl`: Additional information shown
-  in the "about" tab.
+- `config/footer.en.tpl` and `config/footer.de.tpl` shown at bottom of each page
+- `config/about.en.tpl` and `config/about.de.tpl` shown at the "about" page
 
 The name, catalogue link and the record levele catalogue link are different 
 per libraries. The tool has prepared for a number of libraries, but there's
