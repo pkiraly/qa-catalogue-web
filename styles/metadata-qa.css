@@ -101,6 +101,10 @@ h5
   margin-top: 10px;
 }
 
+.record-pica .details {
+  display: block;
+}
+
 ul {
   list-style-type: none;
   padding-left: 0px;
