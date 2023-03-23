@@ -121,7 +121,7 @@
         <tr>
           <td class="path" id="completeness-{$record->path}">
             {if isset($record->solr) && !empty($record->solr)}
-              <a href="?tab=data&query=&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}&filters[]={$record->solr}:*">
+              <a href="{$controller->queryLink($record)}">
                 {if $record->isComplexControlField || $record->isLeader}
                   {$record->path}
                 {elseif preg_match('/ind[12]$/', $record->path)}
@@ -140,7 +140,7 @@
           <td class="chart"><div style="width: {ceil($record->percent * 2)}px;">&nbsp;</div></td>
           <td class="terms">
             {if isset($record->solr) && !empty($record->solr)}
-              <a href="?tab=terms&facet={$record->solr}&query={if $selectedType == 'all'}*:*{else}type_ss:%22{$selectedType|urlencode}%22{/if}"><i class="fa fa-list-ol"></i></a>
+              <a href="{$controller->termsLink($record)}"><i class="fa fa-list-ol"></i></a>
             {/if}
           </td>
           <td class="number-of-record">{$record->{'number-of-record'}|number_format}</td>
