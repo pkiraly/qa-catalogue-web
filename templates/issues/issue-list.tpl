@@ -2,37 +2,37 @@
   <tr class="t t-{$categoryId}-{$typeId} x-{$categoryId}-{$typeId}">
     <td class="path">
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
-         href="{$controller->sortLink($categoryId, $typeId, $path, 'MarcPath ASC')}">
+         href="{$controller->sortIssuesLink($categoryId, $typeId, $path, 'MarcPath ASC')}">
         <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i></a>
       data element
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
-         href="{$controller->sortLink($categoryId, $typeId, $path, 'MarcPath DESC')}">
+         href="{$controller->sortIssuesLink($categoryId, $typeId, $path, 'MarcPath DESC')}">
         <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i></a>
     </td>
     <td class="message">
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
-         href="{$controller->sortLink($categoryId, $typeId, $path, 'message ASC')}">
+         href="{$controller->sortIssuesLink($categoryId, $typeId, $path, 'message ASC')}">
         <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i></a>
       message
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
-         href="{$controller->sortLink($categoryId, $typeId, $path, 'message DESC')}">
+         href="{$controller->sortIssuesLink($categoryId, $typeId, $path, 'message DESC')}">
         <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i></a>
     </td>
     <td class="url"></td>
     <td class="count instances">
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
-         href="{$controller->sortLink($categoryId, $typeId, $path, 'instances ASC')}">
+         href="{$controller->sortIssuesLink($categoryId, $typeId, $path, 'instances ASC')}">
         <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i></a>
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
-         href="{$controller->sortLink($categoryId, $typeId, $path, 'instances DESC')}">
+         href="{$controller->sortIssuesLink($categoryId, $typeId, $path, 'instances DESC')}">
         <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i></a>
     </td>
     <td class="count records">
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
-         href="{$controller->sortLink($categoryId, $typeId, $path, 'records ASC')}">
+         href="{$controller->sortIssuesLink($categoryId, $typeId, $path, 'records ASC')}">
         <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i></a>
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
-         href="{$controller->sortLink($categoryId, $typeId, $path, 'records DESC')}">
+         href="{$controller->sortIssuesLink($categoryId, $typeId, $path, 'records DESC')}">
         <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i></a>
     </td>
     <td class="actions"></td>

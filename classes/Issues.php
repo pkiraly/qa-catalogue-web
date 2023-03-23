@@ -97,6 +97,7 @@ class Issues extends BaseTab {
       $smarty->assign('fieldNames', ['path', 'message', 'url', 'instances', 'records']);
       $smarty->assign('listType', 'full-list');
       $smarty->assign('path', null);
+      $smarty->assign('order', null);
       $smarty->registerPlugin("function", 'showMarcUrl', array('Issues', 'showMarcUrl'));
     }
   }
@@ -235,7 +236,6 @@ class Issues extends BaseTab {
   }
 
   private function readIssuesAjaxDB($categoryId, $typeId, $path = null, $order = 'records DESC', $page = 0, $limit = 100) {
-    error_log('readIssuesAjaxDB()');
     include_once 'IssuesDB.php';
     $db = new IssuesDB($this->getDbDir());
     $groupId = $this->groupped ? $this->groupId : '';
@@ -559,7 +559,7 @@ class Issues extends BaseTab {
     return '?' . join('&', $params);
   }
 
-  public function sortLink($categoryId, $typeId, $path, $sort) {
+  public function sortIssuesLink($categoryId, $typeId, $path = null, $order = null, $page = null) {
     static $baseParams;
     if (!isset($baseParams)) {
       $baseParams = [
@@ -578,7 +578,32 @@ class Issues extends BaseTab {
     $params[] = 'typeId=' . $typeId;
     if (!is_null($path))
       $params[] = 'path=' . $path;
-    $params[] = 'order=' . urlencode($sort);
+    if (!is_null($order))
+      $params[] = 'order=' . urlencode($order);
+    if (!is_null($page))
+      $params[] = 'page=' . $page;
+    return '?' . join('&', $params);
+  }
+
+  public function issueByTagLink($categoryId, $typeId, $order = null) {
+    static $baseParams;
+    if (!isset($baseParams)) {
+      $baseParams = [
+        'tab=issues',
+        'ajax=1',
+        'action=ajaxIssueByTag',
+      ];
+      $baseParams = array_merge($baseParams, $this->getGeneralParams());
+      if (isset($this->version) && !empty($this->version))
+        $baseParams[] = 'version=' . $this->version;
+      if (isset($this->groupId) && !empty($this->groupId))
+        $baseParams[] = 'groupId=' . $this->groupId;
+    }
+    $params = $baseParams;
+    $params[] = 'categoryId=' . $categoryId;
+    $params[] = 'typeId=' . $typeId;
+    if (!is_null($order))
+      $params[] = 'order=' . urlencode($order);
     return '?' . join('&', $params);
   }
 

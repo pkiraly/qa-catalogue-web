@@ -103,7 +103,6 @@ class IssuesDB extends SQLite3 {
   }
 
   public function getByCategoryAndTypeGrouppedByPath($categoryId, $typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
-    error_log("categoryId: $categoryId, typeId: $typeId, groupId: $groupId");
     $default_order = 'records DESC';
     if (!preg_match('/^(path|variants|instances|records) (ASC|DESC)$/', $order))
       $order = $default_order;
@@ -149,7 +148,7 @@ class IssuesDB extends SQLite3 {
     $stmt->bindValue(':errorId', $errorId, SQLITE3_INTEGER);
     if ($groupId != '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
@@ -177,7 +176,7 @@ class IssuesDB extends SQLite3 {
     if ($groupId != '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
@@ -206,7 +205,7 @@ class IssuesDB extends SQLite3 {
     if ($groupId != '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
@@ -233,7 +232,7 @@ class IssuesDB extends SQLite3 {
     if ($groupId != '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
