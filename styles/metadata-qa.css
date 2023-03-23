@@ -96,13 +96,10 @@ h5
 }
 
 .record .details {
-  display: none;
-  margin-left: 25px;
   margin-top: 10px;
-}
-
-.record-pica .details {
-  display: block;
+  /*
+  margin-left: 25px;
+   */
 }
 
 ul {
@@ -742,4 +739,8 @@ p.metric-definition {
 
 #data p.metric-definition {
   margin: 5px 0 10px 40px;
+}
+
+.marc-labels-table .label {
+  width: 35%;
 }
