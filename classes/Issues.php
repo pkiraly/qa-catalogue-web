@@ -151,23 +151,8 @@ class Issues extends BaseTab {
 
           $record->url = str_replace('https://www.loc.gov/marc/bibliographic/', '', $record->url);
 
-          $downloadParams = [
-            'tab=' . 'issues',
-            'errorId=' . $record->id,
-            'action=download'
-          ];
-          if ($this->groupped)
-            $downloadParams[] = 'groupId=' . $this->groupId;
-          $record->downloadUrl = '?' . join('&', $downloadParams);
-
-          $queryParams = [
-            'tab=' . 'data',
-            'type=' . 'issues',
-            'query=' . 'errorId:' . $record->id
-          ];
-          if ($this->groupped)
-            $queryParams[] = 'groupId=' . $this->groupId;
-          $record->queryUrl = '?' . join('&', $queryParams);
+          $record->downloadUrl = $this->downloadLink('errorId=' . $record->id);
+          $record->queryUrl = $this->queryLink('errorId:' . $record->id);
 
           if (!isset($this->records[$typeId])) {
             $this->records[$typeId] = [];
@@ -293,8 +278,8 @@ class Issues extends BaseTab {
     }
     $this->calculateRatio($record);
     $record->url = str_replace('https://www.loc.gov/marc/bibliographic/', '', $record->url);
-    $record->downloadUrl = $this->getDownloadUrl($record);
-    $record->queryUrl = $this->getQueryUrl($record);
+    $record->downloadUrl = $this->downloadLink('errorId=' . $record->id);
+    $record->queryUrl = $this->queryLink('errorId:' . $record->id);
 
     $this->injectPica3($record);
   }
@@ -302,22 +287,6 @@ class Issues extends BaseTab {
   private function calculateRatio(&$record) {
     $record->ratio = $record->records / $this->count;
     $record->percent = $record->ratio * 100;
-  }
-
-  private function getDownloadUrl($record) {
-    return '?' . join('&', [
-        'tab=' . 'issues',
-        'errorId=' . $record->id,
-        'action=download'
-      ]);
-  }
-
-  private function getQueryUrl($record) {
-    return '?' . join('&', [
-      'tab=' . 'issues',
-      'errorId=' . $record->id,
-      'action=query'
-      ]);
   }
 
   public static function showMarcUrl($content) {
@@ -544,5 +513,49 @@ class Issues extends BaseTab {
       $filtered[$record->{$key}] = $record;
     }
     return $filtered;
+  }
+
+  /**
+   * @param $query ('categoryId:$category->id'|, )
+   * @return void
+   */
+  public function queryLink($query) {
+    static $baseParams;
+    if (!isset($baseParams)) {
+      $baseParams = [
+        'tab=data',
+        'type=issues',
+      ];
+      $baseParams = array_merge($baseParams, $this->getGeneralParams());
+      if (isset($this->version) && !empty($this->version))
+        $baseParams[] = 'version=' . $this->version;
+      if (isset($this->groupId) && !empty($this->groupId))
+        $baseParams[] = 'groupId=' . $this->groupId;
+    }
+    $params = $baseParams;
+    $params[] = 'query=' . $query;
+    return '?' . join('&', $params);
+  }
+
+  /**
+   * @param $query (categoryId=<category->id>|typeId=<typeId>)
+   * @return string
+   */
+  public function downloadLink($query) {
+    static $baseParams;
+    if (!isset($baseParams)) {
+      $baseParams = [
+        'tab=issues',
+        'action=download',
+      ];
+      $baseParams = array_merge($baseParams, $this->getGeneralParams());
+      if (isset($this->version) && !empty($this->version))
+        $baseParams[] = 'version=' . $this->version;
+      if (isset($this->groupId) && !empty($this->groupId))
+        $baseParams[] = 'groupId=' . $this->groupId;
+    }
+    $params = $baseParams;
+    $params[] = $query;
+    return '?' . join('&', $params);
   }
 }

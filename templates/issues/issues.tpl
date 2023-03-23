@@ -16,7 +16,7 @@
         <p>versions:
           {foreach from=$versions item=currentVersion name="versions"}
             {if $version != $currentVersion}
-              <a href="?tab=issues&version={$currentVersion}">{$currentVersion}</a>
+              <a href="?tab=issues&version={$currentVersion}{$generalParams}">{$currentVersion}</a>
             {else}
               {$currentVersion}
             {/if}

@@ -67,8 +67,8 @@
       <td class="count">{$category->instances|number_format}</td>
       <td class="count">{$category->records|number_format}</td>
       <td class="actions">
-        <a href="?tab=data&type=issues&query=categoryId:{$category->id}{if isset($version) && !empty($version)}&version={$version}{/if}{if isset($groupId) && !empty($groupId)}&groupId={$groupId}{/if}" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
-        <a href="?tab=issues&categoryId={$category->id}&action=download{if isset($version) && !empty($version)}&version={$version}{/if}{if isset($groupId) && !empty($groupId)}&groupId={$groupId}{/if}" class="list"><i class="fa fa-download" aria-hidden="true"></i></a>
+        <a href="{$controller->queryLink('categoryId:'|cat:$category->id)}" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
+        <a href="{$controller->downloadLink('categoryId='|cat:$category->id)})" class="list"><i class="fa fa-download" aria-hidden="true"></i></a>
       </td>
       <td class="chart"><div style="width: {ceil($category->ratio * 200)}px;">&nbsp;</div></td>
       <td class="percent text-right" title="{$category->percent|number_format:8}%">{$category->percent|number_format:2}</td>
@@ -83,8 +83,8 @@
         <td class="count">{$type->instances|number_format}</td>
         <td class="count">{$type->records|number_format}</td>
         <td class="actions">
-          <a href="?tab=data&type=issues&query=typeId:{$typeId}{if isset($version) && !empty($version)}&version={$version}{/if}{if isset($groupId) && !empty($groupId)}&groupId={$groupId}{/if}" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
-          <a href="?tab=issues&typeId={$typeId}&action=download{if isset($version) && !empty($version)}&version={$version}{/if}{if isset($groupId) && !empty($groupId)}&groupId={$groupId}{/if}" class="list"><i class="fa fa-download" aria-hidden="true"></i></a>
+          <a href="{$controller->queryLink('typeId:'|cat:$typeId)}" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
+          <a href="{$controller->downloadLink('typeId='|cat:$typeId)}" class="list"><i class="fa fa-download" aria-hidden="true"></i></a>
         </td>
         <td class="chart"><div style="width: {ceil($type->ratio * 200)}px;">&nbsp;</div></td>
         <td class="percent text-right" title="{$type->percent|number_format:8}%">{$type->percent|number_format:2}</td>
