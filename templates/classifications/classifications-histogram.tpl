@@ -27,6 +27,6 @@ displayHistogram(histogramDataUrl, histogramSvgClass);
 <p>
   <em>example records (one record for each subject count):</em>
   {foreach from=$frequencyExamples key=count item=id name=examples}
-    <a href="?tab=data&query=id:{urlencode(sprintf('"%s"', $id))}">{$count}</a>{if !$smarty.foreach.examples.last},{/if}
+    <a href="{$controller->queryLink($id)}">{$count}</a>{if !$smarty.foreach.examples.last},{/if}
   {/foreach}
 </p>

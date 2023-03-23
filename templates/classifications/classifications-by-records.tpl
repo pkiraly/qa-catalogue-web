@@ -1,4 +1,4 @@
-<h3>records with classifications/subject headings</h3>
+<h3>{_('records with classifications/subject headings')}</h3>
 
 <div class="row" style="width: 500px; margin: 0 0 0 0">
   <div class="col-sm" style="margin: 0; padding: 0">

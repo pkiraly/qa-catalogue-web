@@ -1,4 +1,4 @@
-<h3>Authority schemes</h3>
+<h3>{_('Authority schemes')}</h3>
 
 <table id="authorities-by-field">
   <thead>
@@ -31,12 +31,12 @@
               <td>
                 {if (isset($record->facet2))}
                   {if $record->facet2exists}
-                    <a href="?tab=terms&facet={$record->facet2}&query=*:*&scheme=%22{$record->scheme|urlencode}%22" class="term-link facet2">{$record->scheme}</a>
+                    <a href="{$controller->termLink($record->facet2, '*:*', $record->scheme)}" class="term-link facet2">{$record->scheme}</a>
                   {else}
                     {$record->scheme}
                   {/if}
                 {elseif (isset($record->facet) && isset($record->q))}
-                  <a href="?tab=terms&facet={$record->facet}&query={$record->q}&scheme=%22{$record->scheme|urlencode}%22">{$record->scheme}</a>
+                  <a href="{$controller->termLink($record->facet, $record->q, $record->scheme)}">{$record->scheme}</a>
                 {else}
                   {if $record->scheme == 'undetectable'}not specified{else}{$record->scheme}{/if}
                 {/if}
@@ -58,7 +58,7 @@
                       {assign var=MAX_WIDTH value=500 - count($divs)}
                       <tr>
                         <td class="labels">
-                          <a href="?tab=completeness#completeness-{$key}" class="completeness" data-field="{$key}">{$code}</a>
+                          <a href="{$controller->completenessLink($key)}" class="completeness" data-field="{$key}">{$code}</a>
                           {if isset($elements[$key]) && $elements[$key] != ''}
                             <span title="{$elements[$key]}">{$elements[$key]}</span>
                           {elseif $code == '$9'}
@@ -93,7 +93,7 @@
                           <td class="subfields">
                             {foreach from=$item->subfields item=subfield name=subfields}
                               {assign var="sub" value={substr($subfield, 0, 2)}}
-                              <a href="?tab=completeness#completeness-{$record->field}{$sub}" class="completeness" data-field="{$record->field}{$sub}"
+                              <a href="{$controller->completenessLink($record->field|cat:$sub)}" class="completeness" data-field="{$record->field}{$sub}"
                               >{$subfield}</a>{if !$smarty.foreach.subfields.last}, {/if}
                             {/foreach}
                           </td>

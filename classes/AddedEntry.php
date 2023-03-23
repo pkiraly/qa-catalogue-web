@@ -222,4 +222,59 @@ class AddedEntry extends BaseTab {
     }
     return $matrices;
   }
+
+  public function termLink($facet, $query, $scheme) {
+    static $baseParams;
+    if (!isset($baseParams)) {
+      $baseParams = [
+        'tab=terms',
+      ];
+      $baseParams = array_merge($baseParams, $this->getGeneralParams());
+      if (isset($this->version) && !empty($this->version))
+        $baseParams[] = 'version=' . $this->version;
+      if (isset($this->groupId) && !empty($this->groupId))
+        $baseParams[] = 'groupId=' . $this->groupId;
+      /*
+      */
+    }
+    $params = $baseParams;
+    $params[] = 'facet=' . $facet;
+    $params[] = 'query=' . urlencode($query);
+    if (!is_null($scheme))
+      $params[] = 'scheme=' . urlencode(sprintf('"%s"', $scheme));
+    return '?' . join('&', $params);
+  }
+
+  public function queryLink($id) {
+    static $baseParams;
+    if (!isset($baseParams)) {
+      $baseParams = [
+        'tab=data',
+      ];
+      $baseParams = array_merge($baseParams, $this->getGeneralParams());
+      if (isset($this->version) && !empty($this->version))
+        $baseParams[] = 'version=' . $this->version;
+      if (isset($this->groupId) && !empty($this->groupId))
+        $baseParams[] = 'groupId=' . $this->groupId;
+    }
+    $params = $baseParams;
+    $params[] = 'query=' . urlencode(sprintf('id:"%s"', $id));
+    return '?' . join('&', $params);
+  }
+
+  public function completenessLink($key) {
+    static $baseParams;
+    if (!isset($baseParams)) {
+      $baseParams = [
+        'tab=completeness',
+      ];
+      $baseParams = array_merge($baseParams, $this->getGeneralParams());
+      if (isset($this->version) && !empty($this->version))
+        $baseParams[] = 'version=' . $this->version;
+      if (isset($this->groupId) && !empty($this->groupId))
+        $baseParams[] = 'groupId=' . $this->groupId;
+    }
+    $params = $baseParams;
+    return '?' . join('&', $params) . '#completeness-' . $key;
+  }
 }
