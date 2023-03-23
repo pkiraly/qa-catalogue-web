@@ -1,5 +1,5 @@
 #per-page .label {
-  color: #999;
+  color: #888;
 }
 
 #content {
@@ -11,7 +11,7 @@
 
 h1 {
   color: #37ba00;
-  padding: 5px;
+  padding: 15px 5px 5px 5px;
   border-bottom: 1px solid #cccccc;
   border-radius: 10px;
   font-weight: 900;
@@ -24,15 +24,20 @@ h1 span {
 }
 
 h1 a.header-link {
-  color: #37ba00;
   text-decoration: none;
 }
 
+h1,
 h3,
 h4,
 h5
 {
   color: #37ba00;
+  color: #37ba00;
+}
+
+.nav-tabs {
+  padding-top: 5px;
 }
 
 .search-block {
@@ -83,7 +88,7 @@ h5
 
 .record .similarity {
   text-align: right;
-  color: #999999;
+  color: #888;
 }
 
 .record .details {
@@ -403,7 +408,7 @@ td.authority-subfields ul li {
 
 td.classification-subfields ul li span,
 td.authority-subfields ul li span {
-  color: #999999;
+  color: #888;
 }
 
 div#about-tab ul li {
@@ -523,13 +528,13 @@ div#completeness-field-table table tr td.number-of-instances {
   /* background-color: #eeeeee; */
   color: #37ba00;
   border-bottom: 5px solid #37ba00;
-  border-top-color: #999999;
-  border-left-color: #999999;
-  border-right-color: #999999;
+  border-top-color: #888;
+  border-left-color: #888;
+  border-right-color: #888;
 }
 
 .header-info {
-  color: #999;
+  color: #888;
   font-size: 90%;
 }
 
@@ -556,7 +561,7 @@ input#query, input#facetInput, input#facetInput1, input#facetInput2 {
 }
 
 form#search button {
-  border: 1px solid #999999;
+  border: 1px solid #888;
   padding-top: 5px;
   padding-bottom: 5px;
   border-radius: 10px;
@@ -588,7 +593,7 @@ div#terms.tab-pane form select {
 }
 
 div#terms.tab-pane form button {
-  border: 1px solid #999999;
+  border: 1px solid #888;
   padding-top: 5px;
   padding-bottom: 5px;
   border-radius: 10px;
@@ -707,7 +712,7 @@ td.record-field-label {
 }
 
 #completeness-field-table table tr td a.trigger {
-  color: #999999;
+  color: #888;
 }
 
 /* autocomplete */
@@ -721,10 +726,10 @@ td.record-field-label {
 }
 
 p.metric-definition {
-  color: #999999;
-  margin: 20px 0 40px 100px;
-  padding-left: 20px;
-  border-left: 5px dotted #cccccc;
+  color: #888;
+  margin-left: 5px;
+  padding-left: 15px;
+  border-left: 5px dotted #cccccc;    
 }
 
 #data p.metric-definition {
