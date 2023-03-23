@@ -558,4 +558,28 @@ class Issues extends BaseTab {
     $params[] = $query;
     return '?' . join('&', $params);
   }
+
+  public function sortLink($categoryId, $typeId, $path, $sort) {
+    static $baseParams;
+    if (!isset($baseParams)) {
+      $baseParams = [
+        'tab=issues',
+        'ajax=1',
+        'action=ajaxIssue',
+      ];
+      $baseParams = array_merge($baseParams, $this->getGeneralParams());
+      if (isset($this->version) && !empty($this->version))
+        $baseParams[] = 'version=' . $this->version;
+      if (isset($this->groupId) && !empty($this->groupId))
+        $baseParams[] = 'groupId=' . $this->groupId;
+    }
+    $params = $baseParams;
+    $params[] = 'categoryId=' . $categoryId;
+    $params[] = 'typeId=' . $typeId;
+    if (!is_null($path))
+      $params[] = 'path=' . $path;
+    $params[] = 'order=' . urlencode($sort);
+    return '?' . join('&', $params);
+  }
+
 }

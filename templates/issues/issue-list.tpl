@@ -2,37 +2,37 @@
   <tr class="t t-{$categoryId}-{$typeId} x-{$categoryId}-{$typeId}">
     <td class="path">
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
-         href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if !is_null($path)}&path={$path}{/if}{if isset($version) && !empty($version)}&version={$version}{/if}{if isset($groupId) && !empty($groupId)}&groupId={$groupId}{/if}&order=MarcPath ASC">
+         href="{$controller->sortLink($categoryId, $typeId, $path, 'MarcPath ASC')}">
         <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i></a>
       data element
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
-         href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if !is_null($path)}&path={$path}{/if}{if isset($version) && !empty($version)}&version={$version}{/if}{if isset($groupId) && !empty($groupId)}&groupId={$groupId}{/if}&order=MarcPath DESC">
+         href="{$controller->sortLink($categoryId, $typeId, $path, 'MarcPath DESC')}">
         <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i></a>
     </td>
     <td class="message">
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
-         href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if !is_null($path)}&path={$path}{/if}{if isset($version) && !empty($version)}&version={$version}{/if}{if isset($groupId) && !empty($groupId)}&groupId={$groupId}{/if}&order=message ASC">
+         href="{$controller->sortLink($categoryId, $typeId, $path, 'message ASC')}">
         <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i></a>
       message
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
-         href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if !is_null($path)}&path={$path}{/if}{if isset($version) && !empty($version)}&version={$version}{/if}{if isset($groupId) && !empty($groupId)}&groupId={$groupId}{/if}&order=message DESC">
+         href="{$controller->sortLink($categoryId, $typeId, $path, 'message DESC')}">
         <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i></a>
     </td>
     <td class="url"></td>
     <td class="count instances">
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
-         href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if !is_null($path)}&path={$path}{/if}{if isset($version) && !empty($version)}&version={$version}{/if}{if isset($groupId) && !empty($groupId)}&groupId={$groupId}{/if}&order=instances ASC">
+         href="{$controller->sortLink($categoryId, $typeId, $path, 'instances ASC')}">
         <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i></a>
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
-         href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if !is_null($path)}&path={$path}{/if}{if isset($version) && !empty($version)}&version={$version}{/if}{if isset($groupId) && !empty($groupId)}&groupId={$groupId}{/if}&order=instances DESC">
+         href="{$controller->sortLink($categoryId, $typeId, $path, 'instances DESC')}">
         <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i></a>
     </td>
     <td class="count records">
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
-         href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if !is_null($path)}&path={$path}{/if}{if isset($version) && !empty($version)}&version={$version}{/if}{if isset($groupId) && !empty($groupId)}&groupId={$groupId}{/if}&order=records ASC">
+         href="{$controller->sortLink($categoryId, $typeId, $path, 'records ASC')}">
         <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i></a>
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
-         href="?tab=issues&ajax=1&action=ajaxIssue&categoryId={$categoryId}&typeId={$typeId}{if !is_null($path)}&path={$path}{/if}{if isset($version) && !empty($version)}&version={$version}{/if}{if isset($groupId) && !empty($groupId)}&groupId={$groupId}{/if}&order=records DESC">
+         href="{$controller->sortLink($categoryId, $typeId, $path, 'records DESC')}">
         <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i></a>
     </td>
     <td class="actions"></td>
