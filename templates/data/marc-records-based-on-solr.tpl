@@ -1,3 +1,4 @@
+{* This file is deprecated, not used. Kept only for historical reasons, temporary. *}
 {foreach from=$docs item=doc}
   {assign var="id" value=$doc->id|regex_replace:"/ +$/":""}
   <div class="record">
