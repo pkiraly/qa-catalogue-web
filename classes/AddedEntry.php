@@ -3,6 +3,13 @@
 
 class AddedEntry extends BaseTab {
 
+  public function prepareData(Smarty &$smarty) {
+    parent::prepareData($smarty);
+    parent::readAnalysisParameters('completeness.params.json');
+    $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
+    $this->groupId = getOrDefault('groupId', 'all');
+  }
+
   protected function ind1Orsubfield2(&$record, $ind1, $subfield2) {
     $debug = FALSE; // ($record->field == '052');
     if ($debug)
@@ -54,8 +61,12 @@ class AddedEntry extends BaseTab {
    * @return object
    */
   protected function readElements(Smarty &$smarty) {
-    $elementsFile = $this->getFilePath('marc-elements.csv');
+    error_log('readElements');
+    $fileName = $this->groupped ? 'completeness-groupped-marc-elements.csv' : 'marc-elements.csv';
+    $elementsFile = $this->getFilePath($fileName);
+    error_log('$elementsFile: ' . $elementsFile);
     if (file_exists($elementsFile)) {
+      error_log('file exists');
       $header = [];
       $elements = [];
       $in = fopen($elementsFile, "r");
@@ -65,10 +76,14 @@ class AddedEntry extends BaseTab {
           $header = $values;
         } else {
           $record = (object)array_combine($header, $values);
+          if ($this->groupped && $record->groupId != $this->groupId)
+            continue;
+
           $elements[$record->path] = $record->subfield;
         }
       }
       $smarty->assign('hasElements', TRUE);
+      error_log('elements: ' . json_encode($elements));
       $smarty->assign('elements', $elements);
     } else {
       $smarty->assign('hasElements', FALSE);

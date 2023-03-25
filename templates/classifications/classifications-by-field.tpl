@@ -1,14 +1,14 @@
-<h3>Classification/subject headings schemes</h3>
+<h3>{_('Classification/subject headings schemes')}</h3>
 
 <table id="classification-by-field">
   <thead>
     <tr>
-      <th class="location">Location</th>
-      <th class="scheme">Classification/subject headings scheme</th>
-      <th class="instances">Instances</th>
-      <th class="records">Records</th>
+      <th class="location">{_('Location')}</th>
+      <th class="scheme">{_('Classification/subject headings scheme')}</th>
+      <th class="instances">{_('Instances')}</th>
+      <th class="records">{_('Records')}</th>
+      <th class="chart">{_('chart')}</th>
       <th class="percent">%</th>
-      <th class="chart"></th>
     </tr>
   </thead>
   <tbody>
@@ -45,7 +45,7 @@
       <tr>
         <td colspan="6" id="classification-subfields-{$record->id}" class="classification-subfields">
           {if $hasSubfields && isset($record->id) && isset($subfields[$record->id])}
-            <p>Which subfields are available in the individual instances of this field?</p>
+            <p>{_('Which subfields are available in the individual instances of this field?')}</p>
             <table class="matrix">
               {foreach from=$matrices[$record->id]['codes'] key=code item=divs}
                 {assign var="total" value=0}
@@ -57,9 +57,9 @@
                     {if isset($elements[$key]) && $elements[$key] != ''}
                       <span title="{$elements[$key]}">{$elements[$key]}</span>
                     {elseif $code == '$9'}
-                      &mdash; <span>(locally defined subfield)</span>
+                      &mdash; <span>({_('locally defined subfield')})</span>
                     {else}
-                      &mdash; <span>(not defined)</span>
+                      &mdash; <span>({_('not defined')})</span>
                     {/if}
                   </td>
                   <td class="bars">
@@ -78,8 +78,8 @@
             <table class="subfields">
               <thead>
                 <tr>
-                  <th>subfields</th>
-                  <th class="count">count</th>
+                  <th>{_('subfields')}</th>
+                  <th class="count">{_('count')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -99,13 +99,13 @@
             </table>
 
             {if $subfields[$record->id]['has-plus'] || $subfields[$record->id]['has-space']}
-              <p>notes:</p>
+              <p>{_('notes')}:</p>
               <ul>
                 {if $subfields[$record->id]['has-plus']}
-                  <li>+ sign denotes multiple instances</li>
+                  <li>{_('+ sign denotes multiple instances')}</li>
                 {/if}
                 {if $subfields[$record->id]['has-space']}
-                  <li>_ sign denotes space character</li>
+                  <li>{_('_ sign denotes space character')}</li>
                 {/if}
               </ul>
             {/if}
