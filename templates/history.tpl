@@ -7,7 +7,7 @@
       <h2>{_('History of cataloging')}</h2>
 
       <p class="metric-definition">
-          {_('history_definition')}
+        {_('history_definition')}
       </p>
 
       <p>

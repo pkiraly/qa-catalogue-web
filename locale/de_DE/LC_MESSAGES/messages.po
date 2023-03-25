@@ -164,6 +164,8 @@ msgid "This chart was implemented based on Benjamin Schmidt's blog post"
 msgstr "Diese Grafik wurde auf der Grundlage des Blogbeitrags von Benjamin Schmidt erstellt"
 
 # used in terms
+msgid "terms_definition"
+msgstr "Liste der Begriffe in einem bestimmten Datenelement. Beginnen Sie mit der Eingabe von 'Feld', um die Liste der Datenelemente zu erhalten."
 msgid "filter term list"
 msgstr "Wertelisten filtern"
 msgid "Term list"

@@ -6,6 +6,10 @@
     <div class="tab-pane active" id="terms" role="tabpanel" aria-labelledby="terms-tab">
       <h2>{_('Terms')}</h2>
 
+      <p class="metric-definition">
+        {_('terms_definition')}
+      </p>
+
       {if $scheme == ''}
         <form id="facetselection">
           <input type="hidden" name="tab" value="terms" />
