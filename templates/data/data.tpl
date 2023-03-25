@@ -53,7 +53,7 @@
           <div id="main" class="col">
             <div class="row">
               <div class="col-8">
-                {sprintf(_('Found <span id="numFound">%s</span> records'), $numFound|number_format)}
+                {_t('Found %s records', $numFound|number_format)}
               </div>
               <div class="col-4" id="message"></div>
             </div>

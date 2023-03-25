@@ -167,10 +167,11 @@ two language files (German and English). In `.tpl` files you can add translatabl
 {_('translatable text')}
 ```
 `_` is a built-in alias for the PHP function `gettext`. If there are variables in the 
-translated string, in the `.tpl` file you should enter something like this:
+translated string, in the `.tpl` file you should use the `_t` function, defined by the project,
+like this:
 
 ```
-{sprintf(_('number of records: %d'), $number_of_records)}
+{_t('number of records: %d', $number_of_records)}
 ```
 
 You should add the translations into `locale/de_DE/LC_MESSAGES/messages.po` as

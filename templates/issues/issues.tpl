@@ -7,7 +7,7 @@
       <h2>{_('Violations of record format specification')}</h2>
 
       <p class="metric-definition">
-        {_('issues_definition')}
+        {_t('issues_definition', _($catalogue->getMetadataSchema()))}
       </p>
 
       {include 'common/group-selector.tpl'}

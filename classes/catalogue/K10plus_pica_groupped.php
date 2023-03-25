@@ -15,6 +15,7 @@ class K10plus_pica_groupped extends Catalogue {
     'Objekt', 'Medienkombination', 'Mailboxsatz'
   ];
   protected $defaultLang = 'de';
+  protected $metadataSchema = 'Avram scheme';
 
   function getOpacLink($id, $record) {
     return 'https://opac.k10plus.de/DB=2.299/PPNSET?PPN=' . trim($id) . '&PRS=HOL&HILN=888&INDEXSET=21';

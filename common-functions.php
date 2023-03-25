@@ -44,6 +44,7 @@ function createSmarty($templateDir) {
   // standard PHP function
   $smarty->registerPlugin("modifier", "str_replace", "str_replace");
   $smarty->registerPlugin("modifier", "number_format", "number_format");
+  $smarty->registerPlugin("function", "_t", "_t");
   return $smarty;
 }
 
@@ -83,4 +84,18 @@ function setLanguage($language) {
   setlocale(LC_ALL, $lang);
   bindtextdomain('messages', './locale');
   textdomain('messages');
+}
+
+/**
+ * Translate string with variables
+ * @return mixed|string The first argument should be the msgid, the rest should be the variables to inject
+ */
+function _t() {
+  $args = func_get_args();
+  $args[0] = _($args[0]);
+
+  if(func_num_args() <= 1)
+    return $args[0];
+
+  return call_user_func_array('sprintf', $args);
 }
