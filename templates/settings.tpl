@@ -23,7 +23,7 @@
         <form id="facetselection" method="post">
           <input type="hidden" name="tab" value="settings" />
           {foreach from=$categories key=category item=fields}
-            <p><strong>{$category}</strong> ({_t('%d fields', count($fields)})</p>
+            <p><strong>{$category}</strong> ({_t('%d fields', count($fields))})</p>
             <select name="facet[]" multiple="multiple" size="15">
               <option value="">-- {_('select')} --</option>
               {foreach from=$fields item=field}
