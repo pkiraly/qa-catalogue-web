@@ -192,3 +192,9 @@ msgstr "Feld #2"
 # download tab
 msgid "Download the CSV files behind this site"
 msgstr "Laden Sie die CSV-Dateien hinter dieser Website herunter"
+
+# settings tab
+msgid "Set facets"
+msgstr "Facetten einstellen"
+msgid "setings_definition"
+msgstr "Legen Sie fest, welche Facetten auf der Registerkarte Daten angezeigt werden sollen. Da diese Website keine Cookies verwendet, wird Ihre Auswahl die Liste für alle Benutzer dieses Katalogs ändern."

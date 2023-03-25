@@ -4,7 +4,12 @@
   {include 'common/nav-tabs.tpl'}
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane active" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-      <h2>Set facets</h2>
+      <h2>{_('Set facets')}</h2>
+
+      <p class="metric-definition">
+        {_('setings_definition')}
+      </p>
+
       {if $saved}
         <div style="border-color: #f0c040; margin: 20px; padding: 20px; background-color: #eeeeee">
           {if $success}

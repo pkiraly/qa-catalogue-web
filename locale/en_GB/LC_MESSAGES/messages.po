@@ -190,3 +190,9 @@ msgstr "field #2"
 # download tab
 msgid "Download the CSV files behind this site"
 msgstr "Download the CSV files behind this site"
+
+# settings tab
+msgid "Set facets"
+msgstr "Set facets"
+msgid "setings_definition"
+msgstr "Set which facets to display in the Data tab. As this site doesn't use cookies, your selection will change the list for all users of this catalogue."
