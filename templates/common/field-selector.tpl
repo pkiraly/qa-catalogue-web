@@ -1,13 +1,13 @@
-{*
-  $id
-  $name
-  $fieldLabel
-  $idValue -- $facet
-  $labelValue -- $label
-  $size = 80
+{* variables:
+  $id - the "field id" input form element's name
+  $name - the autocomplete "field" input form element's name
+  $idValue - the default value of the "field id" input form element
+  $labelValue - the default value of the "field" input form element
+  $fieldLabel - the label for the input (default value: 'Field')
+  $size - the size of the autocomplete "field" input (default value: 80)
 *}
 {assign var='fieldLabel' value=$fieldLabel|default:_('Field')}
-{assign var='size' value=$size|default:'80'}
+{assign var='size' value=$size|default:80}
 <p>
   <input name="{$id}" id="{$id}" onchange="this.form.submit()" type="hidden" value="{$idValue}">
   <label for="{$name}">{$fieldLabel}:</label>
