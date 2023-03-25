@@ -189,3 +189,6 @@ msgstr "Feld #1"
 msgid "field #2"
 msgstr "Feld #2"
 
+# download tab
+msgid "Download the CSV files behind this site"
+msgstr "Laden Sie die CSV-Dateien hinter dieser Website herunter"
