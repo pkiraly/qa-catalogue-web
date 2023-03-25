@@ -4,13 +4,13 @@
   {include 'common/nav-tabs.tpl'}
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane active" id="terms" role="tabpanel" aria-labelledby="terms-tab">
-      <h2>Collocation of field values</h2>
+      <h2>{_('Collocation of field values')}</h2>
         <form id="facetselection">
           <input type="hidden" name="tab" value="collocations" />
           <table>
             <tr>
               <td>
-                field #1 <input list="facet1" name="facet1" id="facetInput1" style="width: 300px;"
+                  {_('field #1')} <input list="facet1" name="facet1" id="facetInput1" style="width: 300px;"
                               value="{if isset($facet1) && !empty($facet1)}{$facet1}{else}- select a field! -{/if}">
                 <datalist id="facet1">
                   {foreach from=$solrFields item=field}
@@ -19,7 +19,7 @@
                 </datalist>
               </td>
               <td>
-                field #2 <input list="facet2" name="facet2" id="facetInput2" style="width: 300px;"
+                  {_('field #2')} <input list="facet2" name="facet2" id="facetInput2" style="width: 300px;"
                               value="{if isset($facet2) && !empty($facet2)}{$facet2}{else}- select a field! -{/if}">
                 <datalist id="facet2">
                   {foreach from=$solrFields item=field}
@@ -29,7 +29,7 @@
               </td>
               <td>
                 <button type="submit" class="btn">
-                  <i class="fa fa-search" aria-hidden="true"></i> Term list
+                  <i class="fa fa-search" aria-hidden="true"></i> {_('Term list')}
                 </button>
               </td>
             </tr>

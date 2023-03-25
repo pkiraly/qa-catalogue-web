@@ -178,3 +178,12 @@ msgid "query"
 msgstr "Abfrage"
 msgid "filters"
 msgstr "Filtern"
+
+# Collocations tab
+msgid "Collocation of field values"
+msgstr "Kollokation von Feldwerten"
+msgid "field #1"
+msgstr "Feld #1"
+msgid "field #2"
+msgstr "Feld #2"
+
