@@ -204,6 +204,10 @@ msgid "select"
 msgstr "select"
 msgid "%d fields"
 msgstr "%d fields"
+msgid "Saved facets"
+msgstr "Saved facets"
+msgid "Add facet"
+msgstr "Add facet"
 
 # about tab
 msgid "Software"

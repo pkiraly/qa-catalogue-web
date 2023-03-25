@@ -385,10 +385,11 @@ class Issues extends BaseTab {
     else if ($typeId != '')
       $recordIds = $this->getIdsFromDB($typeId, 'typeId', 'query');
 
-    $url = '?' . join('&', [
+    $params = array_merge([
       'tab=data',
       'query=' . urlencode('id:("' . join('" OR "', $recordIds) . '")')
-    ]);
+    ], $this->getGeneralParams());
+    $url = '?' . join('&', $params);
 
     header('Location: ' . $url);
   }

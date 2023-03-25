@@ -215,12 +215,16 @@ abstract class BaseTab implements Tab {
     return 'cache/field-map-' . $this->db . '.js';
   }
 
+  protected function getFacetFile() {
+    return 'cache/selected-facets-' . $this->db . '.js';
+  }
+
   protected function getSelectedFacets() {
     $selectedFacets = [];
-    $file = 'cache/selected-facets-' . $this->db . '.js';
+    $file = $this->getFacetFile();
     if (file_exists($file)) {
       $facets = file_get_contents($file);
-    } elseif (file_exists('cache/selected-facets.js')) {
+    } elseif ($this->catalogue->getSchemaType() == 'MARC21' && file_exists('cache/selected-facets.js')) {
       $facets = file_get_contents('cache/selected-facets.js');
     }
     if (!is_null($facets)) {

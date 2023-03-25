@@ -206,6 +206,10 @@ msgid "select"
 msgstr "Wählen Sie"
 msgid "%d fields"
 msgstr "%d Felden"
+msgid "Saved facets"
+msgstr "Gespeicherte Facetten"
+msgid "Add facet"
+msgstr "Facette hinzufügen"
 
 # about tab
 msgid "Software"

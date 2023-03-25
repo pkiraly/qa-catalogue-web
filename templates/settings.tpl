@@ -19,23 +19,36 @@
           {/if}
         </div>
       {/if}
-      <div id="set-facet-list">
-        <form id="facetselection" method="post">
-          <input type="hidden" name="tab" value="settings" />
-          {foreach from=$categories key=category item=fields}
-            <p><strong>{$category}</strong> ({_t('%d fields', count($fields))})</p>
-            <select name="facet[]" multiple="multiple" size="15">
-              <option value="">-- {_('select')} --</option>
-              {foreach from=$fields item=field}
-                <option value="{$field->name}"{if $field->checked} selected="selected"{/if}>{$field->name}</option>
-              {/foreach}
-            </select>
+
+      {if !empty($selectedFacets)}
+        <h3>{_('Saved facets')}:</h3>
+        <ul>
+          {foreach from=$selectedFacets item=facet}
+            <li>
+              <form method="post">
+                {$facet['label']}
+                <input type="hidden" name="tab" value="settings" />
+                <input type="hidden" name="lang" value="{$lang}" />
+                <input type="hidden" name="action" value="remove" />
+                <input type="hidden" name="facet" value="{$facet['id']}" />
+                <input type="submit" value="remove" id="save-facet-change" />
+              </form>
+            </li>
           {/foreach}
-          <div style="margin: 20px; padding: 20px;">
-            <input type="submit" value="save" id="save-facet-change" />
-          </div>
-        </form>
-      </div>
+        </ul>
+      {/if}
+
+      <h3>{_('Add facet')}</h3>
+      <form id="facetselection" method="post">
+        <input type="hidden" name="tab" value="settings" />
+        <input type="hidden" name="lang" value="{$lang}" />
+        <input type="hidden" name="action" value="add" />
+        {include 'common/field-selector.tpl' id="facet" name="facetName"}
+        <div style="margin: 20px; padding: 20px;">
+          <input type="submit" value="save" id="save-facet-change" />
+        </div>
+      </form>
+
     </div>
   </div>
 </div>

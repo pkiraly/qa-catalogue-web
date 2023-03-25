@@ -10,13 +10,26 @@ class Settings extends BaseTab {
 
     if (!empty($_POST)) {
       $smarty->assign('saved', true);
-      $selectedFacets = getPostedOrDefault('facet', []);
-      $success = $this->saveSelectedFacets($selectedFacets);
+      $selectedFacets = getPostedOrDefault('facet', '');
+      $action = getPostedOrDefault('action', 'add', ['add', 'remove']);
+      if ($action == 'add') {
+        $success = $this->addSelectedFacets($selectedFacets);
+      } else if ($action == 'remove') {
+        $success = $this->removeSelectedFacets($selectedFacets);
+      }
       $smarty->assign('success', $success);
+      $params = array_merge(['tab=settings'], $this->getGeneralParams());
+      $url = '?' . join('&', $params);
+      header('Location: ' . $url);
     } else {
       $smarty->assign('saved', false);
     }
 
+    $selectedFacets = [];
+    foreach ($this->getSelectedFacets() as $facet) {
+      $selectedFacets[] = ['id' => $facet, 'label' => $this->resolveSolrField($facet)];
+    }
+    $smarty->assign('selectedFacets', $selectedFacets);
     $smarty->assign('facets', $this->getFields());
     $smarty->assign('categories', $this->categories);
   }
@@ -54,11 +67,41 @@ class Settings extends BaseTab {
   }
 
   private function saveSelectedFacets($selectedFacets) {
-    $file = 'cache/selected-facets-' . $this->db . '.js';
+    $file = $this->getFacetFile();
     $fieldNames = $this->getSolrFields();
+    if (is_string($selectedFacets))
+      $selectedFacets = [$selectedFacets];
     $checkedFacets = [];
     foreach ($selectedFacets as $facet) {
       if (in_array($facet, $fieldNames))
+        $checkedFacets[] = $facet;
+    }
+
+    return file_put_contents($file, json_encode($checkedFacets));
+  }
+
+  private function addSelectedFacets($selectedFacets) {
+    $file = $this->getFacetFile();
+    $fieldNames = $this->getSolrFields();
+    if (is_string($selectedFacets))
+      $selectedFacets = [$selectedFacets];
+    $checkedFacets = file_exists($file) ? json_decode(file_get_contents($file)) : [];
+    foreach ($selectedFacets as $facet) {
+      if (in_array($facet, $fieldNames))
+        $checkedFacets[] = $facet;
+    }
+
+    return file_put_contents($file, json_encode($checkedFacets));
+  }
+
+  private function removeSelectedFacets($selectedFacets) {
+    $file = $this->getFacetFile();
+    if (is_string($selectedFacets))
+      $selectedFacets = [$selectedFacets];
+    $savedFacets = file_exists($file) ? json_decode(file_get_contents($file)) : [];
+    $checkedFacets = [];
+    foreach ($savedFacets as $facet) {
+      if (!in_array($facet, $selectedFacets))
         $checkedFacets[] = $facet;
     }
 
