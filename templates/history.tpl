@@ -6,11 +6,17 @@
     <div class="tab-pane active" id="history" role="tabpanel" aria-labelledby="history-tab">
       <h2>{_('History of cataloging')}</h2>
 
-      {if ($catalogue->getSchemaType() == 'MARC21')}
-        <p>{_('history_definition_marc')}</p>
-      {elseif ($catalogue->getSchemaType() == 'PICA')}
-        <p>{_('history_definition_pica')}</p>
-      {/if}
+      <p class="metric-definition">
+          {_('history_definition')}
+      </p>
+
+      <p>
+        {if ($catalogue->getSchemaType() == 'MARC21')}
+          {_('history_definition_marc')}
+        {elseif ($catalogue->getSchemaType() == 'PICA')}
+          {_('history_definition_pica')}
+        {/if}
+      </p>
 
       <p>
         {_('This chart was implemented based on Benjamin Schmidt\'s blog post')}

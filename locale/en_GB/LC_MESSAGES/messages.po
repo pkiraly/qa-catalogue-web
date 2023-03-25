@@ -152,6 +152,8 @@ msgstr "Field"
 # used in history
 msgid "History of cataloging"
 msgstr "History of cataloging"
+msgid "history_definition"
+msgstr "This chart shows the history of cataloguing."
 msgid "history_definition_marc"
 msgstr "The Y axis is based on the 'date entered on file' data element that indicates the date the MARC record was created (008/00-05), the X axis is based on 'Date 1' element (008/07-10)"
 msgid "history_definition_pica"
