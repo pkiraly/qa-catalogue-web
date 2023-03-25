@@ -7,16 +7,11 @@
       <div id="about-tab">
         {assign var=file value="config/about.$lang.tpl"}
         {if file_exists($file)}{include $file}{/if}
-        <h3>Software</h3>
+        <h3>{_('Software')}</h3>
         <p>
-          QA Catalogue is an open source application developed as part of the research project
-          <a href="https://pkiraly.github.io" target="_blank">Measuring Metadata Quality</a>
-          conducted by Péter Király. The code is available in git repositories for
-          <a href="https://github.com/pkiraly/metadata-qa-marc" target="_blank">Backend (Java)</a>
-          and <a href="https://github.com/pkiraly/metadata-qa-marc-web" target="_blank">Frontend (PHP)</a>.
-          Contributions are welcome!
+          {_t('software_text', 'https://pkiraly.github.io', 'https://github.com/pkiraly/metadata-qa-marc', 'https://github.com/pkiraly/metadata-qa-marc-web')}
         </ul>
-        <h3>Credits</h3>
+        <h3>{_('Acknowledgement')}</h3>
         <p>
           Thanks for Johann Rolschewski and Phú for their help in collecting the list of published
           library catalog, Jakob Voß for the Avram specification and for his help in exporting MARC
@@ -30,7 +25,7 @@
           Heuvelmann (DNB) for terminological and language suggestions.
         </p>
         <p>
-          Peter would like to thank the experts consulted regarding to subject analysis: Rudolf
+          Peter would like to thank the experts consulted regarding subject analysis: Rudolf
           Ungváry (retired, Hungarian National Library, HU), Gerard Coen (DANS and ISKO-NL, NL),
           Andreas Ledl (BARTOC and Uni Basel, CH), Anna Kasprzik (ZBW, DE), Jakob Voß (GBV, DE),
           Uma Balakrishnan (GBV, DE), Yann Y. Nicolas (ABES, FR), Michael Franke-Maier (Freie

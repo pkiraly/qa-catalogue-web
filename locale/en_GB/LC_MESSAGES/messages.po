@@ -204,3 +204,11 @@ msgid "select"
 msgstr "select"
 msgid "%d fields"
 msgstr "%d fields"
+
+# about tab
+msgid "Software"
+msgstr "Software"
+msgid "software_text"
+msgstr "QA Catalogue is an open source application developed as part of the research project <a href=\"%s\" target=\"_blank\">Measuring Metadata Quality</a> conducted by Péter Király. The code is available in git repositories for <a href=\"%s\" target=\"_blank\">Backend (Java)</a> and <a href=\"%s\" target=\"_blank\">Frontend (PHP)</a>. Contributions are welcome!"
+msgid "Acknowledgement"
+msgstr "Acknowledgement"

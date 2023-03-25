@@ -206,3 +206,11 @@ msgid "select"
 msgstr "Wählen Sie"
 msgid "%d fields"
 msgstr "%d Felden"
+
+# about tab
+msgid "Software"
+msgstr "Software"
+msgid "software_text"
+msgstr "QA Catalogue ist eine Open-Source-Anwendung, die im Rahmen des Forschungsprojekts <a href=\"%s\" target=\"_blank\">Measuring Metadata Quality</a> von Péter Király entwickelt wurde. Der Code ist in Git-Repositories für <a href=\"%s\" target=\"_blank\">Backend (Java)</a> und <a href=\"%s\" target=\"_blank\">Frontend (PHP)</a> verfügbar. Beiträge sind willkommen!"
+msgid "Acknowledgement"
+msgstr "Anerkennung"
