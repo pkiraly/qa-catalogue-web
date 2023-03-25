@@ -166,6 +166,13 @@ two language files (German and English). In `.tpl` files you can add translatabl
 ```
 {_('translatable text')}
 ```
+`_` is a built-in alias for the PHP function `gettext`. If there are variables in the 
+translated string, in the `.tpl` file you should enter something like this:
+
+```
+{sprintf(_('number of records: %d'), $number_of_records)}
+```
+
 You should add the translations into `locale/de_DE/LC_MESSAGES/messages.po` as
 
 
@@ -179,6 +186,14 @@ and into `locale/en_GB/LC_MESSAGES/messages.po` as
 ```
 msgid "translatable text"
 msgstr "translatable text"
+```
+
+If the message string contain variables, use sprintf compatible placeholders,
+such as '%d' for integers, '%s' for strings, '%f' for floating point numbers etc.
+
+```
+msgid "Found <span id=\"numFound\">%s</span> records"
+msgstr "Found <span id=\"numFound\">%s</span> records"
 ```
 
 Of course the message identifier could be different, and dense but now

@@ -1,3 +1,18 @@
+# English translations for QA catalogue web interface.
+# GPL-3.0 license
+# Péter Király <pkiraly@gwdg.de>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: v0.6.0\n"
+"Report-Msgid-Bugs-To: Péter Király <pkiraly@gwdg.de>\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 # header
 msgid "for analysing library data"
 msgstr "for analysing library data"
@@ -71,6 +86,22 @@ msgid "Search"
 msgstr "Search"
 msgid "data_definition"
 msgstr "Search and filter the analyzed data sets, display the details of each individual records."
+msgid "search"
+msgstr "search"
+msgid "Filters"
+msgstr "Filters"
+msgid "Facets"
+msgstr "Facets"
+msgid "Found <span id=\"numFound\">%s</span> records"
+msgstr "Found <span id=\"numFound\">%s</span> records"
+msgid "Items per page"
+msgstr "Items per page"
+msgid "remove it from the query"
+msgstr "remove it from the query"
+msgid "make it the main query"
+msgstr "make it the main query"
+msgid "check other terms of this field"
+msgstr "check other terms of this field"
 
 # used at multiple places
 msgid "with"
