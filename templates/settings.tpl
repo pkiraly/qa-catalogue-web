@@ -13,9 +13,9 @@
       {if $saved}
         <div style="border-color: #f0c040; margin: 20px; padding: 20px; background-color: #eeeeee">
           {if $success}
-            <i class="fa fa-info" aria-hidden="true" style="color: #37ba00"></i> Facets have been saved successfully.
+            <i class="fa fa-info" aria-hidden="true" style="color: #37ba00"></i> {_('Facets have been saved successfully.')}
           {else}
-            <i class="fa fa-info" aria-hidden="true" style="color: #9B410E"></i> Facets has not been saved. Check the log.
+            <i class="fa fa-info" aria-hidden="true" style="color: #9B410E"></i> {_('Facets has not been saved. Check the log.')}
           {/if}
         </div>
       {/if}
@@ -25,7 +25,7 @@
           {foreach from=$categories key=category item=fields}
             <p><strong>{$category}</strong> ({count($fields)} fields)</p>
             <select name="facet[]" multiple="multiple" size="15">
-              <option value="">-- select --</option>
+              <option value="">-- {_('select')} --</option>
               {foreach from=$fields item=field}
                 <option value="{$field->name}"{if $field->checked} selected="selected"{/if}>{$field->name}</option>
               {/foreach}
