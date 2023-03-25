@@ -7,10 +7,12 @@
       <div id="about-tab">
         {assign var=file value="config/about.$lang.tpl"}
         {if file_exists($file)}{include $file}{/if}
+
         <h3>{_('Software')}</h3>
         <p>
           {_t('software_text', 'https://pkiraly.github.io', 'https://github.com/pkiraly/metadata-qa-marc', 'https://github.com/pkiraly/metadata-qa-marc-web')}
         </ul>
+
         <h3>{_('Acknowledgement')}</h3>
         <p>
           Thanks for Johann Rolschewski and Phú for their help in collecting the list of published
