@@ -22,7 +22,9 @@
             {if preg_match('/^ +$/', $rowData->message)}"{$rowData->message}"{else}{$rowData->message}{/if}
           </td>
           <td class="url">
-            <a href="{showMarcUrl($rowData->url)}" target="_blank"><i class="fa fa-info" aria-hidden="true"></i></a>
+            {if !empty($rowData->url)}
+              <a href="{showMarcUrl($rowData->url)}" target="_blank"><i class="fa fa-info" aria-hidden="true"></i></a>
+            {/if}
           </td>
           <td class="count">{$rowData->count}</td>
         </tr>

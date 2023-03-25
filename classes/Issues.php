@@ -33,12 +33,10 @@ class Issues extends BaseTab {
     $smarty->assign('version', $this->version);
 
     $this->action = getOrDefault('action', 'list', ['list', 'query', 'download', 'record', 'ajaxIssue', 'ajaxIssueByTag']);
-    error_log('action: ' . $this->action);
     $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
     $smarty->assign('groupped', $this->groupped);
     $this->groupId = getOrDefault('groupId', 'all');
     $smarty->assign('groupId', $this->groupId);
-    error_log('groupId: ' . $this->groupId);
 
     if ($this->groupped) {
       $this->groups = $this->readGroups();
@@ -120,9 +118,6 @@ class Issues extends BaseTab {
       $elementsFile = $this->getFilePath('issue-summary.csv');
     }
     if (file_exists($elementsFile)) {
-      error_log('elementsFile: ' . $elementsFile);
-      // $keys = ['path', 'type', 'message', 'url', 'count']; // "sum",
-      // control subfield: invalid value
       $header = [];
 
       foreach (file($elementsFile) as $line) {
