@@ -182,6 +182,8 @@ msgstr "Filtern"
 # Collocations tab
 msgid "Collocation of field values"
 msgstr "Kollokation von Feldwerten"
+msgid "collocations_definition"
+msgstr "Wie die Werte von zwei verschiedenen Datenelementen im selben Datensatz erscheinen."
 msgid "field #1"
 msgstr "Feld #1"
 msgid "field #2"

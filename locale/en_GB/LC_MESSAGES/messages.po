@@ -180,6 +180,8 @@ msgstr "filters"
 # Collocations tab
 msgid "Collocation of field values"
 msgstr "Collocation of field values"
+msgid "collocations_definition"
+msgstr "How the values of two different data elements appear on the same record."
 msgid "field #1"
 msgstr "field #1"
 msgid "field #2"

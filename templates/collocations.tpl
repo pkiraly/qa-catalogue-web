@@ -5,6 +5,10 @@
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane active" id="terms" role="tabpanel" aria-labelledby="terms-tab">
       <h2>{_('Collocation of field values')}</h2>
+
+      <p class="metric-definition">
+        {_('collocations_definition')}
+      </p>
         <form id="facetselection">
           <input type="hidden" name="tab" value="collocations" />
           <table>
