@@ -9,46 +9,36 @@
       <p class="metric-definition">
         {_('collocations_definition')}
       </p>
-        <form id="facetselection">
-          <input type="hidden" name="tab" value="collocations" />
-          <table>
-            <tr>
-              <td>
-                  {_('field #1')} <input list="facet1" name="facet1" id="facetInput1" style="width: 300px;"
-                              value="{if isset($facet1) && !empty($facet1)}{$facet1}{else}- select a field! -{/if}">
-                <datalist id="facet1">
-                  {foreach from=$solrFields item=field}
-                    <option value="{$field}"{if $field == $facet1} selected="selected"{/if}>{$field}</option>
-                  {/foreach}
-                </datalist>
-              </td>
-              <td>
-                  {_('field #2')} <input list="facet2" name="facet2" id="facetInput2" style="width: 300px;"
-                              value="{if isset($facet2) && !empty($facet2)}{$facet2}{else}- select a field! -{/if}">
-                <datalist id="facet2">
-                  {foreach from=$solrFields item=field}
-                    <option value="{$field}"{if $field == $facet2} selected="selected"{/if}>{$field}</option>
-                  {/foreach}
-                </datalist>
-              </td>
-              <td>
-                <button type="submit" class="btn">
-                  <i class="fa fa-search" aria-hidden="true"></i> {_('Term list')}
-                </button>
-              </td>
-            </tr>
-          </table>
-        </form>
+
+      <form id="facetselection">
+        <input type="hidden" name="tab" value="collocations" />
+        {include 'common/field-selector.tpl' id="facet1" name="facet1Name" fieldLabel=_('field #1')
+                                                   idValue="$facet1" labelValue="$label1"}
+        {include 'common/field-selector.tpl' id="facet2" name="facet2Name" fieldLabel=_('field #2')
+                                                   idValue="$facet2" labelValue="$label2"}
+        <p>
+          <button type="submit" class="btn">
+           <i class="fa fa-search" aria-hidden="true"></i> {_('Term list')}
+          </button>
+        </p>
+      </form>
 
       {if isset($results) && !empty($results)}
-        <table>
-          {foreach from=$results item=result}
-            <tr>
-              <td>{if preg_match('/(^\s|\s$)/', $result[0])}"{$result[0]}"{else}{$result[0]}{/if}</td>
-              <td>{if preg_match('/(^\s|\s$)/', $result[1])}"{$result[1]}"{else}{$result[1]}{/if}</td>
-              <td class="float-right"><a href="{$result[3]}">{number_format($result[2])}</a></td>
-            </tr>
-          {/foreach}
+        <table width="100%">
+          <thead>
+            <th>{$label1}</th>
+            <th>{$label2}</th>
+            <th class="text-right">count</th>
+          </thead>
+          <tbody>
+            {foreach from=$results item=result}
+              <tr>
+                <td>{if preg_match('/(^\s|\s$)/', $result[0])}"{$result[0]}"{else}{$result[0]}{/if}</td>
+                <td>{if preg_match('/(^\s|\s$)/', $result[1])}"{$result[1]}"{else}{$result[1]}{/if}</td>
+                <td class="float-right"><a href="{$result[3]}">{number_format($result[2])}</a></td>
+              </tr>
+            {/foreach}
+          </tbody>
         </table>
       {/if}
 

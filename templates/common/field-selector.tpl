@@ -1,20 +1,30 @@
+{*
+  $id
+  $name
+  $fieldLabel
+  $idValue -- $facet
+  $labelValue -- $label
+  $size = 80
+*}
+{assign var='fieldLabel' value=$fieldLabel|default:_('Field')}
+{assign var='size' value=$size|default:'80'}
 <p>
-  <input name="facet" id="facet" onchange="this.form.submit()" type="hidden" value="{$facet}">
-  <label for="facetName">{_('Field')}:</label>
-  <input id="facetName" value="{$label}" size="80">
+  <input name="{$id}" id="{$id}" onchange="this.form.submit()" type="hidden" value="{$idValue}">
+  <label for="{$name}">{$fieldLabel}:</label>
+  <input id="{$name}" value="{$labelValue}" size="{$size}">
 </p>
 <script>
 $(function() {
-  $("#facetName").autocomplete({
+  $("#{$name}").autocomplete({
     source: '?tab=terms&action=fields',
     select: function(event, ui) {
-      $("#facetName").val(ui.item.label);
-      $("#facet").val(ui.item.value);
+      $("#{$name}").val(ui.item.label);
+      $("#{$id}").val(ui.item.value);
       return false;
     },
     focus: function(event, ui) {
-      $("#facetName").val(ui.item.label);
-      $("#facet").val(ui.item.value);
+      $("#{$name}").val(ui.item.label);
+      $("#{$id}").val(ui.item.value);
       return false;
     },
   });

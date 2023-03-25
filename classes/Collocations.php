@@ -20,10 +20,12 @@ class Collocations extends BaseTab {
       'rows=10'
     ];
 
-    $smarty->assign('facet1', $this->facet1);
-    $smarty->assign('facet2', $this->facet2);
+    $smarty->assign('facet1',     $this->facet1);
+    $smarty->assign('label1',     $this->resolveSolrField($this->facet1));
+    $smarty->assign('facet2',     $this->facet2);
+    $smarty->assign('label2',     $this->resolveSolrField($this->facet2));
     $smarty->assign('solrFields', $this->getFields());
-    $smarty->assign('results', $this->collocateFields());
+    $smarty->assign('results',    $this->collocateFields());
   }
 
   public function getTemplate() {

@@ -17,7 +17,7 @@
           <input type="hidden" name="query" value="{$query}" />
 
           {include 'common/library-selector.tpl'}
-          {include 'common/field-selector.tpl'}
+          {include 'common/field-selector.tpl' id="facet" name="facetName" idValue=$facet labelValue=$label}
 
           <p>{_('filter term list')}: <input type="text" name="termFilter" value="{$termFilter}" /></p>
 
