@@ -25,7 +25,7 @@
         <td>
           {if (isset($record->facet2))}
             {if $record->facet2exists}
-              <a href="{$controller->termLink({$record->facet2}, '*:*', $record->scheme)}">{$record->scheme}</a>
+              <a href="{$controller->termLink($record->facet2, '*:*', $record->scheme)}">{$record->scheme}</a>
             {else}
               {$record->scheme}
             {/if}

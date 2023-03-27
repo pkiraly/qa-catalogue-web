@@ -145,7 +145,7 @@ class Classifications extends AddedEntry {
             $record->q = '*:*';
           } else if ($record->field == '084') {
             $this->createFacets($record, '084a_Classification_classificationPortion');
-            $record->q = sprintf('%s:%%22%s%%22', '0842_Classification_source_ss', $record->scheme);
+            $record->q = urlencode(sprintf('%s:"%s"', '0842_Classification_source_ss', $record->scheme));
           } else if ($record->field == '085') {
             $record->facet = $solrFieldMap[$record->field . str_replace('$', '', $record->location)]; // '085b_SynthesizedClassificationNumber_baseNumber_ss';
             $record->q = '*:*';

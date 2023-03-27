@@ -254,9 +254,10 @@ class AddedEntry extends BaseTab {
     }
     $params = $baseParams;
     $params[] = 'facet=' . $facet;
-    $params[] = 'query=' . urlencode($query);
+    $params[] = 'query=' . $query;
     if (!is_null($scheme))
       $params[] = 'scheme=' . urlencode(sprintf('"%s"', $scheme));
+
     return '?' . join('&', $params);
   }
 
