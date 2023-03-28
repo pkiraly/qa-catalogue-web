@@ -737,10 +737,6 @@ p.metric-definition {
   border-left: 5px dotted #cccccc;    
 }
 
-#data p.metric-definition {
-  margin: 5px 0 10px 40px;
-}
-
 .marc-labels-table .label {
   width: 35%;
 }
