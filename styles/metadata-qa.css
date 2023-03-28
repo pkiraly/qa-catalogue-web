@@ -128,8 +128,9 @@ div#completeness h3 {
   padding-top: 20px;
 }
 
-div#completeness h4 {
-  padding-top: 10px;
+h4 {
+  margin-top: 10px;
+  margin-bottom: 2px;
 }
 
 #completeness-group-table td {
