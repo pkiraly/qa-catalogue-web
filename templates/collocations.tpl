@@ -28,7 +28,7 @@
           <thead>
             <th>{$label1}</th>
             <th>{$label2}</th>
-            <th class="text-right">count</th>
+            <th class="text-right">{_('count')}</th>
           </thead>
           <tbody>
             {foreach from=$results item=result}

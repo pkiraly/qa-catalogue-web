@@ -16,20 +16,20 @@
     <tr class="first">
       <th colspan="3"></th>
       <th></th>
-      <th colspan="2" class="with-border">records</th>
-      <th colspan="5" class="with-border">occurences</th>
+      <th colspan="2" class="with-border">{_('records')}</th>
+      <th colspan="5" class="with-border">{_('occurences')}</th>
     </tr>
     <tr class="second">
-      <th class="left path">path</th>
-      <th class="left subfield">label</th>
+      <th class="left path">{_('path')}</th>
+      <th class="left subfield"></th>
       <th class="left chart"></th>
       <th class="terms">terms</th>
       <th class="number-of-record">
-        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'number-of-record')}">count</a>
+        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'number-of-record')}">{_('count')}</a>
       </th>
       <th class="percent-of-record">%</th>
       <th class="number-of-instances">
-        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'number-of-instances')}">count</a>
+        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'number-of-instances')}">{_('count')}</a>
       </th>
       <th class="min">
         <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'min')}">min</a>

@@ -2,9 +2,9 @@
   <thead>
     <tr>
       <th>tags</th>
-      <th>label</th>
       <th></th>
-      <th class="text-right">count</th>
+      <th></th>
+      <th class="text-right">{_('count')}</th>
       <th class="text-right">%</th>
     </tr>
   </thead>

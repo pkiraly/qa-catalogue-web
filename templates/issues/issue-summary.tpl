@@ -54,7 +54,7 @@
         <th {if in_array($field, ['instances', 'records'])}class="text-right"{/if}>{if field == 'message'}value/explanation{else}{$field}{/if}</th>
       {/foreach}
       <th></th>
-      <th>chart</th>
+      <th></th>
       <th>%</th>
     </tr>
   </thead>
