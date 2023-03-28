@@ -10,6 +10,7 @@
       </p>
       <div class="container" id="content">
         <div class="row">
+          <div class="col-3 search-block"></div>
           <div class="col search-block">
             <form id="search">
               <input type="hidden" name="tab" value="data">
