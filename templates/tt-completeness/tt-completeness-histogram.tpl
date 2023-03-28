@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="styles/histogram.css">
-<h3>histogram</h3>
+<h3>{_('Histogram')}</h3>
 
 <svg class="tt-completeness-histogram-chart-total" width="960" height="300"></svg>
 <ul>
@@ -7,9 +7,11 @@
   <li>x axis: total score of a record</li>
 </ul>
 
+<p>
 Each record get a score based on a number of criteria.
 Each criteria results in a positive score. The final score is
 the summary of these criteria scores.
+</p
 
 <table id="criteria-list">
   <thead>

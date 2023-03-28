@@ -55,6 +55,10 @@ msgstr "Settings"
 msgid "About"
 msgstr "About"
 
+# used across multiple tabs
+msgid "Histogram"
+msgstr "Häufigkeitsverteilung"
+
 # completeness
 msgid "by document types"
 msgstr "by document types"
