@@ -43,7 +43,7 @@
               {/if}
             </div>
             <div id="facets" class="facet-block">
-              <h3><a href="?tab=setttings&lang={$lang}">{_('Facets')}</a></h3>
+              <h3><a href="?tab=settings&lang={$lang}">{_('Facets')}</a></h3>
               <div id="facet-list">
                 {include 'marc-facets.tpl'}
               </div>
