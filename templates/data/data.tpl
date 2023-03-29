@@ -42,14 +42,12 @@
                 </div>
               {/if}
             </div>
-            {if count((array)$facets) }
-              <div id="facets" class="facet-block">
-                <h3>{_('Facets')}</h3>
-                <div id="facet-list">
-                  {include 'marc-facets.tpl'}
-                </div>
+            <div id="facets" class="facet-block">
+              <h3><a href="?tab=setttings&lang={$lang}">{_('Facets')}</a></h3>
+              <div id="facet-list">
+                {include 'marc-facets.tpl'}
               </div>
-            {/if}
+            </div>
           </div>
           <div id="main" class="col">
             <div class="row">
