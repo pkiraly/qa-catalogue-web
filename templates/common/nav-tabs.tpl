@@ -84,7 +84,7 @@
         {/if}
         <a class="dropdown-item" href="?tab=collocations{$generalParams}">{_('Collocations')}</a>
         <a class="dropdown-item" href="?tab=download{$generalParams}">{_('Download')}</a>
-        <a class="dropdown-item" href="?tab=settings{$generalParams}">{_('Settings')}</a>
+        <a class="dropdown-item" href="?tab=settings{$generalParams}">{_('Facets')}</a>
       </div>
     </li>
     <li class="nav-item1">
