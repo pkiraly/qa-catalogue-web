@@ -7,9 +7,9 @@
 *}
 <tr class="t t-{$categoryId}-{$typeId} text-centered">
   <td colspan="8">
-    count: {$recordCount} |
+    {_('count')}: {$recordCount} |
     {if $listType == 'filtered-list'}
-      filter: <em>{$path}</em> |
+      {_('filter')}: <em>{$path}</em> |
     {/if}
     {if $recordCount > 100}
       {foreach from=$pages item=page}
@@ -27,7 +27,7 @@
            id="clickMore-{$categoryId}-{$typeId}-0"
            data-id="{$categoryId}-{$typeId}"
            data-page="{$categoryId}-{$typeId}-0"
-           href="{$controller->sortIssuesLink($categoryId, $typeId, null, $order)}">list all</a>
+           href="{$controller->sortIssuesLink($categoryId, $typeId, null, $order)}">{_('list all')}</a>
       {/if}
     {else}
       <a class="clickMore clickMore-{$categoryId}-{$typeId}"
@@ -35,11 +35,11 @@
          id="clickMore-{$categoryId}-{$typeId}-0"
          data-id="{$categoryId}-{$typeId}"
          data-page="{$categoryId}-{$typeId}-0"
-         href="{$controller->sortIssuesLink($categoryId, $typeId, null, $order)}">list all</a>
+         href="{$controller->sortIssuesLink($categoryId, $typeId, null, $order)}">{_('list all')}</a>
     {/if} |
     <a class="byTag byTag-{$categoryId}-{$typeId}"
        id="byTag-{$categoryId}-{$typeId}"
        data-id="{$categoryId}-{$typeId}"
-       href="{$controller->issueByTagLink($categoryId, $typeId)}">grouped by tag</a>
+       href="{$controller->issueByTagLink($categoryId, $typeId)}">{_('grouped by tag')}</a>
   </td>
 </tr>

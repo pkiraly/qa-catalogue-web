@@ -51,10 +51,16 @@
   <thead>
     <tr>
       {foreach from=$fieldNames item=field}
-        <th {if in_array($field, ['instances', 'records'])}class="text-right"{/if}>{if field == 'message'}value/explanation{else}{$field}{/if}</th>
+        <th {if in_array($field, ['instances', 'records'])}class="text-right"{/if}>
+          {if field == 'message'}
+            {_('value/explanation')}
+          {else}
+            {$field}
+          {/if}
+        </th>
       {/foreach}
       <th></th>
-      <th>chart</th>
+      <th>{_('chart')}</th>
       <th>%</th>
     </tr>
   </thead>
@@ -62,7 +68,7 @@
   {foreach from=$categories key=index item=category name=categories}
     <tr class="category-header {$category->category}{if !$smarty.foreach.categories.first} padded{/if}">
       <td colspan="3" class="category">
-        <span class="category">{$category->category}</span> level issues
+        {_t('<span class="category">%s</span> level issues', _($category->category))}
       </td>
       <td class="count">{$category->instances|number_format}</td>
       <td class="count">{$category->records|number_format}</td>
@@ -77,7 +83,7 @@
       {assign var="type" value=$types[$typeId]}
       <tr class="type-header {$type->type} h-{$category->id}-{$type->id}">
         <td colspan="3" class="type">
-          <span class="type">{$type->type}</span> ({$type->variantCount} variants)
+          <span class="type">{_($type->type)}</span> ({_t('%d variants', $type->variantCount)})
           <a href="javascript:openType('{$category->id}-{$type->id}')">[+]</a>
         </td>
         <td class="count">{$type->instances|number_format}</td>

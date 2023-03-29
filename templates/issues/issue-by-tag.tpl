@@ -4,7 +4,7 @@
       <a class="byTag byTag-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}"
          href="{$controller->issueByTagLink($categoryId, $typeId, 'path ASC')}">
         <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i></a>
-      data element
+      {_('data element')}
       <a class="byTag byTag-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}"
          href="{$controller->issueByTagLink($categoryId, $typeId, 'path DESC')}">
         <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i></a>
@@ -13,7 +13,7 @@
       <a class="byTag byTag-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}"
          href="{$controller->issueByTagLink($categoryId, $typeId, 'variants ASC')}">
       <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i></a>
-      variants
+      {_('variants')}
       <a class="byTag byTag-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}"
          href="{$controller->issueByTagLink($categoryId, $typeId, 'variants DESC')}">
       <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i></a>
@@ -44,7 +44,7 @@
     <td class="path" colspan="2">{if isset($rowData->withPica3)}{$rowData->withPica3}{else}{$rowData->path}{/if}</td>
     <td class="message">
       <a href="{$controller->sortIssuesLink($categoryId, $typeId, $rowData->path)}" class="byPath" data-id="{$categoryId}-{$typeId}">
-        {$rowData->variants|number_format} variants
+        {_t('%s variants', $rowData->variants|number_format)}
       </a>
     </td>
     <td class="count instances">{$rowData->instances|number_format}</td>

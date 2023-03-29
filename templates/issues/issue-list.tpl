@@ -4,7 +4,7 @@
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
          href="{$controller->sortIssuesLink($categoryId, $typeId, $path, 'MarcPath ASC')}">
         <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i></a>
-      data element
+      {_t('data element')}
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
          href="{$controller->sortIssuesLink($categoryId, $typeId, $path, 'MarcPath DESC')}">
         <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i></a>
@@ -13,7 +13,7 @@
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
          href="{$controller->sortIssuesLink($categoryId, $typeId, $path, 'message ASC')}">
         <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i></a>
-      message
+      {_t('message')}
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
          href="{$controller->sortIssuesLink($categoryId, $typeId, $path, 'message DESC')}">
         <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i></a>
