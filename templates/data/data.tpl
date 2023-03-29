@@ -4,15 +4,14 @@
   {include 'common/nav-tabs.tpl'}
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane active" id="data" role="tabpanel" aria-labelledby="data-tab">
+      <h2>{_('Search')}</h2>
+      <p class="metric-definition">
+        {_('data_definition')}
+      </p>
       <div class="container" id="content">
         <div class="row">
-          <div class="col-3 search-block">
-            <h3>{_('Search')}</h3>
-          </div>
+          <div class="col-3 search-block"></div>
           <div class="col search-block">
-            <p class="metric-definition">
-              {_('data_definition')}
-            </p>
             <form id="search">
               <input type="hidden" name="tab" value="data">
               <input type="text" name="query" id="query" value="{htmlentities($query)}" size="60">
@@ -44,7 +43,7 @@
               {/if}
             </div>
             <div id="facets" class="facet-block">
-              <h3>{_('Facets')}</h3>
+              <h3><a href="?tab=settings&lang={$lang}">{_('Facets')}</a></h3>
               <div id="facet-list">
                 {include 'marc-facets.tpl'}
               </div>

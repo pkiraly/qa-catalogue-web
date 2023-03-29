@@ -8,7 +8,7 @@
               {if isset($cell->url)}
                 <td><a href="{$cell->url}" target="_blank">{$cell->text}</a></td>
               {else}
-                <td colspan="{$cell->span}" class="tag-title"><em>{$cell->text}</em></td>
+                <td colspan="{$cell->span}" class="tag-title">{$cell->text}</td>
               {/if}
             {else}
               <td>{$cell}</td>

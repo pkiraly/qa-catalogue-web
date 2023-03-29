@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="styles/histogram.css">
-<h3>histogram</h3>
+<h3>{_('Histogram')}</h3>
 
 <svg class="serial-histogram-chart-total" width="960" height="300"></svg>
 <ul>

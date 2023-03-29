@@ -27,12 +27,12 @@
         {_('number of records')}: <strong>{$max|number_format}</strong>
       </div>
 
-      <h3>field groups</h3>
+      <h3>{_('Field groups')}</h3>
       <div id="completeness-group-table">
         {include 'completeness/completeness-packages.tpl'}
       </div>
 
-      <h3>fields</h3>
+      <h3>{_('Fields')}</h3>
       <div id="completeness-field-table">
         {include 'completeness/completeness-fields.tpl'}
       </div>

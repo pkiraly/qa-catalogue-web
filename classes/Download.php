@@ -32,7 +32,7 @@ class Download extends BaseTab {
       'Issues' => ['issue-by-category.csv', 'issue-by-type.csv', 'issue-summary.csv', 'issue-details.csv', 'issue-details-normalized.csv',
         'issue-total.csv', 'issue-collector.csv'],
       'Functional analysis' => ['functional-analysis.csv', 'functional-analysis-histogram.csv', 'functional-analysis-mapping.csv'],
-      'Classifications' => ['classifications-by-records.csv', 'classifications-by-schema-subfields.csv', 'classifications-by-schema.csv',
+      'Subject analysis' => ['classifications-by-records.csv', 'classifications-by-schema-subfields.csv', 'classifications-by-schema.csv',
         'classifications-collocations.csv', 'classifications-frequency-examples.csv', 'classifications-histogram.csv',
         'classifications-by-type.csv'],
       'Authorities' => ['authorities-by-categories.csv', 'authorities-by-records.csv', 'authorities-by-schema-subfields.csv',

@@ -128,8 +128,9 @@ div#completeness h3 {
   padding-top: 20px;
 }
 
-div#completeness h4 {
-  padding-top: 10px;
+h4 {
+  margin-top: 10px;
+  margin-bottom: 2px;
 }
 
 #completeness-group-table td {
@@ -694,7 +695,7 @@ td.record-field-label {
 }
 
 .marc-human tr.tag td {
-  padding: 10px;
+  padding: 5px;
 }
 .marc-human .tag-title {
   color: var(--highlight-color);
@@ -735,10 +736,6 @@ p.metric-definition {
   margin-left: 5px;
   padding-left: 15px;
   border-left: 5px dotted #cccccc;    
-}
-
-#data p.metric-definition {
-  margin: 5px 0 10px 40px;
 }
 
 .marc-labels-table .label {

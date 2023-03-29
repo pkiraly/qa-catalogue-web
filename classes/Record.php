@@ -212,7 +212,7 @@ class Record {
         $tag = 'LDR';
       $tag_defined = isset(self::$fields->{$tag});
       $definition = $tag_defined ? self::$fields->{$tag} : null;
-      $tagToDisplay = $schemaType == 'PICA' ? $this->picaTagLink($tag) : $this->marcTagLink($tag, $definition);
+      $tagToDisplay = $schemaType == 'PICA' ? $this->picaTagLink($tag, false) : $this->marcTagLink($tag, $definition);
       if ($schemaType == 'MARC21' && preg_match('/^00/', $tag)) {
         $rows[] = [$tagToDisplay, '', '', '', $value];
       } else if ($tag == 'LDR') {
@@ -324,7 +324,7 @@ class Record {
       if (!is_null($value) && is_array($value) && !empty($value)) {
         $tagToDisplay = $this->picaTagLink($tag);
         foreach ($value as $instance) {
-          $rows[] = [$tagToDisplay, '', (object)['span' => 3, 'text' => $tagLabel]];
+          $rows[] = [$tagToDisplay, (object)['span' => 4, 'text' => $tagLabel]];
 
           foreach ($instance->subfields as $code => $s_value) {
             $hasCode = $tag_defined && isset($definition->subfields) && isset($definition->subfields->{$code});
@@ -466,10 +466,10 @@ class Record {
     return $tagToDisplay;
   }
 
-  private function picaTagLink($tag) {
+  private function picaTagLink($tag, $pica3=true) {
     $text = $tag;
-    $field = self::$schema->lookup($tag);
-    if (isset($field->pica3))
+    $field = self::$schema->lookup($tag);    
+    if ($pica3 && isset($field->pica3))
       $text .= '=' . $field->pica3;
 
     if (isset($field->url))

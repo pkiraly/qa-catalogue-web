@@ -15,8 +15,8 @@
     {foreach from=$fieldHierarchy key=name item=category}
       <tr class="category">
         <td colspan="2"><h4><i class="fa {$category->icon}" aria-hidden="true" title="{$name}" style="color: black"></i> {$name}</h4></td>
-        <td title"instances" class="text-right">{$category->instancecount|number_format}</td>
-        <td title"records" class="text-right">{$category->recordcount|number_format}</td>
+        <td title="instances" class="text-right">{$category->instancecount|number_format}</td>
+        <td title="records" class="text-right">{$category->recordcount|number_format}</td>
         <td class="chart"><div style="width: {ceil($category->ratio * 200)}px;">&nbsp;</div></td>
         <td class="text-right" title="{$category->percent|number_format:8}%">{$category->percent|number_format:2}%</td>
       </tr>
@@ -42,8 +42,8 @@
                 {/if}
                 <i class="fa fa-chevron-down"  data-id="authority-subfields-{$record->id}" aria-hidden="true" title="show subfields"></i>
               </td>
-              <td title"instances" class="text-right">{$record->instancecount|number_format}</td>
-              <td title"records" class="text-right">{$record->recordcount|number_format}</td>
+              <td title="instances" class="text-right">{$record->instancecount|number_format}</td>
+              <td title="records" class="text-right">{$record->recordcount|number_format}</td>
               <td class="chart"><div style="width: {ceil($record->ratio * 200)}px;">&nbsp;</div></td>
               <td class="text-right" title="{$record->percent|number_format:8}%">{$record->percent|number_format:2}%</td>
             </tr>
