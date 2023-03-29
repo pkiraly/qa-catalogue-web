@@ -13,15 +13,15 @@
       <ul class="nav nav-tabs" id="record-views-{$id}">
         <li class="nav-item">
           <a class="nav-link active" data-toggle="tab" role="tab" aria-selected="true"
-             id="pica-human-tab-{$id}" href="#pica-human-{$id}" aria-controls="pica-human-tab">Record</a>
+             id="pica-human-tab-{$id}" href="#pica-human-{$id}" aria-controls="pica-human-tab">Inhalt</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
-             id="pica-raw-tab-{$id}" href="#pica-raw-{$id}" aria-controls="pica-raw-tab">PICA</a>
+             id="pica-raw-tab-{$id}" href="#pica-raw-{$id}" aria-controls="pica-raw-tab">PICA+</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
-             id="pica-labels-tab-{$id}" href="#pica-labels-{$id}" aria-controls="pica-labels-tab">for humans</a>
+             id="pica-labels-tab-{$id}" href="#pica-labels-{$id}" aria-controls="pica-labels-tab">PICA-Felder</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
@@ -29,7 +29,7 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
-             id="pica-issue-tab-{$id}" href="{$record->issueLink($id)}" aria-controls="pica-issue-tab" data-id="{$id}">issues</a>
+             id="pica-issue-tab-{$id}" href="{$record->issueLink($id)}" aria-controls="pica-issue-tab" data-id="{$id}">{_('Issues')}</a>
         </li>
       </ul>
 

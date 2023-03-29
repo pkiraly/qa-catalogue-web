@@ -695,7 +695,7 @@ td.record-field-label {
 }
 
 .marc-human tr.tag td {
-  padding: 10px;
+  padding: 5px;
 }
 .marc-human .tag-title {
   color: var(--highlight-color);
