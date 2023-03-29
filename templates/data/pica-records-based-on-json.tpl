@@ -21,7 +21,7 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
-             id="pica-labels-tab-{$id}" href="#pica-labels-{$id}" aria-controls="pica-labels-tab">PICA-Felder</a>
+             id="pica-labels-tab-{$id}" href="#pica-labels-{$id}" aria-controls="pica-labels-tab">{_('Fields')}</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
