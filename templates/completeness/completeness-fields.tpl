@@ -116,7 +116,7 @@
         {/foreach}
       {/foreach}
     {else}
-      <tr><td colspan="5">{_'(sorted')}</td></tr>
+      <tr><td colspan="5">{_('sorted')}</td></tr>
       {foreach from=$records item=record}
         <tr>
           <td class="path" id="completeness-{$record->path}">
