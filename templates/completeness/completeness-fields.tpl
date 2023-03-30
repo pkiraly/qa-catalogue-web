@@ -105,7 +105,7 @@
               <td class="percent-of-record">{$record->percent|number_format:2}</td>
               <td class="number-of-instances">{$record->{'number-of-instances'}|number_format}</td>
               <td class="min">{$record->min}</td>
-              <td class="max">{if $record->max != $record->min}{$record->max}{else}={/if}</td>
+              <td class="max">{if $record->max != $record->min}{$record->max}{/if}</td>
               <td class="mean">{if $record->max != $record->min}{$record->mean}{/if}</td>
               <td class="stddev">{if $record->max != $record->min}{$record->stddev}{/if}</td>
             </tr>

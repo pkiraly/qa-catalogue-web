@@ -22,45 +22,41 @@
   </div>
 </div>
 
-{if $catalogue->getSchemaType() != 'PICA'}
-  <p>excluding undefined field issues</p>
-  <div class="row" style="width: 500px; margin: 0 0 0 0">
-    <div class="col-sm" style="margin: 0; padding: 0">
-      <span style="color: #37ba00">{_('records without issues')}</span>
-    </div>
-    <div class="col-sm text-right" style="margin: 0; padding: 0">
-      <span style="color: maroon">{_('with')}</span>
-    </div>
+<p>{_('excluding undefined field issues')}</p>
+<div class="row" style="width: 500px; margin: 0 0 0 0">
+  <div class="col-sm" style="margin: 0; padding: 0">
+    <span style="color: #37ba00">{_('records without issues')}</span>
   </div>
+  <div class="col-sm text-right" style="margin: 0; padding: 0">
+    <span style="color: maroon">{_('with')}</span>
+  </div>
+</div>
 
-  <div style="width: 500px; background-color: maroon">
-    <div style="width: {ceil($topStatistics[2]->goodPercent * 5)}px; background-color: #37ba00; height: 10px;">&nbsp;</div>
-  </div>
+<div style="width: 500px; background-color: maroon">
+  <div style="width: {ceil($topStatistics[2]->goodPercent * 5)}px; background-color: #37ba00; height: 10px;">&nbsp;</div>
+</div>
 
-  <div class="row" style="width: 500px; margin: 0 0 20px 0">
-    <div class="col-sm" style="margin: 0; padding: 0">
-      {$topStatistics[2]->good|number_format:0} ({($topStatistics[2]->goodPercent)|number_format:2}%)
-    </div>
-    <div class="col-sm text-right" style="margin: 0; padding: 0">
-      {$topStatistics[2]->bad|number_format:0} ({$topStatistics[2]->badPercent|number_format:2}%)
-    </div>
+<div class="row" style="width: 500px; margin: 0 0 20px 0">
+  <div class="col-sm" style="margin: 0; padding: 0">
+    {$topStatistics[2]->good|number_format:0} ({($topStatistics[2]->goodPercent)|number_format:2}%)
   </div>
-{/if}
+  <div class="col-sm text-right" style="margin: 0; padding: 0">
+    {$topStatistics[2]->bad|number_format:0} ({$topStatistics[2]->badPercent|number_format:2}%)
+  </div>
+</div>
 
 <table id="issues-table">
   <thead>
     <tr>
       {foreach from=$fieldNames item=field}
-        <th {if in_array($field, ['instances', 'records'])}class="text-right"{/if}>
-          {if field == 'message'}
-            {_('value/explanation')}
-          {else}
-            {$field}
-          {/if}
-        </th>
+        {if in_array($field, ['instances', 'records'])}
+          <th class="text-right">{_($field)}</th>
+        {else}
+          <th></th>
+        {/if}
       {/foreach}
       <th></th>
-      <th>{_('chart')}</th>
+      <th></th>
       <th>%</th>
     </tr>
   </thead>

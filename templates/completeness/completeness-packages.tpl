@@ -1,7 +1,7 @@
 <table>
   <thead>
     <tr>
-      <th>tags</th>
+      <th>{_('Fields')}</th>
       <th></th>
       <th></th>
       <th class="text-right">{_('count')}</th>
