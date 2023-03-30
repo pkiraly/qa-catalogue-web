@@ -20,10 +20,10 @@
       <th colspan="5" class="with-border">{_('occurences')}</th>
     </tr>
     <tr class="second">
-      <th class="left path">{_('path')}</th>
+      <th class="left path"></th>
       <th class="left subfield"></th>
       <th class="left chart"></th>
-      <th class="terms">terms</th>
+      <th class="terms"></th>
       <th class="number-of-record">
         <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'number-of-record')}">{_('count')}</a>
       </th>
@@ -32,16 +32,16 @@
         <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'number-of-instances')}">{_('count')}</a>
       </th>
       <th class="min">
-        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'min')}">min</a>
+        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'min')}">{_('min')}</a>
       </th>
       <th class="max">
-        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'max')}">max</a>
+        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'max')}">{_('max')}</a>
       </th>
       <th class="mean">
-        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'mean')}">mean</a>
+        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'mean')}">⌀</a>
       </th>
       <th class="stddev">
-        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'stddev')}">stddev</a>
+        <a href="?tab=completeness{$controller->getTabSpecificParameters('sort', 'stddev')}">σ</a>
       </th>
     </tr>
   </thead>
@@ -98,7 +98,7 @@
               <td class="chart"><div style="width: {ceil($record->percent * 2)}px;">&nbsp;</div></td>
               <td class="terms">
                 {if isset($record->solr) && !empty($record->solr)}
-                  <a href="{$controller->termsLink($record)}"><img src="styles/list.png" width="20" height="20"></a>
+                  <a href="{$controller->termsLink($record)}" title="{_('terms')}"><img src="styles/list.png" width="20" height="20"></a>
                 {/if}
               </td>
               <td class="number-of-record">{$record->{'number-of-record'}|number_format}</td>
@@ -116,7 +116,7 @@
         {/foreach}
       {/foreach}
     {else}
-      <tr><td colspan="5">sorted</td></tr>
+      <tr><td colspan="5">{_'(sorted')}</td></tr>
       {foreach from=$records item=record}
         <tr>
           <td class="path" id="completeness-{$record->path}">

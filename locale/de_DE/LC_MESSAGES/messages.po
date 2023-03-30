@@ -61,6 +61,10 @@ msgstr "Über"
 # used across multiple tabs
 msgid "Histogram"
 msgstr "Häufigkeitsverteilung"
+msgid "terms"
+msgstr "Werte"
+msgid "sorted"
+msgstr "sortiert"
 
 # completeness
 msgid "completeness_definition"
@@ -77,6 +81,10 @@ msgid "records"
 msgstr "Datensätze"
 msgid "occurences"
 msgstr "Vorkommen"
+msgid "min"
+msgstr "von"
+msgid "max"
+msgstr "bis"
 
 # issues
 msgid "Violations of record format specification"
