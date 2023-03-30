@@ -198,15 +198,17 @@ msgstr "Das Zeichen + weist auf mehrere Vorkommen hin"
 msgid "_ sign denotes space character"
 msgstr "Das Zeichen _ steht für ein Leerzeichen"
 msgid "locally defined subfield"
-msgstr "lokal definiertes Unterfelder"
+msgstr "lokal definiertes Unterfeld"
 msgid "not defined"
 msgstr "unbekannt"
 
 # authority names
 msgid "authorities_definition"
-msgstr "Die Analyse der Autoritätsnamen misst, inwieweit die Katalogeinträge Informationen über Autoritätsnamen (Personen-, Firmen-, Versammlungs-, geografische Namen, einheitliche Titel) in den vom Metadatenschema definierten Datenelementen enthalten. Ein Autoritätsname ist ein einheitlicher Name eines Urhebers, eines Publikationsortes oder sogar eines Subjekts, der mit dem Datensatz verbunden ist. Der Autoritätsname kann ein Freitextschlüsselwort sein oder aus einem kontrollierten Wörterbuch stammen. Neben dem Namen kann das Feld zusätzliche Informationen wie biografische Informationen, Kategorien, die Version des Wörterbuchs, Kennungen und Links enthalten."
+msgstr "Häufigkeit und Art von Normdaten-Verknüpfungen in analysierten Datensätzen"
+msgid "records with authority names"
+msgstr "Datensätze mit Normdaten"
 msgid "Authority schemes"
-msgstr "Regelungen der Behörde"
+msgstr "Authority schemes"  # TODO
 
 # data
 msgid "Search"

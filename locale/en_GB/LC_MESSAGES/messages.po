@@ -208,6 +208,8 @@ msgstr "not defined"
 # authority names
 msgid "authorities_definition"
 msgstr "Authority name analysis measures the degree to which the catalogue records contain information about authority names (personal, corporate, meeting, geographic names, uniform titles) in data elements defined by the metadata schema. Authority name is a uniform name of a creator, publication place or even a subject of the record, which is attached to it. Am authority name might be a free text keyword or it might come from a controlled dictionary. Beside the name the field might contain additional information such as biographical information, categories, version of the dictionary, identifiers and links."
+msgid "records with authority names"
+msgstr "records with authority names"
 msgid "Authority schemes"
 msgstr "Authority schemes"
 

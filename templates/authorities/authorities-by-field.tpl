@@ -7,7 +7,7 @@
       <th class="scheme">{_('Classification/subject headings scheme')}</th>
       <th class="instances">{_('Instances')}</th>
       <th class="records">{_('Records')}</th>
-      <th class="chart">{_('chart')}</th>
+      <th class="chart"></th>
       <th class="chart">%</th>
     </tr>
   </thead>
