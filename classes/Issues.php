@@ -81,8 +81,15 @@ class Issues extends BaseTab {
       $this->readIssuesAjaxByTag($this->categoryId, $this->typeId, $this->order, $this->page, $this->limit);
       $this->assignAjax($smarty);
     } else {
-      if ($this->catalogue->getSchemaType() == 'PICA')
+      if ($this->catalogue->getSchemaType() == 'PICA') {
         $this->hiddenTypes = ['undefined field' => 1];
+        if (!is_null($this->analysisParameters)) {
+          $schemaFile = isset($this->analysisParameters->picaSchemaFile)
+            ? $this->analysisParameters->picaSchemaFile
+            : 'avram-k10plus-title.json';
+          $smarty->assign('schemaFile', $schemaFile);
+        }
+      }
       $this->readCategories();
       $this->readTypes();
       $this->readIssues();

@@ -169,6 +169,8 @@ msgid "filter"
 msgstr "Filter"
 msgid "variants"
 msgstr "Varianten"
+msgid "Download schema file"
+msgstr "Schemadatei herunterladen"
 
 # classifications
 msgid "classifications_definition"

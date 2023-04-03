@@ -8,6 +8,9 @@
 
       <p class="metric-definition">
         {_t('issues_definition', _($catalogue->getMetadataSchema()))}
+        {if $catalogue->getSchemaType() == 'PICA'}
+          ({_('Download schema file')}: <a href="?tab=download&action=download&file={$schemaFile}">{$schemaFile}</a>.)
+        {/if}
       </p>
 
       {include 'common/group-selector.tpl'}

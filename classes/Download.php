@@ -9,9 +9,19 @@ class Download extends BaseTab {
     $this->action = getOrDefault('action', 'list', ['list', 'download']);
     if ($this->action == 'download') {
       $files = [];
-      foreach ($this->listFiles() as $cat => $f) {
-        $files = array_merge($files, array_keys($f));
+      foreach ($this->listFiles() as $cat => $filesInCategory) {
+        $files = array_merge($files, array_keys($filesInCategory));
       }
+      if ($this->catalogue->getSchemaType() == 'PICA') {
+        parent::readAnalysisParameters('validation.params.json');
+        if (!is_null($this->analysisParameters)) {
+          $schemaFile = isset($this->analysisParameters->picaSchemaFile)
+            ? $this->analysisParameters->picaSchemaFile
+            : 'avram-k10plus-title.json';
+          $files[] = $schemaFile;
+        }
+      }
+
       $file = getOrDefault('file', '', $files);
       if ($file != '') {
         $this->output = 'none';
