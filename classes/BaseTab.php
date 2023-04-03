@@ -142,6 +142,7 @@ abstract class BaseTab implements Tab {
   protected function getSolrResponse($params) {
     $solrPath = $this->getIndexName();
     $url = 'http://localhost:8983/solr/' . $solrPath . '/select?' . join('&', $this->encodeSolrParams($params));
+    // error_log($url);
     $solrResponse = json_decode(file_get_contents($url));
     $response = (object)[
       'numFound' => $solrResponse->response->numFound,
@@ -154,6 +155,44 @@ abstract class BaseTab implements Tab {
   }
 
   protected function getFacets($facet, $query, $limit, $offset = 0, $termFilter = '', $filters = []) {
+    $parameters = [
+      'q=' . $query,
+      'facet=on',
+      'facet.limit=' . $limit,
+      'facet.offset=' . $offset,
+      'facet.field=' . $facet,
+      'facet.mincount=1',
+      'core=' . $this->db,
+      'rows=0',
+      'wt=json',
+      'json.nl=map',
+    ];
+    if (!empty($termFilter)) {
+      $parameters[] = sprintf('f.%s.facet.contains=%s', $facet, $termFilter);
+      $parameters[] = sprintf('f.%s.facet.contains.ignoreCase=true', $facet);
+    }
+    if (!empty($filters))
+      foreach ($filters as $filter)
+        $parameters[] = 'fq=' . $filter;
+
+    $response = $this->getSolrResponse($parameters);
+    return $response->facets;
+  }
+
+  protected function countFacets($facet, $query, $termFilter = '', $filters = []) {
+    $limit = 1000;
+    $offset = 0;
+    $total = 0;
+    do {
+      $facets = $this->countFacets2($facet, $query, $limit, $offset, $termFilter, $filters);
+      $count = count((array) $facets->{$facet});
+      $total += $count;
+      $offset += $limit;
+    } while ($count == $limit);
+
+    return $total;
+  }
+  protected function countFacets2($facet, $query, $limit, $offset = 0, $termFilter = '', $filters = []) {
     $parameters = [
       'q=' . $query,
       'facet=on',

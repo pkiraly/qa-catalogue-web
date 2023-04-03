@@ -41,6 +41,9 @@
             </div>
           {/if}
       {/if}
+
+      <p class="terms-count" style="display: none">{_('number of terms')}: <strong id="terms-count"></strong></p>
+
       <div id="terms-content">
         {include 'marc-facets.tpl'}
       </div>
@@ -51,4 +54,14 @@
     </div>
   </div>
 </div>
+<script>
+$(function() {
+  var url = "{$controller->getCountUrl()}";
+  $.ajax(url)
+    .done(function (result) {
+      $('#terms-count').html(result);
+      $('p.terms-count').show();
+    });
+});
+</script>
 {include 'common/html-footer.tpl'}

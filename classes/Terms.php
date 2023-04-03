@@ -30,7 +30,7 @@ class Terms extends Facetable {
     $this->termFilter = getOrDefault('termFilter', '');
     $this->ajaxFacet = getOrDefault('ajax', 0, [0, 1]);
     $this->facetLimit = getOrDefault('limit', 100, [10, 25, 50, 100]);
-    $this->action = getOrDefault('action', 'list', ['list', 'download', 'fields']);
+    $this->action = getOrDefault('action', 'list', ['list', 'download', 'fields', 'term-count']);
 
     $this->params = [
       'facet' => $this->facet,
@@ -67,6 +67,9 @@ class Terms extends Facetable {
     if ($this->action == 'download') {
       $this->output = 'none';
       $this->download($facets);
+    } else if ($this->action == 'term-count') {
+      $this->output = 'none';
+      echo number_format($this->getCount());
     } else if ($this->action == 'fields') {
       $term = getOrDefault('term', '');
       $this->output = 'none';
@@ -100,6 +103,7 @@ class Terms extends Facetable {
       }
 
       $smarty->assign('facets',    $facets);
+      $smarty->assign('count',     $count);
       $smarty->assign('label',     $this->resolveSolrField($this->facet));
       $smarty->assign('basicFacetParams', ['tab=data', 'query=' . $this->query]);
       $smarty->assign('prevLink',  $this->createPrevLink());
@@ -137,6 +141,10 @@ class Terms extends Facetable {
 
   private function createTermList() {
     return $this->getFacets($this->facet, $this->query, $this->facetLimit, $this->offset, $this->termFilter, $this->filters);
+  }
+
+  private function getCount() {
+    return $this->countFacets($this->facet, $this->query, $this->termFilter, $this->filters);
   }
 
   private function createPrevLink() {
@@ -190,5 +198,18 @@ class Terms extends Facetable {
     $fieldNames = $this->getSolrFields();
     sort($fieldNames);
     return $fieldNames;
+  }
+
+  public function getCountUrl() {
+    $params = ['tab=terms', 'action=term-count', 'ajax=1'];
+    foreach ($this->params as $k => $v) {
+      if (is_array($v)) {
+        foreach ($v as $value)
+          $params[] = sprintf("%s[]=%s", $k, urlencode($value));
+      } else {
+        $params[] = sprintf("%s=%s", $k, urlencode($v));
+      }
+    }
+    return '?' . join('&', $params);
   }
 }
