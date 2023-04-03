@@ -3,8 +3,14 @@
 
 <svg class="histogram-chart" width="960" height="300"></svg>
 <ul>
-  <li>y: number of records</li>
-  <li>x: number of subjects in one record</li>
+  <li>
+    {if $catalogue->getSchemaType() == 'MARC21'}
+      {_('x: number of subjects per record')}
+    {elseif $catalogue->getSchemaType() == 'PICA'}
+      {_('x: number of subject fields per record')}
+    {/if}
+  </li>
+  <li>{_('y: number of records')}</li>
 </ul>
 <script src="js/histogram.js" type="text/javascript"></script>
 <script>

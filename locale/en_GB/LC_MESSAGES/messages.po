@@ -204,6 +204,12 @@ msgid "locally defined subfield"
 msgstr "locally defined subfield"
 msgid "not defined"
 msgstr "not defined"
+msgid "x: number of subjects per record"
+msgstr "x: number of subjects per record"
+msgid "x: number of subject fields per record"
+msgstr "x: number of subject fields per record"
+msgid "y: number of records"
+msgstr "y: number of records"
 
 # authority names
 msgid "authorities_definition"
@@ -212,6 +218,10 @@ msgid "records with authority names"
 msgstr "records with authority names"
 msgid "Authority schemes"
 msgstr "Authority schemes"
+msgid "x: number of authority names per record"
+msgstr "x: number of authority names per record"
+msgid "x: number of authority name field per record"
+msgstr "x: number of authority name field per record"
 
 # data
 msgid "Search"

@@ -201,6 +201,12 @@ msgid "locally defined subfield"
 msgstr "lokal definiertes Unterfeld"
 msgid "not defined"
 msgstr "unbekannt"
+msgid "x: number of subjects per record"
+msgstr "x: Anzahl der Sacherschließung pro Datensatz"
+msgid "x: number of subject fields per record"
+msgstr "x: Anzahl der Sachfelder pro Datensatz"
+msgid "y: number of records"
+msgstr "y: Anzahl der Datensätze"
 
 # authority names
 msgid "authorities_definition"
@@ -209,6 +215,10 @@ msgid "records with authority names"
 msgstr "Datensätze mit Normdaten"
 msgid "Authority schemes"
 msgstr "Authority schemes"  # TODO
+msgid "x: number of authority names per record"
+msgstr "x: Anzahl der Behördennamen pro Datensatz"
+msgid "x: number of authority name field per record"
+msgstr "x: Anzahl der Felder für die Bezeichnung der Behörde pro Datensatz"
 
 # data
 msgid "Search"
