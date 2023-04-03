@@ -24,6 +24,8 @@ class Data extends Facetable {
   public $groupped = false;
   public $groupId = false;
   public $groupBy = false;
+  public $params;
+  public $action;
 
   public function __construct($configuration, $db) {
     parent::__construct($configuration, $db);
@@ -34,10 +36,20 @@ class Data extends Facetable {
     $this->start = (int) getOrDefault('start', 0);
     $this->rows = (int) getOrDefault('rows', 10, $this->itemsPerPageSelectors);
     $this->type = getOrDefault('type', 'solr', ['solr', 'issues']);
+    $this->action = getOrDefault('action', 'list', ['list', 'download']);
     $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
     if ($this->groupped)
       $this->groupBy = $this->analysisParameters->groupBy;
     $this->groupId = getOrDefault('groupId', 'all');
+
+    $this->params = [
+      'facet' => $this->facet,
+      'query' => $this->query,
+      'filters' => $this->filters,
+      'scheme' => $this->scheme,
+      'lang' => $this->lang,
+      'type' => $this->type,
+    ];
 
     $this->parameters = [
       'wt=json',
@@ -51,31 +63,11 @@ class Data extends Facetable {
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
-
-    $smarty->assign('query', $this->query);
-    $smarty->assign('start', $this->start);
-    $smarty->assign('rows', $this->rows);
-    $smarty->assign('facetLimit', $this->facetLimit);
-    $smarty->assign('filters', $this->getFilters());
-    $smarty->assign('offset', $this->offset);
-    if ($this->groupped)
-      $smarty->assign('groupId', $this->groupId);
-
-    $solrParams = $this->buildParameters();
-    $smarty->assign('solrUrl', join('&', $solrParams));
-    $response = $this->getSolrResponse($solrParams);
-    if (is_null($this->numFound)) {
-      $this->numFound = $response->numFound;
+    if ($this->action == 'download') {
+      $this->download();
+    } else {
+      $this->list($smarty);
     }
-    $smarty->assign('numFound', $this->numFound);
-    $smarty->assign('docs', $response->docs);
-    $smarty->assign('facets', $response->facets);
-    $smarty->assign('itemsPerPage', $this->getItemPerPage());
-    $smarty->assign('prevNextLinks', $this->createPrevNextLinks($this->numFound));
-    $smarty->assign('basicFacetParams', $this->getBasicUrl());
-    $smarty->assign('ajaxFacet', $this->ajaxFacet);
-
-    $smarty->assign('schemaType', $this->catalogue->getSchemaType());
   }
 
   public function getTemplate() {
@@ -118,7 +110,6 @@ class Data extends Facetable {
       $solrParams[] = 'q=' . $this->query;
       $solrParams[] = 'start=' . $this->start;
     }
-
 
     $solrParams = array_merge($solrParams, $this->parameters);
     $solrParams = array_merge($solrParams, $this->buildFacetParameters());
@@ -324,5 +315,97 @@ class Data extends Facetable {
       $recordIds[] = $row['id'];
     }
     return $recordIds;
+  }
+
+  public function getDownloadLink() {
+    $params = ['tab=data', 'action=download'];
+    foreach ($this->params as $k => $v) {
+      if (is_array($v)) {
+        foreach ($v as $value)
+          $params[] = sprintf("%s[]=%s", $k, urlencode($value));
+      } else {
+        $params[] = sprintf("%s=%s", $k, urlencode($v));
+      }
+    }
+    return '?' . join('&', $params);
+  }
+
+  /**
+   * @param Smarty $smarty
+   * @return void
+   */
+  private function list(Smarty $smarty): void {
+    $smarty->assign('query', $this->query);
+    $smarty->assign('start', $this->start);
+    $smarty->assign('rows', $this->rows);
+    $smarty->assign('facetLimit', $this->facetLimit);
+    $smarty->assign('filters', $this->getFilters());
+    $smarty->assign('offset', $this->offset);
+    if ($this->groupped)
+      $smarty->assign('groupId', $this->groupId);
+
+    $solrParams = $this->buildParameters();
+    $smarty->assign('solrUrl', join('&', $solrParams));
+    $response = $this->getSolrResponse($solrParams);
+    if (is_null($this->numFound)) {
+      $this->numFound = $response->numFound;
+    }
+    $smarty->assign('numFound', $this->numFound);
+    $smarty->assign('docs', $response->docs);
+    $smarty->assign('facets', $response->facets);
+    $smarty->assign('itemsPerPage', $this->getItemPerPage());
+    $smarty->assign('prevNextLinks', $this->createPrevNextLinks($this->numFound));
+    $smarty->assign('basicFacetParams', $this->getBasicUrl());
+    $smarty->assign('ajaxFacet', $this->ajaxFacet);
+
+    $smarty->assign('schemaType', $this->catalogue->getSchemaType());
+  }
+
+  /**
+   * @return void
+   */
+  private function download(): void {
+    $this->output = 'none';
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: ' . sprintf('attachment; filename="%s"', 'ids.csv'));
+    echo 'identifier', "\n";
+    $total = 0;
+    $start = 0;
+    $rows = 1000;
+    do {
+      $solrParams = $this->buildParametersForDownload($start, $rows);
+      $response = $this->getSolrResponse($solrParams);
+      foreach ($response->docs as $doc) {
+        echo $doc->id, "\n";
+        $total++;
+      }
+      $start += $rows;
+    } while($total < $response->numFound);
+  }
+
+  private function buildParametersForDownload($start = 0, $rows = 1000) {
+    $solrParams = [
+      'start=' . $start,
+      'rows=' . $rows,
+      'core=' . $this->db,
+      'fl=id',
+    ];
+
+    if ($this->type == 'issues') {
+      if (preg_match('/^(categoryId|typeId|errorId):(\d+)$/', $this->query, $matches)) {
+        $recordIds = $this->prepareParametersForIssueQueries($matches);
+        $query = 'id:("' . join('" OR "', $recordIds) . '")';
+        $solrParams[] = 'q=' . urlencode($query);
+      }
+    } else {
+      $solrParams[] = 'q=' . $this->query;
+    }
+
+    $solrParams = array_merge($solrParams, $this->parameters);
+    if (count($this->filters) > 0)
+      foreach ($this->filters as $filter)
+        $solrParams[] = 'fq=' . $filter;
+
+    return $solrParams;
   }
 }

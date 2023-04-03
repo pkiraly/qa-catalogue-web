@@ -42,7 +42,7 @@
           {/if}
       {/if}
 
-      <p class="terms-count" style="display: none">{_('number of terms')}: <strong id="terms-count"></strong></p>
+      <p class="terms-count" style="display: none">{_('number of distinct values')}: <strong id="terms-count"></strong></p>
 
       <div id="terms-content">
         {include 'marc-facets.tpl'}

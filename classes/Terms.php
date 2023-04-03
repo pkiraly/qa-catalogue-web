@@ -63,8 +63,8 @@ class Terms extends Facetable {
     $smarty->assign('ajaxFacet', $this->ajaxFacet);
     $smarty->assign('params',    $this->params);
 
-    $facets = $this->createTermList();
     if ($this->action == 'download') {
+      $facets = $this->createTermList();
       $this->output = 'none';
       $this->download($facets);
     } else if ($this->action == 'term-count') {
@@ -93,6 +93,7 @@ class Terms extends Facetable {
       }
       print json_encode($fields);
     } else {
+      $facets = $this->createTermList();
       if ($this->groupped) {
         $this->groups = $this->readGroups();
         $this->currentGroup = $this->selectCurrentGroup();
@@ -103,7 +104,6 @@ class Terms extends Facetable {
       }
 
       $smarty->assign('facets',    $facets);
-      $smarty->assign('count',     $count);
       $smarty->assign('label',     $this->resolveSolrField($this->facet));
       $smarty->assign('basicFacetParams', ['tab=data', 'query=' . $this->query]);
       $smarty->assign('prevLink',  $this->createPrevLink());
@@ -114,6 +114,7 @@ class Terms extends Facetable {
 
       // if ($this->facet == '' && $this->query == '')
       $smarty->assign('solrFields', $this->getFields());
+      error_log('done');
     }
   }
 
@@ -201,7 +202,7 @@ class Terms extends Facetable {
   }
 
   public function getCountUrl() {
-    $params = ['tab=terms', 'action=term-count', 'ajax=1'];
+    $params = ['tab=terms', 'action=term-count'];
     foreach ($this->params as $k => $v) {
       if (is_array($v)) {
         foreach ($v as $value)

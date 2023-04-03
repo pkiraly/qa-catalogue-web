@@ -241,6 +241,8 @@ msgid "make it the main query"
 msgstr "es zur Hauptabfrage machen"
 msgid "check other terms of this field"
 msgstr "andere Bedingungen für dieses Feld prüfen"
+msgid "download identifiers"
+msgstr "Kennungen herunterladen"
 
 # used at multiple places
 msgid "with"
@@ -283,6 +285,8 @@ msgid "query"
 msgstr "Abfrage"
 msgid "filters"
 msgstr "Filtern"
+msgid "number of distinct values"
+msgstr "Anzahl der unterschiedlichen Werte"
 
 # Collocations tab
 msgid "Collocation of field values"

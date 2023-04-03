@@ -81,7 +81,7 @@
               <div class="col-8" id="prev-next-footer">
                 {include 'data/data-bold-links.tpl' items=$prevNextLinks}
               </div>
-              <div class="col-4"></div>
+              <div class="col-4 text-right"><a href="{$controller->getDownloadLink()}">{_('download identifiers')}</a></div>
             </div>
             <div id="solr-url">{htmlentities($solrUrl)}</div>
           </div>

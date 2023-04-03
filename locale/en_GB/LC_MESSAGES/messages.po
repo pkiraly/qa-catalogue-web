@@ -244,6 +244,8 @@ msgid "make it the main query"
 msgstr "make it the main query"
 msgid "check other terms of this field"
 msgstr "check other terms of this field"
+msgid "download identifiers"
+msgstr "download identifiers"
 
 # used at multiple places
 msgid "with"
@@ -286,6 +288,8 @@ msgid "query"
 msgstr "query"
 msgid "filters"
 msgstr "filters"
+msgid "number of distinct values"
+msgstr "number of distinct values"
 
 # Collocations tab
 msgid "Collocation of field values"
