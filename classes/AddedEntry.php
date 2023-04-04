@@ -83,7 +83,6 @@ class AddedEntry extends BaseTab {
         }
       }
       $smarty->assign('hasElements', TRUE);
-      error_log('elements: ' . json_encode($elements));
       $smarty->assign('elements', $elements);
     } else {
       $smarty->assign('hasElements', FALSE);

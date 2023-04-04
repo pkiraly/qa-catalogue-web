@@ -54,20 +54,23 @@ function readCsv($csvFile, $id = '') {
     $lineNumber = 0;
     $header = [];
 
-    foreach (file($csvFile) as $line) {
-      $lineNumber++;
-      $values = str_getcsv($line);
-      if ($lineNumber == 1) {
-        $header = $values;
-      } else {
-        if (count($header) != count($values)) {
-          error_log(sprintf('error in %s line #%d: %d vs %d', $csvFile, $lineNumber, count($header), count($values)));
-        }
-        $record = (object)array_combine($header, $values);
-        if ($id != '' && isset($record->{$id})) {
-          $records[$record->{$id}] = $record;
+    $handle = fopen($csvFile, "r");
+    if ($handle) {
+      while (($line = fgets($handle)) !== false) {
+        $lineNumber++;
+        $values = str_getcsv($line);
+        if ($lineNumber == 1) {
+          $header = $values;
         } else {
-          $records[] = $record;
+          if (count($header) != count($values)) {
+            error_log(sprintf('error in %s line #%d: %d vs %d', $csvFile, $lineNumber, count($header), count($values)));
+          }
+          $record = (object)array_combine($header, $values);
+          if ($id != '' && isset($record->{$id})) {
+            $records[$record->{$id}] = $record;
+          } else {
+            $records[] = $record;
+          }
         }
       }
     }

@@ -93,43 +93,45 @@ class Completeness extends BaseTab {
       $lineNumber = 0;
       $header = [];
 
-      $fieldDefinitions = json_decode(file_get_contents('schemas/marc-schema-with-solr-and-extensions.json'));
-
-      foreach (file($elementsFile) as $line) {
-        $lineNumber++;
-        $values = str_getcsv($line);
-        if ($lineNumber == 1) {
-          $header = $values;
-        } else {
-          if (count($header) != count($values)) {
-            error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
-            error_log($line);
-          }
-          $record = (object)array_combine($header, $values);
-
-          if (isset($record->documenttype) && $record->documenttype != $this->type)
-            continue;
-
-          if ($this->groupped && $record->group != $this->groupId)
-            continue;
-
-          $record->packageid = (int) $record->packageid;
-          $this->packageIndex[$record->packageid] = $record->iscoretag == 'true'
-            ? $record->name . ': ' . $record->label
-            : $record->label;
-
-          $this->max = max($this->max, $record->count);
-          // $record->percent = $record->count * 100 / $this->count;
-          if ($record->label == '') {
-            $record->iscoretag = false;
-          }
-          if (isset($record->iscoretag) && $record->iscoretag === "true") {
-            $record->iscoretag = true;
+      // $fieldDefinitions = json_decode(file_get_contents('schemas/marc-schema-with-solr-and-extensions.json'));
+      $handle = fopen($elementsFile, "r");
+      if ($handle) {
+        while (($line = fgets($handle)) !== false) {
+          $lineNumber++;
+          $values = str_getcsv($line);
+          if ($lineNumber == 1) {
+            $header = $values;
           } else {
-            $this->hasNonCoreTags = TRUE;
-            $record->iscoretag = false;
+            if (count($header) != count($values)) {
+              error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
+              error_log($line);
+            }
+            $record = (object)array_combine($header, $values);
+
+            if (isset($record->documenttype) && $record->documenttype != $this->type)
+              continue;
+
+            if ($this->groupped && $record->group != $this->groupId)
+              continue;
+
+            $record->packageid = (int)$record->packageid;
+            $this->packageIndex[$record->packageid] = $record->iscoretag == 'true'
+              ? $record->name . ': ' . $record->label
+              : $record->label;
+
+            $this->max = max($this->max, $record->count);
+            // $record->percent = $record->count * 100 / $this->count;
+            if ($record->label == '') {
+              $record->iscoretag = false;
+            }
+            if (isset($record->iscoretag) && $record->iscoretag === "true") {
+              $record->iscoretag = true;
+            } else {
+              $this->hasNonCoreTags = TRUE;
+              $record->iscoretag = false;
+            }
+            $this->packages[] = $record;
           }
-          $this->packages[] = $record;
         }
       }
       foreach ($this->packages as $package)
@@ -188,100 +190,103 @@ class Completeness extends BaseTab {
       $prevControlField = '';
 
       $fieldDefinitions = json_decode(file_get_contents('schemas/marc-schema-with-solr-and-extensions.json'));
-      foreach (file($elementsFile) as $line) {
-        $lineNumber++;
-        $values = str_getcsv($line);
-        if ($lineNumber == 1) {
-          $header = $values;
-        } else {
-          if (count($header) != count($values)) {
-            error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
-                              $elementsFile, $lineNumber, count($header), count($values)));
-            error_log($line);
-          }
-          $record = (object)array_combine($header, $values);
-
-          if (!in_array($record->documenttype, $this->types))
-            $this->types[] = $record->documenttype;
-
-          if (isset($record->documenttype) && $record->documenttype != $this->type)
-            continue;
-
-          if ($this->groupped && $record->groupId != $this->groupId)
-            continue;
-
-          // $this->max = max($this->max, $record->{'number-of-record'});
-          $record->{'number-of-record'} = $record->{'number-of-record'} == '' ? 0 : $record->{'number-of-record'};
-          $record->mean = sprintf('%.2f', $record->mean);
-          $record->stddev = sprintf('%.2f', $record->stddev);
-          $record->percent = $record->{'number-of-record'} * 100 / $this->max;
-
-          $histogram = new stdClass();
-          if ($record->histogram != '') {
-            foreach (explode('; ', $record->histogram) as $entry) {
-              list($k,$v) = explode('=', $entry);
-              $histogram->$k = $v;
-            }
-          }
-          $record->histogram = $histogram;
-          $record->solr = $this->getSolrField($record->path);
-
-          if ($this->catalogue->getSchemaType() == 'MARC21' && preg_match('/^(leader|00.)(.+)$/', $record->path, $matches)) {
-            $tag = $matches[1];
-            $record->isField = false;
+      $handle = fopen($elementsFile, "r");
+      if ($handle) {
+        while (($line = fgets($handle)) !== false) {
+          $lineNumber++;
+          $values = str_getcsv($line);
+          if ($lineNumber == 1) {
+            $header = $values;
           } else {
-            $parts = explode('$', $record->path, 2);
-            $record->isField = count($parts) == 1;
-            $tag = $parts[0];
-            if (!$record->isField)
-              $this->subfieldCode = $parts[1];
-          }
-          $record->extractedTag = $tag;
-          $record->websafeTag = $this->safe($tag);
-          $definition = SchemaUtil::getDefinition($tag);
-
-          $record->isLeader = false;
-          $record->isComplexControlField = in_array($tag, $complexControlFields);
-
-          if ($record->isComplexControlField) {
-            if (preg_match('/^...([a-zA-Z]+)(\d+)$/', $record->path, $matches)) {
-              $record->complexType = $matches[1];
-              $record->complexPosition = $matches[2];
-              if ($tag == '007')
-                $record->complexType = $types007[$record->complexType];
-              else
-                $record->complexType = $types008[$record->complexType];
+            if (count($header) != count($values)) {
+              error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
+                $elementsFile, $lineNumber, count($header), count($values)));
+              error_log($line);
             }
-          } elseif (preg_match('/^leader(..)$/', $record->path, $matches)) {
-            $record->isLeader = true;
-            $record->complexPosition = $matches[1];
-          }
+            $record = (object)array_combine($header, $values);
 
-          if ($record->package == '')
-            $record->package = 'other';
+            if (!in_array($record->documenttype, $this->types))
+              $this->types[] = $record->documenttype;
 
-          $pica3 = ($definition != null && isset($definition->pica3) ? '=' . $definition->pica3 : '');
-          if ($record->tag == '') {
-            // $record->tag = substr($record->path, 0, $position);
-            $record->tag = $tag . $pica3;
-          } elseif (!$record->isLeader) {
-            // $record->tag = substr($record->path, 0, $position) . ' &mdash; ' . $record->tag;
-            $record->tag = $tag . $pica3 . ' &mdash; ' . $record->tag;
-          }
+            if (isset($record->documenttype) && $record->documenttype != $this->type)
+              continue;
 
-          $record->packageid = (int) $record->packageid;
-          if (!isset($this->records[$record->packageid]))
-            $this->records[$record->packageid] = [];
+            if ($this->groupped && $record->groupId != $this->groupId)
+              continue;
 
-          if (!isset($this->records[$record->packageid][$record->tag])) {
-            if ($record->tag == 'Leader') {
-              $this->records[$record->packageid] = array_merge([$record->tag => []], $this->records[$record->packageid]);
+            // $this->max = max($this->max, $record->{'number-of-record'});
+            $record->{'number-of-record'} = $record->{'number-of-record'} == '' ? 0 : $record->{'number-of-record'};
+            $record->mean = sprintf('%.2f', $record->mean);
+            $record->stddev = sprintf('%.2f', $record->stddev);
+            $record->percent = $record->{'number-of-record'} * 100 / $this->max;
+
+            $histogram = new stdClass();
+            if ($record->histogram != '') {
+              foreach (explode('; ', $record->histogram) as $entry) {
+                list($k, $v) = explode('=', $entry);
+                $histogram->$k = $v;
+              }
+            }
+            $record->histogram = $histogram;
+            $record->solr = $this->getSolrField($record->path);
+
+            if ($this->catalogue->getSchemaType() == 'MARC21' && preg_match('/^(leader|00.)(.+)$/', $record->path, $matches)) {
+              $tag = $matches[1];
+              $record->isField = false;
             } else {
-              $this->records[$record->packageid][$record->tag] = [];
+              $parts = explode('$', $record->path, 2);
+              $record->isField = count($parts) == 1;
+              $tag = $parts[0];
+              if (!$record->isField)
+                $this->subfieldCode = $parts[1];
             }
-          }
+            $record->extractedTag = $tag;
+            $record->websafeTag = $this->safe($tag);
+            $definition = SchemaUtil::getDefinition($tag);
 
-          $this->records[$record->packageid][$record->tag][] = $record;
+            $record->isLeader = false;
+            $record->isComplexControlField = in_array($tag, $complexControlFields);
+
+            if ($record->isComplexControlField) {
+              if (preg_match('/^...([a-zA-Z]+)(\d+)$/', $record->path, $matches)) {
+                $record->complexType = $matches[1];
+                $record->complexPosition = $matches[2];
+                if ($tag == '007')
+                  $record->complexType = $types007[$record->complexType];
+                else
+                  $record->complexType = $types008[$record->complexType];
+              }
+            } elseif (preg_match('/^leader(..)$/', $record->path, $matches)) {
+              $record->isLeader = true;
+              $record->complexPosition = $matches[1];
+            }
+
+            if ($record->package == '')
+              $record->package = 'other';
+
+            $pica3 = ($definition != null && isset($definition->pica3) ? '=' . $definition->pica3 : '');
+            if ($record->tag == '') {
+              // $record->tag = substr($record->path, 0, $position);
+              $record->tag = $tag . $pica3;
+            } elseif (!$record->isLeader) {
+              // $record->tag = substr($record->path, 0, $position) . ' &mdash; ' . $record->tag;
+              $record->tag = $tag . $pica3 . ' &mdash; ' . $record->tag;
+            }
+
+            $record->packageid = (int)$record->packageid;
+            if (!isset($this->records[$record->packageid]))
+              $this->records[$record->packageid] = [];
+
+            if (!isset($this->records[$record->packageid][$record->tag])) {
+              if ($record->tag == 'Leader') {
+                $this->records[$record->packageid] = array_merge([$record->tag => []], $this->records[$record->packageid]);
+              } else {
+                $this->records[$record->packageid][$record->tag] = [];
+              }
+            }
+
+            $this->records[$record->packageid][$record->tag][] = $record;
+          }
         }
       }
 

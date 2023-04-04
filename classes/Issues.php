@@ -127,47 +127,50 @@ class Issues extends BaseTab {
     if (file_exists($elementsFile)) {
       $header = [];
 
-      foreach (file($elementsFile) as $line) {
-        $lineNumber++;
-        $values = str_getcsv($line);
-        if ($lineNumber == 1) {
-          $header = $values;
-          $i = ($this->groupped) ? 2 : 1;
-          $header[$i] = 'path';
-        } else {
-          if (count($header) != count($values)) {
-            error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
-              $elementsFile, $lineNumber, count($header), count($values)));
+      $handle = fopen($elementsFile, "r");
+      if ($handle) {
+        while (($line = fgets($handle)) !== false) {
+          $lineNumber++;
+          $values = str_getcsv($line);
+          if ($lineNumber == 1) {
+            $header = $values;
+            $i = ($this->groupped) ? 2 : 1;
+            $header[$i] = 'path';
+          } else {
+            if (count($header) != count($values)) {
+              error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
+                $elementsFile, $lineNumber, count($header), count($values)));
+            }
+            $record = (object)array_combine($header, $values);
+
+            if ($this->groupped && $record->groupId != $this->groupId)
+              continue;
+
+            $this->injectPica3($record);
+            $typeId = $record->typeId;
+            unset($record->categoryId);
+            unset($record->typeId);
+            unset($record->type);
+            $record->ratio = $record->records / $this->count;
+            $record->percent = $record->ratio * 100;
+
+            $record->url = str_replace('https://www.loc.gov/marc/bibliographic/', '', $record->url);
+
+            $record->downloadUrl = $this->downloadLink('errorId=' . $record->id);
+            $record->queryUrl = $this->queryLink('errorId:' . $record->id);
+
+            if (!isset($this->records[$typeId])) {
+              $this->records[$typeId] = [];
+            }
+
+            if ($typeId == 9) { // 'undefined field'
+              $this->records[$typeId][] = $record;
+            } else if (count($this->records[$typeId]) < $this->issueLimit) {
+              $this->records[$typeId][] = $record;
+            }
+
+            $this->types[$typeId]->variantCount++;
           }
-          $record = (object)array_combine($header, $values);
-
-          if ($this->groupped && $record->groupId != $this->groupId)
-            continue;
-
-          $this->injectPica3($record);
-          $typeId = $record->typeId;
-          unset($record->categoryId);
-          unset($record->typeId);
-          unset($record->type);
-          $record->ratio = $record->records / $this->count;
-          $record->percent = $record->ratio * 100;
-
-          $record->url = str_replace('https://www.loc.gov/marc/bibliographic/', '', $record->url);
-
-          $record->downloadUrl = $this->downloadLink('errorId=' . $record->id);
-          $record->queryUrl = $this->queryLink('errorId:' . $record->id);
-
-          if (!isset($this->records[$typeId])) {
-            $this->records[$typeId] = [];
-          }
-
-          if ($typeId == 9) { // 'undefined field'
-            $this->records[$typeId][] = $record;
-          } else if (count($this->records[$typeId]) < $this->issueLimit) {
-            $this->records[$typeId][] = $record;
-          }
-
-          $this->types[$typeId]->variantCount++;
         }
       }
       foreach ($this->types as $typeId => $type) {
@@ -207,27 +210,30 @@ class Issues extends BaseTab {
       // control subfield: invalid value
       $header = [];
       $count = 0;
-      foreach (file($elementsFile) as $line) {
-        $lineNumber++;
-        $values = str_getcsv($line);
-        if ($lineNumber == 1) {
-          $header = $values;
-          $header[1] = 'path';
-        } else {
-          if (count($header) != count($values)) {
-            error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
-          }
-          $record = (object)array_combine($header, $values);
-          if (!($record->categoryId == $categoryId && $record->typeId == $typeId))
-            continue;
-          $count++;
-          if ($count < ($page * $limit))
-            continue;
+      $handle = fopen($elementsFile, "r");
+      if ($handle) {
+        while (($line = fgets($handle)) !== false) {
+          $lineNumber++;
+          $values = str_getcsv($line);
+          if ($lineNumber == 1) {
+            $header = $values;
+            $header[1] = 'path';
+          } else {
+            if (count($header) != count($values)) {
+              error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
+            }
+            $record = (object)array_combine($header, $values);
+            if (!($record->categoryId == $categoryId && $record->typeId == $typeId))
+              continue;
+            $count++;
+            if ($count < ($page * $limit))
+              continue;
 
-          $this->processRecord($record);
+            $this->processRecord($record);
 
-          if (count($this->records) < $this->issueLimit) {
-            $this->records[] = $record;
+            if (count($this->records) < $this->issueLimit) {
+              $this->records[] = $record;
+            }
           }
         }
       }
