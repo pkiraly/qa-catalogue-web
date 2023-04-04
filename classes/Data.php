@@ -36,7 +36,7 @@ class Data extends Facetable {
     $this->start = (int) getOrDefault('start', 0);
     $this->rows = (int) getOrDefault('rows', 10, $this->itemsPerPageSelectors);
     $this->type = getOrDefault('type', 'solr', ['solr', 'issues']);
-    $this->action = getOrDefault('action', 'list', ['list', 'download']);
+    $this->action = getOrDefault('action', 'search', ['search', 'download']);
     $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
     if ($this->groupped)
       $this->groupBy = $this->analysisParameters->groupBy;
@@ -62,11 +62,11 @@ class Data extends Facetable {
   }
 
   public function prepareData(Smarty &$smarty) {
-    parent::prepareData($smarty);
     if ($this->action == 'download') {
-      $this->download();
+      $this->downloadAction();
     } else {
-      $this->list($smarty);
+      parent::prepareData($smarty);
+      $this->searchAction($smarty);
     }
   }
 
@@ -334,7 +334,7 @@ class Data extends Facetable {
    * @param Smarty $smarty
    * @return void
    */
-  private function list(Smarty $smarty): void {
+  private function searchAction(Smarty $smarty): void {
     $smarty->assign('query', $this->query);
     $smarty->assign('start', $this->start);
     $smarty->assign('rows', $this->rows);
@@ -362,13 +362,13 @@ class Data extends Facetable {
   }
 
   /**
+   * Create a list of identifiers of the found records, and make it downloadable
    * @return void
    */
-  private function download(): void {
+  private function downloadAction(): void {
     $this->output = 'none';
     header('Content-Type: text/csv; charset=utf-8');
-    header('Content-Disposition: ' . sprintf('attachment; filename="%s"', 'ids.csv'));
-    echo 'identifier', "\n";
+    header('Content-Disposition: ' . sprintf('attachment; filename="%s"', 'identifiers.csv'));
     $total = 0;
     $start = 0;
     $rows = 1000;

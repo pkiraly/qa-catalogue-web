@@ -54,7 +54,9 @@
               <div class="col-8">
                 {_t('Found %s records', $numFound|number_format)}
               </div>
-              <div class="col-4" id="message"></div>
+              <div class="col-4 text-right" id="message">
+                <a href="{$controller->getDownloadLink()}" title="{_('download identifiers')}"><i class="fa fa-download" aria-hidden="true"></i></a>
+              </div>
             </div>
 
             <div class="row" id="navigation">
@@ -81,7 +83,9 @@
               <div class="col-8" id="prev-next-footer">
                 {include 'data/data-bold-links.tpl' items=$prevNextLinks}
               </div>
-              <div class="col-4 text-right"><a href="{$controller->getDownloadLink()}">{_('download identifiers')}</a></div>
+              <div class="col-4 text-right">
+                <a href="{$controller->getDownloadLink()}" title="{_('download identifiers')}"><i class="fa fa-download" aria-hidden="true"></i></a>
+              </div>
             </div>
             <div id="solr-url">{htmlentities($solrUrl)}</div>
           </div>
