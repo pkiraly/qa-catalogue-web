@@ -110,8 +110,8 @@ function setFacetNavigationClickBehaviour() {
     });
 }
 
-function activateTab(id) {
-  issueTabid = 'marc-issue-' + id;
+function activateTab(type, id) {
+  issueTabid = type + '-issue-' + id;
   $('#details-tab-' + id + ' .tab-pane').each(function() {
     if ($(this).attr('id') == issueTabid) {
       $(this).addClass('active');
@@ -132,7 +132,7 @@ $(document).ready(function() {
     event.preventDefault();
     var id = $(this).attr('data-id');
     var url = $(this).attr('href');
-    activateTab(id);
+    activateTab('marc', id);
     $.ajax(url)
       .done(function(result) {
         $('#marc-issue-' + id).html(result);
@@ -143,7 +143,7 @@ $(document).ready(function() {
     event.preventDefault();
     var id = $(this).attr('data-id');
     var url = $(this).attr('href');
-    activateTab(id);
+    activateTab('pica', id);
     $.ajax(url)
      .done(function(result) {
        $('#pica-issue-' + id).html(result);
