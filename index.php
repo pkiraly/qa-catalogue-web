@@ -55,7 +55,7 @@ $tab = createTab($class);
 $tab->prepareData($smarty);
 
 if ($ajax == 1) {
-  if (!is_null($tab->getAjaxTemplate()))
+  if (!is_null($tab->getAjaxTemplate()) && $tab->getOutputType() != 'none')
     $smarty->display($tab->getAjaxTemplate());
 } elseif ($tab->getOutputType() == 'html')
   $smarty->display($tab->getTemplate());

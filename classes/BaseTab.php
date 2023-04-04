@@ -180,7 +180,7 @@ abstract class BaseTab implements Tab {
   }
 
   protected function countFacets($facet, $query, $termFilter = '', $filters = []) {
-    $limit = 1000;
+    $limit = 10000;
     $offset = 0;
     $total = 0;
     do {

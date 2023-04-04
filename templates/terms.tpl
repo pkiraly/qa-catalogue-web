@@ -42,13 +42,12 @@
           {/if}
       {/if}
 
-      <p class="terms-count" style="display: none">{_('number of distinct values')}: <strong id="terms-count"></strong></p>
-
       <div id="terms-content">
         {include 'marc-facets.tpl'}
       </div>
+
       <div>
-        <a href="{$controller->createDownloadLink()}"><i class="fa-solid fa-file-arrow-down"></i></a>
+        <a href="{$controller->createDownloadLink()}"><i class="fa fa-download"></i></a>
         <a href="{$controller->createDownloadLink()}">{_('download this list')}</a>
       </div>
     </div>
@@ -60,7 +59,7 @@ $(function() {
   $.ajax(url)
     .done(function (result) {
       $('#terms-count').html(result);
-      $('p.terms-count').show();
+      $('span.terms-count').show();
     });
 });
 </script>

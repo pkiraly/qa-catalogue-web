@@ -46,75 +46,17 @@ class Terms extends Facetable {
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 
-    $smarty->assign('groupped', $this->groupped);
     if ($this->groupped && $this->groupId != 'all')
       $this->filters[] = $this->getRawGroupQuery();
-    $smarty->assign('currentGroup', $this->currentGroup);
-
-    $smarty->assign('groupId',   $this->groupId);
-    $smarty->assign('facet',     $this->facet);
-    $smarty->assign('query',     $this->query);
-    $smarty->assign('filters',   $this->filters);
-    $smarty->assign('scheme',    $this->scheme);
-
-    $smarty->assign('termFilter',$this->termFilter);
-    $smarty->assign('facetLimit',$this->facetLimit);
-    $smarty->assign('offset',    $this->offset);
-    $smarty->assign('ajaxFacet', $this->ajaxFacet);
-    $smarty->assign('params',    $this->params);
 
     if ($this->action == 'download') {
-      $facets = $this->createTermList();
-      $this->output = 'none';
-      $this->download($facets);
+      $this->downloadAction();
     } else if ($this->action == 'term-count') {
-      $this->output = 'none';
-      echo number_format($this->getCount());
+      $this->termCountAction();
     } else if ($this->action == 'fields') {
-      $term = getOrDefault('term', '');
-      $this->output = 'none';
-      $fileName = $this->getFieldMapFileName();
-      if (!file_exists($fileName)) {
-        $allFields = [];
-        foreach ($this->getFields() as $field) {
-          $label = $this->resolveSolrField($field);
-          $allFields[] = ['label' => $label, 'value' => $field];
-        }
-        file_put_contents($fileName, json_encode($allFields));
-      } else {
-        $allFields = json_decode(file_get_contents($fileName));
-      }
-      $fields = [];
-      foreach ($allFields as $field) {
-        if ($term == ''
-            || strpos(strtoupper($field->label), strtoupper($term)) !== false
-            || strpos(strtoupper($field->value), strtoupper($term)) !== false)
-          $fields[] = ['label' => $field->label, 'value' => $field->value];
-      }
-      print json_encode($fields);
+      $this->fieldsAction();
     } else {
-      $facets = $this->createTermList();
-      if ($this->groupped) {
-        $this->groups = $this->readGroups();
-        $this->currentGroup = $this->selectCurrentGroup();
-        if (isset($this->currentGroup->count))
-          $this->count = $this->currentGroup->count;
-        $smarty->assign('currentGroup', $this->currentGroup);
-        $smarty->assign('groups', $this->groups);
-      }
-
-      $smarty->assign('facets',    $facets);
-      $smarty->assign('label',     $this->resolveSolrField($this->facet));
-      $smarty->assign('basicFacetParams', ['tab=data', 'query=' . $this->query]);
-      $smarty->assign('prevLink',  $this->createPrevLink());
-      if (isset($facets->{$this->facet}))
-        $smarty->assign('nextLink',  $this->createNextLink(get_object_vars($facets->{$this->facet})));
-      else
-        $smarty->assign('nextLink',  '');
-
-      // if ($this->facet == '' && $this->query == '')
-      $smarty->assign('solrFields', $this->getFields());
-      error_log('done');
+      $this->listAction($smarty);
     }
   }
 
@@ -212,5 +154,117 @@ class Terms extends Facetable {
       }
     }
     return '?' . join('&', $params);
+  }
+
+  /**
+   * @return void
+   */
+  private function downloadAction(): void {
+    $this->output = 'none';
+
+    $version = 'v2';
+    if ($version == 'v1') {
+      $facets = $this->createTermList();
+      $this->download($facets);
+    } elseif ($version == 'v2') {
+      $attachment = sprintf('attachment; filename="facet-terms-for-%s-%d-at-%s.csv"', $this->facet, $this->offset, date("Y-m-d"));
+      header('Content-Type: text/csv; charset=utf-8');
+      header('Content-Disposition: ' . $attachment);
+      $out = fopen('php://output', 'w');
+      fputcsv($out, ['term', 'count']);
+      $limit = 1000;
+      $offset = 0;
+      do {
+        $facets = $this->getFacets($this->facet, $this->query, $limit, $offset, $this->termFilter, $this->filters);
+        $i = 0;
+        foreach ($facets as $facet => $values) {
+          foreach ($values as $term => $count) {
+            fputcsv($out, [$term, $count]);
+            $i++;
+          }
+        }
+        $offset += $i;
+      } while ($i == $limit);
+      fclose($out);
+    }
+  }
+
+  /**
+   * @return void
+   */
+  private function termCountAction(): void {
+    $this->output = 'none';
+    echo number_format($this->getCount());
+  }
+
+  /**
+   * @return void
+   */
+  private function fieldsAction(): void {
+    $term = getOrDefault('term', '');
+    $this->output = 'none';
+    $fileName = $this->getFieldMapFileName();
+    if (!file_exists($fileName)) {
+      $allFields = [];
+      foreach ($this->getFields() as $field) {
+        $label = $this->resolveSolrField($field);
+        $allFields[] = ['label' => $label, 'value' => $field];
+      }
+      file_put_contents($fileName, json_encode($allFields));
+    } else {
+      $allFields = json_decode(file_get_contents($fileName));
+    }
+    $fields = [];
+    foreach ($allFields as $field) {
+      if ($term == ''
+        || strpos(strtoupper($field->label), strtoupper($term)) !== false
+        || strpos(strtoupper($field->value), strtoupper($term)) !== false)
+        $fields[] = ['label' => $field->label, 'value' => $field->value];
+    }
+    print json_encode($fields);
+  }
+
+  /**
+   * @param Smarty $smarty
+   * @return void
+   */
+  private function listAction(Smarty $smarty): void {
+    $smarty->assign('groupped', $this->groupped);
+    $smarty->assign('currentGroup', $this->currentGroup);
+
+    $smarty->assign('groupId',   $this->groupId);
+    $smarty->assign('facet',     $this->facet);
+    $smarty->assign('query',     $this->query);
+    $smarty->assign('filters',   $this->filters);
+    $smarty->assign('scheme',    $this->scheme);
+
+    $smarty->assign('termFilter',$this->termFilter);
+    $smarty->assign('facetLimit',$this->facetLimit);
+    $smarty->assign('offset',    $this->offset);
+    $smarty->assign('ajaxFacet', $this->ajaxFacet);
+    $smarty->assign('params',    $this->params);
+
+    $facets = $this->createTermList();
+    if ($this->groupped) {
+      $this->groups = $this->readGroups();
+      $this->currentGroup = $this->selectCurrentGroup();
+      if (isset($this->currentGroup->count))
+        $this->count = $this->currentGroup->count;
+      $smarty->assign('currentGroup', $this->currentGroup);
+      $smarty->assign('groups', $this->groups);
+    }
+
+    $smarty->assign('facets', $facets);
+    $smarty->assign('label', $this->resolveSolrField($this->facet));
+    $smarty->assign('basicFacetParams', ['tab=data', 'query=' . $this->query]);
+    $smarty->assign('prevLink', $this->createPrevLink());
+    if (isset($facets->{$this->facet}))
+      $smarty->assign('nextLink', $this->createNextLink(get_object_vars($facets->{$this->facet})));
+    else
+      $smarty->assign('nextLink', '');
+
+    // if ($this->facet == '' && $this->query == '')
+    $smarty->assign('solrFields', $this->getFields());
+    error_log('done');
   }
 }
