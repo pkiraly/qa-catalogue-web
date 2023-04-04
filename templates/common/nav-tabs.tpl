@@ -19,6 +19,7 @@
           <a class="dropdown-item" href="?tab=serials{$generalParams}"> &nbsp; Carlstone's serials analysis</a>
           <a class="dropdown-item" href="?tab=tt-completeness{$generalParams}"> &nbsp; Thompson—Traill's e-book completeness</a>
           <a class="dropdown-item" href="?tab=shelf-ready-completeness{$generalParams}"> &nbsp; Booth's shelf-ready completeness</a>
+          <a class="dropdown-item" href="?tab=functions{$generalParams}"> &nbsp; Functional analysis</a>
         </div>
       {elseif $catalogue->getSchemaType() == 'PICA'}
         <a class="nav-link1 {if $tab == 'completeness'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
@@ -31,13 +32,6 @@
          id="issues-tab" aria-controls="issues"
          href="?tab=issues{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Issues')}</a>
     </li>
-    {if $catalogue->getSchemaType() == 'MARC21'}
-      <li class="nav-item1">
-        <a class="nav-link1 {if $tab == 'functions'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-           id="functions-tab" aria-controls="functions"
-           href="?tab=functions{$generalParams}">Functions</a>
-      </li>
-    {/if}
     <li class="nav-item1">
       <a class="nav-link1 {if $isAuthority}active{/if} dropdown-toggle" data-toggle="dropdown" role="tab1" aria-selected="false"
          id="classifications-tab" aria-controls="classifications"

@@ -287,6 +287,8 @@ msgid "filters"
 msgstr "Filtern"
 msgid "number of distinct values"
 msgstr "Anzahl der unterschiedlichen Werte"
+msgid "note: in the list below the numbers mean the number of documens a term appears in"
+msgstr "Hinweis: In der nachstehenden Liste geben die Zahlen die Anzahl der Dokumente an, in denen ein Begriff vorkommt."
 
 # Collocations tab
 msgid "Collocation of field values"

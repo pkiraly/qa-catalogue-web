@@ -290,6 +290,8 @@ msgid "filters"
 msgstr "filters"
 msgid "number of distinct values"
 msgstr "number of distinct values"
+msgid "note: in the list below the numbers mean the number of documens a term appears in"
+msgstr "note: in the list below the numbers mean the number of documens a term appears in"
 
 # Collocations tab
 msgid "Collocation of field values"

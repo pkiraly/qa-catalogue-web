@@ -162,31 +162,25 @@ class Terms extends Facetable {
   private function downloadAction(): void {
     $this->output = 'none';
 
-    $version = 'v2';
-    if ($version == 'v1') {
-      $facets = $this->createTermList();
-      $this->download($facets);
-    } elseif ($version == 'v2') {
-      $attachment = sprintf('attachment; filename="facet-terms-for-%s-%d-at-%s.csv"', $this->facet, $this->offset, date("Y-m-d"));
-      header('Content-Type: text/csv; charset=utf-8');
-      header('Content-Disposition: ' . $attachment);
-      $out = fopen('php://output', 'w');
-      fputcsv($out, ['term', 'count']);
-      $limit = 1000;
-      $offset = 0;
-      do {
-        $facets = $this->getFacets($this->facet, $this->query, $limit, $offset, $this->termFilter, $this->filters);
-        $i = 0;
-        foreach ($facets as $facet => $values) {
-          foreach ($values as $term => $count) {
-            fputcsv($out, [$term, $count]);
-            $i++;
-          }
+    $attachment = sprintf('attachment; filename="facet-terms-for-%s-%d-at-%s.csv"', $this->facet, $this->offset, date("Y-m-d"));
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: ' . $attachment);
+    $out = fopen('php://output', 'w');
+    fputcsv($out, ['term', 'count']);
+    $limit = 1000;
+    $offset = 0;
+    do {
+      $facets = $this->getFacets($this->facet, $this->query, $limit, $offset, $this->termFilter, $this->filters);
+      $i = 0;
+      foreach ($facets as $facet => $values) {
+        foreach ($values as $term => $count) {
+          fputcsv($out, [$term, $count]);
+          $i++;
         }
-        $offset += $i;
-      } while ($i == $limit);
-      fclose($out);
-    }
+      }
+      $offset += $i;
+    } while ($i == $limit);
+    fclose($out);
   }
 
   /**

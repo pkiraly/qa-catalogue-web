@@ -43,6 +43,7 @@
       {/if}
 
       <div id="terms-content">
+        <p>{_('note: in the list below the numbers mean the number of documens a term appears in')}</p>
         {include 'marc-facets.tpl'}
       </div>
 
