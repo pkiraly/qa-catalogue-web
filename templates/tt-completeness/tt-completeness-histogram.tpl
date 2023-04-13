@@ -8,10 +8,8 @@
 </ul>
 
 <p>
-Each record get a score based on a number of criteria.
-Each criteria results in a positive score. The final score is
-the summary of these criteria scores.
-</p
+Each record get a score based on a number of criteria. Each criteria result in a positive score. The final score is the summary of these criteria scores.
+</p>
 
 <table id="criteria-list">
   <thead>
