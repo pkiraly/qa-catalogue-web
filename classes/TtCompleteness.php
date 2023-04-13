@@ -10,7 +10,7 @@ class TtCompleteness extends BaseTab {
   }
 
   public function getTemplate() {
-    return 'tt-completeness.tpl';
+    return 'tt-completeness/tt-completeness.tpl';
   }
 
   private function readTTHistogram() {
