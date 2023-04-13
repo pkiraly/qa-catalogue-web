@@ -59,7 +59,7 @@ msgstr "About"
 
 # used across multiple tabs
 msgid "Histogram"
-msgstr "Häufigkeitsverteilung"
+msgstr "Histogram"
 msgid "terms"
 msgstr "terms"
 msgid "sorted"
