@@ -169,6 +169,8 @@ msgid "filter"
 msgstr "Filter"
 msgid "variants"
 msgstr "Fälle"
+msgid "there are %d instances"
+msgstr "kommt %d mal vor"
 msgid "Download schema file"
 msgstr "Schemadatei herunterladen"
 
