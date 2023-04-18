@@ -65,6 +65,8 @@ msgid "terms"
 msgstr "Werte"
 msgid "sorted"
 msgstr "sortiert"
+msgid "Display record in the library catalogue"
+msgstr "Datensatz im Katalog aufrufen"
 
 # completeness
 msgid "completeness_definition"

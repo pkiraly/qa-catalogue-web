@@ -64,6 +64,8 @@ msgid "terms"
 msgstr "terms"
 msgid "sorted"
 msgstr "sorted"
+msgid "Display record in the library catalogue"
+msgstr "Display record in the library catalogue"
 
 # completeness
 msgid "by document types"

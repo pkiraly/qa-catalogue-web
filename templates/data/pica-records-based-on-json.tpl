@@ -6,7 +6,7 @@
     <h2>
       <i class="fa fa-{$record->type2icon($type)}" title="type: {$type}"></i>
       <strong>{$id}</strong>
-      <a href="{$record->opacLink($doc->id)}" target="_blank" title="Display record in the library catalogue"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+      {include "../common/opac-link.tpl" url=$record->opacLink($doc->id)}
     </h2>
 
     <div class="details" id="details-{$id}">
