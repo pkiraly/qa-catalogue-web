@@ -10,7 +10,7 @@ class ShelfReadyCompleteness extends BaseTab {
   }
 
   public function getTemplate() {
-    return 'shelf-ready-completeness.tpl';
+    return 'shelf-ready-completeness/shelf-ready-completeness.tpl';
   }
 
   private function readSRHistogram() {
