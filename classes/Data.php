@@ -40,7 +40,7 @@ class Data extends Facetable {
     $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
     if ($this->groupped)
       $this->groupBy = $this->analysisParameters->groupBy;
-    $this->groupId = getOrDefault('groupId', 'all');
+    $this->groupId = getOrDefault('groupId', 0);
 
     $this->params = [
       'facet' => $this->facet,

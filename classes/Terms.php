@@ -19,7 +19,7 @@ class Terms extends Facetable {
     $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
     if ($this->groupped) {
       $this->groupBy = $this->analysisParameters->groupBy;
-      $this->groupId = getOrDefault('groupId', 'all');
+      $this->groupId = getOrDefault('groupId', 0);
     }
 
     $this->facet = getOrDefault('facet', '');
@@ -46,7 +46,7 @@ class Terms extends Facetable {
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 
-    if ($this->groupped && $this->groupId != 'all')
+    if ($this->groupped && $this->groupId != 0)
       $this->filters[] = $this->getRawGroupQuery();
 
     if ($this->action == 'download') {

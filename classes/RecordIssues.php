@@ -103,7 +103,7 @@ class RecordIssues extends BaseTab {
           } else {
             $record = (object)array_combine($header, $values);
             if (!isset($record->id))
-              error_log(json_encode($record));
+              error_log('no id' . json_encode($record));
             if (in_array($record->id, $ids)) {
               $key = $record->id;
               unset($record->id);

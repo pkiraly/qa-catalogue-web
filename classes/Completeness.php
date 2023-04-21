@@ -27,7 +27,7 @@ class Completeness extends BaseTab {
     $this->action = getOrDefault('action', 'list', ['list', 'ajaxGroups']);
     $this->type = getOrDefault('type', 'all', $this->catalogue::$supportedTypes);
     $this->sort = getOrDefault('sort', '', ['number-of-record', 'number-of-instances', 'min', 'max', 'mean', 'stddev']);
-    $this->groupId = getOrDefault('groupId', 'all');
+    $this->groupId = getOrDefault('groupId', 0);
 
     if ($this->action == 'list') {
       if ($this->groupped) {
@@ -320,7 +320,7 @@ class Completeness extends BaseTab {
   private function getGroupFilter() {
     static $groupFilter;
     if (!isset($groupFilter)) {
-      if ($this->groupped && $this->groupId != 'all')
+      if ($this->groupped && $this->groupId != 0)
         $groupFilter = sprintf('filters[]=%s:%s',
           $this->picaToSolr(str_replace('$', '', $this->groupBy)) . '_ss',
           urlencode(sprintf('"%s"', $this->groupId)));
@@ -331,7 +331,7 @@ class Completeness extends BaseTab {
   }
 
   private function getGroupQuery() {
-    if ($this->groupped && $this->groupId != 'all') {
+    if ($this->groupped && $this->groupId != 0) {
       $query = urlencode(' AND ') . sprintf('%s:%s',
         $this->picaToSolr(str_replace('$', '', $this->groupBy)) . '_ss',
         urlencode(sprintf('"%s"', $this->groupId)));
@@ -350,7 +350,7 @@ class Completeness extends BaseTab {
     $params = array_merge($params, $this->getGeneralParams());
     $this->addParam($params, $this, 'type', 'all', [$key]);
     $this->addParam($params, $this, 'sort', '', [$key]);
-    $this->addParam($params, $this, 'groupId', 'all', [$key]);
+    $this->addParam($params, $this, 'groupId', 0, [$key]);
     if (!empty($params))
       return '&' . join('&', $params);
     return '';
@@ -380,7 +380,7 @@ class Completeness extends BaseTab {
         'query=' . ($this->type == 'all' ? '*:*' : 'type_ss:' . urlencode(sprintf('"%s"', $this->type))),
       ];
       $baseParams = array_merge($baseParams, $this->getGeneralParams());
-      if ($this->groupped && $this->groupId != 'all')
+      if ($this->groupped && $this->groupId != 0)
         $baseParams[] = 'groupId=' . $this->groupId;
     }
     $params = $baseParams;

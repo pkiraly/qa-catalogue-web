@@ -108,11 +108,8 @@ class Collocations extends BaseTab {
   }
 
   private function getFields() {
-    // error_log('getFields');
     $fieldNames = $this->getSolrFields();
-    // error_log('nr: ' . count($fieldNames));
     sort($fieldNames);
-    // error_log('nr: ' . count($fieldNames));
     return $fieldNames;
   }
 }

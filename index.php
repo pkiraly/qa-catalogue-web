@@ -9,7 +9,7 @@ $smarty = createSmarty('templates');
 if (isset($configuration['db']) && $configuration['db'] != '')
   $db = $configuration['db'];
 else
-  $db = getPath(); // getOrDefault('db', 'bl'); // metadata-qa
+  $db = getPath();
 
 $tab = getOrDefault('tab', 'completeness');
 $ajax = getOrDefault('ajax', 0, [0, 1]);

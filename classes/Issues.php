@@ -35,7 +35,7 @@ class Issues extends BaseTab {
     $this->action = getOrDefault('action', 'list', ['list', 'query', 'download', 'record', 'ajaxIssue', 'ajaxIssueByTag']);
     $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
     $smarty->assign('groupped', $this->groupped);
-    $this->groupId = getOrDefault('groupId', 'all');
+    $this->groupId = getOrDefault('groupId', 0);
     $smarty->assign('groupId', $this->groupId);
 
     if ($this->groupped) {

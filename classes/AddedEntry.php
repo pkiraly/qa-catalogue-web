@@ -7,7 +7,7 @@ class AddedEntry extends BaseTab {
     parent::prepareData($smarty);
     parent::readAnalysisParameters('completeness.params.json');
     $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
-    $this->groupId = getOrDefault('groupId', 'all');
+    $this->groupId = getOrDefault('groupId', 0);
   }
 
   protected function ind1Orsubfield2(&$record, $ind1, $subfield2) {

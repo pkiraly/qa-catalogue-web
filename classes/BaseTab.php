@@ -75,7 +75,7 @@ abstract class BaseTab implements Tab {
   public function createCatalogue() {
     $className = strtoupper(substr($this->catalogueName, 0, 1)) . substr($this->catalogueName, 1);
     $classFile = 'catalogue/' . $className . '.php';
-    if (file_exists($classFile)) {
+    if (file_exists('classes/' . $classFile)) {
       include_once $classFile;
       return new $className();
     } else {
@@ -148,7 +148,6 @@ abstract class BaseTab implements Tab {
   protected function getSolrResponse($params) {
     $solrPath = $this->getIndexName();
     $url = 'http://localhost:8983/solr/' . $solrPath . '/select?' . join('&', $this->encodeSolrParams($params));
-    // error_log($url);
     $solrResponse = json_decode(file_get_contents($url));
     $response = (object)[
       'numFound' => $solrResponse->response->numFound,
@@ -341,7 +340,6 @@ abstract class BaseTab implements Tab {
       }
 
       if (!$found) {
-        // error_log(sprintf('Solr field not found: %s (%s) - %s', $solrField1, $solrField, join(', ', $candidates)));
         $solrField = FALSE;
       }
     }
@@ -623,7 +621,7 @@ abstract class BaseTab implements Tab {
   }
 
   protected function getRawGroupQuery() {
-    if ($this->groupped && $this->groupId != 'all')
+    if ($this->groupped && $this->groupId != 0)
       return sprintf('%s:%s',
         $this->picaToSolr(str_replace('$', '', $this->groupBy)) . '_ss',
         urlencode(sprintf('"%s"', $this->groupId)));
