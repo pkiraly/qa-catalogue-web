@@ -137,6 +137,72 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
+  public function getRecordNumberByTypeGroupped($typeId, $groupId = '') {
+    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+    $stmt = $this->prepare(
+      'SELECT record_nr AS count
+      FROM issue_groupped_types AS s
+      WHERE typeId = :typeId' . $groupCriterium
+    );
+    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
+    if ($groupId != '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
+
+    return $stmt->execute();
+  }
+
+  public function getRecordNumberByCategoryGroupped($categoryId, $groupId = '') {
+    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+    $stmt = $this->prepare(
+      'SELECT record_nr AS count
+      FROM issue_groupped_types AS s
+      WHERE categoryId = :categoryId' . $groupCriterium
+    );
+    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
+    if ($groupId != '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
+
+    return $stmt->execute();
+  }
+
+  public function getRecordNumberByPathGroupped($typeId, $groupId = '') {
+    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+    $stmt = $this->prepare(
+      'SELECT record_nr AS count
+      FROM issue_groupped_types AS s
+      WHERE categoryId = :categoryId' . $groupCriterium
+    );
+    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
+    if ($groupId != '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
+
+    return $stmt->execute();
+  }
+
+  public function getRecordNumberAndVariationsForPathGroupped($typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
+    $groupCriterium = ($groupId != '') ? ' AND p.groupId = :groupId' : '';
+    $default_order = 'records DESC';
+    if (!preg_match('/^(path|variants|instances|records) (ASC|DESC)$/', $order))
+      $order = $default_order;
+    $stmt = $this->prepare(
+      'SELECT p.path,
+              p.record_nr AS records,
+              p.instance_nr AS instances,
+              COUNT(s.id) AS variants
+       FROM issue_groupped_paths p 
+       LEFT JOIN issue_summary s 
+         ON (p.groupId = s.groupId AND p.typeId = s.typeId AND p.path = s.MarcPath) 
+       WHERE p.typeId = :typeId' . $groupCriterium .' 
+       GROUP BY p.path
+       ORDER BY ' . $order
+    );
+    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
+    if ($groupId != '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
+
+    return $stmt->execute();
+  }
+
   public function getRecordIdsByErrorIdCount($errorId, $groupId = '') {
     if ($groupId == '')
       $sql = 'SELECT COUNT(distinct(id)) AS count FROM issue_details WHERE errorId = :errorId';

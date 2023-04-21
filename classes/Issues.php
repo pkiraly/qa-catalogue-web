@@ -52,58 +52,15 @@ class Issues extends BaseTab {
     }
 
     if ($this->action == 'download' || $this->action == 'query') {
-      $errorId = getOrDefault('errorId', '');
-      $categoryId = getOrDefault('categoryId', '');
-      $typeId = getOrDefault('typeId', '');
-      if ($errorId != '' || $categoryId != '' || $typeId != '') {
-        $this->output = 'none';
-        if ($this->action == 'download')
-          $this->download($errorId, $categoryId, $typeId);
-        elseif ($this->action == 'query') {
-          $this->query($errorId, $categoryId, $typeId);
-        }
-      }
+      $this->processDownloadOrQueryRequest();
     } elseif ($this->action == 'record') {
-      $recordId = getOrDefault('recordId', '');
-      if ($recordId != '') {
-        $this->getRecordIssues($recordId, $smarty);
-      }
+      $this->processRecordRequest($smarty);
     } elseif ($this->action == 'ajaxIssue') {
-      $this->getAjaxParameters();
-      $path = getOrDefault('path', null);
-      $this->listType = is_null($path) ? 'full-list' : 'filtered-list';
-      $this->readIssuesAjax($this->categoryId, $this->typeId, $path, $this->order, $this->page, $this->limit);
-      $this->assignAjax($smarty);
-      $smarty->assign('path', $path);
+      $this->processAjaxIssueRequest($smarty);
     } elseif ($this->action == 'ajaxIssueByTag') {
-      $this->listType = 'gropupped-list';
-      $this->getAjaxParameters();
-      $this->readIssuesAjaxByTag($this->categoryId, $this->typeId, $this->order, $this->page, $this->limit);
-      $this->assignAjax($smarty);
+      $this->processAjaxIssueByTagRequest($smarty);
     } else {
-      if ($this->catalogue->getSchemaType() == 'PICA') {
-        $this->hiddenTypes = ['undefined field' => 1];
-        if (!is_null($this->analysisParameters)) {
-          $schemaFile = isset($this->analysisParameters->picaSchemaFile)
-            ? $this->analysisParameters->picaSchemaFile
-            : 'avram-k10plus-title.json';
-          $smarty->assign('schemaFile', $schemaFile);
-        }
-      }
-      $this->readCategories();
-      $this->readTypes();
-      $this->readIssues();
-
-      $smarty->assign('records', $this->records);
-      $smarty->assign('categories', $this->categories);
-      $smarty->assign('types', $this->types);
-      $smarty->assign('topStatistics', $this->readTotal());
-      $smarty->assign('total', $this->count);
-      $smarty->assign('fieldNames', ['path', 'message', 'url', 'instances', 'records']);
-      $smarty->assign('listType', 'full-list');
-      $smarty->assign('path', null);
-      $smarty->assign('order', null);
-      $smarty->registerPlugin("function", 'showMarcUrl', array('Issues', 'showMarcUrl'));
+      $this->processListRequest($smarty);
     }
   }
 
@@ -267,8 +224,10 @@ class Issues extends BaseTab {
     include_once 'IssuesDB.php';
     $db = new IssuesDB($this->getDbDir());
     $groupId = $this->groupped ? $this->groupId : '';
-    $this->recordCount = $db->getByCategoryAndTypeGrouppedByPathCount($categoryId, $typeId, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
-    $result = $db->getByCategoryAndTypeGrouppedByPath($categoryId, $typeId, $groupId, $order, $page * $limit, $limit);
+
+    // $this->recordCount = $db->getByCategoryAndTypeGrouppedByPathCount($categoryId, $typeId, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+    // $result = $db->getByCategoryAndTypeGrouppedByPath($categoryId, $typeId, $groupId, $order, $page * $limit, $limit);
+    $result = $db->getRecordNumberAndVariationsForPathGroupped($typeId, $groupId, $order, $page * $limit, $limit);
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
       $record = (object) $row;
       $this->injectPica3($record);
@@ -616,4 +575,86 @@ class Issues extends BaseTab {
     return '?' . join('&', $params);
   }
 
+  /**
+   * @param Smarty $smarty
+   * @return void
+   */
+  private function processAjaxIssueByTagRequest(Smarty $smarty): void {
+    $this->listType = 'gropupped-list';
+    $this->getAjaxParameters();
+    $this->readIssuesAjaxByTag($this->categoryId, $this->typeId, $this->order, $this->page, $this->limit);
+    $this->assignAjax($smarty);
+  }
+
+  /**
+   * @param Smarty $smarty
+   * @return void
+   */
+  private function processAjaxIssueRequest(Smarty $smarty): void {
+    $this->getAjaxParameters();
+    $path = getOrDefault('path', null);
+    $this->listType = is_null($path) ? 'full-list' : 'filtered-list';
+    $this->readIssuesAjax($this->categoryId, $this->typeId, $path, $this->order, $this->page, $this->limit);
+    $this->assignAjax($smarty);
+    $smarty->assign('path', $path);
+  }
+
+  /**
+   * @param Smarty $smarty
+   * @return void
+   */
+  private function processRecordRequest(Smarty $smarty): void {
+    $recordId = getOrDefault('recordId', '');
+    if ($recordId != '') {
+      $this->getRecordIssues($recordId, $smarty);
+    }
+  }
+
+  /**
+   * @return void
+   */
+  private function processDownloadOrQueryRequest(): void {
+    $errorId = getOrDefault('errorId', '');
+    $categoryId = getOrDefault('categoryId', '');
+    $typeId = getOrDefault('typeId', '');
+    if ($errorId != '' || $categoryId != '' || $typeId != '') {
+      $this->output = 'none';
+      if ($this->action == 'download')
+        $this->download($errorId, $categoryId, $typeId);
+      elseif ($this->action == 'query') {
+        $this->query($errorId, $categoryId, $typeId);
+      }
+    }
+  }
+
+  /**
+   * @param Smarty $smarty
+   * @return void
+   * @throws SmartyException
+   */
+  private function processListRequest(Smarty $smarty): void {
+    if ($this->catalogue->getSchemaType() == 'PICA') {
+      $this->hiddenTypes = ['undefined field' => 1];
+      if (!is_null($this->analysisParameters)) {
+        $schemaFile = isset($this->analysisParameters->picaSchemaFile)
+          ? $this->analysisParameters->picaSchemaFile
+          : 'avram-k10plus-title.json';
+        $smarty->assign('schemaFile', $schemaFile);
+      }
+    }
+    $this->readCategories();
+    $this->readTypes();
+    $this->readIssues();
+
+    $smarty->assign('records', $this->records);
+    $smarty->assign('categories', $this->categories);
+    $smarty->assign('types', $this->types);
+    $smarty->assign('topStatistics', $this->readTotal());
+    $smarty->assign('total', $this->count);
+    $smarty->assign('fieldNames', ['path', 'message', 'url', 'instances', 'records']);
+    $smarty->assign('listType', 'full-list');
+    $smarty->assign('path', null);
+    $smarty->assign('order', null);
+    $smarty->registerPlugin("function", 'showMarcUrl', array('Issues', 'showMarcUrl'));
+  }
 }
