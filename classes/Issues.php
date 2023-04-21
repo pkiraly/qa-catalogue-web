@@ -387,7 +387,7 @@ class Issues extends BaseTab {
     $attachment = sprintf('attachment; filename="issue-%s-at-%s.csv"', $errorId, date("Y-m-d"));
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: ' . $attachment);
-    echo "Record ID\n", '"', join("\"\n\"", $recordIds), '"';
+    echo join("\n", $recordIds);
   }
 
   private function query($errorId, $categoryId, $typeId) {

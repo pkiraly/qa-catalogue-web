@@ -1,7 +1,6 @@
 <?php
 
-
-abstract class Catalogue {
+class Catalogue {
 
   protected $name;
   protected $label;
@@ -15,7 +14,13 @@ abstract class Catalogue {
   protected $defaultLang = 'en';
   protected $metadataSchema = 'MARC21 scheme';
 
-  abstract function getOpacLink($id, $record);
+  public function __construct($config=[]) {
+    $this->name = $this->name ?? $config["catalogue"];
+    $this->label = $this->label ?? $config["catalogue"];
+  }
+ 
+  public function getOpacLink($id, $record) {
+  }
 
   public function getName() {
     return $this->name;

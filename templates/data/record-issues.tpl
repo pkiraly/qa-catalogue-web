@@ -19,7 +19,7 @@
         <tr class="t-{$smarty.foreach.types.index}">
           <td class="path">{$rowData->path}</td>
           <td class="message">
-            {if preg_match('/^ +$/', $rowData->message)}"{$rowData->message}"{else}{$rowData->message}{/if}
+            {include "../message.tpl" message=$rowData->message}
           </td>
           <td class="url">
             {if !empty($rowData->url)}

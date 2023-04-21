@@ -13,7 +13,7 @@
         {/if}
       {/if}
       <a href="#" class="record-details" data="details-{$id}" title="display details"><i class="fa fa-book" aria-hidden="true"></i></a>
-      <a href="{opacLink($doc, $doc->id)}" target="_blank" title="Display record in the library catalogue"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+      {include "../common/opac-link.tpl" url=opacLink($doc, $doc->id)}
     </h2>
     {if isset($doc->{'245c_Title_responsibilityStatement_ss'})}
       {include 'conditional-foreach.tpl' obj=$doc key='245c_Title_responsibilityStatement_ss'
