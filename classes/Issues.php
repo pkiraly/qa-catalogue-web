@@ -226,8 +226,11 @@ class Issues extends BaseTab {
     $groupId = $this->groupped ? $this->groupId : '';
 
     // $this->recordCount = $db->getByCategoryAndTypeGrouppedByPathCount($categoryId, $typeId, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
-    // $result = $db->getByCategoryAndTypeGrouppedByPath($categoryId, $typeId, $groupId, $order, $page * $limit, $limit);
-    $result = $db->getRecordNumberAndVariationsForPathGroupped($typeId, $groupId, $order, $page * $limit, $limit);
+    if ($this->groupped) {
+      $result = $db->getRecordNumberAndVariationsForPathGroupped($typeId, $groupId, $order, $page * $limit, $limit);
+    } else {
+      $result = $db->getByCategoryAndTypeGrouppedByPath($categoryId, $typeId, $groupId, $order, $page * $limit, $limit);
+    }
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
       $record = (object) $row;
       $this->injectPica3($record);
