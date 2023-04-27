@@ -303,5 +303,24 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
+  public function hasGrouppedMarcElementTable() {
+    $stmt = $this->prepare('SELECT COUNT(name) AS count FROM sqlite_master WHERE type = :table AND name = :tableName');
+    $stmt->bindValue(':table', 'table', SQLITE3_TEXT);
+    $stmt->bindValue(':tableName', 'groupped_marc_elements', SQLITE3_TEXT);
+    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    return $stmt->execute();
+  }
+
+  public function getGrouppedMarcElements($groupId, $documenttype) {
+    $stmt = $this->prepare('SELECT * 
+      FROM groupped_marc_elements
+      WHERE groupId = :groupId 
+        AND documenttype = :documenttype
+      ORDER BY path');
+    $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
+    $stmt->bindValue(':documenttype', $documenttype, SQLITE3_TEXT);
+    return $stmt->execute();
+  }
+
   // select * from issue_details JOIN id_groupid USING (id) WHERE errorId = 1 AND groupId = 77 LIMIT 30;
 }

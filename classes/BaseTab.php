@@ -632,4 +632,8 @@ abstract class BaseTab implements Tab {
     if (!in_array($key, $excludeKeys) && isset($object->{$key}) && $object->{$key} != $defaulValue)
       $params[] = sprintf('%s=%s', $key, urlencode($object->{$key}));
   }
+
+  protected function getDbDir() {
+    return sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
+  }
 }

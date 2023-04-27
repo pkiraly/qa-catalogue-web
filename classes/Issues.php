@@ -456,7 +456,7 @@ class Issues extends BaseTab {
     $this->limit = getOrDefault('limit', $this->issueLimit);
   }
 
-  private function getDbDir() {
+  protected function getDbDir() : string {
     if ($this->versioning && $this->version != '') {
       $dir = sprintf('%s/_historical/%s/%s', $this->configuration['dir'], $this->getDirName(), $this->version);
     } else {
