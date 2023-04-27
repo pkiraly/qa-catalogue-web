@@ -5,6 +5,8 @@ libs/
 cache/
 translate.sh
 config/
+vendor/
+_smarty/
 
 # eidtor files
 .idea/

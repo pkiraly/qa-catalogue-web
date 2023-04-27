@@ -59,6 +59,12 @@ Change into the application directory:
 cd /var/www/html/$CATALOG
 ```
 
+install PHP dependencies and create required cache directories and permissions:
+
+```
+composer install
+```
+
 Prepare configuration file:
 
 ```
@@ -86,27 +92,11 @@ indexName[bvb]=bayern
 dirName[bvb]=bayern
 ```
 
-Setup directories and permissions and download the Smarty templating library.
+setup additional directories and permissions:
 
 ```
-mkdir cache
-echo [] > cache/selected-facets.js
 sudo chown www-data:www-data -R cache
-chmod g+w -R cache
-mkdir libs
-mkdir images
-
-ln -s $DATADIR/$CATALOG/img images/$CATALOG
-
-## download Smarty templating library
-export SMARTY_VERSION=3.1.44
-cd libs/
-curl -s -L https://github.com/smarty-php/smarty/archive/v${SMARTY_VERSION}.zip --output v$SMARTY_VERSION.zip
-unzip -q v${SMARTY_VERSION}.zip
-rm v${SMARTY_VERSION}.zip
-mkdir -p _smarty/templates_c
-chmod a+w -R _smarty/templates_c/
-cd ..
+ln -s [data directory]/[catalogue]/img images/[catalogue]
 ```
 
 On Apache webserver add these lines to its configuration (`/etc/apache2/sites-available/000-default.conf`):
@@ -126,9 +116,12 @@ You can access the application at `http://localhost/$CATALOG`.
 Some parts of the web interface can be customized with local files in directory
 `config` (not existing by default):
 
-- `config/header.en.tpl` and `config/header.de.tpl` shown at bottom of each page (right after the `<body>` tag)
-- `config/footer.en.tpl` and `config/footer.de.tpl` shown at bottom of each page (right before the `</body>` tag)
-- `config/about.en.tpl` and `config/about.de.tpl` shown at the "about" page
+- `config/header.en.tpl` and `config/header.de.tpl` shown at bottom of each page
+  (right after the `<body>` tag)
+- `config/footer.en.tpl` and `config/footer.de.tpl` shown at bottom of each page
+  (right before the `</body>` tag)
+- `config/about.en.tpl` and `config/about.de.tpl`: Additional information shown
+  in the "about" tab.
 
 The name, catalogue link and the record levele catalogue link are different 
 per libraries. The tool has prepared for a number of libraries, but there's
@@ -204,21 +197,24 @@ you add a translation please add a comment to denote which page the original
 text appears, such as 
 
 ```
-## completeness
+# completeness
 msgid "by document types"
 msgstr "nach Dokumenttypen"
 ```
 
-Once you have done, you should generate the `.mo` files from the `.po` files with the following commands:
+Once you have done, you should generate the `.mo` files from the `.po` files with the following command:
 
 ```bash
-msgfmt locale/de_DE/LC_MESSAGES/messages.po -o locale/de_DE/LC_MESSAGES/messages.mo
-msgfmt locale/en_GB/LC_MESSAGES/messages.po -o locale/en_GB/LC_MESSAGES/messages.mo
+composer run translate
 ```
 
-If translations have been changed, Webserver or FastCGI respectively may need to be restarted to clear the translation cache.
+If translations have been changed, Webserver or FastCGI respectively may need to be restarted to clear the translation cache, e.g.
 
-Please let me know if you would like to see more languages supported.
+```bash
+sudo service apache2 restart
+```
+
+Please let us know if you would like to see more languages supported.
 
 Troubleshouting: if the translation would not work you can check if a given 
 language (locale) is available in your system. In Linux you can check it with
@@ -237,9 +233,9 @@ Note: translation is in a very early phase.
 
 ## Maintainers
 
-QA Catalogue Web is developed by Péter Király.
+QA Catalogue Web is developed by Péter Király and Jakob Voß.
 
-Please notify me if you would like to use it. Happy searching!
+Please notify us if you would like to use it. Happy searching!
 
 ## Contributing
 
