@@ -32,9 +32,7 @@ function getPath() {
 
 function createSmarty($templateDir) {
   define('APPLICATION_DIR', __DIR__);
-  define('SMARTY_DIR', APPLICATION_DIR . '/libs/smarty-3.1.44/libs/');
-  define('_SMARTY', APPLICATION_DIR . '/libs/_smarty/');
-  require_once(SMARTY_DIR . 'Smarty.class.php');
+  define('_SMARTY', APPLICATION_DIR . '/_smarty/');
   $smarty = new Smarty();
   $smarty->setTemplateDir(getcwd() . '/' . $templateDir);
   $smarty->setCompileDir(_SMARTY . '/templates_c/');
