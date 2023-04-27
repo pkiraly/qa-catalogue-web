@@ -89,6 +89,7 @@ class Completeness extends BaseTab {
     $elementsFile = $this->getFilePath($fileName);
 
     if (file_exists($elementsFile)) {
+      $start = microtime(true);
       // name,label,count
       $lineNumber = 0;
       $header = [];
@@ -134,9 +135,12 @@ class Completeness extends BaseTab {
           }
         }
       }
+      $t1 = microtime(true) - $start;
+
       foreach ($this->packages as $package)
         $package->percent = $package->count * 100 / $this->max;
 
+      $t2 = microtime(true) - $start;
       usort($this->packages, function($a, $b){
         return ($a->packageid == $b->packageid)
           ? 0
@@ -144,6 +148,8 @@ class Completeness extends BaseTab {
             ? -1
             : 1);
       });
+      $t3 = microtime(true) - $start;
+      error_log(sprintf('readPackages) t1: %.4f, t2: %.4f, t3: %.4f', $t1, $t2, $t3));
     } else {
       $msg = sprintf("file %s is not existing", $elementsFile);
       error_log($msg);
@@ -155,6 +161,7 @@ class Completeness extends BaseTab {
     $fileName = $this->groupped ? 'completeness-groupped-marc-elements.csv' : 'marc-elements.csv';
     $elementsFile = $this->getFilePath($fileName);
     if (file_exists($elementsFile)) {
+      $start = microtime(true);
       // $keys = ['element','number-of-record',number-of-instances,min,max,mean,stddev,histogram]; // "sum",
       $lineNumber = 0;
       $header = [];
@@ -288,10 +295,14 @@ class Completeness extends BaseTab {
             $this->records[$record->packageid][$record->tag][] = $record;
           }
         }
+        $tread = microtime(true) - $start;
       }
 
       ksort($this->records, SORT_NUMERIC);
+      $tsort = microtime(true) - $start;
       $this->types = array_merge(['all'], array_diff($this->types, ['all']));
+      $tmerge = microtime(true) - $start;
+      error_log(sprintf('readPackages) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
     } else {
       $msg = sprintf("file %s is not existing", $elementsFile);
       error_log($msg);
