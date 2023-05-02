@@ -110,7 +110,7 @@ abstract class BaseTab implements Tab {
     } else {
       $count = 0;
     }
-    return $count;
+    return intval($count);
   }
 
   protected function readLastUpdate() {
