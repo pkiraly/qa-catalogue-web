@@ -10,25 +10,29 @@
         {_('history_definition')}
       </p>
 
-      <p>
-        {if ($catalogue->getSchemaType() == 'MARC21')}
-          {_('history_definition_marc')}
-        {elseif ($catalogue->getSchemaType() == 'PICA')}
-          {_('history_definition_pica')}
-        {/if}
-      </p>
+      {if (count($files) > 0) }
+        <p>
+          {if ($catalogue->getSchemaType() == 'MARC21')}
+            {_('history_definition_marc')}
+          {elseif ($catalogue->getSchemaType() == 'PICA')}
+            {_('history_definition_pica')}
+          {/if}
+        </p>
 
-      <p>
-        {_('This chart was implemented based on Benjamin Schmidt\'s blog post')}
-        <a href="http://sappingattention.blogspot.com/2017/05/a-brief-visual-history-of-marc.html">A brief visual history of MARC cataloging at the Library of Congress.</a>
-        (Tuesday, May 16, 2017).
-      </p>
+        <p>
+          {_('This chart was implemented based on Benjamin Schmidt\'s blog post')}
+          <a href="http://sappingattention.blogspot.com/2017/05/a-brief-visual-history-of-marc.html">A brief visual history of MARC cataloging at the Library of Congress.</a>
+          (Tuesday, May 16, 2017).
+        </p>
 
-      <div id="history-content">
-        {foreach from=$files key=index item=file}
-          <p><img src="images/{$db}/{$file}" width="1000"/></p>
-        {/foreach}
-      </div>
+        <div id="history-content">
+          {foreach from=$files key=index item=file}
+            <p><img src="images/{$db}/{$file}" width="1000"/></p>
+          {/foreach}
+        </div>
+      {else}
+        {_('missing-analysis')}
+      {/if}
     </div>
   </div>
 </div>

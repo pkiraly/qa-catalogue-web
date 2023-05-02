@@ -253,6 +253,8 @@ msgid "with"
 msgstr "mit"
 msgid "without"
 msgstr "ohne"
+msgid "missing-analysis"
+msgstr "Derzeit liegen keine Analyse-Ergebnisse vor."
 
 # used in group selector
 msgid "Library"

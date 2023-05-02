@@ -66,6 +66,8 @@ msgid "sorted"
 msgstr "sorted"
 msgid "Display record in the library catalogue"
 msgstr "Display record in the library catalogue"
+msgid "missing-analysis"
+msgstr "The results of analysis are not available."
 
 # completeness
 msgid "by document types"
