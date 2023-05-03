@@ -18,7 +18,6 @@ class Issues extends BaseTab {
   private $limit;
   private $listType;
   private $version;
-  private $hiddenTypes = [];
   public $groups;
   public $currentGroup;
 
@@ -290,8 +289,6 @@ class Issues extends BaseTab {
     }
 
     foreach ($this->types as $type) {
-      if (!empty($this->hiddenTypes) && isset($this->hiddenTypes[$type->type]))
-        continue;
       if (!isset($this->categories[$type->categoryId]->types))
         $this->categories[$type->categoryId]->types = [];
       $this->categories[$type->categoryId]->types[] = $type->id;
@@ -637,7 +634,6 @@ class Issues extends BaseTab {
    */
   private function processListRequest(Smarty $smarty): void {
     if ($this->catalogue->getSchemaType() == 'PICA') {
-      $this->hiddenTypes = ['undefined field' => 1];
       if (!is_null($this->analysisParameters)) {
         $schemaFile = isset($this->analysisParameters->picaSchemaFile)
           ? $this->analysisParameters->picaSchemaFile
