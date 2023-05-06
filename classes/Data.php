@@ -294,8 +294,12 @@ class Data extends Facetable {
 
     $groupId = $this->groupped ? $this->groupId : '';
     if ($idType == 'errorId') {
+      $start = microtime(true);
       $this->numFound = $db->getRecordIdsByErrorIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+      $t_count = microtime(true) - $start;
       $result = $db->getRecordIdsByErrorId($id, $groupId, $this->start, $this->rows);
+      $t_retrieve = microtime(true) - $start;
+      error_log(sprintf("count: %.2f, retrieve: $.2f", $t_count, $t_retrieve));
     } else if ($idType == 'categoryId') {
       /*
       include_once 'Issues.php';

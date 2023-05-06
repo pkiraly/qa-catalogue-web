@@ -214,7 +214,7 @@ class IssuesDB extends SQLite3 {
     $stmt->bindValue(':errorId', $errorId, SQLITE3_INTEGER);
     if ($groupId != '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
-    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
@@ -298,7 +298,7 @@ class IssuesDB extends SQLite3 {
     if ($groupId != '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
-    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
