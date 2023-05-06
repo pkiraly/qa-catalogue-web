@@ -296,7 +296,7 @@ class IssuesDB extends SQLite3 {
       $stmt->bindValue(':offset', $offset, SQLITE3_INTEGER);
     }
     if ($groupId != '')
-      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
 
     error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 

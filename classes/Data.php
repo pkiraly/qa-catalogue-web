@@ -299,7 +299,7 @@ class Data extends Facetable {
       $t_count = microtime(true) - $start;
       $result = $db->getRecordIdsByErrorId($id, $groupId, $this->start, $this->rows);
       $t_retrieve = microtime(true) - $start;
-      error_log(sprintf("count: %.2f, retrieve: $.2f", $t_count, $t_retrieve));
+      error_log(sprintf("count: %.2f, retrieve: %.2f", $t_count, $t_retrieve));
     } else if ($idType == 'categoryId') {
       /*
       include_once 'Issues.php';
