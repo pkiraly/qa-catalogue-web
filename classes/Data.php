@@ -463,7 +463,7 @@ class Data extends Facetable {
    */
   private function findCoreToUse(): string {
     $coreToUse = false;
-    $cores = [$this->getIndexName() . '_validation', 'validation'];
+    $cores = ['validation', $this->getIndexName() . '_validation'];
     foreach ($cores as $core) {
       if ($this->isCoreAvailable($core)) {
         $coreToUse = $core;
