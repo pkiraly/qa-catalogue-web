@@ -5,7 +5,7 @@
   <td>
     {foreach from=$fieldInstances item=field name="fields"}
       {if isset($field->subfields->a)}
-        {if isset($field->subfields->{'9'})}
+        {if property_exists($field->subfields, '9')}
           <a href="?tab=data&query=045Q9_ss:{$field->subfields->{'9'}}">{strip}
             <span class="045Q$a">{$field->subfields->a}</span>
           {/strip}</a>
