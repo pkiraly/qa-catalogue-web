@@ -433,6 +433,7 @@ class Data extends Facetable {
     $info = curl_getinfo($ch);
     $http_code = $info["http_code"];
     curl_close($ch);
+    error_log('$http_code: ' . $http_code);
     if ($http_code == 200) {
       $response = json_decode($content);
       return ($response->status == 'OK');
