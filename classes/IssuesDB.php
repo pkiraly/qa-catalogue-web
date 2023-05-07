@@ -261,7 +261,6 @@ class IssuesDB extends SQLite3 {
   }
 
   public function getErrorIdsByCategoryId($categoryId, $groupId = '') {
-    error_log("getErrorIdsByCategoryId($categoryId, $groupId)");
     if ($groupId === '')
       $sql = 'SELECT distinct(id) FROM issue_summary WHERE categoryId = :categoryId';
     else
