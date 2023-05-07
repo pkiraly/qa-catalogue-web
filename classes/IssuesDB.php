@@ -31,7 +31,7 @@ class IssuesDB extends SQLite3 {
     $default_order = 'records DESC';
     if (!preg_match('/^(MarcPath|message|instances|records) (ASC|DESC)$/', $order))
       $order = $default_order;
-    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
 
     $stmt = $this->prepare('SELECT *
        FROM issue_summary
@@ -44,21 +44,21 @@ class IssuesDB extends SQLite3 {
     $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
     $stmt->bindValue(':offset', $offset, SQLITE3_INTEGER);
     $stmt->bindValue(':limit', $limit, SQLITE3_INTEGER);
-    if ($groupId != '')
+    if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
     return $stmt->execute();
   }
 
   public function getByCategoryTypeAndGroupCount($categoryId, $typeId, $groupId = '') {
-    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
     $stmt = $this->prepare('SELECT COUNT(*) AS count
        FROM issue_summary
        WHERE categoryId = :categoryId AND typeId = :typeId ' . $groupCriterium
     );
     $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
     $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
-    if ($groupId != '')
+    if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
     return $stmt->execute();
@@ -68,7 +68,7 @@ class IssuesDB extends SQLite3 {
     $default_order = 'records DESC';
     if (!preg_match('/^(MarcPath|message|instances|records) (ASC|DESC)$/', $order))
       $order = $default_order;
-    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
     $stmt = $this->prepare('SELECT *
        FROM issue_summary
        WHERE categoryId = :categoryId AND typeId = :typeId AND MarcPath = :path' . $groupCriterium . '
@@ -81,14 +81,14 @@ class IssuesDB extends SQLite3 {
     $stmt->bindValue(':path', $path, SQLITE3_TEXT);
     $stmt->bindValue(':offset', $offset, SQLITE3_INTEGER);
     $stmt->bindValue(':limit', $limit, SQLITE3_INTEGER);
-    if ($groupId != '')
+    if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
     return $stmt->execute();
   }
 
   public function getByCategoryTypePathAndGroupCount($categoryId, $typeId, $path, $groupId = '') {
-    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
     $stmt = $this->prepare('SELECT COUNT(*) AS count
        FROM issue_summary
        WHERE categoryId = :categoryId AND typeId = :typeId AND MarcPath = :path' . $groupCriterium
@@ -96,7 +96,7 @@ class IssuesDB extends SQLite3 {
     $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
     $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
     $stmt->bindValue(':path', $path, SQLITE3_TEXT);
-    if ($groupId != '')
+    if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
     return $stmt->execute();
@@ -106,7 +106,7 @@ class IssuesDB extends SQLite3 {
     $default_order = 'records DESC';
     if (!preg_match('/^(path|variants|instances|records) (ASC|DESC)$/', $order))
       $order = $default_order;
-    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
     $stmt = $this->prepare(
       'SELECT path, variants, instances, records
       FROM issue_groups AS s
@@ -115,7 +115,7 @@ class IssuesDB extends SQLite3 {
     );
     $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
     $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
-    if ($groupId != '')
+    if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
     // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
@@ -123,7 +123,7 @@ class IssuesDB extends SQLite3 {
   }
 
   public function getByCategoryAndTypeGrouppedByPathCount($categoryId, $typeId, $groupId = '') {
-    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
     $stmt = $this->prepare(
       'SELECT COUNT(*) AS count
       FROM issue_groups AS s
@@ -131,56 +131,56 @@ class IssuesDB extends SQLite3 {
     );
     $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
     $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
-    if ($groupId != '')
+    if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
     return $stmt->execute();
   }
 
   public function getRecordNumberByTypeGroupped($typeId, $groupId = '') {
-    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
     $stmt = $this->prepare(
       'SELECT record_nr AS count
       FROM issue_groupped_types AS s
       WHERE typeId = :typeId' . $groupCriterium
     );
     $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
-    if ($groupId != '')
+    if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
     return $stmt->execute();
   }
 
   public function getRecordNumberByCategoryGroupped($categoryId, $groupId = '') {
-    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
     $stmt = $this->prepare(
       'SELECT record_nr AS count
       FROM issue_groupped_types AS s
       WHERE categoryId = :categoryId' . $groupCriterium
     );
     $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
-    if ($groupId != '')
+    if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
     return $stmt->execute();
   }
 
   public function getRecordNumberByPathGroupped($typeId, $groupId = '') {
-    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
     $stmt = $this->prepare(
       'SELECT record_nr AS count
       FROM issue_groupped_types AS s
       WHERE categoryId = :categoryId' . $groupCriterium
     );
-    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
-    if ($groupId != '')
+    $stmt->bindValue(':categoryId', $typeId, SQLITE3_INTEGER);
+    if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
     return $stmt->execute();
   }
 
   public function getRecordNumberAndVariationsForPathGroupped($typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
-    $groupCriterium = ($groupId != '') ? ' AND p.groupId = :groupId' : '';
+    $groupCriterium = ($groupId !== '') ? ' AND p.groupId = :groupId' : '';
     $default_order = 'records DESC';
     if (!preg_match('/^(path|variants|instances|records) (ASC|DESC)$/', $order))
       $order = $default_order;
@@ -197,14 +197,14 @@ class IssuesDB extends SQLite3 {
        ORDER BY ' . $order
     );
     $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
-    if ($groupId != '')
+    if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
 
     return $stmt->execute();
   }
 
   public function getRecordIdsByErrorIdCount($errorId, $groupId = '') {
-    if ($groupId == '')
+    if ($groupId === '')
       $sql = 'SELECT COUNT(distinct(id)) AS count FROM issue_details WHERE errorId = :errorId';
     else
       $sql = 'SELECT COUNT(distinct(id)) AS count 
@@ -212,7 +212,7 @@ class IssuesDB extends SQLite3 {
               WHERE errorId = :errorId AND groupId = :groupId';
     $stmt = $this->prepare($sql);
     $stmt->bindValue(':errorId', $errorId, SQLITE3_INTEGER);
-    if ($groupId != '')
+    if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
     error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
@@ -220,7 +220,7 @@ class IssuesDB extends SQLite3 {
   }
 
   public function getRecordIdsByErrorId($errorId, $groupId = '', $offset = 0, $limit = -1) {
-    if ($groupId == '')
+    if ($groupId === '')
       $sql = 'SELECT distinct(id) FROM issue_details WHERE errorId = :id';
     else
       $sql = 'SELECT distinct(id) FROM issue_details JOIN id_groupid USING (id) WHERE errorId = :id AND groupId = :groupId';
@@ -228,7 +228,7 @@ class IssuesDB extends SQLite3 {
   }
 
   public function getRecordIdsByCategoryIdCount($categoryId, $groupId = '') {
-    if ($groupId == '')
+    if ($groupId === '')
       $sql = 'SELECT COUNT(distinct(id)) AS count
               FROM issue_details
               WHERE errorId IN (SELECT distinct(id) FROM issue_summary WHERE categoryId = :categoryId)';
@@ -239,7 +239,7 @@ class IssuesDB extends SQLite3 {
                 AND groupId = :groupId';
     $stmt = $this->prepare($sql);
     $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
-    if ($groupId != '')
+    if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
     // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
@@ -248,7 +248,7 @@ class IssuesDB extends SQLite3 {
   }
 
   public function getRecordIdsByCategoryId($categoryId, $groupId = '', $offset = 0, $limit = -1) {
-    if ($groupId == '')
+    if ($groupId === '')
       $sql = 'SELECT distinct(id)
               FROM issue_details
               WHERE errorId IN (SELECT distinct(id) FROM issue_summary WHERE categoryId = :id)';
@@ -260,15 +260,30 @@ class IssuesDB extends SQLite3 {
     return $this->getRecordIdsById($sql, $categoryId, $groupId, $offset, $limit);
   }
 
+  public function getErrorIdsByCategoryId($categoryId, $groupId = '') {
+    if ($groupId === '')
+      $sql = 'SELECT distinct(id) FROM issue_summary WHERE categoryId = :id';
+    else
+      $sql = 'SELECT distinct(id) FROM issue_summary WHERE categoryId = :categoryId AND groupId = :groupId';
+
+    $stmt = $this->prepare($sql);
+    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
+    if ($groupId !== '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
+
+    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    return $stmt->execute();
+  }
+
   public function getRecordIdsByTypeIdCount($typeId, $groupId = '') {
-    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
     $stmt = $this->prepare(
       'SELECT COUNT(distinct(id)) AS count
        FROM issue_details
        WHERE errorId IN 
             (SELECT distinct(id) FROM issue_summary WHERE typeId = :typeId' . $groupCriterium . ')');
     $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
-    if ($groupId != '')
+    if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
     // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
@@ -277,7 +292,7 @@ class IssuesDB extends SQLite3 {
   }
 
   public function getRecordIdsByTypeId($typeId, $groupId = '', $offset = 0, $limit = -1) {
-    $groupCriterium = ($groupId != '') ? ' AND groupId = :groupId' : '';
+    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
     $sql = 'SELECT distinct(id)
        FROM issue_details
        WHERE errorId IN 
@@ -295,7 +310,7 @@ class IssuesDB extends SQLite3 {
       $stmt->bindValue(':limit', $limit, SQLITE3_INTEGER);
       $stmt->bindValue(':offset', $offset, SQLITE3_INTEGER);
     }
-    if ($groupId != '')
+    if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
 
     error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));

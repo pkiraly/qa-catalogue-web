@@ -296,7 +296,6 @@ class Data extends Facetable {
     if ($idType == 'errorId') {
       $coreToUse = $this->findCoreToUse();
       if ($coreToUse !== false) {
-        error_log('$coreToUse: ' . $coreToUse);
         return $this->getRecordIdByErrorId($coreToUse, $id, $groupId, $this->start, $this->rows);
       }
       $start = microtime(true);
@@ -306,6 +305,16 @@ class Data extends Facetable {
       $t_retrieve = microtime(true) - $start;
       error_log(sprintf("count: %.2f, retrieve: %.2f", $t_count, $t_retrieve));
     } else if ($idType == 'categoryId') {
+      $coreToUse = $this->findCoreToUse();
+      if ($coreToUse !== false) {
+        $result = $db->getErrorIdsByCategoryId($id, $groupId);
+        $recordIds = [];
+        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+          $recordIds[] = $row['id'];
+        }
+        return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $recordIds) . ')', $groupId, $this->start, $this->rows);
+      }
+
       /*
       include_once 'Issues.php';
       $issues = new Issues($this->configuration, $this->db);
@@ -433,7 +442,6 @@ class Data extends Facetable {
     $info = curl_getinfo($ch);
     $http_code = $info["http_code"];
     curl_close($ch);
-    error_log('$http_code: ' . $http_code);
     if ($http_code == 200) {
       $response = json_decode($content);
       return ($response->status == 'OK');
@@ -448,7 +456,6 @@ class Data extends Facetable {
 
     $url = sprintf('http://localhost:8983/solr/%s/select?q=%s&fl=id&start=%d&rows=%d',
                     $core, urlencode($query), $start, $rows);
-    error_log($url);
     $response = json_decode(file_get_contents($url));
     $this->numFound = $response->response->numFound;
     $recordIds = [];
