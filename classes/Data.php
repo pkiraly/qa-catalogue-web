@@ -296,6 +296,7 @@ class Data extends Facetable {
     if ($idType == 'errorId') {
       $coreToUse = $this->findCoreToUse();
       if ($coreToUse !== false) {
+        error_log('$coreToUse: ' . $coreToUse);
         return $this->getRecordIdByErrorId($coreToUse, $id, $groupId, $this->start, $this->rows);
       }
       $start = microtime(true);
@@ -446,6 +447,7 @@ class Data extends Facetable {
 
     $url = sprintf('http://localhost:8983/solr/%s/select?q=%s&fl=id&start=%d&rows=%d',
                     $core, urlencode($query), $start, $rows);
+    error_log($url);
     $response = json_decode(file_get_contents($url));
     $this->numFound = $response->response->numFound;
     $recordIds = [];
@@ -458,8 +460,7 @@ class Data extends Facetable {
   /**
    * @return false|string
    */
-  private function findCoreToUse()
-  {
+  private function findCoreToUse(): string {
     $coreToUse = false;
     $cores = [$this->getIndexName() . '_validation', 'validation'];
     foreach ($cores as $core) {
