@@ -294,6 +294,10 @@ class Data extends Facetable {
 
     $groupId = $this->groupped ? $this->groupId : '';
     if ($idType == 'errorId') {
+      $coreToUse = $this->findCoreToUse();
+      if ($coreToUse !== false) {
+        return $this->getRecordIdByErrorId($coreToUse, $id, $groupId, $this->start, $this->rows);
+      }
       $start = microtime(true);
       $this->numFound = $db->getRecordIdsByErrorIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
       $t_count = microtime(true) - $start;
@@ -411,5 +415,59 @@ class Data extends Facetable {
         $solrParams[] = 'fq=' . $filter;
 
     return $solrParams;
+  }
+
+  private function isCoreAvailable($core) {
+    $url = 'http://localhost:8983/solr/' . $core . '/admin/ping';
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,false);
+    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+    $content = curl_exec($ch);
+    $info = curl_getinfo($ch);
+    $http_code = $info["http_code"];
+    curl_close($ch);
+    if ($http_code == 200) {
+      $response = json_decode($content);
+      return ($response->status == 'OK');
+    }
+    return false;
+  }
+
+  private function getRecordIdByErrorId($core, $errorId, $groupId = null, $start = 0, $rows = 10) {
+    $query = 'errorId_is:' . $errorId;
+    if (!is_null($groupId))
+      $query .= ' AND groupId_is:' . $groupId;
+
+    $url = sprintf('http://localhost:8983/solr/%s/select?q=%s&fl=id&start=%d&rows=%d',
+                    $core, urlencode($query), $start, $rows);
+    $response = json_decode(file_get_contents($url));
+    $this->numFound = $response->response->numFound;
+    $recordIds = [];
+    foreach ($response->response->docs as $doc) {
+      $recordIds[] = $doc->id;
+    }
+    return $recordIds;
+  }
+
+  /**
+   * @return false|string
+   */
+  private function findCoreToUse()
+  {
+    $coreToUse = false;
+    $cores = [$this->getIndexName() . '_validation', 'validation'];
+    foreach ($cores as $core) {
+      if ($this->isCoreAvailable($core)) {
+        $coreToUse = $core;
+        break;
+      }
+    }
+    return $coreToUse;
   }
 }
