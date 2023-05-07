@@ -5,9 +5,11 @@
   <td class="record-field-label">Körperschaft:</td>
   <td>
     {foreach from=$fieldInstances item=field name=fields}
-      <span class="029F$A">{$field->subfields->A}</span>
+      {if isset($field->subfields->A)}
+        <span class="029F$A">{$field->subfields->A}</span>
+      {/if}
       {if isset($field->subfields->G)}
-        <span class="029F$A">({$field->subfields->G})</span>
+        <span class="029F$G">({$field->subfields->G})</span>
       {/if}
       {if isset($field->subfields->F)}
         - <span class="029F$F">{$field->subfields->F}</span>
