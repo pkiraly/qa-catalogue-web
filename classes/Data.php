@@ -307,11 +307,7 @@ class Data extends Facetable {
     } else if ($idType == 'categoryId') {
       $coreToUse = $this->findCoreToUse();
       if ($coreToUse !== false) {
-        $result = $db->getErrorIdsByCategoryId($id, $groupId);
-        $recordIds = [];
-        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-          $recordIds[] = $row['id'];
-        }
+        $recordIds = $db->fetchAll($db->getErrorIdsByCategoryId($id, $groupId), 'id');
         return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $recordIds) . ')', $groupId, $this->start, $this->rows);
       }
 
@@ -324,6 +320,11 @@ class Data extends Facetable {
       $this->numFound = $db->getRecordIdsByCategoryIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
       $result = $db->getRecordIdsByCategoryId($id, $groupId, $this->start, $this->rows);
     } else if ($idType == 'typeId') {
+      $coreToUse = $this->findCoreToUse();
+      if ($coreToUse !== false) {
+        $recordIds = $db->fetchAll($db->getErrorIdsByTypeId($id, $groupId), 'id');
+        return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $recordIds) . ')', $groupId, $this->start, $this->rows);
+      }
       $this->numFound = $db->getRecordIdsByTypeIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
       $result = $db->getRecordIdsByTypeId($id, $groupId, $this->start, $this->rows);
     }

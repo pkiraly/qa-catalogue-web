@@ -262,12 +262,27 @@ class IssuesDB extends SQLite3 {
 
   public function getErrorIdsByCategoryId($categoryId, $groupId = '') {
     if ($groupId === '')
-      $sql = 'SELECT distinct(id) FROM issue_summary WHERE categoryId = :id';
+      $sql = 'SELECT distinct(id) FROM issue_summary WHERE categoryId = :categoryId';
     else
       $sql = 'SELECT distinct(id) FROM issue_summary WHERE categoryId = :categoryId AND groupId = :groupId';
 
     $stmt = $this->prepare($sql);
     $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
+    if ($groupId !== '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
+
+    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    return $stmt->execute();
+  }
+
+  public function getErrorIdsByTypeId($typeId, $groupId = '') {
+    if ($groupId === '')
+      $sql = 'SELECT distinct(id) FROM issue_summary WHERE typeId = :typeId';
+    else
+      $sql = 'SELECT distinct(id) FROM issue_summary WHERE typeId = :typeId AND groupId = :groupId';
+
+    $stmt = $this->prepare($sql);
+    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
 
@@ -338,4 +353,13 @@ class IssuesDB extends SQLite3 {
   }
 
   // select * from issue_details JOIN id_groupid USING (id) WHERE errorId = 1 AND groupId = 77 LIMIT 30;
+
+  public function fetchAll(SQLite3Result $result, $name): array {
+    $values = [];
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+      $values[] = $row[$name];
+    }
+    return $values;
+  }
+
 }
