@@ -96,7 +96,7 @@ class Data extends Facetable {
 
     if ($this->type == 'issues') {
       if (preg_match('/^(categoryId|typeId|errorId):(\d+)$/', $this->query, $matches)) {
-        $recordIds = $this->prepareParametersForIssueQueries($matches);
+        $recordIds = $this->prepareParametersForIssueQueries($matches[1], $matches[2]);
         $query = 'id:("' . join('" OR "', $recordIds) . '")';
         /*
         if ($this->groupped) {
@@ -285,53 +285,17 @@ class Data extends Facetable {
    * @param $matches
    * @return array
    */
-  private function prepareParametersForIssueQueries($matches): array {
-    $idType = $matches[1];
-    $id = $matches[2];
+  private function prepareParametersForIssueQueries($idType, $id): array {
     include_once 'IssuesDB.php';
     $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
     $db = new IssuesDB($dir);
 
     $groupId = $this->groupped ? $this->groupId : '';
-    if ($idType == 'errorId') {
-      $coreToUse = $this->findCoreToUse();
-      if ($coreToUse !== false) {
-        return $this->getRecordIdByErrorId($coreToUse, $id, $groupId, $this->start, $this->rows);
-      }
-      $start = microtime(true);
-      $this->numFound = $db->getRecordIdsByErrorIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
-      $t_count = microtime(true) - $start;
-      $result = $db->getRecordIdsByErrorId($id, $groupId, $this->start, $this->rows);
-      $t_retrieve = microtime(true) - $start;
-      error_log(sprintf("count: %.2f, retrieve: %.2f", $t_count, $t_retrieve));
-    } else if ($idType == 'categoryId') {
-      $coreToUse = $this->findCoreToUse();
-      if ($coreToUse !== false) {
-        $recordIds = $db->fetchAll($db->getErrorIdsByCategoryId($id, $groupId), 'id');
-        return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $recordIds) . ')', $groupId, $this->start, $this->rows);
-      }
-
-      /*
-      include_once 'Issues.php';
-      $issues = new Issues($this->configuration, $this->db);
-      $categories = $issues->readIssueCsv('issue-by-category.csv', 'id');
-      $this->numFound = $categories[$id]->records; // $db->getRecordIdsByCategoryIdCount($id)->fetchArray(SQLITE3_ASSOC)['count'];
-      */
-      $this->numFound = $db->getRecordIdsByCategoryIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
-      $result = $db->getRecordIdsByCategoryId($id, $groupId, $this->start, $this->rows);
-    } else if ($idType == 'typeId') {
-      $coreToUse = $this->findCoreToUse();
-      if ($coreToUse !== false) {
-        $recordIds = $db->fetchAll($db->getErrorIdsByTypeId($id, $groupId), 'id');
-        return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $recordIds) . ')', $groupId, $this->start, $this->rows);
-      }
-      $this->numFound = $db->getRecordIdsByTypeIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
-      $result = $db->getRecordIdsByTypeId($id, $groupId, $this->start, $this->rows);
-    }
-
-    $recordIds = [];
-    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-      $recordIds[] = $row['id'];
+    $coreToUse = $this->findCoreToUse();
+    if ($coreToUse !== false) {
+      $recordIds = $this->prepareParametersForIssueQueriesSolr($idType, $db, $id, $groupId, $coreToUse);
+    } else {
+      $recordIds = $this->prepareParametersForIssueQueriesSqlite($idType, $db, $id, $groupId);
     }
     return $recordIds;
   }
@@ -412,7 +376,7 @@ class Data extends Facetable {
 
     if ($this->type == 'issues') {
       if (preg_match('/^(categoryId|typeId|errorId):(\d+)$/', $this->query, $matches)) {
-        $recordIds = $this->prepareParametersForIssueQueries($matches);
+        $recordIds = $this->prepareParametersForIssueQueries($matches[1], $matches[2]);
         $query = 'id:("' . join('" OR "', $recordIds) . '")';
         $solrParams[] = 'q=' . urlencode($query);
       }
@@ -479,5 +443,50 @@ class Data extends Facetable {
       }
     }
     return $coreToUse;
+  }
+
+  /**
+   * @param string $idType The type of identifier (errorId, categoryId, typeId)
+   * @param IssuesDB $db The SQL wrapper class
+   * @param $id The identifier
+   * @param $groupId The group identifyer
+   * @param string $coreToUse The Solr core to use
+   * @return array|void
+   */
+  private function prepareParametersForIssueQueriesSolr(string $idType, IssuesDB $db, $id, $groupId, string $coreToUse) {
+    if ($idType == 'errorId') {
+      return $this->getRecordIdByErrorId($coreToUse, $id, $groupId, $this->start, $this->rows);
+    } else if ($idType == 'categoryId') {
+      $recordIds = $db->fetchAll($db->getErrorIdsByCategoryId($id, $groupId), 'id');
+      return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $recordIds) . ')', $groupId, $this->start, $this->rows);
+    } else if ($idType == 'typeId') {
+      $recordIds = $db->fetchAll($db->getErrorIdsByTypeId($id, $groupId), 'id');
+      return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $recordIds) . ')', $groupId, $this->start, $this->rows);
+    }
+  }
+
+  /**
+   * @param string $idType The type of identifier (errorId, categoryId, typeId)
+   * @param IssuesDB $db The SQL wrapper class
+   * @param $id The identifier
+   * @param $groupId The group identifyer
+   * @return array
+   */
+  private function prepareParametersForIssueQueriesSqlite(string $idType, IssuesDB $db, $id, $groupId): array {
+    if ($idType == 'errorId') {
+      $start = microtime(true);
+      $this->numFound = $db->getRecordIdsByErrorIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+      $t_count = microtime(true) - $start;
+      $result = $db->getRecordIdsByErrorId($id, $groupId, $this->start, $this->rows);
+      $t_retrieve = microtime(true) - $start;
+      error_log(sprintf("count: %.2f, retrieve: %.2f", $t_count, $t_retrieve));
+    } else if ($idType == 'categoryId') {
+      $this->numFound = $db->getRecordIdsByCategoryIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+      $result = $db->getRecordIdsByCategoryId($id, $groupId, $this->start, $this->rows);
+    } else if ($idType == 'typeId') {
+      $this->numFound = $db->getRecordIdsByTypeIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+      $result = $db->getRecordIdsByTypeId($id, $groupId, $this->start, $this->rows);
+    }
+    return $db->fetchAll($result, 'id');
   }
 }
