@@ -196,11 +196,21 @@ class Completeness extends BaseTab {
     return false;
   }
 
+  private function getDocumentTypes($groupId) {
+    include_once 'IssuesDB.php';
+    $this->issueDB = new IssuesDB($this->getDbDir());
+    if ($this->groupped) {
+      return $this->issueDB->fetchAll($this->issueDB->getDocumentTypes($groupId), 'documenttype');
+    }
+    return false;
+  }
+
   private function readCompleteness() {
     SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
     $hasDBTable = $this->hasGrouppedMarcElementTable();
     if ($this->groupped && $hasDBTable) {
 
+      $this->types = $this->getDocumentTypes($this->groupId);
       $start = microtime(true);
       $result = $this->issueDB->getGrouppedMarcElements($this->groupId, $this->type);
       while ($row = $result->fetchArray(SQLITE3_ASSOC)) {

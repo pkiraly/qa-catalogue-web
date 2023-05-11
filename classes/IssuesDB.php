@@ -353,6 +353,19 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
+  public function getDocumentTypes($groupId) {
+    $stmt = $this->prepare('SELECT documenttype, COUNT(documenttype) AS count 
+      FROM groupped_marc_elements 
+      WHERE groupId = :groupId AND documenttype != :documenttype
+      GROUP BY documenttype
+      ORDER BY count DESC');
+    $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
+    $stmt->bindValue(':documenttype', "all", SQLITE3_TEXT);
+    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    return $stmt->execute();
+  }
+
+
   // select * from issue_details JOIN id_groupid USING (id) WHERE errorId = 1 AND groupId = 77 LIMIT 30;
 
   public function fetchAll(SQLite3Result $result, $name): array {
