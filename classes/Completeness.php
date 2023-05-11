@@ -198,8 +198,9 @@ class Completeness extends BaseTab {
 
   private function readCompleteness() {
     SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
-    error_log('hasGrouppedMarcElementTable: ' . (int)$this->hasGrouppedMarcElementTable());
-    if ($this->groupped && $this->hasGrouppedMarcElementTable()) {
+    $hasDBTable = $this->hasGrouppedMarcElementTable();
+    error_log('hasGrouppedMarcElementTable: ' . (int)$hasDBTable);
+    if ($this->groupped && $hasDBTable) {
 
       $start = microtime(true);
       $result = $this->issueDB->getGrouppedMarcElements($this->groupId, $this->type);
@@ -211,7 +212,7 @@ class Completeness extends BaseTab {
       $tsort = microtime(true) - $start;
       $this->types = array_merge(['all'], array_diff($this->types, ['all']));
       $tmerge = microtime(true) - $start;
-      error_log(sprintf('readCompleteness) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
+      error_log(sprintf('readCompleteness (DB) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
 
     } else {
       $fileName = $this->groupped ? 'completeness-groupped-marc-elements.csv' : 'marc-elements.csv';
@@ -254,7 +255,7 @@ class Completeness extends BaseTab {
         $tsort = microtime(true) - $start;
         $this->types = array_merge(['all'], array_diff($this->types, ['all']));
         $tmerge = microtime(true) - $start;
-        error_log(sprintf('readCompleteness) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
+        error_log(sprintf('readCompleteness (file) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
       } else {
         $msg = sprintf("file %s is not existing", $elementsFile);
         error_log($msg);
