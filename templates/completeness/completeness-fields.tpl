@@ -52,7 +52,7 @@
           <td colspan="11" class="package" id="package-{$packageId}">{$packageIndex[$packageId]}</td>
         </tr>
         {foreach from=$tags key=tagName item=records}
-          {if preg_match('/^(Leader|00[678])/', $tagName)}
+          {if $records[0]->isLeader || $records[0]->isComplexControlField}
             <tr class="field-level">
               <td colspan="11" class="tag" id="completeness-{$records[0]->websafeTag}">
                 <a href="#" class="trigger" data-id="completeness-{$records[0]->websafeTag}" title="Show subfields"><i class="fa fa-folder-closed"></i></a>

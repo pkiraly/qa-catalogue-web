@@ -199,7 +199,6 @@ class Completeness extends BaseTab {
   private function readCompleteness() {
     SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
     $hasDBTable = $this->hasGrouppedMarcElementTable();
-    error_log('hasGrouppedMarcElementTable: ' . (int)$hasDBTable);
     if ($this->groupped && $hasDBTable) {
 
       $start = microtime(true);

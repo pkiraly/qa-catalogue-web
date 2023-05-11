@@ -337,7 +337,7 @@ class IssuesDB extends SQLite3 {
     $stmt = $this->prepare('SELECT COUNT(name) AS count FROM sqlite_master WHERE type = :table AND name = :tableName');
     $stmt->bindValue(':table', 'table', SQLITE3_TEXT);
     $stmt->bindValue(':tableName', 'groupped_marc_elements', SQLITE3_TEXT);
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();
   }
 
@@ -349,6 +349,7 @@ class IssuesDB extends SQLite3 {
       ORDER BY path');
     $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
     $stmt->bindValue(':documenttype', $documenttype, SQLITE3_TEXT);
+    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();
   }
 
