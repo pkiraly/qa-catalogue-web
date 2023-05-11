@@ -20,6 +20,7 @@ abstract class BaseTab implements Tab {
   protected $versioning = false;
   protected $lang = 'en';
   public $analysisParameters = null;
+  public $indexingParameters = null;
   protected $groupped = false;
   protected $groupId = false;
   protected $groupBy;
@@ -558,6 +559,12 @@ abstract class BaseTab implements Tab {
     $path = $this->getFilePath($paramFile);
     if (file_exists($path))
       $this->analysisParameters = json_decode(file_get_contents($path));
+  }
+
+  protected function readIndexingParameters($paramFile) {
+    $path = $this->getFilePath($paramFile);
+    if (file_exists($path))
+      $this->indexingParameters = json_decode(file_get_contents($path));
   }
 
   /**

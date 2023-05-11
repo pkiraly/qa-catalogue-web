@@ -30,6 +30,7 @@ class Data extends Facetable {
   public function __construct($configuration, $db) {
     parent::__construct($configuration, $db);
     parent::readAnalysisParameters('validation.params.json');
+    parent::readIndexingParameters('marctosolr.params.json');
     $this->facet = getOrDefault('facet', '');
     $this->query = getOrDefault('query', '*:*');
     $this->filters = getOrDefault('filters', []);
@@ -96,15 +97,15 @@ class Data extends Facetable {
 
     if ($this->type == 'issues') {
       if (preg_match('/^(categoryId|typeId|errorId):(\d+)$/', $this->query, $matches)) {
-        $recordIds = $this->prepareParametersForIssueQueries($matches[1], $matches[2]);
-        $query = 'id:("' . join('" OR "', $recordIds) . '")';
-        /*
-        if ($this->groupped) {
-          $query .= sprintf(' AND %s_ss:"%s"', $this->groupBy, $this->groupId);
+        if ($this->isGroupAndErrorIdIndexed()) {
+          $query = $this->getQueryForMainCore($matches);
+          $solrParams[] = 'start=' . $this->start;
+        } else {
+          $recordIds = $this->prepareParametersForIssueQueries($matches[1], $matches[2]);
+          $query = 'id:("' . join('" OR "', $recordIds) . '")';
+          $solrParams[] = 'start=' . 0;
         }
-        */
         $solrParams[] = 'q=' . urlencode($query);
-        $solrParams[] = 'start=' . 0;
       }
     } else {
       $solrParams[] = 'q=' . $this->query;
@@ -291,7 +292,7 @@ class Data extends Facetable {
     $db = new IssuesDB($dir);
 
     $groupId = $this->groupped ? $this->groupId : '';
-    $coreToUse = $this->findCoreToUse();
+    $coreToUse = $this->isGroupAndErrorIdIndexed() ? $this->getIndexName() : $this->findCoreToUse();
     if ($coreToUse !== false) {
       $recordIds = $this->prepareParametersForIssueQueriesSolr($idType, $db, $id, $groupId, $coreToUse);
     } else {
@@ -376,8 +377,12 @@ class Data extends Facetable {
 
     if ($this->type == 'issues') {
       if (preg_match('/^(categoryId|typeId|errorId):(\d+)$/', $this->query, $matches)) {
-        $recordIds = $this->prepareParametersForIssueQueries($matches[1], $matches[2]);
-        $query = 'id:("' . join('" OR "', $recordIds) . '")';
+        if ($this->isGroupAndErrorIdIndexed()) {
+          $query = $this->getQueryForMainCore($matches);
+        } else {
+          $recordIds = $this->prepareParametersForIssueQueries($matches[1], $matches[2]);
+          $query = 'id:("' . join('" OR "', $recordIds) . '")';
+        }
         $solrParams[] = 'q=' . urlencode($query);
       }
     } else {
@@ -457,11 +462,12 @@ class Data extends Facetable {
     if ($idType == 'errorId') {
       return $this->getRecordIdByErrorId($coreToUse, $id, $groupId, $this->start, $this->rows);
     } else if ($idType == 'categoryId') {
-      $recordIds = $db->fetchAll($db->getErrorIdsByCategoryId($id, $groupId), 'id');
-      return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $recordIds) . ')', $groupId, $this->start, $this->rows);
+      $errorIds = $db->fetchAll($db->getErrorIdsByCategoryId($id, $groupId), 'id');
+      error_log("errorIds: " . join(', ', $errorIds));
+      return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $errorIds) . ')', $groupId, $this->start, $this->rows);
     } else if ($idType == 'typeId') {
-      $recordIds = $db->fetchAll($db->getErrorIdsByTypeId($id, $groupId), 'id');
-      return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $recordIds) . ')', $groupId, $this->start, $this->rows);
+      $errorIds = $db->fetchAll($db->getErrorIdsByTypeId($id, $groupId), 'id');
+      return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $errorIds) . ')', $groupId, $this->start, $this->rows);
     }
   }
 
@@ -488,5 +494,38 @@ class Data extends Facetable {
       $result = $db->getRecordIdsByTypeId($id, $groupId, $this->start, $this->rows);
     }
     return $db->fetchAll($result, 'id');
+  }
+
+  private function isGroupAndErrorIdIndexed() {
+    return !is_null($this->indexingParameters)
+           && isset($this->indexingParameters->validationUrl)
+           && in_array('errorId_is', $this->getSolrFields());
+  }
+
+  /**
+   * @param array $matches
+   * @return string
+   */
+  private function getQueryForMainCore(array $matches): string {
+    $idType = $matches[1];
+    $id = $matches[2];
+    if ($idType == 'errorId') {
+      $errorId = $id;
+    } else {
+      include_once 'IssuesDB.php';
+      $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
+      $db = new IssuesDB($dir);
+      if ($idType == 'categoryId') {
+        $errorIds = $db->fetchAll($db->getErrorIdsByCategoryId($id, $this->groupId), 'id');
+        $errorId = '(' . join(' OR ', $errorIds) . ')';
+      } else if ($idType == 'typeId') {
+        $errorIds = $db->fetchAll($db->getErrorIdsByTypeId($id, $this->groupId), 'id');
+        $errorId = '(' . join(' OR ', $errorIds) . ')';
+      }
+    }
+    $query = 'errorId_is:' . $errorId;
+    if ($this->groupped)
+      $query .= ' AND groupId_is:' . $this->groupId;
+    return $query;
   }
 }
