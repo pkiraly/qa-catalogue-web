@@ -33,7 +33,7 @@ the result will be saved in `$DATADIR/$CATALOG` and in Solr.
 
 Install this software into a web server with PHP enabled (Apache or Nginx with PHP-FPM).
 
-Create a temporary directory and download the software to an application
+Create a temporary directory and download the current version to an application
 directory served by your webserver (here we use `/var/www/html/$CATALOG`):
 
 ```
@@ -46,9 +46,12 @@ mv metadata-marc-web-master /var/www/html/$CATALOG
 
 or clone the git repository:
 
-
 ```
 git clone https://github.com/pkiraly/metadata-qa-marc-web.git /var/www/html/$CATALOG
+cd /var/www/html/$CATALOG
+
+# optionally checkout a tagged release
+git checkout v0.7.0
 ```
 
 ### Setup
