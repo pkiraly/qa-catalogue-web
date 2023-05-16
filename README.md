@@ -98,7 +98,7 @@ dirName[bvb]=bayern
 setup additional directories and permissions:
 
 ```
-sudo chown www-data:www-data -R cache
+sudo chgrp www-data -R _smarty cache
 ln -s [data directory]/[catalogue]/img images/[catalogue]
 ```
 
