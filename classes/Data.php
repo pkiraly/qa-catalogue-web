@@ -293,7 +293,7 @@ class Data extends Facetable {
 
     $groupId = $this->groupped ? $this->groupId : '';
     $coreToUse = $this->isGroupAndErrorIdIndexed() ? $this->getIndexName() : $this->findCoreToUse();
-    if ($coreToUse !== false) {
+    if ($coreToUse != '') {
       $recordIds = $this->prepareParametersForIssueQueriesSolr($idType, $db, $id, $groupId, $coreToUse);
     } else {
       $recordIds = $this->prepareParametersForIssueQueriesSqlite($idType, $db, $id, $groupId);
@@ -439,7 +439,7 @@ class Data extends Facetable {
    * @return false|string
    */
   private function findCoreToUse(): string {
-    $coreToUse = false;
+    $coreToUse = '';
     $cores = ['validation', $this->getIndexName() . '_validation'];
     foreach ($cores as $core) {
       if ($this->isCoreAvailable($core)) {
