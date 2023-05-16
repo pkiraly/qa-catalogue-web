@@ -5,10 +5,9 @@
   "scripts": {
     "post-install-cmd": [
       "mkdir -p cache libs images _smarty/templates_c _smarty/cache",
-      "chgrp www-data -R cache",
-      "chgrp www-data -R _smarty",
       "touch cache/selected-facets.js",
-      "chmod g+w -R _smarty cache"
+      "chmod g+w -R _smarty cache",
+      "# you need to execute <comment>sudo chgrp www-data -R _smarty cache</comment>"
     ],
     "translate": [
       "msgfmt locale/de_DE/LC_MESSAGES/messages.po -o locale/de_DE/LC_MESSAGES/messages.mo",
