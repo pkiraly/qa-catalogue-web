@@ -7,7 +7,7 @@
       {foreach from=$field->subfields key=code item=value name=subfields}
         {if $code == 'c' && $record->getLeaderByPosition(18) == 'c'}/{/if}
         {if $code == 'b' && $record->getLeaderByPosition(18) == 'c'}:{/if}
-        <span class="{$code}">{$value}</span>
+        <span class="{$code}">{htmlspecialchars($value)}</span>
       {/foreach}
     </span>
     {if !$smarty.foreach.fields.last}<br/>{/if}

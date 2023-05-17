@@ -9,7 +9,7 @@
       <ul>
         {foreach from=$values key=term item=count}
           <li>
-            <a href='{$facet->createLink($term)}' class="facet-term">{if preg_match('/(^\s|\s{2,}|\s$)/', $term)}"{preg_replace('/\s/', '&nbsp;', $term)}"{else}{$term}{/if}</a>
+            <a href='{$facet->createLink($term)}' class="facet-term">{if preg_match('/(^\s|\s{2,}|\s$)/', $term)}"{preg_replace('/\s/', '&nbsp;', htmlspecialchars($term))}"{else}{htmlspecialchars($term)}{/if}</a>
             ({$count|number_format})
           </li>
         {/foreach}

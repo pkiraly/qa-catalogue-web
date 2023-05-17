@@ -226,10 +226,10 @@ class Record {
               $i++;
               if ($i == 1) {
                 $firstRow[] = '$' . $code;
-                $firstRow[] = $s_value;
+                $firstRow[] = htmlentities($s_value);
                 $rows[] = $firstRow;
               } else {
-                $rows[] = ['', '', '', '$' . $code, $s_value];
+                $rows[] = ['', '', '', '$' . $code, htmlentities($s_value)];
               }
             }
           }
