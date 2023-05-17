@@ -2,10 +2,10 @@
 
 > A data quality dashboard for library catalogues
 
-![Output sample](https://github.com/pkiraly/metadata-qa-marc-web/raw/gh-pages/img/issues-v1.gif)
+![Output sample](https://github.com/pkiraly/qa-catalogue-web/raw/gh-pages/img/issues-v1.gif)
 
 This web application provides a web interface to results of
-[QA Catalogue](https://github.com/pkiraly/metadata-qa-marc)
+[QA Catalogue](https://github.com/pkiraly/qa-catalogue)
 for quality analysis and statistics of metadata from library catalogues.
 
 The results in form of CSV files, JSON files, a SQLite database, images and
@@ -26,7 +26,7 @@ In the following:
 - `$DATADIR` denotes the base output directory of data analysis with QA Catalogue
 - `$CATALOG` denotes the name of a catalogue (such as loc, bl, k10plus...)
 
-Analyse your catalog with [QA Catalogue Backend](https://github.com/pkiraly/metadata-qa-marc)),
+Analyse your catalog with [QA Catalogue Backend](https://github.com/pkiraly/qa-catalogue)),
 the result will be saved in `$DATADIR/$CATALOG` and in Solr.
 
 ### Download
@@ -39,7 +39,7 @@ directory served by your webserver (here we use `/var/www/html/$CATALOG`):
 ```
 mkdir tmp
 cd tmp
-wget https://github.com/pkiraly/metadata-qa-marc-web/archive/master.zip
+wget https://github.com/pkiraly/qa-catalogue-web/archive/master.zip
 unzip master.zip
 mv metadata-marc-web-master /var/www/html/$CATALOG
 ```
@@ -47,7 +47,7 @@ mv metadata-marc-web-master /var/www/html/$CATALOG
 or clone the git repository:
 
 ```
-git clone https://github.com/pkiraly/metadata-qa-marc-web.git /var/www/html/$CATALOG
+git clone https://github.com/pkiraly/qa-catalogue-web.git /var/www/html/$CATALOG
 cd /var/www/html/$CATALOG
 
 # optionally checkout a tagged release
@@ -242,7 +242,7 @@ Please notify us if you would like to use it. Happy searching!
 
 ## Contributing
 
-QA Catalogue Web is managed in a public git repository at <https://github.com/pkiraly/metadata-qa-marc-web>.
+QA Catalogue Web is managed in a public git repository at [pkiraly/qa-catalogue-web](https://github.com/pkiraly/qa-catalogue-web).
 Contributions are welcome!
 
 ## License

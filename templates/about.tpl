@@ -10,7 +10,7 @@
 
         <h3>{_('Software')}</h3>
         <p>
-          {_t('software_text', 'https://pkiraly.github.io', 'https://github.com/pkiraly/metadata-qa-marc', 'https://github.com/pkiraly/metadata-qa-marc-web')}
+          {_t('software_text', 'https://pkiraly.github.io', 'https://github.com/pkiraly/qa-catalogue', 'https://github.com/pkiraly/qa-catalogue-web')}
         </ul>
 
         <h3>{_('Acknowledgement')}</h3>

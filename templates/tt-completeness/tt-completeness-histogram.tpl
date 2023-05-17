@@ -317,7 +317,7 @@ Each record get a score based on a number of criteria. Each criteria result in a
   {/if}
       <td>
         <svg class="tt-completeness-histogram-chart-{$field->transformed}" width="320" height="200"></svg>
-        <p id="tt-component-{$index}">{$index}. {$field->name}</p>
+        <p id="tt-component-{$index}"><strong>{$index}.</strong> {$field->name}</p>
       </td>
   {if $index % 3 == 0 || $index == count($fields)}
     </tr>

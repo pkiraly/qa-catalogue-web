@@ -39,15 +39,17 @@
 
 <p>The histograms of the individual components:</p>
 
+<p>{json_encode($fields)}</p>
+
 <table>
 {foreach from=$fields key=index item=field}
   {if $index % 3 == 0}
-      <tr>
+    <tr>
   {/if}
     <td>
       <svg class="shelf-ready-completeness-histogram-chart-{$field->name}" width="320" height="200"></svg>
       <p id="shelf-ready-component-{$index+1}">
-          {$index+1}. {$field->label}<br/>
+        <strong>{$index+1}.</strong> {$field->label}<br/>
         score: 0&mdash;{$field->score}
       </p>
     </td>

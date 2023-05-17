@@ -1,5 +1,5 @@
 {
-  "name": "pkiraly/metadata-qa-marc-web",
+  "name": "pkiraly/qa-catalogue-web",
   "type": "project",
   "license": "GPL-3.0-or-later",
   "scripts": {
@@ -17,7 +17,7 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/pkiraly/metadata-qa-marc-web"
+      "url": "https://github.com/pkiraly/qa-catalogue-web"
     }
   ],
   "require": {
