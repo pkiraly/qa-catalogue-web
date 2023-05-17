@@ -21,8 +21,7 @@
 
         <p>
           {_('This chart was implemented based on Benjamin Schmidt\'s blog post')}
-          <a href="http://sappingattention.blogspot.com/2017/05/a-brief-visual-history-of-marc.html">A brief visual history of MARC cataloging at the Library of Congress.</a>
-          (Tuesday, May 16, 2017).
+          <a href="http://creatingdata.us/datasets/marc-history/">The history library catalogs inside MARC records</a>
         </p>
 
         <div id="history-content">
