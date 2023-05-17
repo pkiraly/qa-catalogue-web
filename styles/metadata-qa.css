@@ -666,7 +666,7 @@ table.matrix tr td.labels {
 
 table.matrix tr td.bars {
   min-width: 500px;
-  max-width: 500px;
+  max-width: 520px;
 }
 table.matrix tr td.bars span {
   display: block;
