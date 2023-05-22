@@ -28,7 +28,7 @@ class FunctionalAnalysisHistogram extends BaseTab {
       $lineNumber = 0;
       $header = [];
       $in = fopen($elementsFile, "r");
-      $grouppedCsv = [];
+      $groupedCsv = [];
       while (($line = fgets($in)) != false) {
         $lineNumber++;
         $values = str_getcsv($line);
@@ -37,9 +37,9 @@ class FunctionalAnalysisHistogram extends BaseTab {
           $currentFunction = '';
           $function_report = [];
           if ($this->selectedFunction != '')
-            $grouppedCsv[] = ['count', 'frequency'];
+            $groupedCsv[] = ['count', 'frequency'];
           else
-            $grouppedCsv[] = ['frbrfunction', 'score', 'count'];
+            $groupedCsv[] = ['frbrfunction', 'score', 'count'];
         } else {
           if (count($header) != count($values)) {
             error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
@@ -50,7 +50,7 @@ class FunctionalAnalysisHistogram extends BaseTab {
 
           if ($record->frbrfunction != $currentFunction) {
             if ($currentFunction != '') {
-              $this->addFunctionReport($currentFunction, $function_report, $grouppedCsv);
+              $this->addFunctionReport($currentFunction, $function_report, $groupedCsv);
             }
             $function_report = [];
             $currentFunction = $record->frbrfunction;
@@ -65,26 +65,26 @@ class FunctionalAnalysisHistogram extends BaseTab {
           }
         }
       }
-      $this->addFunctionReport($currentFunction, $function_report, $grouppedCsv);
+      $this->addFunctionReport($currentFunction, $function_report, $groupedCsv);
       fclose($in);
 
       header("Content-type: text/csv");
-      echo $this->formatAsCsv($grouppedCsv);
+      echo $this->formatAsCsv($groupedCsv);
     }
   }
 
-  private function addFunctionReport($current_function, $function_report, &$groupped_csv) {
+  private function addFunctionReport($current_function, $function_report, &$grouped_csv) {
     foreach ($function_report as $score => $count) {
       if ($this->selectedFunction != '')
-        $groupped_csv[] = [$score, $count];
+        $grouped_csv[] = [$score, $count];
       else
-        $groupped_csv[] = [$current_function, $score, $count];
+        $grouped_csv[] = [$current_function, $score, $count];
     }
   }
 
-  private function formatAsCsv($groupped_csv) {
+  private function formatAsCsv($grouped_csv) {
     $lines = [];
-    foreach ($groupped_csv as $row) {
+    foreach ($grouped_csv as $row) {
       $lines[] = join(',', $row);
     }
     return join("\n", $lines);

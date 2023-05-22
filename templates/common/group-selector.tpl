@@ -1,4 +1,4 @@
-{if $groupped}
+{if $grouped}
   <div id="group-selector">
     <form>
       <input type="hidden" name="tab" value="{$tab}">

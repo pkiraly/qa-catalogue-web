@@ -7,7 +7,7 @@ class Terms extends Facetable {
 
   private $facet;
   private $action = 'list';
-  public $groupped = false;
+  public $grouped = false;
   public $groupId = false;
   public $groups;
   public $currentGroup;
@@ -16,8 +16,8 @@ class Terms extends Facetable {
   public function __construct($configuration, $db) {
     parent::__construct($configuration, $db);
     parent::readAnalysisParameters('validation.params.json');
-    $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
-    if ($this->groupped) {
+    $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
+    if ($this->grouped) {
       $this->groupBy = $this->analysisParameters->groupBy;
       $this->groupId = getOrDefault('groupId', 0);
     }
@@ -46,7 +46,7 @@ class Terms extends Facetable {
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 
-    if ($this->groupped && $this->groupId != 0)
+    if ($this->grouped && $this->groupId != 0)
       $this->filters[] = $this->getRawGroupQuery();
 
     if ($this->action == 'download') {
@@ -223,7 +223,7 @@ class Terms extends Facetable {
    * @return void
    */
   private function listAction(Smarty $smarty): void {
-    $smarty->assign('groupped', $this->groupped);
+    $smarty->assign('grouped', $this->grouped);
     $smarty->assign('currentGroup', $this->currentGroup);
 
     $smarty->assign('groupId',   $this->groupId);
@@ -239,7 +239,7 @@ class Terms extends Facetable {
     $smarty->assign('params',    $this->params);
 
     $facets = $this->createTermList();
-    if ($this->groupped) {
+    if ($this->grouped) {
       $this->groups = $this->readGroups();
       $this->currentGroup = $this->selectCurrentGroup();
       if (isset($this->currentGroup->count))

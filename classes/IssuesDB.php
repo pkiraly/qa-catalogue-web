@@ -102,7 +102,7 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function getByCategoryAndTypeGrouppedByPath($categoryId, $typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
+  public function getByCategoryAndTypeGroupedByPath($categoryId, $typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
     $default_order = 'records DESC';
     if (!preg_match('/^(path|variants|instances|records) (ASC|DESC)$/', $order))
       $order = $default_order;
@@ -122,7 +122,7 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function getByCategoryAndTypeGrouppedByPathCount($categoryId, $typeId, $groupId = '') {
+  public function getByCategoryAndTypeGroupedByPathCount($categoryId, $typeId, $groupId = '') {
     $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
     $stmt = $this->prepare(
       'SELECT COUNT(*) AS count
@@ -137,11 +137,11 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function getRecordNumberByTypeGroupped($typeId, $groupId = '') {
+  public function getRecordNumberByTypeGrouped($typeId, $groupId = '') {
     $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
     $stmt = $this->prepare(
       'SELECT record_nr AS count
-      FROM issue_groupped_types AS s
+      FROM issue_grouped_types AS s
       WHERE typeId = :typeId' . $groupCriterium
     );
     $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
@@ -151,11 +151,11 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function getRecordNumberByCategoryGroupped($categoryId, $groupId = '') {
+  public function getRecordNumberByCategoryGrouped($categoryId, $groupId = '') {
     $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
     $stmt = $this->prepare(
       'SELECT record_nr AS count
-      FROM issue_groupped_types AS s
+      FROM issue_grouped_types AS s
       WHERE categoryId = :categoryId' . $groupCriterium
     );
     $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
@@ -165,11 +165,11 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function getRecordNumberByPathGroupped($typeId, $groupId = '') {
+  public function getRecordNumberByPathGrouped($typeId, $groupId = '') {
     $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
     $stmt = $this->prepare(
       'SELECT record_nr AS count
-      FROM issue_groupped_types AS s
+      FROM issue_grouped_types AS s
       WHERE categoryId = :categoryId' . $groupCriterium
     );
     $stmt->bindValue(':categoryId', $typeId, SQLITE3_INTEGER);
@@ -179,7 +179,7 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function getRecordNumberAndVariationsForPathGroupped($typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
+  public function getRecordNumberAndVariationsForPathGrouped($typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
     $groupCriterium = ($groupId !== '') ? ' AND p.groupId = :groupId' : '';
     $default_order = 'records DESC';
     if (!preg_match('/^(path|variants|instances|records) (ASC|DESC)$/', $order))
@@ -189,7 +189,7 @@ class IssuesDB extends SQLite3 {
               p.record_nr AS records,
               p.instance_nr AS instances,
               COUNT(s.id) AS variants
-       FROM issue_groupped_paths p 
+       FROM issue_grouped_paths p 
        LEFT JOIN issue_summary s 
          ON (p.groupId = s.groupId AND p.typeId = s.typeId AND p.path = s.MarcPath) 
        WHERE p.typeId = :typeId' . $groupCriterium .' 
@@ -333,17 +333,17 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function hasGrouppedMarcElementTable() {
+  public function hasGroupedMarcElementTable() {
     $stmt = $this->prepare('SELECT COUNT(name) AS count FROM sqlite_master WHERE type = :table AND name = :tableName');
     $stmt->bindValue(':table', 'table', SQLITE3_TEXT);
-    $stmt->bindValue(':tableName', 'groupped_marc_elements', SQLITE3_TEXT);
+    $stmt->bindValue(':tableName', 'grouped_marc_elements', SQLITE3_TEXT);
     // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();
   }
 
-  public function getGrouppedMarcElements($groupId, $documenttype) {
+  public function getGroupedMarcElements($groupId, $documenttype) {
     $stmt = $this->prepare('SELECT * 
-      FROM groupped_marc_elements
+      FROM grouped_marc_elements
       WHERE groupId = :groupId 
         AND documenttype = :documenttype
       ORDER BY path');
@@ -355,7 +355,7 @@ class IssuesDB extends SQLite3 {
 
   public function getDocumentTypes($groupId) {
     $stmt = $this->prepare('SELECT documenttype, COUNT(documenttype) AS count 
-      FROM groupped_marc_elements 
+      FROM grouped_marc_elements 
       WHERE groupId = :groupId AND documenttype != :documenttype
       GROUP BY documenttype
       ORDER BY count DESC');

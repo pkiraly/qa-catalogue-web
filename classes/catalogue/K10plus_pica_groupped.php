@@ -1,9 +1,9 @@
 <?php
 
 
-class K10plus_pica_groupped extends Catalogue {
+class K10plus_pica_grouped extends Catalogue {
 
-  protected $name = 'k10plus_pica_groupped';
+  protected $name = 'k10plus_pica_grouped';
   protected $label = 'K10plus-Verbundkatalog (PICA)';
   protected $url = 'https://opac.k10plus.de';
   protected $schemaType = 'PICA';

@@ -34,7 +34,8 @@
 
       <h3>{_('Fields')}</h3>
       <div id="completeness-field-table">
-        {include 'completeness/completeness-fields.tpl'}
+        {* include 'completeness/completeness-fields.tpl' *}
+        {include 'completeness/completeness-fields2.tpl'}
       </div>
     </div>
   </div>

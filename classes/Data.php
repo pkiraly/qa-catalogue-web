@@ -21,7 +21,7 @@ class Data extends Facetable {
   private $typeCache006 = [];
   private $type = 'solr';
   private $numFound = null;
-  public $groupped = false;
+  public $grouped = false;
   public $groupId = false;
   public $groupBy = false;
   public $params;
@@ -38,8 +38,8 @@ class Data extends Facetable {
     $this->rows = (int) getOrDefault('rows', 10, $this->itemsPerPageSelectors);
     $this->type = getOrDefault('type', 'solr', ['solr', 'issues']);
     $this->action = getOrDefault('action', 'search', ['search', 'download']);
-    $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
-    if ($this->groupped)
+    $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
+    if ($this->grouped)
       $this->groupBy = $this->analysisParameters->groupBy;
     $this->groupId = getOrDefault('groupId', 0);
 
@@ -291,7 +291,7 @@ class Data extends Facetable {
     $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
     $db = new IssuesDB($dir);
 
-    $groupId = $this->groupped ? $this->groupId : '';
+    $groupId = $this->grouped ? $this->groupId : '';
     $coreToUse = $this->isGroupAndErrorIdIndexed() ? $this->getIndexName() : $this->findCoreToUse();
     if ($coreToUse != '') {
       $recordIds = $this->prepareParametersForIssueQueriesSolr($idType, $db, $id, $groupId, $coreToUse);
@@ -325,7 +325,7 @@ class Data extends Facetable {
     $smarty->assign('facetLimit', $this->facetLimit);
     $smarty->assign('filters', $this->getFilters());
     $smarty->assign('offset', $this->offset);
-    if ($this->groupped)
+    if ($this->grouped)
       $smarty->assign('groupId', $this->groupId);
 
     $solrParams = $this->buildParameters();
@@ -524,7 +524,7 @@ class Data extends Facetable {
       }
     }
     $query = 'errorId_is:' . $errorId;
-    if ($this->groupped)
+    if ($this->grouped)
       $query .= ' AND groupId_is:' . $this->groupId;
     return $query;
   }

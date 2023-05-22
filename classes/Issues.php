@@ -32,12 +32,12 @@ class Issues extends BaseTab {
     $smarty->assign('version', $this->version);
 
     $this->action = getOrDefault('action', 'list', ['list', 'query', 'download', 'record', 'ajaxIssue', 'ajaxIssueByTag']);
-    $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
-    $smarty->assign('groupped', $this->groupped);
+    $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
+    $smarty->assign('grouped', $this->grouped);
     $this->groupId = getOrDefault('groupId', 0);
     $smarty->assign('groupId', $this->groupId);
 
-    if ($this->groupped) {
+    if ($this->grouped) {
       $this->groups = $this->readGroups();
       $this->currentGroup = $this->selectCurrentGroup();
       if (isset($this->currentGroup->count))
@@ -90,7 +90,7 @@ class Issues extends BaseTab {
           $values = str_getcsv($line);
           if ($lineNumber == 1) {
             $header = $values;
-            $i = ($this->groupped) ? 2 : 1;
+            $i = ($this->grouped) ? 2 : 1;
             $header[$i] = 'path';
           } else {
             if (count($header) != count($values)) {
@@ -99,7 +99,7 @@ class Issues extends BaseTab {
             }
             $record = (object)array_combine($header, $values);
 
-            if ($this->groupped && $record->groupId != $this->groupId)
+            if ($this->grouped && $record->groupId != $this->groupId)
               continue;
 
             $this->injectPica3($record);
@@ -202,7 +202,7 @@ class Issues extends BaseTab {
   private function readIssuesAjaxDB($categoryId, $typeId, $path = null, $order = 'records DESC', $page = 0, $limit = 100) {
     include_once 'IssuesDB.php';
     $db = new IssuesDB($this->getDbDir());
-    $groupId = $this->groupped ? $this->groupId : '';
+    $groupId = $this->grouped ? $this->groupId : '';
     if (is_null($path) || empty($path)) {
       $this->recordCount = $db->getByCategoryTypeAndGroupCount($categoryId, $typeId, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
       $result = $db->getByCategoryTypeAndGroup($categoryId, $typeId, $groupId, $order, $page * $limit, $limit);
@@ -222,13 +222,13 @@ class Issues extends BaseTab {
   private function readIssuesAjaxByTag($categoryId, $typeId, $order = 'records DESC', $page = 0, $limit = 100) {
     include_once 'IssuesDB.php';
     $db = new IssuesDB($this->getDbDir());
-    $groupId = $this->groupped ? $this->groupId : '';
+    $groupId = $this->grouped ? $this->groupId : '';
 
-    // $this->recordCount = $db->getByCategoryAndTypeGrouppedByPathCount($categoryId, $typeId, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
-    if ($this->groupped) {
-      $result = $db->getRecordNumberAndVariationsForPathGroupped($typeId, $groupId, $order, $page * $limit, $limit);
+    // $this->recordCount = $db->getByCategoryAndTypeGroupedByPathCount($categoryId, $typeId, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+    if ($this->grouped) {
+      $result = $db->getRecordNumberAndVariationsForPathGrouped($typeId, $groupId, $order, $page * $limit, $limit);
     } else {
-      $result = $db->getByCategoryAndTypeGrouppedByPath($categoryId, $typeId, $groupId, $order, $page * $limit, $limit);
+      $result = $db->getByCategoryAndTypeGroupedByPath($categoryId, $typeId, $groupId, $order, $page * $limit, $limit);
     }
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
       $record = (object) $row;
@@ -266,7 +266,7 @@ class Issues extends BaseTab {
   }
 
   private function readCategories() {
-    if ($this->groupped) {
+    if ($this->grouped) {
       $this->categories = $this->filterByGroup($this->readIssueCsv('issue-by-category.csv', ''), 'id');
       $total = $this->currentGroup->count;
     } else {
@@ -280,7 +280,7 @@ class Issues extends BaseTab {
   }
 
   private function readTypes() {
-    if ($this->groupped) {
+    if ($this->grouped) {
       $this->types = $this->filterByGroup($this->readIssueCsv('issue-by-type.csv', ''), 'id');
       $total = $this->currentGroup->count;
     } else {
@@ -300,7 +300,7 @@ class Issues extends BaseTab {
   }
 
   private function readTotal() {
-    if ($this->groupped) {
+    if ($this->grouped) {
       $statistics = $this->filterByGroup($this->readIssueCsv('issue-total.csv', ''), 'type');
       $this->total = $this->currentGroup->count;
     } else {
@@ -378,7 +378,7 @@ class Issues extends BaseTab {
     include_once 'IssuesDB.php';
     $db = new IssuesDB($this->getDbDir());
 
-    $groupId = $this->groupped ? $this->groupId : '';
+    $groupId = $this->grouped ? $this->groupId : '';
     if ($type == 'errorId')
       $result = $db->getRecordIdsByErrorId($id, $groupId);
     else if ($type == 'categoryId')
@@ -475,7 +475,7 @@ class Issues extends BaseTab {
   private function filterByGroup($statistics, $key) {
     $filtered = [];
     foreach ($statistics as $record) {
-      if ($this->groupped && $record->groupId != $this->groupId)
+      if ($this->grouped && $record->groupId != $this->groupId)
         continue;
       unset($record->groupId);
       $filtered[$record->{$key}] = $record;

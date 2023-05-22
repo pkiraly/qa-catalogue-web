@@ -16,7 +16,7 @@
           <input type="hidden" name="lang" value="{$lang}" />
           <input type="hidden" name="query" value="{$query}" />
 
-          {if $groupped}
+          {if $grouped}
             {include 'common/library-selector.tpl'}
           {/if}
           {include 'common/field-selector.tpl' id="facet" name="facetName" idValue=$facet labelValue=$label}

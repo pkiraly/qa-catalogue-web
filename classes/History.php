@@ -6,7 +6,7 @@ class History extends BaseTab {
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
     parent::readAnalysisParameters('completeness.params.json');
-    $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
+    $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
 
     $smarty->assign('files', $this->listFiles());
   }
@@ -17,7 +17,7 @@ class History extends BaseTab {
 
   private function listFiles() {
     $files = [];
-    $fileName = $this->groupped ? 'completeness-groupped-marc-elements.csv' : 'marc-elements.csv';
+    $fileName = $this->grouped ? 'completeness-grouped-marc-elements.csv' : 'marc-elements.csv';
     $byRecordsFile = $this->getFilePath($fileName);
     error_log('byRecordsFile: ' . $byRecordsFile);
     if (file_exists($byRecordsFile)) {

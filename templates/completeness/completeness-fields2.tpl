@@ -53,71 +53,11 @@
             <strong>{$packageId}.</strong> {$packageIndex[$packageId]}
           </td>
         </tr>
-        {foreach from=$tags key=tagName item=records}
-          {if is_array($records)
-              && is_object($records[0])
-              && ($records[0]->isLeader || $records[0]->isComplexControlField)}
-            <tr class="field-level">
-              <td colspan="11" class="tag" id="completeness-{$records[0]->websafeTag}">
-                <a href="#" class="trigger" data-id="completeness-{$records[0]->websafeTag}" title="Show subfields"><i class="fa fa-folder-closed"></i></a>
-                  {$tagName}
-              </td>
-            </tr>
-          {/if}
-          {assign var=prevComplexType value=""}
-          {foreach from=$records item=record}
-            {if $record->isComplexControlField && $prevComplexType != $record->complexType}
-              <tr class="complex-type complex-type-level completeness-{$record->websafeTag}">
-                <td colspan="11" style="text-align: left">{$record->complexType}</td>
-              </tr>
-            {/if}
-            <tr class="{if $record->isField}field-level{else}subfield-level completeness-{$record->websafeTag}{/if}">
-              {if $record->isField}
-                <td colspan="2" class="field-level tag" id="completeness-{$record->websafeTag}">
-                  <a href="#" class="trigger" data-id="completeness-{$record->websafeTag}" title="Show subfields"><i class="fa fa-folder-closed"></i></a>
-                  {$tagName}
-                </td>
-              {else}
-                <td class="path" id="completeness-{$record->path}">
-                  {if $record->isLeader || $record->isComplexControlField || !$record->isField || strpos($record->path, '$') !== false}
-                    {if isset($record->solr) && !empty($record->solr)}
-                      <a href="{$controller->queryLink($record)}">
-                        {if $record->isComplexControlField || $record->isLeader}
-                          {$record->complexPosition}
-                        {elseif preg_match('/ind[12]$/', $record->path)}
-                          {$catalogue->getSubfield($record->path)}
-                        {else}
-                          {$catalogue->getSubfield($record->path)}
-                        {/if}
-                      </a>
-                    {elseif $record->isComplexControlField || $record->isLeader}
-                      {$record->complexPosition}
-                    {else}
-                      {$catalogue->getSubfield($record->path)}
-                    {/if}
-                  {/if}
-                </td>
-                <td class="subfield">{$record->subfield}</td>
-              {/if}
-              <td class="chart"><div style="width: {ceil($record->percent * 2)}px;">&nbsp;</div></td>
-              <td class="terms">
-                {if isset($record->solr) && !empty($record->solr)}
-                  <a href="{$controller->termsLink($record)}" title="{_('terms')}"><img src="styles/list.png" width="20" height="20"></a>
-                {/if}
-              </td>
-              <td class="number-of-record">{$record->{'number-of-record'}|number_format}</td>
-              <td class="percent-of-record">{$record->percent|number_format:2}</td>
-              <td class="number-of-instances">{$record->{'number-of-instances'}|number_format}</td>
-              <td class="min">{$record->min}</td>
-              <td class="max">{if $record->max != $record->min}{$record->max}{/if}</td>
-              <td class="mean">{if $record->max != $record->min}{$record->mean}{/if}</td>
-              <td class="stddev">{if $record->max != $record->min}{$record->stddev}{/if}</td>
-            </tr>
-            {if $record->isComplexControlField}
-              {assign var=prevComplexType value=$record->complexType}
-            {/if}
-          {/foreach}
-        {/foreach}
+        {if $packageId == 0}
+          {include 'completeness/completeness-control-fields-package.tpl'}
+        {else}
+          {include 'completeness/completeness-data-fields-package.tpl'}
+        {/if}
       {/foreach}
     {else}
       <tr><td colspan="5">{_('sorted')}</td></tr>

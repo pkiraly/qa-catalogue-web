@@ -21,7 +21,7 @@ abstract class BaseTab implements Tab {
   protected $lang = 'en';
   public $analysisParameters = null;
   public $indexingParameters = null;
-  protected $groupped = false;
+  protected $grouped = false;
   protected $groupId = false;
   protected $groupBy;
 
@@ -628,7 +628,7 @@ abstract class BaseTab implements Tab {
   }
 
   protected function getRawGroupQuery() {
-    if ($this->groupped && $this->groupId != 0)
+    if ($this->grouped && $this->groupId != 0)
       return sprintf('%s:%s',
         $this->picaToSolr(str_replace('$', '', $this->groupBy)) . '_ss',
         urlencode(sprintf('"%s"', $this->groupId)));

@@ -50,9 +50,9 @@ class Completeness extends BaseTab {
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
     parent::readAnalysisParameters('completeness.params.json');
-    $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
-    $smarty->assign('groupped', $this->groupped);
-    if ($this->groupped)
+    $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
+    $smarty->assign('grouped', $this->grouped);
+    if ($this->grouped)
       $this->groupBy = $this->analysisParameters->groupBy;
 
     $this->action = getOrDefault('action', 'list', ['list', 'ajaxGroups']);
@@ -61,7 +61,7 @@ class Completeness extends BaseTab {
     $this->groupId = getOrDefault('groupId', 0);
 
     if ($this->action == 'list') {
-      if ($this->groupped) {
+      if ($this->grouped) {
         $this->groups = $this->readGroups();
         $smarty->assign('groups', $this->groups);
         $smarty->assign('groupId', $this->groupId);
@@ -116,7 +116,7 @@ class Completeness extends BaseTab {
   }
 
   private function readPackages() {
-    $fileName = $this->groupped ? 'completeness-groupped-packages.csv' : 'packages.csv';
+    $fileName = $this->grouped ? 'completeness-grouped-packages.csv' : 'packages.csv';
     $elementsFile = $this->getFilePath($fileName);
 
     if (file_exists($elementsFile)) {
@@ -143,7 +143,7 @@ class Completeness extends BaseTab {
             if (isset($record->documenttype) && $record->documenttype != $this->type)
               continue;
 
-            if ($this->groupped && $record->group != $this->groupId)
+            if ($this->grouped && $record->group != $this->groupId)
               continue;
 
             $record->packageid = (int)$record->packageid;
@@ -187,11 +187,11 @@ class Completeness extends BaseTab {
     }
   }
 
-  private function hasGrouppedMarcElementTable() {
+  private function hasGroupedMarcElementTable() {
     include_once 'IssuesDB.php';
     $this->issueDB = new IssuesDB($this->getDbDir());
-    if ($this->groupped) {
-      return $this->issueDB->hasGrouppedMarcElementTable()->fetchArray(SQLITE3_ASSOC)['count'] == 1;
+    if ($this->grouped) {
+      return $this->issueDB->hasGroupedMarcElementTable()->fetchArray(SQLITE3_ASSOC)['count'] == 1;
     }
     return false;
   }
@@ -199,7 +199,7 @@ class Completeness extends BaseTab {
   private function getDocumentTypes($groupId) {
     include_once 'IssuesDB.php';
     $this->issueDB = new IssuesDB($this->getDbDir());
-    if ($this->groupped) {
+    if ($this->grouped) {
       return $this->issueDB->fetchAll($this->issueDB->getDocumentTypes($groupId), 'documenttype');
     }
     return false;
@@ -207,12 +207,12 @@ class Completeness extends BaseTab {
 
   private function readCompleteness() {
     SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
-    $hasDBTable = $this->hasGrouppedMarcElementTable();
-    if ($this->groupped && $hasDBTable) {
+    $hasDBTable = $this->hasGroupedMarcElementTable();
+    if ($this->grouped && $hasDBTable) {
 
       $this->types = $this->getDocumentTypes($this->groupId);
       $start = microtime(true);
-      $result = $this->issueDB->getGrouppedMarcElements($this->groupId, $this->type);
+      $result = $this->issueDB->getGroupedMarcElements($this->groupId, $this->type);
       while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
         $this->processRecord((object)$row);
       }
@@ -224,9 +224,10 @@ class Completeness extends BaseTab {
       error_log(sprintf('readCompleteness (DB) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
 
     } else {
-      $fileName = $this->groupped ? 'completeness-groupped-marc-elements.csv' : 'marc-elements.csv';
+      $fileName = $this->grouped ? 'completeness-grouped-marc-elements.csv' : 'marc-elements.csv';
       $elementsFile = $this->getFilePath($fileName);
       if (file_exists($elementsFile)) {
+        error_log('completeness file: ' . $elementsFile);
         $start = microtime(true);
         // $keys = ['element','number-of-record',number-of-instances,min,max,mean,stddev,histogram]; // "sum",
         $lineNumber = 0;
@@ -251,7 +252,7 @@ class Completeness extends BaseTab {
               if (isset($record->documenttype) && $record->documenttype != $this->type)
                 continue;
 
-              if ($this->groupped && $record->groupId != $this->groupId)
+              if ($this->grouped && $record->groupId != $this->groupId)
                 continue;
 
               $this->processRecord($record);
@@ -261,6 +262,14 @@ class Completeness extends BaseTab {
         }
 
         ksort($this->records, SORT_NUMERIC);
+        foreach (array_keys($this->records) as $packageId) {
+          ksort($this->records[$packageId], SORT_NUMERIC);
+          if ($packageId != 0) {
+            foreach ($this->records[$packageId] as $tag => $field) {
+              usort($this->records[$packageId][$tag]['subfields'], function($a, $b) {return $a->subfieldSort <=> $b->subfieldSort;});
+            }
+          }
+        }
         $tsort = microtime(true) - $start;
         $this->types = array_merge(['all'], array_diff($this->types, ['all']));
         $tmerge = microtime(true) - $start;
@@ -294,7 +303,7 @@ class Completeness extends BaseTab {
   private function getGroupFilter() {
     static $groupFilter;
     if (!isset($groupFilter)) {
-      if ($this->groupped && $this->groupId != 0)
+      if ($this->grouped && $this->groupId != 0)
         $groupFilter = sprintf('filters[]=%s:%s',
           $this->picaToSolr(str_replace('$', '', $this->groupBy)) . '_ss',
           urlencode(sprintf('"%s"', $this->groupId)));
@@ -305,7 +314,7 @@ class Completeness extends BaseTab {
   }
 
   private function getGroupQuery() {
-    if ($this->groupped && $this->groupId != 0) {
+    if ($this->grouped && $this->groupId != 0) {
       $query = urlencode(' AND ') . sprintf('%s:%s',
         $this->picaToSolr(str_replace('$', '', $this->groupBy)) . '_ss',
         urlencode(sprintf('"%s"', $this->groupId)));
@@ -354,7 +363,7 @@ class Completeness extends BaseTab {
         'query=' . ($this->type == 'all' ? '*:*' : 'type_ss:' . urlencode(sprintf('"%s"', $this->type))),
       ];
       $baseParams = array_merge($baseParams, $this->getGeneralParams());
-      if ($this->groupped && $this->groupId != 0)
+      if ($this->grouped && $this->groupId != 0)
         $baseParams[] = 'groupId=' . $this->groupId;
     }
     $params = $baseParams;
@@ -387,15 +396,34 @@ class Completeness extends BaseTab {
     $record->histogram = $histogram;
     $record->solr = $this->getSolrField($record->path);
 
+    $record->isField = false;
+    $record->isComplexControlField = false;
+    $record->isSimpleControlField = false;
+    $record->isDataField = false;
+    $record->isSubfield = false;
     if ($this->catalogue->getSchemaType() == 'MARC21' && preg_match('/^(leader|00.)(.+)$/', $record->path, $matches)) {
       $tag = $matches[1];
-      $record->isField = false;
+      $record->isComplexControlField = in_array($tag, $this->complexControlFields);
+    } else if ($this->catalogue->getSchemaType() == 'MARC21' && preg_match('/^(00.)$/', $record->path, $matches)) {
+      $tag = $matches[1];
+      $record->isSimpleControlField = true;
     } else {
+      $record->isDataField = true;
       $parts = explode('$', $record->path, 2);
       $record->isField = count($parts) == 1;
+      $record->subfieldSort = '';
       $tag = $parts[0];
-      if (!$record->isField)
-        $this->subfieldCode = $parts[1];
+      if (!$record->isField) {
+        $record->subfieldCode = $parts[1];
+        if (preg_match('/^ind/', $record->subfieldCode)) {
+          $record->subfieldSort = '!' . $record->subfieldCode;
+        } else if (preg_match('/^\d/', $record->subfieldCode)) {
+          $record->subfieldSort = '|' . $record->subfieldCode;
+        } else {
+          $record->subfieldSort = $record->subfieldCode;
+        }
+        $record->isSubfield = true;
+      }
     }
     $record->extractedTag = $tag;
     $record->websafeTag = $this->safe($tag);
@@ -417,6 +445,8 @@ class Completeness extends BaseTab {
       $record->isLeader = true;
       $record->complexPosition = $matches[1];
     }
+    // $record->isSubfield = (!$record->isField && !$record->isLeader && !$record->isComplexControlField);
+    // $record->isSimpleControlField = !$record->isField && !$record->isComplexControlField;
 
     if ($record->package == '')
       $record->package = 'other';
@@ -436,12 +466,48 @@ class Completeness extends BaseTab {
 
     if (!isset($this->records[$record->packageid][$record->tag])) {
       if ($record->tag == 'Leader') {
-        $this->records[$record->packageid] = array_merge([$record->tag => []], $this->records[$record->packageid]);
+        // $this->records[$record->packageid] = array_merge([$record->tag => []], $this->records[$record->packageid]);
+        $this->records[$record->packageid][$record->tag] = ['type' => 'leader', 'websafeTag' => $record->websafeTag, 'positions' => []];
+      } else if ($record->isDataField) {
+        $this->records[$record->packageid][$record->tag] = ['type' => 'datafield', 'tag' => null, 'subfields' => []];
+      } else if ($record->isComplexControlField) {
+        $this->records[$record->packageid][$record->tag] = [
+          'type' => 'complexControlField',
+          'websafeTag' => $record->websafeTag,
+          'types' => []
+        ];
       } else {
-        $this->records[$record->packageid][$record->tag] = [];
+        $this->records[$record->packageid][$record->tag] = [
+          'type' => 'simpleControlField',
+          'websafeTag' => $record->websafeTag,
+          'tag' => null
+        ];
       }
     }
 
-    $this->records[$record->packageid][$record->tag][] = $record;
+    if ($record->isLeader) {
+      $this->records[$record->packageid][$record->tag]['positions'][] = $record;
+    } else if (isset($record->isDataField) && $record->isDataField == true) {
+      if ($record->isField)
+        $this->records[$record->packageid][$record->tag]['tag'] = $record;
+      else
+        $this->records[$record->packageid][$record->tag]['subfields'][] = $record;
+    } else if ($record->isComplexControlField) {
+      if (!isset($this->records[$record->packageid][$record->tag]['types'][$record->complexType]))
+        $this->records[$record->packageid][$record->tag]['types'][$record->complexType] = [
+          'websafeTag' => $record->websafeTag,
+          'positions' => []
+        ];
+      $this->records[$record->packageid][$record->tag]['types'][$record->complexType]['positions'][] = $record;
+    } else {
+      $this->records[$record->packageid][$record->tag]['tag'] = $record;
+    }
+
+    unset($record->documenttype);
+    unset($record->packageid);
+    unset($record->package);
+    if (isset($record->isSubfield) && $record->isSubfield == true) {
+      unset($record->tag);
+    }
   }
 }

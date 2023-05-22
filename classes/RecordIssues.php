@@ -11,7 +11,7 @@ class RecordIssues extends BaseTab {
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
     parent::readAnalysisParameters('validation.params.json');
-    $this->groupped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
+    $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
 
     $this->recordId = getOrDefault('recordId', '');
     if ($this->recordId != '') {
@@ -98,7 +98,7 @@ class RecordIssues extends BaseTab {
           $values = str_getcsv($line);
           if (empty($header)) {
             $header = $values;
-            $i = ($this->groupped) ? 2 : 1;
+            $i = ($this->grouped) ? 2 : 1;
             $header[$i] = 'path';
           } else {
             $record = (object)array_combine($header, $values);
