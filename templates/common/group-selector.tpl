@@ -13,7 +13,6 @@
           {/if}
         {/foreach}
       {/if}
-
       {include 'common/library-selector.tpl'}
     </form>
   </div>

@@ -336,30 +336,59 @@ class IssuesDB extends SQLite3 {
   public function hasGroupedMarcElementTable() {
     $stmt = $this->prepare('SELECT COUNT(name) AS count FROM sqlite_master WHERE type = :table AND name = :tableName');
     $stmt->bindValue(':table', 'table', SQLITE3_TEXT);
-    $stmt->bindValue(':tableName', 'grouped_marc_elements', SQLITE3_TEXT);
+    $stmt->bindValue(':tableName', 'marc_elements_grouped', SQLITE3_TEXT);
+    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    return $stmt->execute();
+  }
+
+  public function hasMarcElementTable() {
+    $stmt = $this->prepare('SELECT COUNT(name) AS count FROM sqlite_master WHERE type = :table AND name = :tableName');
+    $stmt->bindValue(':table', 'table', SQLITE3_TEXT);
+    $stmt->bindValue(':tableName', 'marc_elements', SQLITE3_TEXT);
     // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();
   }
 
   public function getGroupedMarcElements($groupId, $documenttype) {
     $stmt = $this->prepare('SELECT * 
-      FROM grouped_marc_elements
+      FROM marc_elements_grouped
       WHERE groupId = :groupId 
         AND documenttype = :documenttype
-      ORDER BY path');
+      ORDER BY packageid, path');
     $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
     $stmt->bindValue(':documenttype', $documenttype, SQLITE3_TEXT);
     // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();
   }
 
-  public function getDocumentTypes($groupId) {
+  public function getMarcElements($documenttype) {
+    $stmt = $this->prepare('SELECT * 
+      FROM marc_elements
+      WHERE documenttype = :documenttype
+      ORDER BY packageid, path');
+    $stmt->bindValue(':documenttype', $documenttype, SQLITE3_TEXT);
+    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    return $stmt->execute();
+  }
+
+  public function getGroupedDocumentTypes($groupId) {
     $stmt = $this->prepare('SELECT documenttype, COUNT(documenttype) AS count 
-      FROM grouped_marc_elements 
+      FROM marc_elements_grouped 
       WHERE groupId = :groupId AND documenttype != :documenttype
       GROUP BY documenttype
       ORDER BY count DESC');
     $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
+    $stmt->bindValue(':documenttype', "all", SQLITE3_TEXT);
+    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    return $stmt->execute();
+  }
+
+  public function getDocumentTypes() {
+    $stmt = $this->prepare('SELECT documenttype, COUNT(documenttype) AS count 
+      FROM marc_elements
+      WHERE documenttype != :documenttype
+      GROUP BY documenttype
+      ORDER BY count DESC');
     $stmt->bindValue(':documenttype', "all", SQLITE3_TEXT);
     // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();

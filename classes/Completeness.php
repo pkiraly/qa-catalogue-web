@@ -187,11 +187,13 @@ class Completeness extends BaseTab {
     }
   }
 
-  private function hasGroupedMarcElementTable() {
+  private function hasMarcElementTable() {
     include_once 'IssuesDB.php';
     $this->issueDB = new IssuesDB($this->getDbDir());
     if ($this->grouped) {
       return $this->issueDB->hasGroupedMarcElementTable()->fetchArray(SQLITE3_ASSOC)['count'] == 1;
+    } else {
+      return $this->issueDB->hasMarcElementTable()->fetchArray(SQLITE3_ASSOC)['count'] == 1;
     }
     return false;
   }
@@ -200,24 +202,37 @@ class Completeness extends BaseTab {
     include_once 'IssuesDB.php';
     $this->issueDB = new IssuesDB($this->getDbDir());
     if ($this->grouped) {
-      return $this->issueDB->fetchAll($this->issueDB->getDocumentTypes($groupId), 'documenttype');
+      return $this->issueDB->fetchAll($this->issueDB->getGroupedDocumentTypes($groupId), 'documenttype');
+    } else {
+      return $this->issueDB->fetchAll($this->issueDB->getDocumentTypes(), 'documenttype');
     }
     return false;
   }
 
   private function readCompleteness() {
     SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
-    $hasDBTable = $this->hasGroupedMarcElementTable();
-    if ($this->grouped && $hasDBTable) {
-
+    $hasDBTable = $this->hasMarcElementTable();
+    if ($hasDBTable) {
       $this->types = $this->getDocumentTypes($this->groupId);
       $start = microtime(true);
-      $result = $this->issueDB->getGroupedMarcElements($this->groupId, $this->type);
+      if ($this->grouped) {
+        $result = $this->issueDB->getGroupedMarcElements($this->groupId, $this->type);
+      } else {
+        $result = $this->issueDB->getMarcElements($this->type);
+      }
+
       while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
         $this->processRecord((object)$row);
       }
       $tread = microtime(true) - $start;
-      ksort($this->records, SORT_NUMERIC);
+      // ksort($this->records, SORT_NUMERIC);
+      foreach (array_keys($this->records) as $packageId) {
+        if ($packageId != 0) {
+          foreach ($this->records[$packageId] as $tag => $field) {
+            usort($this->records[$packageId][$tag]['subfields'], function($a, $b) {return $a->subfieldSort <=> $b->subfieldSort;});
+          }
+        }
+      }
       $tsort = microtime(true) - $start;
       $this->types = array_merge(['all'], array_diff($this->types, ['all']));
       $tmerge = microtime(true) - $start;
@@ -466,8 +481,13 @@ class Completeness extends BaseTab {
 
     if (!isset($this->records[$record->packageid][$record->tag])) {
       if ($record->tag == 'Leader') {
-        // $this->records[$record->packageid] = array_merge([$record->tag => []], $this->records[$record->packageid]);
-        $this->records[$record->packageid][$record->tag] = ['type' => 'leader', 'websafeTag' => $record->websafeTag, 'positions' => []];
+        // ensure that leader is the first element
+        $value = ['type' => 'leader', 'websafeTag' => $record->websafeTag, 'positions' => []];
+        if (!empty($this->records[$record->packageid])) {
+          $this->records[$record->packageid] = array_merge([$record->tag => $value], $this->records[$record->packageid]);
+        } else {
+          $this->records[$record->packageid][$record->tag] = $value;
+        }
       } else if ($record->isDataField) {
         $this->records[$record->packageid][$record->tag] = ['type' => 'datafield', 'tag' => null, 'subfields' => []];
       } else if ($record->isComplexControlField) {
