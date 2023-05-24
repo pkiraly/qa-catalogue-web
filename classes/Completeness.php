@@ -15,7 +15,7 @@ class Completeness extends BaseTab {
   private $max = 0;
   public $groups;
   public $currentGroup;
-  private $issueDB;
+  private ?IssuesDB $issueDB = null;
   private $complexControlFields = ['006', '007', '008'];
   private $types007 = [
     "common" => "Common",
@@ -188,44 +188,34 @@ class Completeness extends BaseTab {
   }
 
   private function hasMarcElementTable() {
-    include_once 'IssuesDB.php';
-    $this->issueDB = new IssuesDB($this->getDbDir());
-    if ($this->grouped) {
-      return $this->issueDB->hasGroupedMarcElementTable()->fetchArray(SQLITE3_ASSOC)['count'] == 1;
-    } else {
-      return $this->issueDB->hasMarcElementTable()->fetchArray(SQLITE3_ASSOC)['count'] == 1;
-    }
-    return false;
+    $this->initializeDB();
+    return $this->issueDB->hasMarcElementTable()->fetchArray(SQLITE3_ASSOC)['count'] == 1;
   }
 
-  private function getDocumentTypes($groupId) {
-    include_once 'IssuesDB.php';
-    $this->issueDB = new IssuesDB($this->getDbDir());
-    if ($this->grouped) {
-      return $this->issueDB->fetchAll($this->issueDB->getGroupedDocumentTypes($groupId), 'documenttype');
-    } else {
-      return $this->issueDB->fetchAll($this->issueDB->getDocumentTypes(), 'documenttype');
+  private function getDocumentTypes($groupId = '') {
+    $this->initializeDB();
+    return $this->issueDB->fetchAll($this->issueDB->getDocumentTypes($groupId), 'documenttype');
+  }
+
+  private function initializeDB() {
+    if (is_null($this->issueDB)) {
+      include_once 'IssuesDB.php';
+      $this->issueDB = new IssuesDB($this->getDbDir());
     }
-    return false;
   }
 
   private function readCompleteness() {
     SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
     $hasDBTable = $this->hasMarcElementTable();
     if ($hasDBTable) {
+      error_log('hasDBTable');
       $this->types = $this->getDocumentTypes($this->groupId);
       $start = microtime(true);
-      if ($this->grouped) {
-        $result = $this->issueDB->getGroupedMarcElements($this->groupId, $this->type);
-      } else {
-        $result = $this->issueDB->getMarcElements($this->type);
-      }
-
+      $result = $this->issueDB->getMarcElements($this->type, $this->groupId);
       while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
         $this->processRecord((object)$row);
       }
       $tread = microtime(true) - $start;
-      // ksort($this->records, SORT_NUMERIC);
       foreach (array_keys($this->records) as $packageId) {
         if ($packageId != 0) {
           foreach ($this->records[$packageId] as $tag => $field) {
