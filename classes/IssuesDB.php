@@ -346,7 +346,7 @@ class IssuesDB extends SQLite3 {
     $stmt = $this->prepare('SELECT * 
       FROM marc_elements
       WHERE documenttype = :documenttype' . $groupCriterium . '
-      ORDER BY packageid, path');
+      ORDER BY packageid, sortkey');
     $stmt->bindValue(':documenttype', $documenttype, SQLITE3_TEXT);
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
