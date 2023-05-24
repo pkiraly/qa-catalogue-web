@@ -272,7 +272,7 @@ abstract class BaseTab implements Tab {
     } elseif ($this->catalogue->getSchemaType() == 'MARC21' && file_exists('cache/selected-facets.js')) {
       $facets = file_get_contents('cache/selected-facets.js');
     }
-    if (!is_null($facets)) {
+    if (isset($facets) && !is_null($facets)) {
       $facets = preg_replace(['/var selectedFacets = /', '/;$/', '/\'/'], ['', '', '"'], $facets);
       $selectedFacets = json_decode($facets);
     }
