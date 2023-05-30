@@ -8,5 +8,8 @@ config/
 vendor/
 _smarty/
 
+# data files
+metadata-qa/
+
 # eidtor files
 .idea/
