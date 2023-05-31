@@ -9,6 +9,15 @@
       {include 'common/group-selector.tpl'}
 
     </div>
+
+    <div>
+      <canvas id="issuesGraph"></canvas>
+
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script language="JavaScript" type="text/javascript">
+        {include file="js/start.js.tpl"}
+      </script>
+    </div>
   </div>
 </div>
 {include 'common/html-footer.tpl'}
