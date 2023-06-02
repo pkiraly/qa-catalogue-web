@@ -160,6 +160,32 @@ abstract class BaseTab implements Tab {
     return $response;
   }
 
+  protected function hasValidationIndex() {
+    return $this->isCoreAvailable($this->getIndexName() . '_validation');
+  }
+
+  protected function isCoreAvailable($core) {
+    $url = 'http://localhost:8983/solr/' . $core . '/admin/ping';
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,false);
+    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+    $content = curl_exec($ch);
+    $info = curl_getinfo($ch);
+    $http_code = $info["http_code"];
+    curl_close($ch);
+    if ($http_code == 200) {
+      $response = json_decode($content);
+      return ($response->status == 'OK');
+    }
+    return false;
+  }
+
   protected function getFacets($facet, $query, $limit, $offset = 0, $termFilter = '', $filters = []) {
     $parameters = [
       'q=' . $query,

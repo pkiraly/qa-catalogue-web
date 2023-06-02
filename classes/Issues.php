@@ -336,18 +336,30 @@ class Issues extends BaseTab {
   }
 
   private function download($errorId, $categoryId, $typeId) {
-    if ($errorId != '')
-      $recordIds = $this->getIds($errorId, 'download');
-    else if ($categoryId != '')
-      $recordIds = $this->getIdsFromDB($categoryId, 'categoryId', 'download');
-    else if ($typeId != '')
-      $recordIds = $this->getIdsFromDB($typeId, 'typeId', 'download');
-
     $attachment = sprintf('attachment; filename="issue-%s-at-%s.csv"', $errorId, date("Y-m-d"));
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: ' . $attachment);
-    echo join("\n", $recordIds);
+
+    error_log('hasValidationIndex: ' . (int) $this->hasValidationIndex());
+    if ($errorId != '') {
+      if ($this->sqliteExists()) {
+        $this->printId($this->getIdsFromDBResult($errorId, 'errorId', 'download'));
+      } else {
+        $recordIds = $this->getIdsFromCsv($errorId, $action);
+        echo join("\n", $recordIds);
+      }
+    } else if ($categoryId != '') {
+      $this->printId($this->getIdsFromDBResult($categoryId, 'categoryId', 'download'));
+    } else if ($typeId != '') {
+      $this->printId($this->getIdsFromDBResult($typeId, 'typeId', 'download'));
+    }
   }
+
+  private function printId($result) {
+    while ($row = $result->fetchArray(SQLITE3_ASSOC))
+      echo $row['id'], "\n";
+  }
+
 
   private function query($errorId, $categoryId, $typeId) {
     if ($errorId != '')
@@ -374,7 +386,7 @@ class Issues extends BaseTab {
     return $recordIds;
   }
 
-  private function getIdsFromDB($id, $type, $action) {
+  private function getIdsFromDBResult($id, $type, $action): SQLite3Result|false {
     include_once 'IssuesDB.php';
     $db = new IssuesDB($this->getDbDir());
 
@@ -385,6 +397,14 @@ class Issues extends BaseTab {
       $result = $db->getRecordIdsByCategoryId($id, $groupId);
     else if ($type == 'typeId')
       $result = $db->getRecordIdsByTypeId($id, $groupId);
+    else
+      $result = false;
+
+    return $result;
+  }
+
+  private function getIdsFromDB($id, $type, $action) {
+    $result = $this->getIdsFromDBResult($id, $type, $action);
 
     $recordIds = [];
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
