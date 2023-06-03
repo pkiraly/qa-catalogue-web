@@ -37,6 +37,7 @@ $map = [
   'serials'                  => 'Serials',
   'tt-completeness'          => 'TtCompleteness',
   'shelf-ready-completeness' => 'ShelfReadyCompleteness',
+  'shacl'                    => 'Shacl4Bib',
   'network'                  => 'Network',
   'terms'                    => 'Terms',
   'pareto'                   => 'Pareto',

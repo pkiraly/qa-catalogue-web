@@ -54,6 +54,11 @@ cd /var/www/html/$CATALOG
 git checkout v0.7.0
 ```
 
+PHP modules requirements:
+```
+sudo apt install php-sqlite3 php-yaml
+```
+
 ### Setup
 
 Change into the application directory:

@@ -36,7 +36,7 @@ class Data extends Facetable {
     $this->filters = getOrDefault('filters', []);
     $this->start = (int) getOrDefault('start', 0);
     $this->rows = (int) getOrDefault('rows', 10, $this->itemsPerPageSelectors);
-    $this->type = getOrDefault('type', 'solr', ['solr', 'issues']);
+    $this->type = getOrDefault('type', 'solr', ['solr', 'issues', 'custom-rule']);
     $this->action = getOrDefault('action', 'search', ['search', 'download']);
     $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
     if ($this->grouped)
@@ -105,6 +105,13 @@ class Data extends Facetable {
           $query = 'id:("' . join('" OR "', $recordIds) . '")';
           $solrParams[] = 'start=' . 0;
         }
+        $solrParams[] = 'q=' . urlencode($query);
+      }
+    } else if ($this->type == 'custom-rule') {
+      if (preg_match('/^([^ ]+):(0|1|NA)$/', $this->query, $matches)) {
+        $recordIds = $this->prepareParametersForIssueQueries($matches[1], $matches[2]);
+        $query = 'id:("' . join('" OR "', $recordIds) . '")';
+        $solrParams[] = 'start=' . 0;
         $solrParams[] = 'q=' . urlencode($query);
       }
     } else {
@@ -292,7 +299,9 @@ class Data extends Facetable {
     $db = new IssuesDB($dir);
 
     $groupId = $this->grouped ? $this->groupId : '';
-    $coreToUse = $this->isGroupAndErrorIdIndexed() ? $this->getIndexName() : $this->findCoreToUse();
+    $coreToUse = $this->type == 'custom-rule'
+               ? ''
+               : ($this->isGroupAndErrorIdIndexed() ? $this->getIndexName() : $this->findCoreToUse());
     if ($coreToUse != '') {
       $recordIds = $this->prepareParametersForIssueQueriesSolr($idType, $db, $id, $groupId, $coreToUse);
     } else {
@@ -470,6 +479,11 @@ class Data extends Facetable {
     } else if ($idType == 'typeId') {
       $this->numFound = $db->getRecordIdsByTypeIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
       $result = $db->getRecordIdsByTypeId($id, $groupId, $this->start, $this->rows);
+    } else if ($this->type == 'custom-rule') {
+      if ($db->hasColumnInTable($idType, 'shacl')) {
+        $this->numFound = $db->getRecordIdsByShaclCount($idType, $id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+        $result = $db->getRecordIdsByShacl($idType, $id, $groupId, $this->start, $this->rows);
+      }
     }
     return $db->fetchAll($result, 'id');
   }

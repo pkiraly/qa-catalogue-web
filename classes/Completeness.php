@@ -189,7 +189,8 @@ class Completeness extends BaseTab {
 
   private function hasMarcElementTable() {
     $this->initializeDB();
-    return $this->issueDB->hasMarcElementTable()->fetchArray(SQLITE3_ASSOC)['count'] == 1;
+    return $this->issueDB->hasMarcElementTable();
+    // return $this->issueDB->hasMarcElementTable()->fetchArray(SQLITE3_ASSOC)['count'] == 1;
   }
 
   private function getDocumentTypes($groupId = '') {

@@ -32,6 +32,13 @@
          id="issues-tab" aria-controls="issues"
          href="?tab=issues{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Issues')}</a>
     </li>
+    {if $displayShacl}
+      <li class="nav-item1">
+        <a class="nav-link1 {if $tab == 'shacl'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+           id="shacl-tab" aria-controls="shacl"
+           href="?tab=shacl{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Shacl4Bib')}</a>
+      </li>
+    {/if}
     <li class="nav-item1">
       <a class="nav-link1 {if $isAuthority}active{/if} dropdown-toggle" data-toggle="dropdown" role="tab1" aria-selected="false"
          id="classifications-tab" aria-controls="classifications"

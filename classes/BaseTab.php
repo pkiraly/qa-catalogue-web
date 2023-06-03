@@ -16,6 +16,7 @@ abstract class BaseTab implements Tab {
   protected $lastUpdate = '';
   protected $output = 'html';
   protected $displayNetwork = false;
+  protected $displayShacl = false;
   protected $historicalDataDir = null;
   protected $versioning = false;
   protected $lang = 'en';
@@ -37,6 +38,7 @@ abstract class BaseTab implements Tab {
     $this->catalogue = $this->createCatalogue();
     $this->marcVersion = $this->catalogue->getMarcVersion();
     $this->displayNetwork = isset($configuration['display-network']) && (int) $configuration['display-network'] == 1;
+    $this->displayShacl = isset($configuration['display-shacl']) && (int) $configuration['display-shacl'] == 1;
     $this->versioning = (isset($this->configuration['versions'][$this->db]) && $this->configuration['versions'][$this->db] === true);
 
     $this->count = $this->readCount();
@@ -55,6 +57,7 @@ abstract class BaseTab implements Tab {
     $smarty->assign('count', $this->count);
     $smarty->assign('lastUpdate', $this->lastUpdate);
     $smarty->assign('displayNetwork', $this->displayNetwork);
+    $smarty->assign('displayShacl', $this->displayShacl);
     $smarty->assign('historicalDataDir', $this->historicalDataDir);
     $smarty->assign('controller', $this);
     $smarty->assign('lang', $this->lang);

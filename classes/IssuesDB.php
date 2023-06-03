@@ -306,6 +306,24 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
+  public function getRecordIdsByShaclCount($criterium, $typeId, $groupId = '') {
+    if (!$this->hasColumnInTable($criterium, 'shacl'))
+      return false;
+    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
+    $stmt = $this->prepare(
+      'SELECT COUNT(distinct(id)) AS count
+       FROM shacl
+       WHERE "' . $criterium . '" = :typeId');
+    $stmt->bindValue(':typeId', $typeId, SQLITE3_TEXT);
+    if ($groupId !== '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
+
+    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+
+    return $stmt->execute();
+  }
+
+
   public function getRecordIdsByTypeId($typeId, $groupId = '', $offset = 0, $limit = -1) {
     $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
     $sql = 'SELECT distinct(id)
@@ -313,6 +331,25 @@ class IssuesDB extends SQLite3 {
        WHERE errorId IN 
             (SELECT distinct(id) FROM issue_summary WHERE typeId = :id' . $groupCriterium . ')';
     return $this->getRecordIdsById($sql, $typeId, $groupId, $offset, $limit);
+  }
+
+  public function getRecordIdsByShacl($criterium, $typeId, $groupId = '', $offset = 0, $limit = -1) {
+    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
+    $part = ($limit != -1) ? ' LIMIT :limit OFFSET :offset' : '';
+    $stmt = $this->prepare('SELECT distinct(id)
+       FROM shacl
+       WHERE "' . $criterium . '" = :typeId' . $groupCriterium . $part);
+    $stmt->bindValue(':typeId', $typeId, SQLITE3_TEXT);
+    if ($limit != -1) {
+      $stmt->bindValue(':limit', $limit, SQLITE3_INTEGER);
+      $stmt->bindValue(':offset', $offset, SQLITE3_INTEGER);
+    }
+    if ($groupId !== '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
+
+    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+
+    return $stmt->execute();
   }
 
   private function getRecordIdsById($sql, $id, $groupId = '', $offset = 0, $limit = -1) {
@@ -333,12 +370,32 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function hasMarcElementTable() {
+  public function hasMarcElementTable(): bool {
+    return $this->hasTable('marc_elements');
+    /*
     $stmt = $this->prepare('SELECT COUNT(name) AS count FROM sqlite_master WHERE type = :table AND name = :tableName');
     $stmt->bindValue(':table', 'table', SQLITE3_TEXT);
     $stmt->bindValue(':tableName', 'marc_elements', SQLITE3_TEXT);
     // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();
+    */
+  }
+
+  public function hasTable($table): bool {
+    $stmt = $this->prepare('SELECT COUNT(name) AS count FROM sqlite_master WHERE type = :table AND name = :tableName');
+    $stmt->bindValue(':table', 'table', SQLITE3_TEXT);
+    $stmt->bindValue(':tableName', $table, SQLITE3_TEXT);
+    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    return $stmt->execute()->fetchArray(SQLITE3_ASSOC)['count'] == 1;
+  }
+
+  public function hasColumnInTable($column, $table): bool {
+    $stmt = $this->prepare('SELECT COUNT(name) AS count FROM pragma_table_info(:table) WHERE name = :column');
+    $stmt->bindValue(':table', $table, SQLITE3_TEXT);
+    $stmt->bindValue(':column', $column, SQLITE3_TEXT);
+    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    // return $stmt->execute();
+    return $stmt->execute()->fetchArray(SQLITE3_ASSOC)['count'] == 1;
   }
 
   public function getMarcElements($documenttype, $groupId = '') {
