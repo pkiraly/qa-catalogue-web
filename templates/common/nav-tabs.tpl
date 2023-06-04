@@ -28,17 +28,21 @@
       {/if}
     </li>
     <li class="nav-item1">
-      <a class="nav-link1 {if $tab == 'issues'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="issues-tab" aria-controls="issues"
-         href="?tab=issues{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Issues')}</a>
+      {if $displayShacl}
+        <a class="nav-link1 {if $isValidation}active{/if} dropdown-toggle"
+           data-toggle="dropdown" role="tab1" aria-selected="true"
+           id="validation-tab" aria-controls="validation"
+           href="#">{_('Validation')}</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="?tab=issues{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Issues')}</a>
+          <a class="dropdown-item" href="?tab=shacl{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Custom validation')}</a>
+        </div>
+      {else}
+        <a class="nav-link1 {if $tab == 'issues'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+           id="issues-tab" aria-controls="issues"
+           href="?tab=issues{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Issues')}</a>
+      {/if}
     </li>
-    {if $displayShacl}
-      <li class="nav-item1">
-        <a class="nav-link1 {if $tab == 'shacl'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-           id="shacl-tab" aria-controls="shacl"
-           href="?tab=shacl{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Shacl4Bib')}</a>
-      </li>
-    {/if}
     <li class="nav-item1">
       <a class="nav-link1 {if $isAuthority}active{/if} dropdown-toggle" data-toggle="dropdown" role="tab1" aria-selected="false"
          id="classifications-tab" aria-controls="classifications"

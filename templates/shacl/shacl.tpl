@@ -7,10 +7,8 @@
       <h2>{_('Custom validation')}</h2>
 
       <p class="metric-definition">
-        {_t('issues_definition', _($catalogue->getMetadataSchema()))}
-        {if $catalogue->getSchemaType() == 'PICA'}
-          ({_('Download schema file')}: <a href="?tab=download&action=download&file={$schemaFile}">{$schemaFile}</a>.)
-        {/if}
+        {_('shacl_definition')}<br/>
+        ({_('Download the custom ruleset')}: <a href="?tab=download&action=download&file={$schemaFile}">{$schemaFile}</a>.)
       </p>
 
       <table>
@@ -20,7 +18,7 @@
             <th colspan="3" class="text-center" style="padding: 0 10px 0 50px;">number of records</th>
           </tr>
           <tr>
-            <th class="text-right" style="padding-right: 10px;">id</th>
+            <th class="text-center" style="padding-right: 10px;">id</th>
             <th class="text-center" style="padding-right: 5px;">criteria</th>
             <th></th>
             <th class="text-center" style="padding: 0 10px 0 50px;">failed</th>
@@ -31,7 +29,7 @@
         <tbody>
           {foreach from=$result key=id item=row name=files}
             <tr>
-              <td class="text-right" style="padding-right: 10px;">{$id}</td>
+              <td class="text-left" style="padding-right: 10px;">{$id}</td>
               <td class="text-left" style="padding-right: 10px;">
                 {if isset($index[$id])}
                   {foreach from=$index[$id] key=name item=criterium name=criteria}

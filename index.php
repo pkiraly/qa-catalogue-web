@@ -17,6 +17,7 @@ $tab = getOrDefault('tab', 'completeness');
 $ajax = getOrDefault('ajax', 0, [0, 1]);
 $smarty->assign('tab', $tab);
 $smarty->assign('isCompleteness', in_array($tab, ['completeness', 'serials', 'tt-completeness', 'shelf-ready-completeness', 'functions']));
+$smarty->assign('isValidation', in_array($tab, ['issues', 'shacl']));
 $smarty->assign('isAuthority', in_array($tab, ['classifications', 'authorities']));
 $smarty->assign('isTool', in_array($tab, ['terms', 'control-fields', 'collocations', 'download', 'settings']));
 $languages = [

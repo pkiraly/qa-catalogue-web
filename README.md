@@ -54,8 +54,9 @@ cd /var/www/html/$CATALOG
 git checkout v0.7.0
 ```
 
-PHP modules requirements:
+Requirements:
 ```
+sudo apt install gettext
 sudo apt install php-sqlite3 php-yaml
 ```
 

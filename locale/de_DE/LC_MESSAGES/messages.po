@@ -335,3 +335,11 @@ msgid "software_text"
 msgstr "QA Catalogue ist eine Open-Source-Anwendung, die im Rahmen des Forschungsprojekts <a href=\"%s\" target=\"_blank\">Measuring Metadata Quality</a> von Péter Király entwickelt wurde. Der Code ist in Git-Repositories für <a href=\"%s\" target=\"_blank\">Backend (Java)</a> und <a href=\"%s\" target=\"_blank\">Frontend (PHP)</a> verfügbar. Beiträge sind willkommen!"
 msgid "Acknowledgement"
 msgstr "Danksagung"
+
+# custom validation tab
+msgid "Custom validation"
+msgstr "Custom validation"
+msgid "shacl_definition"
+msgstr "This page display result of validation against a customized set of rules, which reflects the requirements of a particular library."
+msgid "Download the custom ruleset"
+msgstr "Download the custom ruleset"

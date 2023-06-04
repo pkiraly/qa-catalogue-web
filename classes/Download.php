@@ -55,6 +55,16 @@ class Download extends BaseTab {
     $categories['Serial scores'] += $this->getSerialScoreHistograms();
     $categories['T&T completeness'] += $this->getTtCompletenessHistograms();
     $categories['Shelf-Ready completeness'] += $this->getShelfReadyCompletenessHistograms();
+    if ($this->displayShacl) {
+      include_once 'Shacl4Bib.php';
+      $path = $this->getFilePath(Shacl4Bib::$paramsFile);
+      if (file_exists($path)) {
+        $shaclParameters = json_decode(file_get_contents($path));
+        $schemaFile = $shaclParameters->shaclConfigurationFile;
+        $schemaFile = substr($schemaFile, strrpos($schemaFile, '/') + 1);
+        $categories['Custom validation'] = [$schemaFile];
+      }
+    }
 
     foreach ($categories as $cat => $files) {
       $categories[$cat] = $this->getFileSize($files);
@@ -71,7 +81,9 @@ class Download extends BaseTab {
   private function getFileSize(array $files) {
     $assoc = [];
     foreach ($files as $file) {
-      $assoc[$file]['size'] = $this->humanFilesize(filesize($this->getFilePath($file)));
+      $path = $this->getFilePath($file);
+      if (file_exists($path))
+        $assoc[$file]['size'] = $this->humanFilesize(filesize($path));
     }
     return $assoc;
   }
