@@ -1,4 +1,9 @@
+
+
 {include 'common/html-head.tpl'}
+
+<link rel="stylesheet" type="text/css" href="styles/start.css">
+
 <div class="container">
   {include 'common/header.tpl'}
   {include 'common/nav-tabs.tpl'}
@@ -10,14 +15,31 @@
 
     </div>
 
-    <div>
-      <canvas id="issuesGraph"></canvas>
+    <div class='grid-container'>
 
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-      <script language="JavaScript" type="text/javascript">
-        {include file="js/start.js.tpl"}
-      </script>
+      <div class='grid-item'>
+        <canvas id="issuesGraph"></canvas>
+      </div>
+
+      <div class='grid-item'>
+        <canvas id="issuesGraphII"></canvas>
+      </div>
+
+      <div class='grid-item'/>
+        2
+      </div>
+
+      <div class='grid-item'/>
+        2
+      </div>
+
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script language="JavaScript" type="text/javascript">
+      {include file="js/start.js.tpl"}
+    </script>
+
   </div>
 </div>
 {include 'common/html-footer.tpl'}
