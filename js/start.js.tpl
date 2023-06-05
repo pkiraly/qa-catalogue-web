@@ -6,7 +6,7 @@ new Chart(ctx, {
         labels: ['Without issues', 'With undefined fields', 'With issues'],
         datasets: [{
             label: '# of Records',
-            data: ['{$issueStats->bad|escape:javascript}', '{$issueStats->unclear|escape:javascript}', '{$issueStats->good|escape:javascript}'],
+            data: ['{$issueStats->good|escape:javascript}', '{$issueStats->unclear|escape:javascript}', '{$issueStats->bad|escape:javascript}'],
             backgroundColor: ["#2ECC40", "#FFFF00", "#FF4136"],
             borderWidth: 1
         }]
