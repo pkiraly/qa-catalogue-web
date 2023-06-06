@@ -7,7 +7,7 @@ new Chart(ctx, {
         datasets: [{
             label: '# of Records',
             data: ['{$issueStats->good|escape:javascript}', '{$issueStats->unclear|escape:javascript}', '{$issueStats->bad|escape:javascript}'],
-            backgroundColor: ["#2ECC40", "#FFFF00", "#FF4136"],
+            backgroundColor: ["#37ba00", "#FFFF00", "#FF4136"],
             borderWidth: 1
         }]
     },
@@ -19,3 +19,48 @@ new Chart(ctx, {
         }
     }
 });
+
+const completensGraphContext = document.getElementById('completenessGraph');
+
+new Chart(completensGraphContext, {
+    type: 'treemap',
+    data: {
+    datasets: [
+      {
+        label: 'Text in tooltip',
+        labels: {
+            display: true,
+            formatter: (ctx) => 'Kmq ' + ctx.raw.v,
+        },
+        tree: [15, 6, 6, 3],
+        borderColor: 'green',
+        borderWidth: 1,
+        spacing: 0,
+        backgroundColor: (ctx) => colorFromRaw(ctx),
+      }
+    ],
+  },
+  options: {
+    plugins: {
+      title: {
+        display: true,
+        text: 'My treemap chart'
+      },
+      legend: {
+        display: false
+      }
+    }
+  }
+});
+
+function colorFromRaw(ctx) {
+  if (ctx.type !== 'data') {
+    return 'transparent';
+  }
+  const value = ctx.raw.v;
+  let alpha = (1 + Math.log(value)) / 5;
+  const color = '#37ba00';
+  return Chart.helpers.color(color)
+    .alpha(alpha)
+    .rgbString();
+}

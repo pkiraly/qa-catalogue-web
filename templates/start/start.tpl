@@ -22,7 +22,7 @@
       </div>
 
       <div class='grid-item'>
-        <canvas id="issuesGraphII"></canvas>
+        <canvas id="completenessGraph"></canvas>
       </div>
 
       <div class='grid-item'/>
@@ -36,6 +36,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-treemap/dist/chartjs-chart-treemap.min.js"></script>
     <script language="JavaScript" type="text/javascript">
       {include file="js/start.js.tpl"}
     </script>
