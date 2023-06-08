@@ -386,7 +386,7 @@ class Issues extends BaseTab {
     return $recordIds;
   }
 
-  private function getIdsFromDBResult($id, $type, $action): SQLite3Result|false {
+  private function getIdsFromDBResult($id, $type, $action): SQLite3Result {
     include_once 'IssuesDB.php';
     $db = new IssuesDB($this->getDbDir());
 
