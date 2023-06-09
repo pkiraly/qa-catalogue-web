@@ -87,6 +87,14 @@ function setLanguage($language) {
   textdomain('messages');
 }
 
+if (!function_exists('array_is_list')) {
+  function array_is_list(array $arr) {
+    if ($arr === [])
+      return true;
+    return array_keys($arr) === range(0, count($arr) - 1);
+  }
+}
+
 /**
  * Translate string with variables
  * @return mixed|string The first argument should be the msgid, the rest should be the variables to inject
@@ -100,3 +108,4 @@ function _t() {
 
   return call_user_func_array('sprintf', $args);
 }
+

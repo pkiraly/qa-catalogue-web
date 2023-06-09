@@ -18,7 +18,7 @@
             <th colspan="3" class="text-center" style="padding: 0 10px 0 50px;">number of records</th>
           </tr>
           <tr>
-            <th class="text-center" style="padding-right: 10px;">id</th>
+            <th class="text-center" style="padding-right: 10px;">path</th>
             <th class="text-center" style="padding-right: 5px;">criteria</th>
             <th></th>
             <th class="text-center" style="padding: 0 10px 0 50px;">failed</th>
@@ -29,11 +29,17 @@
         <tbody>
           {foreach from=$result key=id item=row name=files}
             <tr>
-              <td class="text-left" style="padding-right: 10px;">{$id}</td>
+              <td class="text-left" style="padding-right: 10px;">{if isset($index[$id])}{$index[$id]['path']}{else}{$id}{/if}</td>
               <td class="text-left" style="padding-right: 10px;">
                 {if isset($index[$id])}
                   {foreach from=$index[$id] key=name item=criterium name=criteria}
-                    {$name}={$criterium}{if !$smarty.foreach.criteria.last},{/if}
+                    {if $name != 'path'}
+                      {if $name == 'description'}
+                        <em>{$criterium}</em><br/>
+                      {else}
+                        {if is_array($criterium)}{$controller->showArray($name, $criterium)}{else}{$name}={$criterium}{/if}{if !$smarty.foreach.criteria.last},{/if}
+                      {/if}
+                    {/if}
                   {/foreach}
                 {/if}
               </td>

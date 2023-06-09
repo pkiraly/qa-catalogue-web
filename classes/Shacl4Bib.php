@@ -28,9 +28,11 @@ class Shacl4Bib extends BaseTab {
     $index = [];
     foreach ($schema['fields'] as $field) {
       if (isset($field['rules'])) {
+        $path = $field['path'];
         foreach ($field['rules'] as $rule) {
           $id = $rule['id'];
           unset($rule['id']);
+          $rule['path'] = $path;
           $index[$id] = $rule;
         }
       }
@@ -38,4 +40,30 @@ class Shacl4Bib extends BaseTab {
     return $index;
   }
 
+  public function showArray($name, $criterium) {
+    $text = $name;
+    $elements = [];
+    $isList = array_is_list($criterium);
+    foreach ($criterium as $key => $value) {
+      if (is_array($value)) {
+        if ($isList)
+          $elements[] = $this->showArray('', $value);
+        else
+          $elements[] = $this->showArray($key, $value);
+      } else {
+        $valueStr = is_bool($value) ? var_export($value, true) : $value;
+        if ($isList)
+          $elements[] = $valueStr;
+        else
+          $elements[] = $key . '=' . $valueStr;
+      }
+    }
+    $elementsStr = join(', ', $elements);
+    if ($isList)
+      $text .= '(' . $elementsStr . ')';
+    else
+      $text .= $elementsStr;
+
+    return $text;
+  }
 }
