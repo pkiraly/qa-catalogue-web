@@ -1,5 +1,6 @@
 <?php
 
+require_once 'DataFetch.php';
 
 class Timeline extends BaseTab {
 
@@ -36,7 +37,7 @@ class Timeline extends BaseTab {
     $countFiles = $this->getHistoricalFilePaths('count.csv');
     $counts = [];
     foreach ($countFiles as $version => $countFile) {
-      $counts[$version] = $this->readCount($countFile);
+      $counts[$version] = DataFetch::readCount($countFile);
     }
     return $counts;
   }
