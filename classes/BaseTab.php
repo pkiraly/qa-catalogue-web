@@ -1,7 +1,6 @@
 <?php
 
 include_once 'catalogue/Catalogue.php';
-include_once 'DataFetch.php';
 
 abstract class BaseTab implements Tab {
 
@@ -19,7 +18,6 @@ abstract class BaseTab implements Tab {
   protected $displayNetwork = false;
   protected $historicalDataDir = null;
   protected $versioning = false;
-  protected $version = null;
   protected $lang = 'en';
   public $analysisParameters = null;
   public $indexingParameters = null;
@@ -41,7 +39,7 @@ abstract class BaseTab implements Tab {
     $this->displayNetwork = isset($configuration['display-network']) && (int) $configuration['display-network'] == 1;
     $this->versioning = (isset($this->configuration['versions'][$this->db]) && $this->configuration['versions'][$this->db] === true);
 
-    $this->count = DataFetch::readCount($this->getFilePath('count.csv'));
+    $this->count = $this->readCount($this->getFilePath('count.csv'));
     $this->readLastUpdate();
     $this->handleHistoricalData();
     $this->lang = getOrDefault('lang', $this->catalogue->getDefaultLang(), ['en', 'de']);
@@ -99,14 +97,21 @@ abstract class BaseTab implements Tab {
     return sprintf('%s/_historical/%s/%s/%s', $this->configuration['dir'], $this->getDirName(), $version, $name);
   }
 
-  protected function filePath($filename) {
-    if ($this->versioning && $this->version != '') {
-      $elementsFile = $this->getVersionedFilePath($this->version, $filename);
+  protected function readCount($countFile = null) {
+    if (is_null($countFile))
+      $countFile = $this->getFilePath('count.csv');
+    if (file_exists($countFile)) {
+      $counts = readCsv($countFile);
+      if (empty($counts)) {
+        $count = trim(file_get_contents($countFile));
+      } else {
+        $counts = $counts[0];
+        $count = isset($counts->processed) ? $counts->processed : $counts->total;
+      }
     } else {
-      $elementsFile = $this->getFilePath($filename);
+      $count = 0;
     }
-    
-    return $elementsFile;
+    return intval($count);
   }
 
   protected function readLastUpdate() {
