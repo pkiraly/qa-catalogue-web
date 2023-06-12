@@ -1,5 +1,7 @@
 <?php
 
+require_once "DataFetch.php";
+
 class Issues extends BaseTab {
 
   private $categories;
@@ -17,7 +19,6 @@ class Issues extends BaseTab {
   private $page;
   private $limit;
   private $listType;
-  private $version;
   public $groups;
   public $currentGroup;
   protected $parameterFile = 'validation.params.json';
@@ -263,10 +264,10 @@ class Issues extends BaseTab {
 
   private function readCategories() {
     if ($this->grouped) {
-      $this->categories = $this->filterByGroup($this->readIssueCsv('issue-by-category.csv', ''), 'id');
+      $this->categories = DataFetch::filterByGroup(DataFetch::readIssueCsv($this->filePath('issue-by-category.csv'), ''), 'id');
       $total = $this->currentGroup->count;
     } else {
-      $this->categories = $this->readIssueCsv('issue-by-category.csv', 'id');
+      $this->categories = DataFetch::readIssueCsv($this->filePath('issue-by-category.csv'), 'id');
       $total = $this->count;
     }
     foreach ($this->categories as $category) {
@@ -277,10 +278,10 @@ class Issues extends BaseTab {
 
   private function readTypes() {
     if ($this->grouped) {
-      $this->types = $this->filterByGroup($this->readIssueCsv('issue-by-type.csv', ''), 'id');
+      $this->types = DataFetch::filterByGroup(DataFetch::readIssueCsv($this->filePath('issue-by-type.csv'), ''), 'id');
       $total = $this->currentGroup->count;
     } else {
-      $this->types = $this->readIssueCsv('issue-by-type.csv', 'id');
+      $this->types = DataFetch::readIssueCsv($this->filePath('issue-by-type.csv'), 'id');
       $total = $this->count;
     }
 
@@ -293,42 +294,6 @@ class Issues extends BaseTab {
       $type->ratio = $type->records / $total;
       $type->percent = $type->ratio * 100;
     }
-  }
-
-  private function readTotal() {
-    if ($this->grouped) {
-      $statistics = $this->filterByGroup($this->readIssueCsv('issue-total.csv', ''), 'type');
-      $this->total = $this->currentGroup->count;
-    } else {
-      $statistics = $this->readIssueCsv('issue-total.csv', 'type');
-      $this->total = $this->count;
-    }
-
-    foreach ($statistics as &$item) {
-      $item->good = $this->total - $item->records;
-      $item->goodPercent = ($item->good / $this->total) * 100;
-      $item->bad = $item->records;
-      $item->badPercent = ($item->bad / $this->total) * 100;
-    }
-
-    if (!isset($statistics["0"]))
-      $statistics["0"] = (object)[
-        "type" => "0",
-        "instances" => "0",
-        "records" => "0",
-        "percent" => 0
-      ];
-
-    return $statistics;
-  }
-
-  public function readIssueCsv($filename, $keyField) {
-    if ($this->versioning && $this->version != '') {
-      $elementsFile = $this->getVersionedFilePath($this->version, $filename);
-    } else {
-      $elementsFile = $this->getFilePath($filename);
-    }
-    return readCsv($elementsFile, $keyField);
   }
 
   private function download($errorId, $categoryId, $typeId) {
@@ -483,17 +448,6 @@ class Issues extends BaseTab {
       $pica3 = ($definition != null && isset($definition->pica3) ? '=' . $definition->pica3 : '');
       $record->withPica3 = $record->path . $pica3;
     }
-  }
-
-  private function filterByGroup($statistics, $key) {
-    $filtered = [];
-    foreach ($statistics as $record) {
-      if ($this->grouped && $record->groupId != $this->groupId)
-        continue;
-      unset($record->groupId);
-      $filtered[$record->{$key}] = $record;
-    }
-    return $filtered;
   }
 
   /**
@@ -661,7 +615,7 @@ class Issues extends BaseTab {
     $smarty->assign('records', $this->records);
     $smarty->assign('categories', $this->categories);
     $smarty->assign('types', $this->types);
-    $smarty->assign('topStatistics', $this->readTotal());
+    $smarty->assign('topStatistics', DataFetch::readTotal($this->filePath('issue-total.csv'), $this->count));
     $smarty->assign('total', $this->count);
     $smarty->assign('fieldNames', ['path', 'message', 'url', 'instances', 'records']);
     $smarty->assign('listType', 'full-list');

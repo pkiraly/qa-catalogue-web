@@ -6,7 +6,7 @@ new Chart(ctx, {
         labels: ['Without issues', 'With undefined fields', 'With issues'],
         datasets: [{
             label: '# of Records',
-            data: ['{$issueStats->good|escape:javascript}', '{$issueStats->unclear|escape:javascript}', '{$issueStats->bad|escape:javascript}'],
+            data: ['{$issueStats->summary->good|escape:javascript}', '{$issueStats->summary->unclear|escape:javascript}', '{$issueStats->summary->bad|escape:javascript}'],
             backgroundColor: ["#37ba00", "#FFFF00", "#FF4136"],
             borderWidth: 1
         }]
@@ -32,7 +32,9 @@ new Chart(completensGraphContext, {
             display: true,
             formatter: (ctx) => 'Kmq ' + ctx.raw.v,
         },
-        tree: [15, 6, 6, 3],
+        tree: [
+            15,6,6,3
+        ],
         borderColor: 'green',
         borderWidth: 1,
         spacing: 0,
