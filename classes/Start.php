@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Issues.php';
+require_once 'Completeness.php';
 
 class Start extends BaseTab {
 
@@ -12,5 +13,6 @@ class Start extends BaseTab {
     parent::prepareData($smarty);
 
     $smarty->assign('issueStats', Issues::readTotal($this->getFilePath('issue-total.csv'), $this->count));
+    $smarty->assign('packages', Completeness::readPackages('all', $this->getFilePath('packages.csv')));
   }
 }
