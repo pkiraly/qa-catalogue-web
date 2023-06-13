@@ -76,7 +76,7 @@ class Completeness extends BaseTab {
         $smarty->assign('currentGroup', $this->currentGroup);
         // $smarty->assign('tabSpecificParameters', $this->getTabSpecificParameters());
       }
-      $this->readPackages();
+      $this->loadPackages();
       $this->readCompleteness();
       $smarty->assign('packages', $this->packages);
       $smarty->assign('packageIndex', $this->packageIndex);
@@ -115,18 +115,17 @@ class Completeness extends BaseTab {
     return null;
   }
 
-  private function readPackages() {
-    $fileName = $this->grouped ? 'completeness-grouped-packages.csv' : 'packages.csv';
-    $elementsFile = $this->getFilePath($fileName);
+  public static function readPackages($type, $filePath, $group = null) {
+    $packages = [];
 
-    if (file_exists($elementsFile)) {
+    if (file_exists($filePath)) {
       $start = microtime(true);
       // name,label,count
       $lineNumber = 0;
       $header = [];
 
       // $fieldDefinitions = json_decode(file_get_contents('schemas/marc-schema-with-solr-and-extensions.json'));
-      $handle = fopen($elementsFile, "r");
+      $handle = fopen($filePath, "r");
       if ($handle) {
         while (($line = fgets($handle)) !== false) {
           $lineNumber++;
@@ -140,39 +139,30 @@ class Completeness extends BaseTab {
             }
             $record = (object)array_combine($header, $values);
 
-            if (isset($record->documenttype) && $record->documenttype != $this->type)
+            if (isset($record->documenttype) && $record->documenttype != $type)
               continue;
 
-            if ($this->grouped && $record->group != $this->groupId)
+            if (!is_null($grouped) && $record->group != $grouped->id)
               continue;
 
             $record->packageid = (int)$record->packageid;
-            $this->packageIndex[$record->packageid] = $record->iscoretag == 'true'
-              ? $record->name . ': ' . $record->label
-              : $record->label;
 
-            $this->max = max($this->max, $record->count);
-            // $record->percent = $record->count * 100 / $this->count;
             if ($record->label == '') {
               $record->iscoretag = false;
             }
             if (isset($record->iscoretag) && $record->iscoretag === "true") {
               $record->iscoretag = true;
             } else {
-              $this->hasNonCoreTags = TRUE;
               $record->iscoretag = false;
             }
-            $this->packages[] = $record;
+            $packages[] = $record;
           }
         }
       }
       $t1 = microtime(true) - $start;
 
-      foreach ($this->packages as $package)
-        $package->percent = $package->count * 100 / $this->max;
-
       $tforeach = microtime(true) - $start;
-      usort($this->packages, function($a, $b){
+      usort($packages, function($a, $b){
         return ($a->packageid == $b->packageid)
           ? 0
           : (($a->packageid < $b->packageid)
@@ -182,9 +172,33 @@ class Completeness extends BaseTab {
       $tusort = microtime(true) - $start;
       error_log(sprintf('readPackages) read file: %.4f, foreach: %.4f, usort: %.4f', $t1, $tforeach, $tusort));
     } else {
-      $msg = sprintf("file %s is not existing", $elementsFile);
+      $msg = sprintf("file %s is not existing", $filePath);
       error_log($msg);
     }
+
+    return $packages;
+  }
+
+  private function loadPackages() {
+    $fileName = $this->grouped ? 'completeness-grouped-packages.csv' : 'packages.csv';
+    $elementsFile = $this->getFilePath($fileName);
+
+    $this->packages = Completeness::readPackages($this->type, $elementsFile, $this->grouped ? $this->currentGroup : null);
+
+    foreach ($this->packages as $record) {
+      $this->packageIndex[$record->packageid] = $record->iscoretag == 'true'
+        ? $record->name . ': ' . $record->label
+        : $record->label;
+
+      $this->max = max($this->max, $record->count);
+
+      if (!$record->iscoretag) {
+        $this->hasNonCoreTags = TRUE;
+      }
+    }
+
+    foreach ($this->packages as $package)
+      $package->percent = $package->count * 100 / $this->max;
   }
 
   private function hasMarcElementTable() {

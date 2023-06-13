@@ -22,19 +22,23 @@ new Chart(ctx, {
 
 const completensGraphContext = document.getElementById('completenessGraph');
 
-new Chart(completensGraphContext, {
-    type: 'treemap',
-    data: {
+var completeness = new Chart(completensGraphContext, {
+  type: 'treemap',
+  data: {
     datasets: [
       {
-        label: 'Text in tooltip',
-        labels: {
-            display: true,
-            formatter: (ctx) => 'Kmq ' + ctx.raw.v,
-        },
+        label: '# of records',
         tree: [
-            15,6,6,3
+          {foreach from=$packages item=package}
+            {if !isset($package->iscoretag) || $package->iscoretag}
+              {
+                label: '{$package->label|escape:javascript}',
+                Completeness: {$package->count|escape:javascript},
+              },
+            {/if}
+          {/foreach}
         ],
+        key: 'Completeness',
         borderColor: 'green',
         borderWidth: 1,
         spacing: 0,
@@ -44,16 +48,18 @@ new Chart(completensGraphContext, {
   },
   options: {
     plugins: {
-      title: {
-        display: true,
-        text: 'My treemap chart'
-      },
       legend: {
         display: false
       }
-    }
+    },
+    onClick: whatNow
   }
 });
+
+function whatNow(event, array) {
+  console.info("It works!!!");
+  console.info(array);
+}
 
 function colorFromRaw(ctx) {
   if (ctx.type !== 'data') {
