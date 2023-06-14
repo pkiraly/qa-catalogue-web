@@ -16,7 +16,8 @@ new Chart(ctx, {
             y: {
                 beginAtZero: true
             }
-        }
+      },
+      responsive: true
     }
 });
 
@@ -52,7 +53,11 @@ var completeness = new Chart(completensGraphContext, {
         display: false
       }
     },
-    onClick: whatNow
+    onClick: whatNow,
+    responsive: true,
+    aspectRatio: 1
+  }
+});
   }
 });
 
