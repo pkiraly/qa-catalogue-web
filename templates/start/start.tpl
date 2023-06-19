@@ -11,23 +11,15 @@
     <div class="tab-pane active" id="start" role="tabpanel" aria-labelledby="completeness-tab">
       <h2>{_('Start')}</h2>
 
-      {include 'common/group-selector.tpl'}
-
     </div>
 
     <div class='grid-container'>
 
-      <div class='grid-item'>
-        <canvas id="issuesGraph"></canvas>
-      </div>
+      {include 'start/grid-item.tpl' id='issuesGraph' title='Issues' ref="?tab=issues{$generalParams}"}
 
-      <div class='grid-item'>
-        <canvas id="completenessGraph"></canvas>
-      </div>
+      {include 'start/grid-item.tpl' id='completenessGraph' title='Completeness' ref="?tab=completeness{$generalParams}"}
 
-      <div class='grid-item'/>
-        2
-      </div>
+      {include 'start/grid-item.tpl' id='totalCompletenessGraph'}
 
       <div class='grid-item'/>
         2
