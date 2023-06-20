@@ -153,52 +153,6 @@ class Issues extends BaseTab {
       $this->readIssuesAjaxCSV($categoryId, $typeId, $path, $order, $page, $limit);
   }
 
-  private function readIssuesAjaxCSV($categoryId, $typeId, $path = null, $order = 'records DESC', $page = 0, $limit = 100) {
-    $this->readIssuesAjaxDB($categoryId, $typeId, $page, $limit);
-    $lineNumber = 0;
-    if ($this->versioning && $this->version != '') {
-      $elementsFile = $this->getVersionedFilePath($this->version, 'issue-summary.csv');
-    } else {
-      $elementsFile = $this->getFilePath('issue-summary.csv');
-    }
-    if (file_exists($elementsFile)) {
-      // $keys = ['path', 'type', 'message', 'url', 'count']; // "sum",
-      // control subfield: invalid value
-      $header = [];
-      $count = 0;
-      $handle = fopen($elementsFile, "r");
-      if ($handle) {
-        while (($line = fgets($handle)) !== false) {
-          $lineNumber++;
-          $values = str_getcsv($line);
-          if ($lineNumber == 1) {
-            $header = $values;
-            $header[1] = 'path';
-          } else {
-            if (count($header) != count($values)) {
-              error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
-            }
-            $record = (object)array_combine($header, $values);
-            if (!($record->categoryId == $categoryId && $record->typeId == $typeId))
-              continue;
-            $count++;
-            if ($count < ($page * $limit))
-              continue;
-
-            $this->processRecord($record);
-
-            if (count($this->records) < $this->issueLimit) {
-              $this->records[] = $record;
-            }
-          }
-        }
-      }
-    } else {
-      $msg = sprintf("file %s is not existing", $elementsFile);
-      error_log($msg);
-    }
-  }
-
   private function readIssuesAjaxDB($categoryId, $typeId, $path = null, $order = 'records DESC', $page = 0, $limit = 100) {
     $groupId = $this->grouped ? $this->groupId : '';
     if (is_null($path) || empty($path)) {
@@ -247,6 +201,52 @@ class Issues extends BaseTab {
     $record->queryUrl = $this->queryLink('errorId:' . $record->id);
 
     $this->injectPica3($record);
+  }
+
+  private function readIssuesAjaxCSV($categoryId, $typeId, $path = null, $order = 'records DESC', $page = 0, $limit = 100) {
+    $this->readIssuesAjaxDB($categoryId, $typeId, $page, $limit);
+    $lineNumber = 0;
+    if ($this->versioning && $this->version != '') {
+      $elementsFile = $this->getVersionedFilePath($this->version, 'issue-summary.csv');
+    } else {
+      $elementsFile = $this->getFilePath('issue-summary.csv');
+    }
+    if (file_exists($elementsFile)) {
+      // $keys = ['path', 'type', 'message', 'url', 'count']; // "sum",
+      // control subfield: invalid value
+      $header = [];
+      $count = 0;
+      $handle = fopen($elementsFile, "r");
+      if ($handle) {
+        while (($line = fgets($handle)) !== false) {
+          $lineNumber++;
+          $values = str_getcsv($line);
+          if ($lineNumber == 1) {
+            $header = $values;
+            $header[1] = 'path';
+          } else {
+            if (count($header) != count($values)) {
+              error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
+            }
+            $record = (object)array_combine($header, $values);
+            if (!($record->categoryId == $categoryId && $record->typeId == $typeId))
+              continue;
+            $count++;
+            if ($count < ($page * $limit))
+              continue;
+
+            $this->processRecord($record);
+
+            if (count($this->records) < $this->issueLimit) {
+              $this->records[] = $record;
+            }
+          }
+        }
+      }
+    } else {
+      $msg = sprintf("file %s is not existing", $elementsFile);
+      error_log($msg);
+    }
   }
 
   private function calculateRatio(&$record) {
