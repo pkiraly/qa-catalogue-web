@@ -1,5 +1,7 @@
 const ctx = document.getElementById('issuesGraph');
 
+const obj = JSON.parse("{$fields|escape:javascript}");
+
 new Chart(ctx, {
     type: 'doughnut',
     data: {
@@ -12,10 +14,10 @@ new Chart(ctx, {
         }]
     },
     options: {
-        scales: {
-            y: {
-                beginAtZero: true
-            }
+      scales: {
+        y: {
+          beginAtZero: true
+        }
       },
       responsive: true
     }
@@ -34,6 +36,8 @@ var completeness = new Chart(completensGraphContext, {
             {if !isset($package->iscoretag) || $package->iscoretag}
               {
                 label: '{$package->label|escape:javascript}',
+                packageId: '{$package->packageid|escape:javascript}',
+                level: 0,
                 Completeness: {$package->count|escape:javascript},
               },
             {/if}
@@ -58,12 +62,61 @@ var completeness = new Chart(completensGraphContext, {
     aspectRatio: 1
   }
 });
+
+const totalCompletensGraphContext = document.getElementById('totalCompletenessGraph');
+
+var totalCompleteness = new Chart(totalCompletensGraphContext, {
+  type: 'doughnut',
+  data: {
+      labels: ['Without issues', 'With undefined fields', 'With issues'],
+      datasets: [{
+          label: '# of Records',
+          data: [
+            1,2,3
+          ],
+          backgroundColor: ["#37ba00", "#FFFF00", "#FF4136"],
+          borderWidth: 1
+      }]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    },
+    responsive: true
   }
 });
 
 function whatNow(event, array) {
-  console.info("It works!!!");
-  console.info(array);
+  const id = array[0].element.$context.raw._data.packageId;
+  const level = array[0].element.$context.raw._data.level;
+  const label = array[0].element.$context.raw._data.label;
+
+  if (level < 2 && level >= 0) {
+    const n = level === 0 ?
+    Object.entries(obj[id]).map(function(entry) {
+      return {
+        label: entry[0],
+        packageId: id,
+        level: 1,
+        Completeness: Object.entries(entry[1]).reduce(function(total, subentry) {
+          return total + Number(subentry[1].count)
+        }, 0),
+      }
+    }) :
+    Object.entries(obj[id][label]).map(function(entry) {
+      return {
+        label: entry[0],
+        packageId: id,
+        level: 2,
+        Completeness: Number(entry[1].count),
+      }
+    });
+
+  completeness.data.datasets[0].tree = n;
+  completeness.update();
+  }
 }
 
 function colorFromRaw(ctx) {
