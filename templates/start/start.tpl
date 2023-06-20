@@ -19,7 +19,7 @@
 
       {include 'start/grid-item.tpl' id='completenessGraph' title='Completeness' ref="?tab=completeness{$generalParams}"}
 
-      {include 'start/grid-item.tpl' id='totalCompletenessGraph'}
+      {include 'start/grid-item.tpl' id='totalCompletenessGraph' title='Blabla' ref="?tab=completeness{$generalParams}"}
 
       <div class='grid-item'/>
         2
