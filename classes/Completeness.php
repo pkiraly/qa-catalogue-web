@@ -142,7 +142,7 @@ class Completeness extends BaseTab {
             if (isset($record->documenttype) && $record->documenttype != $type)
               continue;
 
-            if (!is_null($grouped) && $record->group != $grouped->id)
+            if (!is_null($group) && $record->group != $group->id)
               continue;
 
             $record->packageid = (int)$record->packageid;

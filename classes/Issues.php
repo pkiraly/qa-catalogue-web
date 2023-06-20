@@ -305,9 +305,9 @@ class Issues extends BaseTab {
     return $elementsFile;
   }
 
-  public static function readTotal($filepath, $total) {
+  public static function readTotal($filepath, $total, $group = null) {
     if (!is_null($group)) {
-      $statistics = Issues::filterByGroup(readCsv($filepath, ''), 'type');
+      $statistics = Issues::filterByGroup(readCsv($filepath, ''), 'type', $group->id);
       $total = $group->count;
     } else {
       $statistics = readCsv($filepath, 'type');
@@ -499,7 +499,7 @@ class Issues extends BaseTab {
     }
   }
 
-  public static function filterByGroup($statistics, $key, $groupId = NULL) {
+  public static function filterByGroup($statistics, $key, $groupId = null) {
     $filtered = [];
     foreach ($statistics as $record) {
       if ($record->groupId != $groupId)
@@ -675,7 +675,7 @@ class Issues extends BaseTab {
     $smarty->assign('records', $this->records);
     $smarty->assign('categories', $this->categories);
     $smarty->assign('types', $this->types);
-    $smarty->assign('topStatistics', Issues::readTotal($this->filePath('issue-total.csv'), $this->count));
+    $smarty->assign('topStatistics', Issues::readTotal($this->filePath('issue-total.csv'), $this->count, $this->grouped ? $this->currentGroup : null));
     $smarty->assign('total', $this->count);
     $smarty->assign('fieldNames', ['path', 'message', 'url', 'instances', 'records']);
     $smarty->assign('listType', 'full-list');
