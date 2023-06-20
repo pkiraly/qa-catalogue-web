@@ -102,6 +102,47 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
+  public function getRecordNumberAndVariationsForPathGrouped($typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
+    $groupCriterium = ($groupId !== '') ? ' AND p.groupId = :groupId' : '';
+    $default_order = 'records DESC';
+    if (!preg_match('/^(path|variants|instances|records) (ASC|DESC)$/', $order))
+      $order = $default_order;
+    $stmt = $this->prepare(
+      'SELECT p.path,
+              p.record_nr AS records,
+              p.instance_nr AS instances,
+              COUNT(s.id) AS variants
+       FROM issue_grouped_paths p 
+       LEFT JOIN issue_summary s 
+         ON (p.groupId = s.groupId AND p.typeId = s.typeId AND p.path = s.MarcPath) 
+       WHERE p.typeId = :typeId' . $groupCriterium .' 
+       GROUP BY p.path
+       ORDER BY ' . $order
+    );
+    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
+    if ($groupId !== '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
+
+    return $stmt->execute();
+  }
+
+  public function getRecordIdsByErrorIdCount($errorId, $groupId = '') {
+    if ($groupId === '')
+      $sql = 'SELECT COUNT(distinct(id)) AS count FROM issue_details WHERE errorId = :errorId';
+    else
+      $sql = 'SELECT COUNT(distinct(id)) AS count 
+              FROM issue_details JOIN id_groupid USING (id) 
+              WHERE errorId = :errorId AND groupId = :groupId';
+    $stmt = $this->prepare($sql);
+    $stmt->bindValue(':errorId', $errorId, SQLITE3_INTEGER);
+    if ($groupId !== '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
+    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+
+    return $stmt->execute();
+  }
+
+
   public function getByCategoryAndTypeGroupedByPath($categoryId, $typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
     $default_order = 'records DESC';
     if (!preg_match('/^(path|variants|instances|records) (ASC|DESC)$/', $order))
@@ -178,47 +219,6 @@ class IssuesDB extends SQLite3 {
 
     return $stmt->execute();
   }
-
-  public function getRecordNumberAndVariationsForPathGrouped($typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
-    $groupCriterium = ($groupId !== '') ? ' AND p.groupId = :groupId' : '';
-    $default_order = 'records DESC';
-    if (!preg_match('/^(path|variants|instances|records) (ASC|DESC)$/', $order))
-      $order = $default_order;
-    $stmt = $this->prepare(
-      'SELECT p.path,
-              p.record_nr AS records,
-              p.instance_nr AS instances,
-              COUNT(s.id) AS variants
-       FROM issue_grouped_paths p 
-       LEFT JOIN issue_summary s 
-         ON (p.groupId = s.groupId AND p.typeId = s.typeId AND p.path = s.MarcPath) 
-       WHERE p.typeId = :typeId' . $groupCriterium .' 
-       GROUP BY p.path
-       ORDER BY ' . $order
-    );
-    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
-    if ($groupId !== '')
-      $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
-
-    return $stmt->execute();
-  }
-
-  public function getRecordIdsByErrorIdCount($errorId, $groupId = '') {
-    if ($groupId === '')
-      $sql = 'SELECT COUNT(distinct(id)) AS count FROM issue_details WHERE errorId = :errorId';
-    else
-      $sql = 'SELECT COUNT(distinct(id)) AS count 
-              FROM issue_details JOIN id_groupid USING (id) 
-              WHERE errorId = :errorId AND groupId = :groupId';
-    $stmt = $this->prepare($sql);
-    $stmt->bindValue(':errorId', $errorId, SQLITE3_INTEGER);
-    if ($groupId !== '')
-      $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
-
-    return $stmt->execute();
-  }
-
   public function getRecordIdsByErrorId($errorId, $groupId = '', $offset = 0, $limit = -1) {
     if ($groupId === '')
       $sql = 'SELECT distinct(id) FROM issue_details WHERE errorId = :id';
