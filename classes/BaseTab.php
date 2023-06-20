@@ -41,7 +41,7 @@ abstract class BaseTab implements Tab {
     $this->displayShacl = isset($configuration['display-shacl']) && (int) $configuration['display-shacl'] == 1;
     $this->versioning = (isset($this->configuration['versions'][$this->db]) && $this->configuration['versions'][$this->db] === true);
 
-    $this->count = $this->readCount();
+    $this->count = $this->readCount($this->getFilePath('count.csv'));
     $this->readLastUpdate();
     $this->handleHistoricalData();
     $this->lang = getOrDefault('lang', $this->catalogue->getDefaultLang(), ['en', 'de']);

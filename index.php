@@ -13,7 +13,7 @@ if (isset($configuration['db']) && $configuration['db'] != '')
 else
   $db = getPath();
 
-$tab = getOrDefault('tab', 'completeness');
+$tab = getOrDefault('tab', 'start');
 $ajax = getOrDefault('ajax', 0, [0, 1]);
 $smarty->assign('tab', $tab);
 $smarty->assign('isCompleteness', in_array($tab, ['completeness', 'serials', 'tt-completeness', 'shelf-ready-completeness', 'functions']));
@@ -29,6 +29,7 @@ include_once('classes/Tab.php');
 include_once('classes/BaseTab.php');
 
 $map = [
+  'start'                    => 'Start',
   'data'                     => 'Data',
   'completeness'             => 'Completeness',
   'issues'                   => 'Issues',
@@ -54,7 +55,7 @@ $map = [
   'collocations'             => 'Collocations',
 ];
 
-$class = isset($map[$tab]) ? $map[$tab] : 'Completeness';
+$class = isset($map[$tab]) ? $map[$tab] : 'Start';
 $tab = createTab($class);
 $tab->prepareData($smarty);
 

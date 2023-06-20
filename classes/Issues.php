@@ -267,7 +267,7 @@ class Issues extends BaseTab {
 
   private function readCategories() {
     if ($this->grouped) {
-      $this->categories = $this->filterByGroup($this->readIssueCsv('issue-by-category.csv', ''), 'id');
+      $this->categories = Issues::filterByGroup($this->readIssueCsv('issue-by-category.csv', ''), 'id');
       $total = $this->currentGroup->count;
     } else {
       $this->categories = $this->readIssueCsv('issue-by-category.csv', 'id');
@@ -281,7 +281,7 @@ class Issues extends BaseTab {
 
   private function readTypes() {
     if ($this->grouped) {
-      $this->types = $this->filterByGroup($this->readIssueCsv('issue-by-type.csv', ''), 'id');
+      $this->types = Issues::filterByGroup($this->readIssueCsv('issue-by-type.csv', ''), 'id');
       $total = $this->currentGroup->count;
     } else {
       $this->types = $this->readIssueCsv('issue-by-type.csv', 'id');
@@ -299,20 +299,29 @@ class Issues extends BaseTab {
     }
   }
 
-  private function readTotal() {
-    if ($this->grouped) {
-      $statistics = $this->filterByGroup($this->readIssueCsv('issue-total.csv', ''), 'type');
-      $this->total = $this->currentGroup->count;
+  protected function filePath($filename) {
+    if ($this->versioning && $this->version != '') {
+      $elementsFile = $this->getVersionedFilePath($this->version, $filename);
     } else {
-      $statistics = $this->readIssueCsv('issue-total.csv', 'type');
-      $this->total = $this->count;
+      $elementsFile = $this->getFilePath($filename);
+    }
+    
+    return $elementsFile;
+  }
+
+  public static function readTotal($filepath, $total, $group = null) {
+    if (!is_null($group)) {
+      $statistics = Issues::filterByGroup(readCsv($filepath, ''), 'type', $group->id);
+      $total = $group->count;
+    } else {
+      $statistics = readCsv($filepath, 'type');
     }
 
     foreach ($statistics as &$item) {
-      $item->good = $this->total - $item->records;
-      $item->goodPercent = ($item->good / $this->total) * 100;
+      $item->good = $total - $item->records;
+      $item->goodPercent = ($item->good / $total) * 100;
       $item->bad = $item->records;
-      $item->badPercent = ($item->bad / $this->total) * 100;
+      $item->badPercent = ($item->bad / $total) * 100;
     }
 
     if (!isset($statistics["0"]))
@@ -322,17 +331,22 @@ class Issues extends BaseTab {
         "records" => "0",
         "percent" => 0
       ];
+      
+      
+    $result = (object)[
+      "statistics" => $statistics,
+      "summary" => (object)[
+        "good" => $statistics[1]->good,
+        "unclear" => $statistics[2]->good - $statistics[1]->good,
+        "bad" => $statistics[2]->bad
+      ]
+    ];
 
-    return $statistics;
+    return $result;
   }
 
-  public function readIssueCsv($filename, $keyField) {
-    if ($this->versioning && $this->version != '') {
-      $elementsFile = $this->getVersionedFilePath($this->version, $filename);
-    } else {
-      $elementsFile = $this->getFilePath($filename);
-    }
-    return readCsv($elementsFile, $keyField);
+  public function readIssueCsv($elementsFile, $keyField) {
+    return readCsv($this->filePath($elementsFile), $keyField);
   }
 
   private function download($errorId, $categoryId, $typeId) {
@@ -492,10 +506,10 @@ class Issues extends BaseTab {
     }
   }
 
-  private function filterByGroup($statistics, $key) {
+  public static function filterByGroup($statistics, $key, $groupId = null) {
     $filtered = [];
     foreach ($statistics as $record) {
-      if ($this->grouped && $record->groupId != $this->groupId)
+      if ($record->groupId != $groupId)
         continue;
       unset($record->groupId);
       $filtered[$record->{$key}] = $record;
@@ -668,7 +682,7 @@ class Issues extends BaseTab {
     $smarty->assign('records', $this->records);
     $smarty->assign('categories', $this->categories);
     $smarty->assign('types', $this->types);
-    $smarty->assign('topStatistics', $this->readTotal());
+    $smarty->assign('topStatistics', Issues::readTotal($this->filePath('issue-total.csv'), $this->count, $this->grouped ? $this->currentGroup : null));
     $smarty->assign('total', $this->count);
     $smarty->assign('fieldNames', ['path', 'message', 'url', 'instances', 'records']);
     $smarty->assign('listType', 'full-list');
