@@ -57,7 +57,7 @@ var completeness = new Chart(completensGraphContext, {
         display: false
       }
     },
-    onClick: whatNow,
+    onClick: onCompletenessClicked,
     responsive: true,
     aspectRatio: 1
   }
@@ -88,35 +88,71 @@ var totalCompleteness = new Chart(totalCompletensGraphContext, {
   }
 });
 
-function whatNow(event, array) {
-  const id = array[0].element.$context.raw._data.packageId;
+function onCompletenessClicked(event, array) {
   const level = array[0].element.$context.raw._data.level;
+  const packageId = array[0].element.$context.raw._data.packageId;
   const label = array[0].element.$context.raw._data.label;
 
   if (level < 2 && level >= 0) {
-    const n = level === 0 ?
-    Object.entries(obj[id]).map(function(entry) {
-      return {
-        label: entry[0],
-        packageId: id,
-        level: 1,
-        Completeness: Object.entries(entry[1]).reduce(function(total, subentry) {
-          return total + Number(subentry[1].count)
-        }, 0),
-      }
-    }) :
-    Object.entries(obj[id][label]).map(function(entry) {
-      return {
-        label: entry[0],
-        packageId: id,
-        level: 2,
-        Completeness: Number(entry[1].count),
-      }
-    });
-
-  completeness.data.datasets[0].tree = n;
-  completeness.update();
+    updateCompletenessContent(level + 1, packageId, label);
   }
+}
+
+function onCompletenessBack(event, array) {
+  const level = completeness.data.datasets[0].tree[0].level
+  const packageId = completeness.data.datasets[0].tree[0].packageId
+
+  if (level <= 2 && level > 0) {
+    updateCompletenessContent(level - 1, packageId, "");
+  }
+}
+
+function updateCompletenessContent(level, packageId, label) {
+
+  var tree = null;
+
+  switch(level) {
+    case 0:
+      tree = Object.entries(obj).map(function(entry) {
+              return {
+                label: entry[0],
+                packageId: packageId,
+                level: 1,
+                Completeness: Object.entries(entry[1]).reduce(function(total, subentry) {
+                  return total + Number(Object.entries(subentry[1]).reduce(function(subtotal, subsubentry) {
+                    return subtotal + Number(subsubentry[1].count)
+                  }, 0))
+                }, 0),
+              }
+            });
+
+    case 1:
+      tree = Object.entries(obj[packageId]).map(function(entry) {
+              return {
+                label: entry[0],
+                packageId: packageId,
+                level: 1,
+                Completeness: Object.entries(entry[1]).reduce(function(total, subentry) {
+                  return total + Number(subentry[1].count)
+                }, 0),
+              }
+            });
+    break;
+
+    case 2:
+      tree = Object.entries(obj[packageId][label]).map(function(entry) {
+              return {
+                label: entry[0],
+                packageId: packageId,
+                level: 2,
+                Completeness: Number(entry[1].count),
+              }
+            });
+    break;
+  }
+
+  completeness.data.datasets[0].tree = tree;
+  completeness.update();
 }
 
 function colorFromRaw(ctx) {
