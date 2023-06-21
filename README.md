@@ -56,8 +56,9 @@ git checkout v0.7.0
 
 Requirements:
 ```
-sudo apt install gettext
-sudo apt install php-sqlite3 php-yaml
+sudo apt install locales gettext php-sqlite3 php-yaml php-curl composer
+sudo locale-gen en_GB.UTF-8
+sudo locale-gen de_DE.UTF-8
 ```
 
 ### Setup
@@ -86,12 +87,20 @@ If the application path does not equals `$CATALOG`, add:
 echo "catalogue=$CATALOG" >> configuration.cnf
 ```
 
-Other configuration parameters:
+Configuration parameters:
 
-- `display-network`: to show or hide the network tab. 
-  Possible values: 1 (to display the tab), or 0 (not to display)
-- `indexName[<catalogue>]`: name of the Solr index, it it is different than the name of the catalogue. 
-- `dirName[<catalogue>]`: name of the data directory, it it is different than the name of the catalogue.
+- `dir`: the base output directory of data analysis with QA Catalogue
+- `catalogue`: machine name of a catalogue. Based on this the system will use the relevant catalogue representing class
+   in `classes/catalogue` directory. The parameter value should be a small case version of the class name, so e.g. if
+   the class name is `Gent` the parameter value should be `gent`.
+- `db`: the machine name of the data directory. By default, it comes from the URL as the path of the application
+   (qa-catalogue). With this parameter the administrator can overwrite it.
+- `indexName[<catalogue>]`: name of the Solr index, if it is different from the name of the catalogue. 
+- `dirName[<catalogue>]`: name of the data directory, if it is different from the name of the catalogue.
+- `version[<catalogue>]`: denotes if there are versions for a catalogue. Possible values: 1 (there are versions), 0 
+   (there are no versions)
+- `display-network`: show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
+- `display-shacl`: show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
 
 Example:
 
