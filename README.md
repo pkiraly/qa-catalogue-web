@@ -94,9 +94,11 @@ Configuration parameters:
    in `classes/catalogue` directory. The parameter value should be a small case version of the class name, so e.g. if
    the class name is `Gent` the parameter value should be `gent`.
 - `db`: the machine name of the data directory. By default, it comes from the URL as the path of the application
-   (qa-catalogue). With this parameter the administrator can overwrite it.
-- `indexName[<catalogue>]`: name of the Solr index, if it is different from the name of the catalogue. 
-- `dirName[<catalogue>]`: name of the data directory, if it is different from the name of the catalogue.
+   (qa-catalogue). With this parameter the administrator can overwrite the path.
+- `indexName[<catalogue>]`: name of the Solr index of a particular catalogue, if it is different from the name of the
+    catalogue or the URL path. 
+- `dirName[<catalogue>]`: name of the data directory of a particular catalogue, if it is different from the name of the
+   catalogue or the URL path.
 - `version[<catalogue>]`: denotes if there are versions for a catalogue. Possible values: 1 (there are versions), 0 
    (there are no versions)
 - `display-network`: show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
