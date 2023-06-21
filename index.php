@@ -13,21 +13,6 @@ if (isset($configuration['db']) && $configuration['db'] != '')
 else
   $db = getPath();
 
-$tab = getOrDefault('tab', 'completeness');
-$ajax = getOrDefault('ajax', 0, [0, 1]);
-$smarty->assign('tab', $tab);
-$smarty->assign('isCompleteness', in_array($tab, ['completeness', 'serials', 'tt-completeness', 'shelf-ready-completeness', 'functions']));
-$smarty->assign('isValidation', in_array($tab, ['issues', 'shacl']));
-$smarty->assign('isAuthority', in_array($tab, ['classifications', 'authorities']));
-$smarty->assign('isTool', in_array($tab, ['terms', 'control-fields', 'collocations', 'download', 'settings']));
-$languages = [
-  'en' => 'en_GB.UTF-8',
-  'de' => 'de_DE.UTF-8'
-];
-
-include_once('classes/Tab.php');
-include_once('classes/BaseTab.php');
-
 $map = [
   'data'                     => 'Data',
   'completeness'             => 'Completeness',
@@ -53,6 +38,22 @@ $map = [
   'download'                 => 'Download',
   'collocations'             => 'Collocations',
 ];
+
+$defaultTab = getDefaultTab($configuration, $map, 'completeness');
+$tab = getOrDefault('tab', $defaultTab);
+$ajax = getOrDefault('ajax', 0, [0, 1]);
+$smarty->assign('tab', $tab);
+$smarty->assign('isCompleteness', in_array($tab, ['completeness', 'serials', 'tt-completeness', 'shelf-ready-completeness', 'functions']));
+$smarty->assign('isValidation', in_array($tab, ['issues', 'shacl']));
+$smarty->assign('isAuthority', in_array($tab, ['classifications', 'authorities']));
+$smarty->assign('isTool', in_array($tab, ['terms', 'control-fields', 'collocations', 'download', 'settings']));
+$languages = [
+  'en' => 'en_GB.UTF-8',
+  'de' => 'de_DE.UTF-8'
+];
+
+include_once('classes/Tab.php');
+include_once('classes/BaseTab.php');
 
 $class = isset($map[$tab]) ? $map[$tab] : 'Completeness';
 $tab = createTab($class);
@@ -89,4 +90,16 @@ function getFacetLabel($facet) {
   if (isset($facetLabels[$facet]))
     return $facetLabels[$facet];
   return str_replace('_', ' ', preg_replace('/_ss$/', '', $facet));
+}
+
+/**
+ * @param $configuration
+ * @param array $map
+ * @return mixed|string
+ */
+function getDefaultTab($configuration, array $map, $defaultTab = 'completeness') {
+  $key = 'default-tab';
+  return (isset($configuration[$key]) && $configuration[$key] != '' && in_array($configuration[$key], array_keys($map)))
+    ? $configuration['default-tab']
+    : $defaultTab;
 }

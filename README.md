@@ -93,6 +93,11 @@ Configuration parameters:
 - `catalogue`: machine name of a catalogue. Based on this the system will use the relevant catalogue representing class
    in `classes/catalogue` directory. The parameter value should be a small case version of the class name, so e.g. if
    the class name is `Gent` the parameter value should be `gent`.
+- `default-tab`: the tab which will be displayed when no tab is selected. This will be the tab which will be opened by 
+   the root URL. If no default-tab has been set, `completeness` will be used. The possible values are: `data`,
+   `completeness` (default), `issues`, `functions`, `classifications`, `authorities`, `serials`, `tt-completeness`,
+   `shelf-ready-completeness`, `shacl`, `network`, `terms`, `pareto`, `history`, `timeline`, `settings`, `about`,
+   `record-issues`, `histogram`, `functional-analysis-histogram`, `control-fields`, `download`, `collocations`.
 - `db`: the machine name of the data directory. By default, it comes from the URL as the path of the application
    (qa-catalogue). With this parameter the administrator can overwrite the path.
 - `indexName[<catalogue>]`: name of the Solr index of a particular catalogue, if it is different from the name of the

@@ -77,7 +77,7 @@ msgstr "Which fields and subfields occur how often in which records? Completenes
 msgid "Field groups"
 msgstr "Field groups"
 msgid "Fields"
-msgstr "Felder"
+msgstr "Fields"
 msgid "path"
 msgstr "path"
 msgid "records"
