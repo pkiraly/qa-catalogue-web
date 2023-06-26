@@ -7,7 +7,7 @@
       <h2>{_('Violations of record format specification')}</h2>
 
       <p class="metric-definition">
-        {_t('issues_definition', _($catalogue->getMetadataSchema()))}
+        {_t('issues_definition')}
         {if $catalogue->getSchemaType() == 'PICA'}
           ({_('Download schema file')}: <a href="?tab=download&action=download&file={$schemaFile}">{$schemaFile}</a>.)
         {/if}

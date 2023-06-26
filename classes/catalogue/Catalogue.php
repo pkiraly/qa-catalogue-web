@@ -12,7 +12,6 @@ class Catalogue {
     'Books', 'Computer Files', 'Continuing Resources', 'Maps', 'Mixed Materials', 'Music', 'Visual Materials', 'all'
   ];
   protected $defaultLang = 'en';
-  protected $metadataSchema = 'MARC21 scheme';
 
   public function __construct($config=[]) {
     $this->name = $this->name ?? $config["catalogue"];
@@ -68,12 +67,5 @@ class Catalogue {
    */
   public function getDefaultLang(): string {
     return $this->defaultLang;
-  }
-
-  /**
-   * @return string
-   */
-  public function getMetadataSchema(): string {
-    return $this->metadataSchema;
   }
 }
