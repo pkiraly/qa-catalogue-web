@@ -79,11 +79,10 @@ abstract class BaseTab implements Tab {
   public function createCatalogue() {
     $className = strtoupper(substr($this->catalogueName, 0, 1)) . substr($this->catalogueName, 1);
     $classFile = 'catalogue/' . $className . '.php';
-    if (file_exists('classes/' . $classFile)) {
+    if ($className != "catalogue" && file_exists('classes/' . $classFile)) {
       include_once $classFile;
       return new $className();
     } else {
-      // TODO: read catalog configuration from output directory
       return new Catalogue($this->configuration);
     }
   }

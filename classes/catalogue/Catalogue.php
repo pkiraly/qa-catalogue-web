@@ -12,13 +12,21 @@ class Catalogue {
     'Books', 'Computer Files', 'Continuing Resources', 'Maps', 'Mixed Materials', 'Music', 'Visual Materials', 'all'
   ];
   protected $defaultLang = 'en';
+  protected $linkTemplate;
 
   public function __construct($config=[]) {
     $this->name = $this->name ?? $config["catalogue"];
-    $this->label = $this->label ?? $config["catalogue"];
+    $this->label = $config["label"] ?? $this->label ?? $config["catalogue"];
+    $this->url = $config["url"] ?? $this->url;
+    $this->schemaType = $config["schema"] ?? $this->schemaType;
+    $this->defaultLang = $config["language"] ?? $this->defaultLang;
+    $this->linkTemplate = $config["linkTemplate"] ?? $this->linkTemplate;
   }
  
   public function getOpacLink($id, $record) {
+    if ($this->linkTemplate && $id) {
+      return str_replace('{id}', $id, $this->linkTemplate);
+    }
   }
 
   public function getName() {
@@ -40,19 +48,22 @@ class Catalogue {
     return $this->schemaType;
   }
 
-
   public function getMarcVersion() {
     return $this->marcVersion;
   }
 
   public function getTag(string $input): string {
-    return substr($input, 0, 3);
+    return $this->schemaType == 'PICA' ?
+      substr($input, 0, strpos($input, '$')) :
+      substr($input, 0, 3);
   }
 
   public function getSubfield($input): string {
     if (is_null($input))
       return "";
-    return substr($input, 3);
+    return $this->schemaType == 'PICA' ?
+      substr($input, strpos($input, '$')) :
+      substr($input, 3);
   }
 
   /**

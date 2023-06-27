@@ -81,7 +81,7 @@ Prepare configuration file:
 echo "dir=$DATADIR" > configuration.cnf
 ```
 
-If the application path does not equals `$CATALOG`, add:
+If the application path does not equals `$CATALOG`, specify an existing catalogue implementation:
 
 ```
 echo "catalogue=$CATALOG" >> configuration.cnf
@@ -92,7 +92,7 @@ Configuration parameters:
 - `dir`: the base output directory of data analysis with QA Catalogue
 - `catalogue`: machine name of a catalogue. Based on this the system will use the relevant catalogue representing class
    in `classes/catalogue` directory. The parameter value should be a small case version of the class name, so e.g. if
-   the class name is `Gent` the parameter value should be `gent`.
+   the class name is `Gent` the parameter value should be `gent`. The value `catalogue` can be used for generic catalogue.
 - `default-tab`: the tab which will be displayed when no tab is selected. This will be the tab which will be opened by 
    the root URL (the landing page). If no default-tab has been set, `completeness` will be used. The possible values are:
    `data`, `completeness` (default), `issues`, `functions`, `classifications`, `authorities`, `serials`, `tt-completeness`,
@@ -108,6 +108,14 @@ Configuration parameters:
    (there are no versions)
 - `display-network`: show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
 - `display-shacl`: show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
+
+The following configuration parameters only have effect for generic catalogs (when `catalogue` is not set)
+
+- `label`: name of the library catalogue
+- `url`: link to library catalogue homepage
+- `schema`: metadata schema type (`MARC21 as default or `PICA`)
+- `linkTemplate`: URL template to link into the library catalogue (`{id}` is replaced by record identifier)
+- `language`: default language of the user interface
 
 Example:
 
