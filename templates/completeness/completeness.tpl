@@ -12,7 +12,7 @@
 
       {include 'common/group-selector.tpl'}
 
-      <div>
+      <div id="document-type-selector">
         {_('by document types')}:
         {foreach from=$types item=type name=types}
           {if !$smarty.foreach.types.first}·{/if}
