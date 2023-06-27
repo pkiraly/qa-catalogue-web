@@ -45,13 +45,6 @@ class Catalogue {
     return $this->marcVersion;
   }
 
-  /**
-   * @return int
-   */
-  public function getPosition(): int {
-    return $this->position;
-  }
-
   public function getTag(string $input): string {
     return substr($input, 0, 3);
   }
