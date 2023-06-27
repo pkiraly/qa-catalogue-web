@@ -1,6 +1,13 @@
 <?php
 set_time_limit(0);
 
+// catch incomplete installation
+if (!file_exists('vendor/autoload.php')) {
+  die("Installation incomplete: <code>composer install</code> must be run first!");
+} elseif (!is_writable('_smarty') || !is_writable('cache')) {
+  die("Installation incomplete: <code>_smarty</code> and <code>cache</code> must be writeable!");
+}
+
 require 'vendor/autoload.php';
 
 require_once 'common-functions.php';

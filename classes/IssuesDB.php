@@ -5,7 +5,11 @@ class IssuesDB extends SQLite3 {
 
   function __construct($dir) {
     $file = $dir . '/qa_catalogue.sqlite';
-    $this->open($file);
+    try {
+      $this->open($file);
+    } catch (Exception $e) {
+      die($e->getMessage() . ": <code>$file</code>");
+    }
   }
 
   public function getByCategoryAndType($categoryId, $typeId, $order = 'records DESC', $offset = 0, $limit) {
