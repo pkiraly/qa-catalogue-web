@@ -17,7 +17,15 @@
 
       {include 'start/grid-item.tpl' id='issuesGraph' title='Issues' ref="?tab=issues{$generalParams}"}
 
-      {include 'start/grid-item.tpl' id='completenessGraph' title='Completeness' ref="?tab=completeness{$generalParams}"}
+      <div class='grid-item'>
+        <div class='grid-item-title'>
+          <a class='grid-item-title-text' href='?tab=completeness{$generalParams}'>Completeness</a>
+          <a class='btn' id="completenessBack" style='float:right'>❮</a>
+        </div>
+        <div class='grid-item-content'>
+          <canvas class="graph" id="completenessGraph"></canvas>
+        </div>
+      </div>
 
       {include 'start/grid-item.tpl' id='totalCompletenessGraph' title='Blabla' ref="?tab=completeness{$generalParams}"}
 
