@@ -31,18 +31,6 @@ var completeness = new Chart(completensGraphContext, {
     datasets: [
       {
         label: '# of records',
-        tree: [
-          {foreach from=$packages item=package}
-            {if !isset($package->iscoretag) || $package->iscoretag}
-              {
-                label: '{$package->label|escape:javascript}',
-                packageId: '{$package->packageid|escape:javascript}',
-                level: 0,
-                Completeness: {$package->count|escape:javascript},
-              },
-            {/if}
-          {/foreach}
-        ],
         key: 'Completeness',
         borderColor: 'green',
         borderWidth: 1,
@@ -62,6 +50,10 @@ var completeness = new Chart(completensGraphContext, {
     aspectRatio: 1
   }
 });
+
+updateCompletenessContent(0, "", "");
+
+document.getElementById("completenessBack").addEventListener('click', onCompletenessBack);
 
 const totalCompletensGraphContext = document.getElementById('totalCompletenessGraph');
 
@@ -90,24 +82,24 @@ var totalCompleteness = new Chart(totalCompletensGraphContext, {
 
 function onCompletenessClicked(event, array) {
   const level = array[0].element.$context.raw._data.level;
-  const packageId = array[0].element.$context.raw._data.packageId;
+  const packageName = array[0].element.$context.raw._data.packageName;
   const label = array[0].element.$context.raw._data.label;
 
   if (level < 2 && level >= 0) {
-    updateCompletenessContent(level + 1, packageId, label);
+    updateCompletenessContent(level + 1, packageName, label);
   }
 }
 
-function onCompletenessBack(event, array) {
+function onCompletenessBack() {
   const level = completeness.data.datasets[0].tree[0].level
-  const packageId = completeness.data.datasets[0].tree[0].packageId
+  const packageName = completeness.data.datasets[0].tree[0].packageName
 
   if (level <= 2 && level > 0) {
-    updateCompletenessContent(level - 1, packageId, "");
+    updateCompletenessContent(level - 1, packageName, "");
   }
 }
 
-function updateCompletenessContent(level, packageId, label) {
+function updateCompletenessContent(level, packageName, label) {
 
   var tree = null;
 
@@ -116,34 +108,34 @@ function updateCompletenessContent(level, packageId, label) {
       tree = Object.entries(obj).map(function(entry) {
               return {
                 label: entry[0],
-                packageId: packageId,
-                level: 1,
-                Completeness: Object.entries(entry[1]).reduce(function(total, subentry) {
-                  return total + Number(Object.entries(subentry[1]).reduce(function(subtotal, subsubentry) {
-                    return subtotal + Number(subsubentry[1].count)
-                  }, 0))
-                }, 0),
-              }
-            });
-
-    case 1:
-      tree = Object.entries(obj[packageId]).map(function(entry) {
-              return {
-                label: entry[0],
-                packageId: packageId,
-                level: 1,
-                Completeness: Object.entries(entry[1]).reduce(function(total, subentry) {
-                  return total + Number(subentry[1].count)
-                }, 0),
+                packageName: entry[0],
+                level: 0,
+                Completeness: entry[1][""][""].count
               }
             });
     break;
 
-    case 2:
-      tree = Object.entries(obj[packageId][label]).map(function(entry) {
+    case 1:
+      
+      tree = Object.entries(obj[packageName]).filter(function(entry) { // Remove summary entries
+              return entry[0] !== "";
+            }).map(function(entry) {
               return {
                 label: entry[0],
-                packageId: packageId,
+                packageName: packageName,
+                level: 1,
+                Completeness: entry[1][""].count
+              }
+            })
+    break;
+
+    case 2:
+      tree = Object.entries(obj[packageName][label]).filter(function(entry) { // Remove summary entries
+              return entry[0] !== "";
+            }).map(function(entry) {
+              return {
+                label: entry[0],
+                packageName: packageName,
                 level: 2,
                 Completeness: Number(entry[1].count),
               }
