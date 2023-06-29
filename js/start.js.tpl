@@ -23,6 +23,28 @@ new Chart(ctx, {
     }
 });
 
+const authoritiesGraphContext = document.getElementById('authoritiesGraph');
+new Chart(authoritiesGraphContext, {
+    type: 'doughnut',
+    data: {
+        labels: ['Without authorities', 'With authorities'],
+        datasets: [{
+            label: '# of Records',
+            data: ['{$authorities->withClassification->count|escape:javascript}', '{$authorities->withoutClassification->count|escape:javascript}'],
+            backgroundColor: ["#37ba00", "#FF4136"],
+            borderWidth: 1
+        }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      },
+      responsive: true
+    }
+});
+
 const completensGraphContext = document.getElementById('completenessGraph');
 
 var completeness = new Chart(completensGraphContext, {

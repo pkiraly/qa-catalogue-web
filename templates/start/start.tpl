@@ -27,7 +27,7 @@
         </div>
       </div>
 
-      {include 'start/grid-item.tpl' id='totalCompletenessGraph' title='Blabla' ref="?tab=completeness{$generalParams}"}
+      {include 'start/grid-item.tpl' id='authoritiesGraph' title='Authorities' ref="?tab=classifications{$generalParams}"}
 
       <div class='grid-item'/>
         2
