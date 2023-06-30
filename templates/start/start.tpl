@@ -16,6 +16,8 @@
     <div class='grid-container'>
 
       {include 'start/grid-item.tpl' id='issuesGraph' title='Issues' ref="?tab=issues{$generalParams}"}
+      {include 'start/grid-item.tpl' id='authoritiesGraph' title='Authorities' ref="?tab=classifications{$generalParams}"}
+      {include 'start/grid-item.tpl' id='authoritiesNameGraph' title='Authority names' ref="?tab=authorities{$generalParams}"}
 
       <div class='grid-item'>
         <div class='grid-item-title'>
@@ -26,12 +28,7 @@
           <canvas class="graph" id="completenessGraph"></canvas>
         </div>
       </div>
-
-      {include 'start/grid-item.tpl' id='authoritiesGraph' title='Authorities' ref="?tab=classifications{$generalParams}"}
-
-      <div class='grid-item'/>
-        2
-      </div>
+      
 
     </div>
 

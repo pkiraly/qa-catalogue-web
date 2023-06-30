@@ -4,6 +4,7 @@ require_once 'Issues.php';
 require_once 'Completeness.php';
 require_once 'AddedEntry.php';
 require_once 'Authorities.php';
+require_once 'Classifications.php';
 
 class Start extends BaseTab {
 
@@ -17,6 +18,7 @@ class Start extends BaseTab {
     $smarty->assign('issueStats', Issues::readTotal($this->getFilePath('issue-total.csv'), $this->count));
     $smarty->assign('fields', json_encode(Start::readCompleteness('all', $this->getFilePath('marc-elements.csv'), $this->getFilePath('packages.csv'))));
     $smarty->assign('authorities', Authorities::readByRecords($this->getFilePath('authorities-by-records.csv'), $this->count));
+    $smarty->assign('classifications', Classifications::readByRecords($this->getFilePath('classifications-by-records.csv'), $this->count));
   }
 
   public static function readCompleteness($type, $elementsFile, $packageFile, $groupId = null) {
