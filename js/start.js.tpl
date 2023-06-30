@@ -1,8 +1,7 @@
-const ctx = document.getElementById('issuesGraph');
-
 const obj = JSON.parse("{$fields|escape:javascript}");
 
-new Chart(ctx, {
+const issuesGraphContext = document.getElementById('issuesGraph');
+new Chart(issuesGraphContext, {
     type: 'doughnut',
     data: {
         labels: ['Without issues', 'With undefined fields', 'With issues'],
@@ -14,11 +13,6 @@ new Chart(ctx, {
         }]
     },
     options: {
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      },
       responsive: true
     }
 });
@@ -36,11 +30,6 @@ new Chart(authoritiesGraphContext, {
         }]
     },
     options: {
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      },
       responsive: true
     }
 });
