@@ -29,8 +29,6 @@ class Authorities extends AddedEntry {
     $records = [];
     if (file_exists($filepath)) {
       $header = [];
-      $withClassification = NULL;
-      $withoutClassification = NULL;
       $in = fopen($filepath, "r");
       while (($line = fgets($in)) != false) {
         $values = str_getcsv($line);

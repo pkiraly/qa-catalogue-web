@@ -17,11 +17,11 @@ new Chart(issuesGraphContext, {
     }
 });
 
-const authoritiesGraphContext = document.getElementById('authoritiesGraph');
-new Chart(authoritiesGraphContext, {
+const authoritiesNameGraphContext = document.getElementById('authoritiesNameGraph');
+new Chart(authoritiesNameGraphContext, {
     type: 'doughnut',
     data: {
-        labels: ['Without authorities', 'With authorities'],
+        labels: ['Without authority name', 'With authority name'],
         datasets: [{
             label: '# of Records',
             data: ['{$authorities->withClassification->count|escape:javascript}', '{$authorities->withoutClassification->count|escape:javascript}'],
@@ -33,6 +33,24 @@ new Chart(authoritiesGraphContext, {
       responsive: true
     }
 });
+
+const authoritiesGraphContext = document.getElementById('authoritiesGraph');
+new Chart(authoritiesGraphContext, {
+    type: 'doughnut',
+    data: {
+        labels: ['Without authorities', 'With authorities'],
+        datasets: [{
+            label: '# of Records',
+            data: ['{$classifications->withClassification->count|escape:javascript}', '{$classifications->withoutClassification->count|escape:javascript}'],
+            backgroundColor: ["#37ba00", "#FF4136"],
+            borderWidth: 1
+        }]
+    },
+    options: {
+      responsive: true
+    }
+});
+
 
 const completensGraphContext = document.getElementById('completenessGraph');
 
