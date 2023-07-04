@@ -5,7 +5,7 @@
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane active" id="about" role="tabpanel" aria-labelledby="about-tab">
       <div id="about-tab">
-        {assign var=file value="config/about.$lang.tpl"}
+        {assign var=file value="$templates/about.$lang.tpl"}
         {if file_exists($file)}{include $file}{/if}
 
         <h3>{_('Software')}</h3>

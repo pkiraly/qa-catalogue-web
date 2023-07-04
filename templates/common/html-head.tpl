@@ -29,5 +29,5 @@
   <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
 <body>
-{assign var=file value="config/header.$lang.tpl"}
+{assign var=file value="$templates/header.$lang.tpl"}
 {if file_exists($file)}{include $file}{/if}

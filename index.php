@@ -20,6 +20,13 @@ if (isset($configuration['db']) && $configuration['db'] != '')
 else
   $db = getPath();
 
+if (isset($configuration['templates'])) {
+  // realpath ensures there is no `/` at the end of the path
+  $smarty->assign('templates', realpath($configuration['templates']) || 'config');
+} else {
+  $smarty->assign('templates', 'config');
+}
+
 $map = [
   'data'                     => 'Data',
   'completeness'             => 'Completeness',
