@@ -22,7 +22,7 @@ else
 
 if (isset($configuration['templates'])) {
   // realpath ensures there is no `/` at the end of the path
-  $smarty->assign('templates', realpath($configuration['templates']) || 'config');
+  $smarty->assign('templates', realpath($configuration['templates']) ?: 'config');
 } else {
   $smarty->assign('templates', 'config');
 }
