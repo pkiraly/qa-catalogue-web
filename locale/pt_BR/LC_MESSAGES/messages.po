@@ -1,13 +1,13 @@
-# English translations for QA catalogue web interface.
+# Portuguese translations for QA catalogue web interface.
 # GPL-3.0 license
-# Péter Király <pkiraly@gwdg.de>
+# Tiago Murakami <trmurakami@usp.br>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: v0.6.0\n"
-"Report-Msgid-Bugs-To: Péter Király <pkiraly@gwdg.de>\n"
-"Language-Team: English\n"
-"Language: en\n"
+"Report-Msgid-Bugs-To: Tiago Murakami <trmurakami@usp.br>\n"
+"Language-Team: Brazilian Portuguese\n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,11 +15,11 @@ msgstr ""
 
 # header
 msgid "for analysing library data"
-msgstr "for analysing library data"
+msgstr "para analisar dados da biblioteca"
 msgid "last data update"
-msgstr "last data update"
+msgstr "última atualização de dados"
 msgid "number of records"
-msgstr "number of records"
+msgstr "número de registros"
 
 # navigation
 msgid "Data"
