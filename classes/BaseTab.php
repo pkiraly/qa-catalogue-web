@@ -44,7 +44,7 @@ abstract class BaseTab implements Tab {
     $this->count = $this->readCount();
     $this->readLastUpdate();
     $this->handleHistoricalData();
-    $this->lang = getOrDefault('lang', $this->catalogue->getDefaultLang(), ['en', 'de']);
+    $this->lang = getOrDefault('lang', $this->catalogue->getDefaultLang(), ['en', 'de', 'pt']);
     setLanguage($this->lang);
   }
 
