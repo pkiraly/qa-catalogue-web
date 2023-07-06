@@ -15,8 +15,8 @@ class Catalogue {
   protected $linkTemplate;
 
   public function __construct($config=[]) {
-    $this->name = $this->name ?? $config["catalogue"];
-    $this->label = $config["label"] ?? $this->label ?? $config["catalogue"];
+    $this->name = $this->name ?? $config["catalogue"] ?? "";
+    $this->label = $config["label"] ?? $this->label;
     $this->url = $config["url"] ?? $this->url;
     $this->schemaType = $config["schema"] ?? $this->schemaType;
     $this->defaultLang = $config["language"] ?? $this->defaultLang;
