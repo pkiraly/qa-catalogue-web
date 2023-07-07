@@ -399,7 +399,9 @@ abstract class BaseTab implements Tab {
       $found = false;
       if (substr($solrField, 0, 2) == '00') {
         $parts = explode('_', $solrField);
-        if (isset($this->fieldDefinitions->fields->{$parts[0]}))
+        if (property_exists($this->fieldDefinitions->fields, $parts[0]) &&
+            isset($this->fieldDefinitions->fields->{$parts[0]}) &&
+            !is_null($this->fieldDefinitions->fields->{$parts[0]})) {
           if (!isset($this->fieldDefinitions->fields->{$parts[0]}->types))
             error_log('no types for ' . $parts[0]);
           if (!is_array($this->fieldDefinitions->fields->{$parts[0]}->types))
@@ -411,6 +413,7 @@ abstract class BaseTab implements Tab {
                 $found = true;
                 break;
               }
+        }
       }
       if (!$found) {
         $solrField = preg_replace('/^(00.|leader|Leader_)/', "$1/", $solrField);

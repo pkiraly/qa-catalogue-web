@@ -26,8 +26,10 @@ class Settings extends BaseTab {
     }
 
     $selectedFacets = [];
-    foreach ($this->getSelectedFacets() as $facet) {
-      $selectedFacets[] = ['id' => $facet, 'label' => $this->resolveSolrField($facet)];
+    if (!is_null($this->getSelectedFacets())) {
+      foreach ($this->getSelectedFacets() as $facet) {
+        $selectedFacets[] = ['id' => $facet, 'label' => $this->resolveSolrField($facet)];
+      }
     }
     $smarty->assign('selectedFacets', $selectedFacets);
     $smarty->assign('facets', $this->getFields());
@@ -58,7 +60,7 @@ class Settings extends BaseTab {
 
       $field = (object)[
         'name' => $fieldName,
-        'checked' => in_array($fieldName, $selectedFacets),
+        'checked' => (!is_null($selectedFacets) && in_array($fieldName, $selectedFacets)),
       ];
       $fields[] = $field;
       $this->categories[$category][] = $field;

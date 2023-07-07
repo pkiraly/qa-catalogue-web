@@ -9,7 +9,6 @@ class Data extends Facetable {
 
   private $facet;
   protected $query;
-  private $filters;
   private $start;
   private $rows;
   private $itemsPerPageSelectors = [10, 25, 50, 100];
@@ -191,7 +190,7 @@ class Data extends Facetable {
     return $startEnd;
   }
 
-  private function getFilters() {
+  private function createFilters() {
     $basicUrl = $this->getBasicUrl(['filters']);
     $changeQueryUrlParams = $this->getBasicUrl(['query', 'facet', 'filters', 'start']);
     $filterLinks = [];
@@ -332,7 +331,7 @@ class Data extends Facetable {
     $smarty->assign('start', $this->start);
     $smarty->assign('rows', $this->rows);
     $smarty->assign('facetLimit', $this->facetLimit);
-    $smarty->assign('filters', $this->getFilters());
+    $smarty->assign('filters', $this->createFilters());
     $smarty->assign('offset', $this->offset);
     if ($this->grouped)
       $smarty->assign('groupId', $this->groupId);

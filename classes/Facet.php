@@ -55,6 +55,11 @@ class Facet {
       'offset=' . $offset,
       'termFilter=' . urlencode($this->controller->getTermFilter()),
     ];
+    $filters = $this->controller->getFilters();
+    if (!is_null($filters))
+      foreach ($filters as $filter)
+        $params[] = 'filters[]=' . urlencode($filter);
+
     if ($this->controller->getAjaxFacet() == 1)
       $params[] = 'ajax=1';
     return '?' . join('&', $params);
