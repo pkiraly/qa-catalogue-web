@@ -16,8 +16,8 @@
     <div class='grid-container'>
 
       {include 'start/grid-item.tpl' id='issuesGraph' title='Issues' ref="?tab=issues{$generalParams}"}
-      {include 'start/grid-item.tpl' id='authoritiesGraph' title='Authorities' ref="?tab=classifications{$generalParams}"}
-      {include 'start/grid-item.tpl' id='authoritiesNameGraph' title='Authority names' ref="?tab=authorities{$generalParams}"}
+      {include 'start/grid-item.tpl' id='authoritiesGraph' title='Subject analysis' ref="?tab=classifications{$generalParams}"}
+      {include 'start/grid-item.tpl' id='authoritiesNameGraph' title='Authority name analysis' ref="?tab=authorities{$generalParams}"}
 
       <div class='grid-item'>
         <div class='grid-item-title'>
