@@ -4,12 +4,14 @@
 
 ![Output sample](https://github.com/pkiraly/qa-catalogue-web/raw/gh-pages/img/issues-v1.gif)
 
-This web application provides a web interface to results of
-[QA Catalogue](https://github.com/pkiraly/qa-catalogue)
-for quality analysis and statistics of metadata from library catalogues.
+This application provides a web interface for searching, browsing, and
+displaying [QA Catalogue](https://github.com/pkiraly/qa-catalogue) data from
+library catalogues for quality analysis and statistics of metadata.
 
-The results in form of CSV files, JSON files, a SQLite database, images and
-a Solr index are made browseable on the Web with PHP and JavaScript.
+Catalog information is made available from CSV files, JSON files, SQLite
+database, images, and a [Solr](https://solr.apache.org/) search
+index. The reports are made accessible using a Web browser and has been
+implemented by PHP and JavaScript.
 
 ## Table of Contents
 
@@ -26,12 +28,12 @@ In the following:
 - `$DATADIR` denotes the base output directory of data analysis with QA Catalogue
 - `$CATALOG` denotes the name of a catalogue (such as loc, bl, k10plus...)
 
-Analyse your catalog with [QA Catalogue Backend](https://github.com/pkiraly/qa-catalogue)),
-the result will be saved in `$DATADIR/$CATALOG` and in Solr.
+Analyse your catalog using the [QA Catalogue Backend](https://github.com/pkiraly/qa-catalogue))
+and the result will be saved in `$DATADIR/$CATALOG` and a Solr index.
 
 ### Download
 
-Install this software into a web server with PHP enabled (Apache or Nginx with PHP-FPM).
+Install this software into a web server with PHP enabled such as (Apache or Nginx with [PHP-FPM](https://www.php.net/manual/en/install.fpm.php)).
 
 Create a temporary directory and download the current version to an application
 directory served by your webserver (here we use `/var/www/html/$CATALOG`):
@@ -55,7 +57,7 @@ git checkout v0.7.0
 ```
 
 Requirements:
-```
+```bash
 sudo apt install locales gettext php-sqlite3 php-yaml php-curl composer
 sudo locale-gen en_GB.UTF-8
 sudo locale-gen de_DE.UTF-8
@@ -66,25 +68,25 @@ sudo locale-gen pt_BR.UTF-8
 
 Change into the application directory:
 
-```
+```bash
 cd /var/www/html/$CATALOG
 ```
 
 install PHP dependencies and create required cache directories and permissions:
 
-```
+```bash
 composer install
 ```
 
 Prepare configuration file:
 
-```
+```bash
 echo "dir=$DATADIR" > configuration.cnf
 ```
 
 If the application path does not equals `$CATALOG`, specify an existing catalogue implementation:
 
-```
+```bash
 echo "catalogue=$CATALOG" >> configuration.cnf
 ```
 
@@ -94,7 +96,7 @@ Configuration parameters:
 - `catalogue`: machine name of a catalogue. Based on this the system will use the relevant catalogue representing class
    in `classes/catalogue` directory. The parameter value should be a small case version of the class name, so e.g. if
    the class name is `Gent` the parameter value should be `gent`. The value `catalogue` can be used for generic catalogue.
-- `default-tab`: the tab which will be displayed when no tab is selected. This will be the tab which will be opened by 
+- `default-tab`: the tab which will be displayed when no tab is selected. This will be the tab which will be opened by
    the root URL (the landing page). If no default-tab has been set, `completeness` will be used. The possible values are:
    `data`, `completeness` (default), `issues`, `functions`, `classifications`, `authorities`, `serials`, `tt-completeness`,
    `shelf-ready-completeness`, `shacl`, `network`, `terms`, `pareto`, `history`, `timeline`, `settings`, `about`,
@@ -102,10 +104,10 @@ Configuration parameters:
 - `db`: the machine name of the data directory. By default, it comes from the URL as the path of the application
    (qa-catalogue). With this parameter the administrator can overwrite the path.
 - `indexName[<catalogue>]`: name of the Solr index of a particular catalogue, if it is different from the name of the
-    catalogue or the URL path. 
+    catalogue or the URL path.
 - `dirName[<catalogue>]`: name of the data directory of a particular catalogue, if it is different from the name of the
    catalogue or the URL path.
-- `version[<catalogue>]`: denotes if there are versions for a catalogue. Possible values: 1 (there are versions), 0 
+- `version[<catalogue>]`: denotes if there are versions for a catalogue. Possible values: 1 (there are versions), 0
    (there are no versions)
 - `display-network`: show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
 - `display-shacl`: show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
@@ -129,14 +131,14 @@ dirName[bvb]=bayern
 
 setup additional directories and permissions:
 
-```
+```bash
 sudo chgrp www-data -R _smarty cache
 ln -s [data directory]/[catalogue]/img images/[catalogue]
 ```
 
 On Apache webserver add these lines to its configuration (`/etc/apache2/sites-available/000-default.conf`):
 
-```
+```apache
 <Directory /var/www/html/$CATALOG>
   AllowOverride All
   Order allow,deny
@@ -159,11 +161,11 @@ parameter `templates`:
 - `config/about.en.tpl` and `config/about.de.tpl`: Additional information shown
   in the "about" tab.
 
-The name, catalogue link and the record levele catalogue link are different 
+The name, catalogue link and the record levele catalogue link are different
 per libraries. The tool has prepared for a number of libraries, but there's
-high chance, that you would like to apply it for another library. 
+high chance, that you would like to apply it for another library.
 You have set these values in a class which extends the `Catalogue` class,
-here is an example: 
+here is an example:
 
 ```PHP
 class Gent extends Catalogue {
@@ -182,8 +184,8 @@ class Gent extends Catalogue {
 Please create a new file in the directory `classes/catalogue`. You do not have
 to do any other registration. The convention is that the name of the class
 is the first upper case form of the name property (Gent - gent, Cerl - cerl)
-etc. The later should fit the data directory name, the Solr index name, and 
-either the application path or the `catalogue` property of the 
+etc. The later should fit the data directory name, the Solr index name, and
+either the application path or the `catalogue` property of the
 `configuration.cnf` file. `$url` contains an URL of the catalogue in the library
 website, `$marcVersion` is the abbreviation of MARC version used in the
 analyses.
@@ -196,7 +198,7 @@ two language files (German and English). In `.tpl` files you can add translatabl
 ```
 {_('translatable text')}
 ```
-`_` is a built-in alias for the PHP function `gettext`. If there are variables in the 
+`_` is a built-in alias for the PHP function `gettext`. If there are variables in the
 translated string, in the `.tpl` file you should use the `_t` function, defined by the project,
 like this:
 
@@ -230,7 +232,7 @@ msgstr "Found <span id=\"numFound\">%s</span> records"
 Of course the message identifier could be different, and dense but now
 I think that it is more understandable (so translatable) this way. When
 you add a translation please add a comment to denote which page the original
-text appears, such as 
+text appears, such as
 
 ```
 # completeness
@@ -252,7 +254,7 @@ sudo service apache2 restart
 
 Please let us know if you would like to see more languages supported.
 
-Troubleshouting: if the translation would not work you can check if a given 
+Troubleshouting: if the translation would not work you can check if a given
 language (locale) is available in your system. In Linux you can check it with
 
 ```bash
@@ -280,5 +282,4 @@ Contributions are welcome!
 
 ## License
 
-GNU General Public License
-
+[GNU General Public License - GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html)
