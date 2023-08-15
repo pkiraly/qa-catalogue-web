@@ -55,16 +55,16 @@ new Chart(authoritiesGraphContext, {
 const completensGraphContext = document.getElementById('completenessGraph');
 
 var completeness = new Chart(completensGraphContext, {
-  type: 'treemap',
+  type: 'bar',
   data: {
     datasets: [
       {
         label: '# of records',
         key: 'Completeness',
         borderColor: 'green',
+        backgroundColor: '#37ba00',
         borderWidth: 1,
-        spacing: 0,
-        backgroundColor: (ctx) => colorFromRaw(ctx),
+        spacing: 0
       }
     ],
   },
@@ -74,9 +74,18 @@ var completeness = new Chart(completensGraphContext, {
         display: false
       }
     },
+    scales: {
+      x: {
+        display: false
+      }
+    },
     onClick: onCompletenessClicked,
     responsive: true,
-    aspectRatio: 1
+    aspectRatio: 1,
+    parsing: {
+      xAxisKey: 'label',
+      yAxisKey: 'Completeness'
+    }
   }
 });
 
@@ -110,9 +119,9 @@ var totalCompleteness = new Chart(totalCompletensGraphContext, {
 });
 
 function onCompletenessClicked(event, array) {
-  const level = array[0].element.$context.raw._data.level;
-  const packageName = array[0].element.$context.raw._data.packageName;
-  const label = array[0].element.$context.raw._data.label;
+  const level = array[0].element.$context.raw.level;
+  const packageName = array[0].element.$context.raw.packageName;
+  const label = array[0].element.$context.raw.label;
 
   if (level < 2 && level >= 0) {
     updateCompletenessContent(level + 1, packageName, label);
@@ -120,8 +129,8 @@ function onCompletenessClicked(event, array) {
 }
 
 function onCompletenessBack() {
-  const level = completeness.data.datasets[0].tree[0].level
-  const packageName = completeness.data.datasets[0].tree[0].packageName
+  const level = completeness.data.datasets[0].data[0].level
+  const packageName = completeness.data.datasets[0].data[0].packageName
 
   if (level <= 2 && level > 0) {
     updateCompletenessContent(level - 1, packageName, "");
@@ -172,7 +181,11 @@ function updateCompletenessContent(level, packageName, label) {
     break;
   }
 
-  completeness.data.datasets[0].tree = tree;
+  tree.sort(
+    function(a, b){
+      return b.Completeness - a.Completeness
+      });
+  completeness.data.datasets[0].data = tree;
   completeness.update();
 }
 
