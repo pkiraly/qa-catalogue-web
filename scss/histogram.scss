@@ -1,0 +1,21 @@
+table#criteria-list td.id {
+  text-align: right;
+  padding-right: 5px;
+}
+.bar {
+  fill: steelblue;
+}
+.axis {
+  text {
+    font: 10px sans-serif;
+  }
+  path,
+  line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+}
+.x.axis path {
+  display: none;
+}
