@@ -535,4 +535,58 @@ class Completeness extends BaseTab {
       unset($record->tag);
     }
   }
+
+  public static function getShelfReadyFileNames($filepath) {
+    $names = [];
+
+    $handle = fopen($filepath, "r");
+    if ($handle) {
+      while (($line = fgets($handle)) !== false) {
+        $lineNumber++;
+        $values = str_getcsv($line);
+        if ($lineNumber == 1) {
+          $header = $values;
+        } else {
+          if (count($header) != count($values)) {
+            error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
+              $elementsFile, $lineNumber, count($header), count($values)));
+            error_log($line);
+          }
+          $entry = (object)array_combine($header, $values);
+          $names[] = $entry->name;
+        }
+      }
+    }
+    return $names;
+  }
+
+  public static function getShelfReadyCompleteness($filepaths) {
+    $data = [];
+    foreach ($filepaths as $filepath) {
+      $handle = fopen($filepath, "r");
+      if ($handle) {
+        $lineNumber = 0;
+        while (($line = fgets($handle)) !== false) {
+          $lineNumber++;
+          $values = str_getcsv($line);
+          if ($lineNumber == 1) {
+            $header = $values;
+          } else {
+            if (count($header) != count($values)) {
+              error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
+              $elementsFile, $lineNumber, count($header), count($values)));
+              error_log($line);
+            }
+            $entry = (object)array_combine($header, $values);
+            
+            if (!isset($data[$entry->count])){
+              $data[$entry->count] = 0;
+            }
+            $data[$entry->count] = $data[$entry->count] + $entry->frequency;
+          }
+        }
+      }
+    }
+    return $data;
+  }
 }
