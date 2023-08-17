@@ -1,4 +1,5 @@
 const obj = JSON.parse("{$fields|escape:javascript}");
+const shelf_ready_data = JSON.parse("{$shelf_ready_completeness|escape:javascript}");
 
 const issuesGraphContext = document.getElementById('issuesGraph');
 new Chart(issuesGraphContext, {
@@ -93,30 +94,6 @@ updateCompletenessContent(0, "", "");
 
 document.getElementById("completenessBack").addEventListener('click', onCompletenessBack);
 
-const totalCompletensGraphContext = document.getElementById('totalCompletenessGraph');
-
-var totalCompleteness = new Chart(totalCompletensGraphContext, {
-  type: 'doughnut',
-  data: {
-      labels: ['Without issues', 'With undefined fields', 'With issues'],
-      datasets: [{
-          label: '# of Records',
-          data: [
-            1,2,3
-          ],
-          backgroundColor: ["#37ba00", "#FFFF00", "#FF4136"],
-          borderWidth: 1
-      }]
-  },
-  options: {
-    scales: {
-      y: {
-        beginAtZero: true
-      }
-    },
-    responsive: true
-  }
-});
 
 function onCompletenessClicked(event, array) {
   const level = array[0].element.$context.raw.level;
@@ -189,14 +166,50 @@ function updateCompletenessContent(level, packageName, label) {
   completeness.update();
 }
 
-function colorFromRaw(ctx) {
-  if (ctx.type !== 'data') {
-    return 'transparent';
+var boothShelfReadyContext = document.getElementById("boothShelfReady");
+{literal}
+const boothShelfReadyData = Object.keys(shelf_ready_data).map((i) => ({x: i, y: shelf_ready_data[i]}));
+{/literal}
+var previous_ticks = {$shelf_ready_min};
+var previous_tooltip = {$shelf_ready_min};
+var boothShelfReadyChart = new Chart(boothShelfReadyContext, {
+  type: 'bar',
+  data: {
+      datasets: [{
+          label: 'Records',
+          data: boothShelfReadyData,
+          backgroundColor: '#37ba00',
+          borderWidth: 1,
+          barPercentage: 1,
+          categoryPercentage: 1
+      }]
+  },
+  options: {
+    scales: {
+      x: {
+        type: 'linear',
+        ticks: {
+          stepSize: 1,
+          callback: (i,a) => {
+            const retval = previous_ticks + ' - ' + i;
+            previous_ticks++;
+            return retval;
+          }
+        },
+        offset: true,
+        grid: {
+        	display: false
+        },
+        border: {
+          color: 'blue'
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: false,
+      }
+    },
+    aspectRatio: 1
   }
-  const value = ctx.raw.v;
-  let alpha = (1 + Math.log(value)) / 5;
-  const color = '#37ba00';
-  return Chart.helpers.color(color)
-    .alpha(alpha)
-    .rgbString();
-}
+});

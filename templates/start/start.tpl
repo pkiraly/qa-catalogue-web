@@ -28,6 +28,8 @@
           <canvas class="graph" id="completenessGraph"></canvas>
         </div>
       </div>
+
+      {include 'start/grid-item.tpl' id='boothShelfReady' title='Booth shelf ready' ref="?tab=shelf-ready-completeness{$generalParams}"}
       
 
     </div>
