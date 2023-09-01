@@ -23,7 +23,7 @@
           <a class='btn' id="completenessBack" style='float:right'>❮</a>
         </div>
         <div class='grid-item-content'>
-          <canvas class="graph" id="completenessGraph" height="100%"></canvas>
+          <div class="graph" id="completenessGraph"></div>
         </div>
       </div>
 
