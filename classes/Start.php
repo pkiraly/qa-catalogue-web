@@ -101,25 +101,4 @@ class Start extends BaseTab {
     }
     return $records;
   }
-
-  public static function createHistogram($data, $bins) {
-    $keys = array_keys($data);
-    $min = min($keys);
-    $max = max($keys);
-    $delta = $max - $min;
-    $bin_size = $delta / $bins;
-
-    $output = [];
-
-    for ($current_bin = $min + $bin_size; $current_bin <= $max; $current_bin += $bin_size) {
-      $output[(string)$current_bin] = 0;
-      foreach ($data as $key=>$value) {
-        if ($key <= $current_bin && $key >= $current_bin - $bin_size) {
-          $output[(string)$current_bin] = $output[(string)$current_bin] + $value;
-        }
-      }
-    }
-
-    return $output;
-  }
 }
