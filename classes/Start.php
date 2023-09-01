@@ -5,6 +5,7 @@ require_once 'Completeness.php';
 require_once 'AddedEntry.php';
 require_once 'Authorities.php';
 require_once 'Classifications.php';
+require_once 'ShelfReadyCompleteness.php';
 
 class Start extends BaseTab {
 
@@ -19,15 +20,9 @@ class Start extends BaseTab {
     $smarty->assign('fields', json_encode(Start::readCompleteness('all', $this->getFilePath('marc-elements.csv'), $this->getFilePath('packages.csv'))));
     $smarty->assign('authorities', Authorities::readByRecords($this->getFilePath('authorities-by-records.csv'), $this->count));
     $smarty->assign('classifications', Classifications::readByRecords($this->getFilePath('classifications-by-records.csv'), $this->count));
-    
-    $suffixes = Completeness::getShelfReadyFileNames($this->getFilePath('shelf-ready-completeness-fields.csv'));
-    $files = [];
-    foreach ($suffixes as $key => $suffix) {
-      $files[] = $this->getFilePath("shelf-ready-completeness-histogram-" . $suffix . ".csv");
-    }
 
-    $shelf_ready_completeness = Completeness::getShelfReadyCompleteness($files);
-    $smarty->assign('shelf_ready_completeness', json_encode(Start::createHistogram($shelf_ready_completeness, 9)));
+    $shelf_ready_completeness = ShelfReadyCompleteness::getHistogram($this->getFilePath("shelf-ready-completeness-histogram-total.csv"));
+    $smarty->assign('shelf_ready_completeness', json_encode($shelf_ready_completeness));
     $smarty->assign('shelf_ready_min', min(array_keys($shelf_ready_completeness)));
   }
 
@@ -111,16 +106,16 @@ class Start extends BaseTab {
     $keys = array_keys($data);
     $min = min($keys);
     $max = max($keys);
-    $delta = $max - $current_bin;
+    $delta = $max - $min;
     $bin_size = $delta / $bins;
 
     $output = [];
 
     for ($current_bin = $min + $bin_size; $current_bin <= $max; $current_bin += $bin_size) {
-      $output[$current_bin] = 0;
+      $output[(string)$current_bin] = 0;
       foreach ($data as $key=>$value) {
-        if ($key <= $current_bin) {
-          $output[$current_bin] = $output[$current_bin] + $value;
+        if ($key <= $current_bin && $key >= $current_bin - $bin_size) {
+          $output[(string)$current_bin] = $output[(string)$current_bin] + $value;
         }
       }
     }

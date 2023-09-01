@@ -22,4 +22,29 @@ class ShelfReadyCompleteness extends BaseTab {
     return $fields;
   }
 
+  public static function getHistogram($filepath) {
+    $data = [];
+    $handle = fopen($filepath, "r");
+    if ($handle) {
+      $lineNumber = 0;
+      while (($line = fgets($handle)) !== false) {
+        $lineNumber++;
+        $values = str_getcsv($line);
+        if ($lineNumber == 1) {
+          $header = $values;
+        } else {
+          if (count($header) != count($values)) {
+            error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
+            $elementsFile, $lineNumber, count($header), count($values)));
+            error_log($line);
+          }
+          $entry = (object)array_combine($header, $values);
+          
+          $data[$entry->count] = $entry->frequency;
+        }
+      }
+    }
+    return $data;
+  }
+
 }
