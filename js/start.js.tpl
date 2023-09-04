@@ -58,6 +58,7 @@ const completensGraphContext = document.getElementById('completenessGraph');
 
 var completeness = new Chart(completensGraphContext, {
   type: 'bar',
+  maintainAspectRatio: false,
   data: {
     datasets: [
       {
@@ -71,23 +72,27 @@ var completeness = new Chart(completensGraphContext, {
     ],
   },
   options: {
+    indexAxis: 'y',
     plugins: {
       legend: {
         display: false
       }
     },
     scales: {
-      x: {
-        display: false
+      y: {
+        ticks: {
+          autoSkip: false,
+        }
       }
     },
     onClick: onCompletenessClicked,
     responsive: true,
     ratio: 1,
     parsing: {
-      xAxisKey: 'label',
-      yAxisKey: 'Completeness'
-    }
+      yAxisKey: 'label',
+      xAxisKey: 'Completeness'
+    },
+
   }
 });
 
