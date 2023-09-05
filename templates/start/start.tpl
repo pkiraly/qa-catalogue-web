@@ -42,7 +42,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-treemap/dist/chartjs-chart-treemap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/ag-charts-community@8.1.0/dist/ag-charts-community.min.js"></script>
     <script language="JavaScript" type="text/javascript">
       {include file="js/start.js.tpl"}

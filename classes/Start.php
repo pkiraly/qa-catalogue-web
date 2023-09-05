@@ -23,11 +23,12 @@ class Start extends BaseTab {
 
     $shelf_ready_completeness = ShelfReadyCompleteness::getHistogram($this->getFilePath("shelf-ready-completeness-histogram-total.csv"));
     $smarty->assign('shelf_ready_completeness', json_encode($shelf_ready_completeness));
-    $smarty->assign('shelf_ready_min', min(array_keys($shelf_ready_completeness)));
   }
 
   public static function readCompleteness($type, $elementsFile, $packageFile, $groupId = null) {
     $records = [];
+    $idDictionary = [];
+
     if (file_exists($elementsFile)) {
       error_log('completeness file: ' . $elementsFile);
       $start = microtime(true);
@@ -49,14 +50,23 @@ class Start extends BaseTab {
             }
             $record = array_combine($header, $values);
 
-            if (isset($record->documenttype) && $record->documenttype != $type)
+            if (isset($record["documenttype"]) && $record["documenttype"] != $type)
               continue;
 
             if (!is_null($groupId) && $record->groupId != $groupId)
               continue;
 
-            $records[$record["package"]][$record["tag"]][$record["subfield"]] = (object) [
+            $path = explode("$", $record["path"], 2);
+            if (count($path) == 1) {
+              $path[1] = "";
+              $name = $record["tag"];
+            } else {
+              $name = $record["subfield"];
+            }
+
+            $records[$record["packageid"]][$path[0]]['$'.$path[1]] = (object) [
               'count' => $record["number-of-record"],
+              'name' => $name
             ];
           }
         }
@@ -82,14 +92,15 @@ class Start extends BaseTab {
             }
             $record = array_combine($header, $values);
 
-            if (isset($record->documenttype) && $record->documenttype != $type)
+            if (isset($record["documenttype"]) && $record["documenttype"] != $type)
               continue;
 
             if (!is_null($groupId) && $record->groupId != $groupId)
               continue;
 
-            $records[$record["label"]][""][""] = (object) [
+            $records[$record["packageid"]][""][""] = (object) [
               'count' => $record["count"],
+              'name' => $record["label"]
             ];
           }
         }
