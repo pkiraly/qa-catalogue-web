@@ -76,12 +76,30 @@ var completeness = new Chart(completensGraphContext, {
     plugins: {
       legend: {
         display: false
-      }
+      },
+      tooltip: {
+        mode: 'index',
+        axis: 'y',
+        intersect: false,
+        callbacks: {
+          title: args => {
+            return args[0].dataset.data[args[0].dataIndex].name;
+          }
+        },
+      },
     },
     scales: {
       y: {
         ticks: {
           autoSkip: false,
+        }
+      },
+      x: {
+        ticks: {
+          format: {
+            notation: "compact",
+            compactDisplay: "short",
+          }
         }
       }
     },
@@ -92,7 +110,6 @@ var completeness = new Chart(completensGraphContext, {
       yAxisKey: 'label',
       xAxisKey: 'Completeness'
     },
-
   }
 });
 
@@ -131,7 +148,8 @@ function updateCompletenessContent(level, packageName, label) {
                 label: entry[0],
                 packageName: entry[0],
                 level: 0,
-                Completeness: entry[1][""][""].count
+                name: entry[1][""][""].name,
+                Completeness: Number(entry[1][""][""].count),
               }
             });
     break;
@@ -145,7 +163,8 @@ function updateCompletenessContent(level, packageName, label) {
                 label: entry[0],
                 packageName: packageName,
                 level: 1,
-                Completeness: entry[1][""].count
+                name: entry[1]["$"].name,
+                Completeness: Number(entry[1]["$"].count),
               }
             })
     break;
@@ -158,6 +177,7 @@ function updateCompletenessContent(level, packageName, label) {
                 label: entry[0],
                 packageName: packageName,
                 level: 2,
+                name: entry[1].name,
                 Completeness: Number(entry[1].count),
               }
             });
