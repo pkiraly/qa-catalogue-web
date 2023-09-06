@@ -122,24 +122,24 @@ document.getElementById("completenessBack").addEventListener('click', onComplete
 
 function onCompletenessClicked(event, array) {
   const level = array[0].element.$context.raw.level;
-  const packageName = array[0].element.$context.raw.packageName;
+  const packageId = array[0].element.$context.raw.packageId;
   const label = array[0].element.$context.raw.label;
 
-  if (level < 2 && level >= 0) {
-    updateCompletenessContent(level + 1, packageName, label);
+  if (level < 2 && level >= 0 && packageId != '0') {
+    updateCompletenessContent(level + 1, packageId, label);
   }
 }
 
 function onCompletenessBack() {
   const level = completeness.data.datasets[0].data[0].level
-  const packageName = completeness.data.datasets[0].data[0].packageName
+  const packageName = completeness.data.datasets[0].data[0].packageId
 
   if (level <= 2 && level > 0) {
     updateCompletenessContent(level - 1, packageName, "");
   }
 }
 
-function updateCompletenessContent(level, packageName, label) {
+function updateCompletenessContent(level, packageId, label) {
 
   var tree = null;
 
@@ -148,7 +148,7 @@ function updateCompletenessContent(level, packageName, label) {
       tree = Object.entries(obj).map(function(entry) {
               return {
                 label: entry[0],
-                packageName: entry[0],
+                packageId: entry[0],
                 level: 0,
                 name: entry[0] + ": " + entry[1][""][""].name,
                 Completeness: Number(entry[1][""][""].count),
@@ -158,28 +158,28 @@ function updateCompletenessContent(level, packageName, label) {
 
     case 1:
       
-      tree = Object.entries(obj[packageName]).filter(function(entry) { // Remove summary entries
+      tree = Object.entries(obj[packageId]).filter(function(entry) { // Remove summary entries
               return entry[0] !== "";
             }).map(function(entry) {
               return {
                 label: entry[0],
-                packageName: packageName,
+                packageId: packageId,
                 level: 1,
-                name: packageName + "-" + entry[0] + ": " + entry[1]["$"].name,
+                name: packageId + "-" + entry[0] + ": " + entry[1]["$"].name,
                 Completeness: Number(entry[1]["$"].count),
               }
             })
     break;
 
     case 2:
-      tree = Object.entries(obj[packageName][label]).filter(function(entry) { // Remove summary entries
+      tree = Object.entries(obj[packageId][label]).filter(function(entry) { // Remove summary entries
               return entry[0] !== "$";
             }).map(function(entry) {
               return {
                 label: entry[0],
-                packageName: packageName,
+                packageId: packageId,
                 level: 2,
-                name: packageName + "-" + label + entry[0] + ": " + entry[1].name,
+                name: packageId + "-" + label + entry[0] + ": " + entry[1].name,
                 Completeness: Number(entry[1].count),
               }
             });
