@@ -148,7 +148,7 @@ function updateCompletenessContent(level, packageName, label) {
                 label: entry[0],
                 packageName: entry[0],
                 level: 0,
-                name: entry[1][""][""].name,
+                name: entry[0] + ": " + entry[1][""][""].name,
                 Completeness: Number(entry[1][""][""].count),
               }
             });
@@ -163,7 +163,7 @@ function updateCompletenessContent(level, packageName, label) {
                 label: entry[0],
                 packageName: packageName,
                 level: 1,
-                name: entry[1]["$"].name,
+                name: packageName + "-" + entry[0] + ": " + entry[1]["$"].name,
                 Completeness: Number(entry[1]["$"].count),
               }
             })
@@ -171,13 +171,13 @@ function updateCompletenessContent(level, packageName, label) {
 
     case 2:
       tree = Object.entries(obj[packageName][label]).filter(function(entry) { // Remove summary entries
-              return entry[0] !== "";
+              return entry[0] !== "$";
             }).map(function(entry) {
               return {
                 label: entry[0],
                 packageName: packageName,
                 level: 2,
-                name: entry[1].name,
+                name: packageName + "-" + label + entry[0] + ": " + entry[1].name,
                 Completeness: Number(entry[1].count),
               }
             });
