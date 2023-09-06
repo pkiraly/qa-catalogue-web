@@ -73,14 +73,16 @@ var completeness = new Chart(completensGraphContext, {
   },
   options: {
     indexAxis: 'y',
+    interaction: {
+      mode: 'index',
+      axis: 'y',
+      intersect: false,
+    },
     plugins: {
       legend: {
         display: false
       },
       tooltip: {
-        mode: 'index',
-        axis: 'y',
-        intersect: false,
         callbacks: {
           title: args => {
             return args[0].dataset.data[args[0].dataIndex].name;
