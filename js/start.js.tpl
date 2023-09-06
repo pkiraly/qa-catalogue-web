@@ -230,6 +230,12 @@ const options = {
       title: { text: 'No. Records' },
     },
   ],
+  tooltip: {
+    position: {
+      type: 'node',
+    },
+    range: 'nearest',
+  },
 };
 
 agCharts.AgChart.create(options);
