@@ -22,7 +22,7 @@ const authoritiesNameGraphContext = document.getElementById('authoritiesNameGrap
 new Chart(authoritiesNameGraphContext, {
     type: 'doughnut',
     data: {
-        labels: ['Without authority name', 'With authority name'],
+        labels: ['With authority name', 'Without authority name'],
         datasets: [{
             label: '# of Records',
             data: ['{$authorities->withClassification->count|escape:javascript}', '{$authorities->withoutClassification->count|escape:javascript}'],
@@ -39,7 +39,7 @@ const authoritiesGraphContext = document.getElementById('authoritiesGraph');
 new Chart(authoritiesGraphContext, {
     type: 'doughnut',
     data: {
-        labels: ['Without authorities', 'With authorities'],
+        labels: ['With subjects', 'Without subjects'],
         datasets: [{
             label: '# of Records',
             data: ['{$classifications->withClassification->count|escape:javascript}', '{$classifications->withoutClassification->count|escape:javascript}'],
