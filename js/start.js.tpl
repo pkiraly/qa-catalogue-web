@@ -142,6 +142,7 @@ function onCompletenessBack() {
 function updateCompletenessContent(level, packageId, label) {
 
   var tree = null;
+  var location = "";
 
   switch(level) {
     case 0:
@@ -154,6 +155,7 @@ function updateCompletenessContent(level, packageId, label) {
                 Completeness: Number(entry[1][""][""].count),
               }
             });
+      location = "";
     break;
 
     case 1:
@@ -169,6 +171,8 @@ function updateCompletenessContent(level, packageId, label) {
                 Completeness: Number(entry[1]["$"].count),
               }
             })
+      console.debug(obj[packageId])
+      location = obj[packageId][""][""].name;
     break;
 
     case 2:
@@ -183,6 +187,7 @@ function updateCompletenessContent(level, packageId, label) {
                 Completeness: Number(entry[1].count),
               }
             });
+            location = obj[packageId][label]["$"].name;
     break;
   }
 
@@ -191,13 +196,13 @@ function updateCompletenessContent(level, packageId, label) {
       return b.Completeness - a.Completeness
       });
   completeness.data.datasets[0].data = tree;
+  document.getElementById("location").innerHTML = location;
   completeness.update();
 }
 
 const boothShelfReadyContext = document.getElementById('boothShelfReady');
 {literal}
 const boothShelfReady = Object.keys(shelf_ready_data).map((i) => ({"Score": parseFloat(i), "Number of Records": parseInt(shelf_ready_data[i])}));
-console.debug(boothShelfReady);
 {/literal}
 
 const options = {

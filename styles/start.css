@@ -17,3 +17,8 @@
 .grid-item-title {
   background-color: var(--highlight-color);
 }
+
+.label {
+  padding-top: .375rem;
+  padding-bottom: .375rem;
+}
