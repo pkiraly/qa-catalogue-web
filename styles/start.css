@@ -18,7 +18,16 @@
   background-color: var(--highlight-color);
 }
 
-.label {
+.trunc-label {
   padding-top: .375rem;
   padding-bottom: .375rem;
+  flex:1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.trunc-container {
+  display: inline-flex;
+  max-width: 100%;
 }
