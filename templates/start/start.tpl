@@ -21,6 +21,7 @@
         <div class='grid-item-title'>
           <a class='grid-item-title-text' href='?tab=completeness{$generalParams}'>Completeness</a>
           <a class='btn' id="completenessBack" style='float:right'>❮</a>
+          <a class='label' id="location" style='float:right;font-size:10pt;padding-top:.7rem'></a>
         </div>
         <div class='grid-item-content'>
           <canvas class="graph" id="completenessGraph"></canvas>
