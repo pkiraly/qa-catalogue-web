@@ -62,11 +62,15 @@ class Data extends Facetable {
   }
 
   public function prepareData(Smarty &$smarty) {
-    if ($this->action == 'download') {
-      $this->downloadAction();
-    } else {
-      parent::prepareData($smarty);
-      $this->searchAction($smarty);
+    try {
+      if ($this->action == 'download') {
+        $this->downloadAction();
+      } else {
+        parent::prepareData($smarty);
+        $this->searchAction($smarty);
+     }
+    } catch(Exception $e) {
+      $smarty->assign('error', $e->getMessage());
     }
   }
 
@@ -335,22 +339,23 @@ class Data extends Facetable {
     $smarty->assign('offset', $this->offset);
     if ($this->grouped)
       $smarty->assign('groupId', $this->groupId);
-
-    $solrParams = $this->buildParameters();
-    $smarty->assign('solrUrl', join('&', $solrParams));
-    $response = $this->getSolrResponse($solrParams);
     if (is_null($this->numFound)) {
       $this->numFound = $response->numFound;
     }
     $smarty->assign('numFound', $this->numFound);
-    $smarty->assign('docs', $response->docs);
-    $smarty->assign('facets', $response->facets);
     $smarty->assign('itemsPerPage', $this->getItemPerPage());
     $smarty->assign('prevNextLinks', $this->createPrevNextLinks($this->numFound));
     $smarty->assign('basicFacetParams', $this->getBasicUrl());
     $smarty->assign('ajaxFacet', $this->ajaxFacet);
 
     $smarty->assign('schemaType', $this->catalogue->getSchemaType());
+
+    // The following may throw an exception when solr is not reachable
+    $solrParams = $this->buildParameters();
+    $smarty->assign('solrUrl', join('&', $solrParams));
+    $response = $this->getSolrResponse($solrParams);
+    $smarty->assign('docs', $response->docs);
+    $smarty->assign('facets', $response->facets);
   }
 
   /**
