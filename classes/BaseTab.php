@@ -176,14 +176,13 @@ abstract class BaseTab implements Tab {
     $solrPath = $this->getIndexName();
     $url = $this->getMainSolrEndpoint() . $solrPath . '/select?' . join('&', $this->encodeSolrParams($params));
     $solrResponse = json_decode(file_get_contents($url));
-    $response = (object)[
+    if (!$solrResponse) throw new Exception("Solr request failed");
+    return (object)[
       'numFound' => $solrResponse->response->numFound,
       'docs' => $solrResponse->response->docs,
       'facets' => (isset($solrResponse->facet_counts) ? $solrResponse->facet_counts->facet_fields : []),
       'params' => $solrResponse->responseHeader->params,
     ];
-
-    return $response;
   }
 
   protected function hasValidationIndex() {
@@ -243,8 +242,11 @@ abstract class BaseTab implements Tab {
       foreach ($filters as $filter)
         $parameters[] = 'fq=' . $filter;
 
-    $response = $this->getSolrResponse($parameters);
-    return $response->facets;
+    try {
+        return $this->getSolrResponse($parameters)->facets;
+    } catch(Exception $e) {
+        // TODO: don't catch here but at caller and set error response
+    }
   }
 
   protected function countFacets($facet, $query, $termFilter = '', $filters = []) {
@@ -281,8 +283,11 @@ abstract class BaseTab implements Tab {
       foreach ($filters as $filter)
         $parameters[] = 'fq=' . $filter;
 
-    $response = $this->getSolrResponse($parameters);
-    return $response->facets;
+    try {
+        return $this->getSolrResponse($parameters)->facets;
+    } catch(Exception $e) {
+        // TODO: don't catch here but at caller and set error response
+    }
   }
 
   private function encodeSolrParams($parameters) {

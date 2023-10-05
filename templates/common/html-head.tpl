@@ -35,5 +35,10 @@
   <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
 <body>
+{if $error}
+<div class="container" style="color:#f00;background:#fcc;padding:1em;">
+  <b>ERROR:</b> {$error}
+</div>
+{/if}
 {assign var=file value="$templates/header.$lang.tpl"}
 {if file_exists($file)}{include $file}{/if}
