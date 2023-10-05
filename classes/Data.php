@@ -67,6 +67,7 @@ class Data extends Facetable {
         $this->downloadAction();
       } else {
         parent::prepareData($smarty);
+        $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
         $this->searchAction($smarty);
      }
     } catch(Exception $e) {

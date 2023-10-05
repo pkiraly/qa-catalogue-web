@@ -14,6 +14,7 @@ class Download extends BaseTab {
       }
       if ($this->catalogue->getSchemaType() == 'PICA') {
         parent::readAnalysisParameters('validation.params.json');
+        $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
         if (!is_null($this->analysisParameters)) {
           $schemaFile = isset($this->analysisParameters->picaSchemaFile)
             ? $this->analysisParameters->picaSchemaFile

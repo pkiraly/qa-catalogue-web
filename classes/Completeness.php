@@ -50,6 +50,7 @@ class Completeness extends BaseTab {
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
     parent::readAnalysisParameters('completeness.params.json');
+    $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
     $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
     $smarty->assign('grouped', $this->grouped);
     if ($this->grouped)
@@ -92,7 +93,6 @@ class Completeness extends BaseTab {
       $smarty->assign('sort', $this->sort);
       $smarty->assign('groupFilter', $this->getGroupFilter());
       $smarty->assign('groupQuery', $this->getGroupQuery());
-
     } else if ($this->action == 'ajaxGroups') {
       $term = getOrDefault('term', '');
       if ($term == '' || $term == ' ')

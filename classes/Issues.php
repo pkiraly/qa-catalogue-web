@@ -24,6 +24,7 @@ class Issues extends BaseTab {
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
     parent::readAnalysisParameters('validation.params.json');
+    $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
     if ($this->versioning) {
       $versions = $this->getVersions();
       $smarty->assign('versions', $versions);

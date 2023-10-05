@@ -7,6 +7,7 @@ class Shacl4Bib extends BaseTab {
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
     parent::readAnalysisParameters(Shacl4Bib::$paramsFile);
+    $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
     $schemaFile = $this->analysisParameters->shaclConfigurationFile;
     $schemaFile = substr($schemaFile, strrpos($schemaFile, '/') + 1);
     $schemaFilePath = $this->getFilePath($schemaFile);

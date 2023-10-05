@@ -21,6 +21,8 @@ msgid "last data update"
 msgstr "Stand"
 msgid "number of records"
 msgstr "Datensätze"
+msgid "timestamp of analysis"
+msgstr "Zeitstempel der Analyse"
 
 # navigation
 msgid "Data"

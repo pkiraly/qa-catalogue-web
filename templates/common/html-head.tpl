@@ -35,7 +35,7 @@
   <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
 <body>
-{if $error}
+{if isset($error)}
 <div class="container" style="color:#f00;background:#fcc;padding:1em;">
   <b>ERROR:</b> {$error}
 </div>
