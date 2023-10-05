@@ -74,7 +74,7 @@ class Collocations extends BaseTab {
 
   private function searchFacets($params) {
     $solrPath = $this->getIndexName();
-    $url = 'http://localhost:8983/solr/' . $solrPath . '/select?' . $params;
+    $url = $this->getMainSolrEndpoint() . $solrPath . '/select?' . $params;
     $response = json_decode(file_get_contents($url));
     if ($response && isset($response->facet_counts)) {
         return $response->facet_counts->facet_fields;

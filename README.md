@@ -110,6 +110,13 @@ Configuration parameters:
 - `display-network`: show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
 - `display-shacl`: show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
 - `templates`: directory with additional Smarty templates for [customization](#customization).
+- `mainSolrEndpoint`, `mainSolrEndpoint[<catalogue>]`: the URL of the main Solr endpoint. Default value: 
+  `http://localhost:8983/solr/`. In multi-tenant mode you can specify it for a particular catalogue with
+ `mainSolrEndpoint[<catalogue>]`.
+- `solrEndpoint4ValidationResults`, `solrEndpoint4ValidationResults[<catalogue>]`: the URL of the Solr core that is 
+  used for storing the results of validation. Usually this index is merged to the main core, so this property is needed
+  on the special case when the validation is not merged. Default value: `http://localhost:8983/solr/`. 
+  In multi-tenant mode you can specify it for a particular catalogue with `mainSolrEndpoint[<catalogue>]`.
 
 The following configuration parameters only have effect for generic catalogs (when `catalogue` is not set)
 

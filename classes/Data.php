@@ -410,8 +410,8 @@ class Data extends Facetable {
     if (!is_null($groupId))
       $query .= ' AND groupId_is:' . $groupId;
 
-    $url = sprintf('http://localhost:8983/solr/%s/select?q=%s&fl=id&start=%d&rows=%d',
-                    $core, urlencode($query), $start, $rows);
+    $url = sprintf('%s/%s/select?q=%s&fl=id&start=%d&rows=%d',
+      $this->getSolrEndpoint($core), $core, urlencode($query), $start, $rows);
     $response = json_decode(file_get_contents($url));
     $this->numFound = $response->response->numFound;
     $recordIds = [];

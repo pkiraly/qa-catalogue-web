@@ -140,7 +140,7 @@ abstract class BaseTab implements Tab {
   protected function getSolrFields() {
     if (!isset($this->solrFields)) {
       $solrPath = $this->getIndexName();
-      $baseUrl = 'http://localhost:8983/solr/' . $solrPath; // $this->db;
+      $baseUrl = $this->getMainSolrEndpoint() . $solrPath; // $this->db;
       $url = $baseUrl . '/select/?q=*:*&wt=csv&rows=0';
       $all_fields = file_get_contents($url);
       $this->solrFields = explode(',', $all_fields);
@@ -148,9 +148,33 @@ abstract class BaseTab implements Tab {
     return $this->solrFields;
   }
 
+  protected function getMainSolrEndpoint() {
+    if (isset($this->configuration['mainSolrEndpoint'])) {
+      if (isset($this->configuration['mainSolrEndpoint'][$this->db]))
+        $mainSolrEndpoint = $this->configuration['mainSolrEndpoint'][$this->db];
+      else
+        $mainSolrEndpoint = $this->configuration['mainSolrEndpoint'];
+    } else {
+      $mainSolrEndpoint =  'http://localhost:8983/solr/';
+    }
+    return $mainSolrEndpoint;
+  }
+
+  protected function getSolrEndpoint4ValidationResults() {
+    if (isset($this->configuration['solrEndpoint4ValidationResults'])) {
+      if (isset($this->configuration['solrEndpoint4ValidationResults'][$this->db]))
+        $solrEndpoint4ValidationResults = $this->configuration['solrEndpoint4ValidationResults'][$this->db];
+      else
+        $solrEndpoint4ValidationResults = $this->configuration['solrEndpoint4ValidationResults'];
+    } else {
+      $solrEndpoint4ValidationResults =  'http://localhost:8983/solr/';
+    }
+    return $solrEndpoint4ValidationResults;
+  }
+
   protected function getSolrResponse($params) {
     $solrPath = $this->getIndexName();
-    $url = 'http://localhost:8983/solr/' . $solrPath . '/select?' . join('&', $this->encodeSolrParams($params));
+    $url = $this->getMainSolrEndpoint() . $solrPath . '/select?' . join('&', $this->encodeSolrParams($params));
     $solrResponse = json_decode(file_get_contents($url));
     $response = (object)[
       'numFound' => $solrResponse->response->numFound,
@@ -166,8 +190,12 @@ abstract class BaseTab implements Tab {
     return $this->isCoreAvailable($this->getIndexName() . '_validation');
   }
 
-  protected function isCoreAvailable($core) {
-    $url = 'http://localhost:8983/solr/' . $core . '/admin/ping';
+  /**
+   * @param $core The name of the Solr core
+   * @return bool
+   */
+  protected function isCoreAvailable($core): bool {
+    $url = $this->getSolrEndpoint($core) . $core . '/admin/ping';
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -186,6 +214,12 @@ abstract class BaseTab implements Tab {
       return ($response->status == 'OK');
     }
     return false;
+  }
+
+  protected function getSolrEndpoint($core): string {
+    return preg_match('/validation$/', $core)
+      ? $this->getSolrEndpoint4ValidationResults()
+      : $this->getMainSolrEndpoint();
   }
 
   protected function getFacets($facet, $query, $limit, $offset = 0, $termFilter = '', $filters = []) {
