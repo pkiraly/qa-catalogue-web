@@ -6,10 +6,11 @@
     {if $count > 0}
       &nbsp; &nbsp; {_('number of records')}: <strong>{$count|number_format}</strong>
     {/if}
+    {if isset($lastUpdate) && $lastUpdate != ''}
+      &nbsp; &nbsp; {_('last data update')}: <strong>{$lastUpdate}</strong>
+    {/if}
     {if isset($analysisTimestamp) && !empty($analysisTimestamp)}
       &nbsp; &nbsp; {_('timestamp of analysis')}: <strong>{$analysisTimestamp}</strong>
-    {elseif isset($lastUpdate) && $lastUpdate != ''}
-      &nbsp; &nbsp; {_('last data update')}: <strong>{$lastUpdate}</strong>
     {/if}
   </span>
   </div>
