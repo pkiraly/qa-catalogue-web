@@ -32,7 +32,8 @@
       return marcBaseUrl + link;
     }
   </script>
-  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <!-- script src="https://d3js.org/d3.v5.min.js"></script -->
+  <script src="./js/external-libs/d3.v5.min.js"></script>
 </head>
 <body>
 {if isset($error)}
