@@ -135,8 +135,10 @@ class Data extends Facetable {
 
   private function buildFacetParameters() {
     $facetParameters = [];
-    foreach ($this->getSelectedFacets() as $facet)
-      $facetParameters[] = 'facet.field=' . $facet;
+    $selectedFacets = $this->getSelectedFacets();
+    if (!is_null($selectedFacets))
+      foreach ($selectedFacets as $facet)
+        $facetParameters[] = 'facet.field=' . $facet;
 
     if (count($facetParameters) > 0)
       $facetParameters[] = 'facet.mincount=1';
@@ -332,6 +334,7 @@ class Data extends Facetable {
    * @return void
    */
   private function searchAction(Smarty $smarty): void {
+    $smarty->assign('showAdvancedSearchForm', $this->configuration['showAdvancedSearchForm'] ?? false);
     $smarty->assign('query', $this->query);
     $smarty->assign('start', $this->start);
     $smarty->assign('rows', $this->rows);
@@ -340,12 +343,7 @@ class Data extends Facetable {
     $smarty->assign('offset', $this->offset);
     if ($this->grouped)
       $smarty->assign('groupId', $this->groupId);
-    if (is_null($this->numFound)) {
-      $this->numFound = $response->numFound;
-    }
-    $smarty->assign('numFound', $this->numFound);
     $smarty->assign('itemsPerPage', $this->getItemPerPage());
-    $smarty->assign('prevNextLinks', $this->createPrevNextLinks($this->numFound));
     $smarty->assign('basicFacetParams', $this->getBasicUrl());
     $smarty->assign('ajaxFacet', $this->ajaxFacet);
 
@@ -355,6 +353,11 @@ class Data extends Facetable {
     $solrParams = $this->buildParameters();
     $smarty->assign('solrUrl', join('&', $solrParams));
     $response = $this->getSolrResponse($solrParams);
+    if (is_null($this->numFound)) {
+      $this->numFound = $response->numFound;
+    }
+    $smarty->assign('numFound', $this->numFound);
+    $smarty->assign('prevNextLinks', $this->createPrevNextLinks($this->numFound));
     $smarty->assign('docs', $response->docs);
     $smarty->assign('facets', $response->facets);
   }

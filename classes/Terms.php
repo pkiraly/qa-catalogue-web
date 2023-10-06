@@ -12,6 +12,11 @@ class Terms extends Facetable {
   public $groups;
   public $currentGroup;
   public $params;
+  /**
+   * The field type variant (tokenized or phrase)
+   * @var mixed|null
+   */
+  private $variant;
 
   public function __construct($configuration, $db) {
     parent::__construct($configuration, $db);
@@ -31,6 +36,7 @@ class Terms extends Facetable {
     $this->ajaxFacet = getOrDefault('ajax', 0, [0, 1]);
     $this->facetLimit = getOrDefault('limit', 100, [10, 25, 50, 100]);
     $this->action = getOrDefault('action', 'list', ['list', 'download', 'fields', 'term-count']);
+    $this->variant = getOrDefault('variant', 'phrase', ['phrase', 'tokenized']);
 
     $this->params = [
       'facet' => $this->facet,
@@ -211,9 +217,14 @@ class Terms extends Facetable {
     }
     $fields = [];
     foreach ($allFields as $field) {
-      if ($term == ''
-        || strpos(strtoupper($field->label), strtoupper($term)) !== false
-        || strpos(strtoupper($field->value), strtoupper($term)) !== false)
+      if (
+             ($term == ''
+          || strpos(strtoupper($field->label), strtoupper($term)) !== false
+          || strpos(strtoupper($field->value), strtoupper($term)) !== false)
+        && (
+             ($this->variant == 'tokenized' && preg_match('/_txt$/', $field->value))
+          || ($this->variant == 'phrase'    && preg_match('/_ss$/', $field->value)))
+      )
         $fields[] = ['label' => $field->label, 'value' => $field->value];
     }
     print json_encode($fields);
