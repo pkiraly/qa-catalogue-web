@@ -22,7 +22,7 @@ msgstr "Stand"
 msgid "number of records"
 msgstr "Datensätze"
 msgid "timestamp of analysis"
-msgstr "Zeitstempel der Analyse"
+msgstr "Erstellt"
 
 # navigation
 msgid "Data"
