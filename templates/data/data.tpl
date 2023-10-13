@@ -13,7 +13,6 @@
           <div class="col-3 search-block"></div>
           <div class="col search-block">
             {if $showAdvancedSearchForm}
-              <strong>{$searchForm}</strong>
               <ul class="nav nav-tabs" id="search-forms">
                 <li class="nav-item">
                   <a class="nav-link {if $searchForm == 'simple'}active{/if}" data-toggle="tab" role="tab" aria-selected="true"
