@@ -1,0 +1,703 @@
+// Generated using dart sass.
+// To compile use command `sass --watch scss:styles` from the web root.
+
+:root {
+  --highlight-color: #37ba00;
+  --dim-color: #888;
+}
+
+#per-page .label {
+  color: var(--dim-color);
+}
+
+#content {
+  /*
+  border-top: 1px solid #cccccc;
+  border-radius: 10px;
+   */
+}
+
+h1 {
+  color: var(--highlight-color);
+  padding: 15px 5px 5px 5px;
+  border-bottom: 1px solid #cccccc;
+  border-radius: 10px;
+  font-weight: 900;
+}
+
+h1 span {
+  font-size: 80%;
+  color: #333;
+  font-weight: 100;
+}
+
+h1 a.header-link {
+  text-decoration: none;
+  color: var(--highlight-color);
+}
+
+h3,
+h4,
+h5
+{
+  color: var(--highlight-color);
+}
+
+.nav-tabs {
+  padding-top: 5px;
+}
+
+.search-block {
+  margin-bottom: 10px;
+}
+
+#message {
+  color: var(--highlight-color);
+}
+
+#navigation {
+  border-bottom: 1px dashed #cccccc;
+  margin-bottom: 15px;
+}
+
+#navigation-footer {
+  border-top: 1px dashed #cccccc;
+  margin-bottom: 15px;
+}
+
+#records {
+  padding: 0;
+  margin: 0;
+  margin-top: 5px;
+}
+
+.record {
+  margin-bottom: 50px;
+  h2 {
+    margin-bottom: 0;
+    font-weight: 200;
+    font-size: 130%;
+    a {
+      .fa {
+        color: var(--highlight-color);
+      }
+      .fa-info-circle {
+        margin-left: 20px;
+      }
+    }
+  }
+  .label {
+    color: #cccccc;
+  }
+  .similarity {
+    text-align: right;
+    color: var(--dim-color);
+  }
+  .details {
+    margin-top: 10px;
+    // margin-left: 25px;
+  }  
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0px;
+}
+
+#numFound {
+  color: var(--highlight-color);
+  font-weight: 900;
+}
+
+#solr-url {
+  overflow: auto;
+  overflow-wrap: break-word;
+  word-break: break-all;
+  color: var(--highlight-color);
+  font-size: small;
+}
+
+.tab-content {
+  margin-top: 10px;
+}
+
+div#completeness h3 {
+  padding-top: 20px;
+}
+
+h4 {
+  margin-top: 10px;
+  margin-bottom: 2px;
+}
+
+#completeness-group-table {
+  margin-bottom: 10px;
+  td {
+    padding: 0 5px 0 5px;
+  }
+}
+
+#completeness-field-table {
+  table {
+    td {
+      width: 50px;
+      text-align: right;
+      vertical-align: top;
+    }
+    tr.padded td {
+      padding-top: 25px;
+    }
+    td.path,
+    td.subfield {
+      text-align: left;
+    }
+    td.subfield {
+      width: 300px;
+      text-overflow: ellipsis;
+      font-size: 80%;
+    }
+    td.histogram {
+      width: 400px;
+    }
+    td.number-of-record {
+      width: 70px;
+    }
+    td.package {
+      text-align: left;
+      font-weight: bold;
+      border-bottom: 1px solid black;
+    }
+    td.tag {
+      text-align: left;
+      color: var(--highlight-color);
+    }
+    tr {
+      th,
+      td {
+        padding: 1px;
+      }
+    }
+    tr.first th.with-border {
+      text-align: center;
+      border-bottom: 1px solid #cccccc;
+    }
+    tr.second th {
+      text-align: center;
+    }
+    tr.second th.left {
+      text-align: left;
+    }
+    tr.second th.bordered-left {
+      border-left: 1px solid #cccccc;
+    }
+    tr.second th.bordered-right {
+      border-right: 1px solid #cccccc;
+    }
+  }
+}
+
+#completeness-group-table table td.chart,
+#completeness-field-table table td.chart,
+table#authorities-by-field td.chart,
+table#classification-by-field td.chart,
+table#classification-by-field td.chart {
+  width: 200px;
+}
+
+#completeness-group-table table td.chart div,
+#completeness-field-table table td.chart div,
+table#classification-by-field td.chart div,
+table#authorities-by-field td.chart div,
+table#issues-table td.chart div {
+  background-color: var(--highlight-color);
+  height: 15px;
+  border-right: 1px solid maroon;
+  border-bottom: 2px solid maroon;
+  margin-bottom: 4px;
+}
+
+table#authorities-by-field td.chart div,
+table#classification-by-field td.chart div,
+table#issues-table td.chart div {
+  margin: 0 5px 0 5px;
+}
+
+table#issues-table {
+  width: 100%;
+  tr {
+    td.type {
+      text-align: left;
+    }
+    td.type span.type {
+      color: var(--highlight-color);
+      font-weight: bold;
+    }
+    td.category span.category {
+      font-weight: bold;
+    }
+    td.chart {
+      width: 200px;
+    }
+    td.actions {
+      width: 48px;
+      padding-left: 5px;
+    }
+    td.percent {
+      width: 30px;
+    }
+    td.path {
+      width: 140px;
+    }
+    td.count {
+      text-align: right;
+      width: 100px;
+    }
+    td.url {
+      width: 20px;
+    }
+  }
+  thead tr th.count {
+    text-align: right;
+  }
+  tr.category-header td {
+    padding-top: 5px;
+    border-bottom: 1px solid black;
+  }
+  tr.t {
+    display: none;
+  }
+  tr.padded td {
+    padding-top: 25px;
+  }
+}
+
+.marc-details table {
+  // font-family: Courier;
+  vertical-align: top;
+}
+
+.record-tab {
+  font-size: 90%;
+  table {
+    tr {
+      td,
+      th {
+        vertical-align: top;
+        padding: 0 5px 0 5px;
+      }
+    }
+  }
+  p {
+    vertical-align: top;
+    padding: 0 5px 0 5px;
+  }
+  th,
+  td {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  h4 {
+    color: #333333;
+    font-size: 100%;
+    font-weight: bold;
+  }
+}
+
+.control-field-explanation table {
+  margin-top: 10px;
+}
+
+// div#myTabContent.tab-content div#issues.tab-pane.active div#issues-table-placeholder
+// table#issues-table thead tr th
+
+div#classifications-content table tbody tr td {
+  vertical-align: top;
+}
+
+div.classification-subfields,
+div.authority-subfields {
+  display: none;
+  width: 100%;
+  min-width: 100%;
+}
+
+td.classification-subfields,
+td.authority-subfields {
+  display: none;
+  padding: 20px;
+  border-left: 1px solid var(--highlight-color);
+  border-right: 1px solid var(--highlight-color);
+  border-bottom: 1px solid var(--highlight-color);
+  border-top: 2px dotted var(--highlight-color);
+  table {
+    margin-top: 10px;
+    th.count {
+      width: 100px;
+      min-width: 100px;
+      max-width: 100px;
+      text-align: right;
+    }
+    &.subfields td.subfields {
+      min-width: 300px;
+    }
+    td.count {
+      text-align: right;
+    }
+  }
+  ul {
+    margin-bottom: 0;
+    li {
+      span {
+        color: var(--dim-color);
+      }
+    }
+  }
+  p {
+    margin: 10px;
+  }
+  li {
+    margin-left: 20px;
+    list-style-type: square;
+  }
+}
+
+div#classifications-content {
+  th.scheme {
+    text-align: center;
+  }
+  th.instances {
+    width: 100px;
+    text-align: right;
+  }
+  th.records {
+    width: 100px;
+    text-align: right;
+  }
+}
+
+div#about-tab ul li {
+  margin-left: 20px;
+  list-style-type: square;
+}
+
+fieldset {
+  border: 0;
+  border-left: 1px solid var(--highlight-color);
+  margin: 0 0 5px 0;
+  padding: 0 0 5px 5px;
+  legend {
+    font-size: 100%;
+    color: var(--highlight-color);
+    margin: 0;
+    padding: 0 0 0 5px;
+  }
+}
+
+table.authority-names tr td,
+table.subject-headings tr td {
+  vertical-align: top;
+}
+
+table.authority-names tr td.heading {
+  color: #cccccc;
+  border-bottom: 1px solid #cccccc;
+}
+
+div.record {
+  p {
+    margin: 0;
+    padding: 0;
+  }
+  ul {
+    margin-bottom: 0;
+  }
+}
+
+.authorities-chart div {
+  font: 10px sans-serif;
+  background-color: steelblue;
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: white;
+}
+
+div.tooltip {
+  color: white !important;
+  position: absolute;
+  text-align: left;
+  width: 150px;
+  height: 32px;
+  padding: 2px;
+  font: 10px sans-serif;
+  background: rgba(0,0,0,.8);
+  border: 2px solid black;
+  pointer-events: none;
+  background-color: black;
+  border-radius: 5px;
+}
+
+.tick text {
+  cursor: default;
+}
+table tr td {
+  vertical-align: top;
+}
+
+#issues-table tr.t td {
+  border-bottom: 1px solid #eee;
+}
+
+#functions {
+  p.title {
+    margin-bottom: 0;
+  }
+  p.explanation {
+    font-size: 80%;
+    line-height: 1;
+  }
+  .bar-chart {
+    /*
+    height: 200px;
+    width: 270px;
+    border: 1px solid var(--highlight-color);
+    */
+  }
+  .bar-chart g rect {
+    background-color: var(--highlight-color);
+  }
+  div.row label {
+    font-weight: bold;
+  }
+}
+
+blockquote {
+  margin: 20px;
+}
+
+div#completeness-field-table table tr td.number-of-instances {
+  margin-left: 5px;
+  padding-left: 5px;
+}
+
+.nav-link1 {
+  padding: .25rem .5rem;
+  display: block;
+  /* border: 1px solid transparent; */
+  border-top-left-radius: .75rem;
+  /* border-top-right-radius: .75rem; */
+  &.active {
+    /* background-color: #eeeeee; */
+    color: var(--highlight-color);
+    border-bottom: 5px solid var(--highlight-color);
+    border-top-color: var(--dim-color);
+    border-left-color: var(--dim-color);
+    border-right-color: var(--dim-color);
+  }
+}
+
+.header-info {
+  color: var(--dim-color);
+  font-size: 90%;
+}
+
+ul#myTab {
+  list-style: none;
+  li {
+    display: inline;
+  }
+}
+
+div.search-block {
+  padding-top: 5px;
+}
+
+form#search {
+  padding-top: 5px;
+  button {
+    border: 1px solid var(--dim-color);
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 10px;
+  }
+}
+
+input#query, input#facetInput, input#facetInput1, input#facetInput2 {
+  padding: 5px 5px 5px 10px;
+  border-radius: 10px;
+  border-color: var(--highlight-color);
+}
+
+div#myTabContent {
+  margin-bottom: 20px;
+}
+
+#authorities-by-field tr.category td {
+  padding-top: 50px;
+  border-bottom: 1px solid black;
+}
+
+#facetselection p {
+  padding-top: 20px;
+  padding-bottom: 10px;
+  margin: 0;
+}
+
+div#terms.tab-pane form {
+  margin: 20px;
+  select {
+    padding: 5px 5px 5px 10px;
+    border-radius: 10px;
+    border-color: var(--highlight-color);
+  }
+  button {
+    border: 1px solid var(--dim-color);
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 10px;
+  }
+}
+
+#functions div.selected-function {
+  border: 1px solid var(--highlight-color);
+  background-color: #fafafa;
+}
+
+table#timeline {
+  th {
+    text-align: center;
+  }
+  td {
+    padding-left: 10px;
+    text-align: right;
+    width: 150px;
+    &.good {
+      text-align: left;
+    }
+    &.version {
+      padding-left: 0px;
+      text-align: left;
+    }
+    &.version,
+    &.count,
+    &.change {
+      width: 100px;
+    }
+    div.barchart {
+      width: 300px; 
+      background-color: maroon;
+      height: 10px;
+      div.greenchart {
+        float: left;
+        background-color: var(--highlight-color);
+        text-align: left;
+        height: 10px;
+      }
+    }
+    &.change-positive {
+      color: var(--highlight-color);
+    }
+    &.change-negative {
+      color: maroon;
+    }
+  }
+  ul {
+    list-style-type: square;
+    padding-left: 20px;
+  }
+}
+
+table.matrix tr td {
+  display: block;
+  float: left;
+  &.labels {
+    min-width: 300px;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  &.bars {
+    min-width: 500px;
+    max-width: 520px;
+  }
+  &.bars span {
+    display: block;
+    float: left;
+  }
+  &.bars span.green {
+    background-color: var(--highlight-color);
+  }
+  &.total {
+    min-width: 80px;
+    max-width: 80px;
+    text-align: right
+  }
+}
+
+ul.list-856 {
+  list-style-type: square;
+  padding-left: 20px;
+}
+
+td.record-field-label {
+  width: 140px;
+  min-width: 140px;
+  color: #666666;
+  text-align: right;
+  padding-right: 5px;
+  padding-top: 5px;
+  font-size: 80%;
+}
+
+.marc-human {
+  tr.tag td {
+    padding: 5px;
+  }
+  .tag-title {
+    color: var(--highlight-color);
+  }
+}
+
+#completeness-field-table table tr {
+  td {
+    vertical-align: top;
+    a.trigger {
+      color: var(--dim-color);
+    }    
+  }
+  &.field-level td {
+    padding-top: 25px;
+    border-bottom: 1px solid var(--highlight-color);
+    vertical-align: bottom;
+  }
+  &.subfield-level,
+  &.complex-type-level {
+    display: none;
+  }
+} 
+
+/* autocomplete */
+.ui-menu-item {
+  background-color: #eeeeee;
+  padding-left: 5px;
+}
+
+.ui-helper-hidden-accessible {
+  display: none;
+}
+
+p.metric-definition {
+  color: var(--dim-color);
+  margin-left: 5px;
+  padding-left: 15px;
+  border-left: 5px dotted #cccccc;
+}
+
+.marc-labels-table .label {
+  width: 35%;
+}
+
+.details .nav-link {
+  padding: .2rem 1rem;
+}

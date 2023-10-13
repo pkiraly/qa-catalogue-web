@@ -10,3 +10,4 @@ _smarty/
 
 # eidtor files
 .idea/
+styles/*.*.map
