@@ -25,47 +25,14 @@
               </ul>
               <div class="tab-content" id="search-tabs">
                 <div class="tab-pane active" id="simple-search" role="tabpanel" aria-labelledby="data-tab">
-                  <form id="search">
-                    <input type="hidden" name="tab" value="data">
-                    <input type="text" name="query" id="query" value="{htmlentities($query)}" size="60">
-                    <button type="submit" class="btn">
-                      <i class="fa fa-search" aria-hidden="true"></i> {_('search')}
-                    </button>
-                  </form>
+                  {include 'data/simple-search.tpl'}
                 </div>
                 <div class="tab-pane record-tab" id="advanced-search" role="tabpanel" aria-labelledby="data-tab">
-                  <form id="search">
-                    <input type="hidden" name="tab" value="data">
-
-                    <div class="field-search">
-                      {include 'common/field-selector.tpl' id="field1" name="fieldName1" idValue="$field1" labelValue=$label1 size=20 display="inline" variant="tokenized"}
-                      <input type="text" name="value1" id="value1" value="{htmlentities($value1)}" size="40">
-                    </div>
-
-                    <div class="field-search">
-                      {include 'common/field-selector.tpl' id="field2" name="fieldName2" idValue="$field2" labelValue=$label2 size=20 display="inline" variant="tokenized"}
-                      <input type="text" name="value2" id="value2" value="{htmlentities($value2)}" size="40">
-                    </div>
-
-                    <div class="field-search">
-                      {include 'common/field-selector.tpl' id="field3" name="fieldName3" idValue="$field3" labelValue=$label3 size=20 display="inline" variant="tokenized"}
-                      <input type="text" name="value3" id="value3" value="{htmlentities($value3)}" size="40">
-                    </div>
-
-                    <button type="submit" class="btn">
-                      <i class="fa fa-search" aria-hidden="true"></i> {_('search')}
-                    </button>
-                  </form>
+                  {include 'data/advanced-search.tpl'}
                 </div>
               </div>
             {else}
-              <form id="search">
-                <input type="hidden" name="tab" value="data">
-                <input type="text" name="query" id="query" value="{htmlentities($query)}" size="60">
-                <button type="submit" class="btn">
-                  <i class="fa fa-search" aria-hidden="true"></i> {_('search')}
-                </button>
-              </form>
+              {include 'data/simple-search.tpl'}
             {/if}
           </div>
         </div>
