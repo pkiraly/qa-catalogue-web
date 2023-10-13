@@ -13,21 +13,22 @@
           <div class="col-3 search-block"></div>
           <div class="col search-block">
             {if $showAdvancedSearchForm}
+              <strong>{$searchForm}</strong>
               <ul class="nav nav-tabs" id="search-forms">
                 <li class="nav-item">
-                  <a class="nav-link active" data-toggle="tab" role="tab" aria-selected="true"
+                  <a class="nav-link {if $searchForm == 'simple'}active{/if}" data-toggle="tab" role="tab" aria-selected="true"
                      id="simple-search-tab" href="#simple-search" aria-controls="simple-search-tab">simple search</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
+                  <a class="nav-link {if $searchForm == 'advanced'}active{/if}" data-toggle="tab" role="tab" aria-selected="true"
                      id="advanced-search-tab" href="#advanced-search" aria-controls="advanced-search-tab">advanced search</a>
                 </li>
               </ul>
               <div class="tab-content" id="search-tabs">
-                <div class="tab-pane active" id="simple-search" role="tabpanel" aria-labelledby="data-tab">
+                <div class="tab-pane {if $searchForm == 'simple'}active{/if}" id="simple-search" role="tabpanel" aria-labelledby="data-tab">
                   {include 'data/simple-search.tpl'}
                 </div>
-                <div class="tab-pane record-tab" id="advanced-search" role="tabpanel" aria-labelledby="data-tab">
+                <div class="tab-pane {if $searchForm == 'advanced'}active{/if} record-tab" id="advanced-search" role="tabpanel" aria-labelledby="data-tab">
                   {include 'data/advanced-search.tpl'}
                 </div>
               </div>

@@ -1,5 +1,6 @@
 <form id="search">
   <input type="hidden" name="tab" value="data">
+  <input type="hidden" name="search-form" value="advanced">
 
   <div class="field-search">
     {include 'common/field-selector.tpl' id="field1" name="fieldName1" idValue="$field1" labelValue=$label1 size=20 display="inline" variant="tokenized"}

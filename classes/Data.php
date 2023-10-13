@@ -25,6 +25,7 @@ class Data extends Facetable {
   public $groupBy = false;
   public $params;
   public $action;
+  private $searchForm = 'simple';
 
   public function __construct($configuration, $db) {
     parent::__construct($configuration, $db);
@@ -41,6 +42,7 @@ class Data extends Facetable {
     if ($this->grouped)
       $this->groupBy = $this->analysisParameters->groupBy;
     $this->groupId = getOrDefault('groupId', 0);
+    $this->searchForm = getOrDefault('search-form', 'simple', ['simple', 'advanced']);
 
     $this->params = [
       'facet' => $this->facet,
@@ -49,6 +51,7 @@ class Data extends Facetable {
       'scheme' => $this->scheme,
       'lang' => $this->lang,
       'type' => $this->type,
+      'search-form' => $this->searchForm,
     ];
 
     $this->parameters = [
@@ -93,7 +96,7 @@ class Data extends Facetable {
     return $urlParams;
   }
 
-  private function buildParameters() {
+  private function buildParameters(Smarty $smarty) {
     $solrParams = [
       'rows=' . $this->rows,
       'core=' . $this->db,
@@ -119,7 +122,22 @@ class Data extends Facetable {
         $solrParams[] = 'q=' . urlencode($query);
       }
     } else {
-      $solrParams[] = 'q=' . $this->query;
+      if ($this->searchForm == 'simple') {
+        $solrParams[] = 'q=' . $this->query;
+      } else if ($this->searchForm == 'advanced') {
+        $fields = [];
+        for ($i = 1; $i <= 3; $i++) {
+          $field = getOrDefault('field' . $i, '');
+          $value = getOrDefault('value' . $i, '');
+          $smarty->assign('field' . $i, $field);
+          $smarty->assign('value' . $i, $value);
+          $smarty->assign('label' . $i, $this->resolveSolrField($field));
+          if ($field != '' && $value != '') {
+            $fields[] = sprintf('%s:(%s)', $field, $value);
+          }
+        }
+        $solrParams[] = 'q=' . join(' AND ', $fields);
+      }
       $solrParams[] = 'start=' . $this->start;
     }
 
@@ -348,9 +366,10 @@ class Data extends Facetable {
     $smarty->assign('ajaxFacet', $this->ajaxFacet);
 
     $smarty->assign('schemaType', $this->catalogue->getSchemaType());
+    $smarty->assign('searchForm', $this->searchForm);
 
     // The following may throw an exception when solr is not reachable
-    $solrParams = $this->buildParameters();
+    $solrParams = $this->buildParameters($smarty);
     $smarty->assign('solrUrl', join('&', $solrParams));
     $response = $this->getSolrResponse($solrParams);
     if (is_null($this->numFound)) {
