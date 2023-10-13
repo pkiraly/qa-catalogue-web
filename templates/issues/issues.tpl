@@ -32,6 +32,7 @@
       </div>
     </div>
   </div>
+  {include 'common/parameters.tpl'}
 </div>
 <script type="application/javascript">{literal}
   function openType(t) {

@@ -40,5 +40,6 @@
       </div>
     </div>
   </div>
+  {include 'common/parameters.tpl'}
 </div>
 {include 'common/html-footer.tpl'}

@@ -26,11 +26,10 @@ class Data extends Facetable {
   public $params;
   public $action;
   private $searchForm = 'simple';
+  protected $parameterFile = 'marctosolr.params.json';
 
   public function __construct($configuration, $db) {
     parent::__construct($configuration, $db);
-    parent::readAnalysisParameters('validation.params.json');
-    parent::readIndexingParameters('marctosolr.params.json');
     $this->facet = getOrDefault('facet', '');
     $this->query = getOrDefault('query', '*:*');
     $this->filters = getOrDefault('filters', []);

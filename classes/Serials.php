@@ -3,6 +3,8 @@
 
 class Serials extends BaseTab {
 
+  protected $parameterFile = 'serials.params.json';
+
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 

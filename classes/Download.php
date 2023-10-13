@@ -16,9 +16,7 @@ class Download extends BaseTab {
         parent::readAnalysisParameters('validation.params.json');
         $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
         if (!is_null($this->analysisParameters)) {
-          $schemaFile = isset($this->analysisParameters->picaSchemaFile)
-            ? $this->analysisParameters->picaSchemaFile
-            : 'avram-k10plus-title.json';
+          $schemaFile = $this->analysisParameters->picaSchemaFile ?? 'avram-k10plus-title.json';
           $files[] = $schemaFile;
         }
       }
@@ -39,18 +37,21 @@ class Download extends BaseTab {
 
   private function listFiles() {
     $categories = [
-      'Completeness' => ['marc-elements.csv', 'packages.csv'],
-      'Issues' => ['issue-by-category.csv', 'issue-by-type.csv', 'issue-summary.csv', 'issue-details.csv', 'issue-details-normalized.csv',
-        'issue-total.csv', 'issue-collector.csv'],
-      'Functional analysis' => ['functional-analysis.csv', 'functional-analysis-histogram.csv', 'functional-analysis-mapping.csv'],
-      'Subject analysis' => ['classifications-by-records.csv', 'classifications-by-schema-subfields.csv', 'classifications-by-schema.csv',
-        'classifications-collocations.csv', 'classifications-frequency-examples.csv', 'classifications-histogram.csv',
-        'classifications-by-type.csv'],
+      'Completeness' => ['marc-elements.csv', 'packages.csv', 'completeness.params.json'],
+      'Issues' => ['issue-by-category.csv', 'issue-by-type.csv', 'issue-summary.csv', 'issue-details.csv',
+        'issue-details-normalized.csv', 'issue-total.csv', 'issue-collector.csv', 'validation.params.json'],
+      'Functional analysis' => ['functional-analysis.csv', 'functional-analysis-histogram.csv',
+        'functional-analysis-mapping.csv', 'funtions.params.json'],
+      'Subject analysis' => ['classifications-by-records.csv', 'classifications-by-schema-subfields.csv',
+        'classifications-by-schema.csv', 'classifications-collocations.csv', 'classifications-frequency-examples.csv',
+        'classifications-histogram.csv', 'classifications-by-type.csv', 'classifications.params.json'],
       'Authorities' => ['authorities-by-categories.csv', 'authorities-by-records.csv', 'authorities-by-schema-subfields.csv',
-        'authorities-by-schema.csv', 'authorities-frequency-examples.csv', 'authorities-histogram.csv'],
-      'Serial scores' => ['serial-score.csv', 'serial-score-fields.csv', 'serial-histogram.csv'],
-      'T&T completeness' => ['tt-completeness.csv', 'tt-completeness-fields.csv'],
-      'Shelf-Ready completeness' => ['shelf-ready-completeness.csv', 'shelf-ready-completeness-fields.csv'],
+        'authorities-by-schema.csv', 'authorities-frequency-examples.csv', 'authorities-histogram.csv',
+        'authorities.params.json'],
+      'Serial scores' => ['serial-score.csv', 'serial-score-fields.csv', 'serial-histogram.csv', 'serials.params.json'],
+      'T&T completeness' => ['tt-completeness.csv', 'tt-completeness-fields.csv', 'tt-completeness.params.json'],
+      'Shelf-Ready completeness' => ['shelf-ready-completeness.csv', 'shelf-ready-completeness-fields.csv',
+        'shelf-ready-completeness.params.json'],
       'History' => ['marc-history.csv'],
     ];
     $categories['Serial scores'] += $this->getSerialScoreHistograms();

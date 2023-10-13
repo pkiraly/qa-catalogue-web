@@ -5,6 +5,7 @@ include_once 'SchemaUtil.php';
 class Classifications extends AddedEntry {
 
   protected $frequencyExamples;
+  protected $parameterFile = 'classifications.params.json';
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);

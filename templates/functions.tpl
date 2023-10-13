@@ -144,6 +144,7 @@
 
     </div>
   </div>
+  {include 'common/parameters.tpl'}
 </div>
 <script>{literal}
 function loadFunctions() {

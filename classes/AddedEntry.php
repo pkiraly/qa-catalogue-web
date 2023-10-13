@@ -5,8 +5,7 @@ class AddedEntry extends BaseTab {
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
-    parent::readAnalysisParameters('completeness.params.json');
-    $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
+
     $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
     $this->groupId = getOrDefault('groupId', 0);
   }

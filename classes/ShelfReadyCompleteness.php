@@ -3,6 +3,8 @@
 
 class ShelfReadyCompleteness extends BaseTab {
 
+  protected $parameterFile = 'shelf-ready-completeness.params.json';
+
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 

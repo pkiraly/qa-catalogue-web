@@ -25,6 +25,7 @@ abstract class BaseTab implements Tab {
   protected $grouped = false;
   protected $groupId = false;
   protected $groupBy;
+  protected $parameterFile;
 
   /**
    * BaseTab constructor.
@@ -63,6 +64,12 @@ abstract class BaseTab implements Tab {
     $smarty->assign('lang', $this->lang);
     $smarty->assign('languages', $languages);
     $smarty->assign('generalParams', $this->concatParams($this->getGeneralParams()));
+
+    $this->readAnalysisParameters();
+    if (!is_null($this->analysisParameters)) {
+      $smarty->assign('analysisParameters', $this->analysisParameters);
+      $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
+    }
   }
 
   protected function concatParams($params): string {
@@ -625,18 +632,22 @@ abstract class BaseTab implements Tab {
     return http_build_query($params);
   }
 
-  protected function readAnalysisParameters($paramFile) {
-    $path = $this->getFilePath($paramFile);
-    if (file_exists($path)) {
-      $this->analysisParameters = json_decode(file_get_contents($path));
-      $this->analysisParameters->analysisTimestamp = date("Y-m-d H:i:s", filemtime($path));
+  protected function readAnalysisParameters() {
+    if (!is_null($this->parameterFile)) {
+      $path = $this->getFilePath($this->parameterFile);
+      if (file_exists($path)) {
+        $this->analysisParameters = json_decode(file_get_contents($path));
+        $this->analysisParameters->analysisTimestamp = date("Y-m-d H:i:s", filemtime($path));
+      }
     }
   }
 
   protected function readIndexingParameters($paramFile) {
     $path = $this->getFilePath($paramFile);
-    if (file_exists($path))
+    if (file_exists($path)) {
       $this->indexingParameters = json_decode(file_get_contents($path));
+      $this->analysisParameters->analysisTimestamp = date("Y-m-d H:i:s", filemtime($path));
+    }
   }
 
   /**

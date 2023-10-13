@@ -45,12 +45,10 @@ class Completeness extends BaseTab {
     "computer" => "Computer Files",
     "mixed" => "Mixed Materials"
   ];
-
+  protected $parameterFile = 'completeness.params.json';
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
-    parent::readAnalysisParameters('completeness.params.json');
-    $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
     $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
     $smarty->assign('grouped', $this->grouped);
     if ($this->grouped)
