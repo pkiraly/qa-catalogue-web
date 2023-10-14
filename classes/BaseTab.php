@@ -158,10 +158,7 @@ abstract class BaseTab implements Tab {
   protected function getSolrModificationDate() {
     $indexName = $this->getIndexName();
     $url = $this->getMainSolrEndpoint() . 'admin/cores?action=STATUS&core=' . $indexName;
-    error_log('url: ' . $url);
-    $raw_response = file_get_contents($url);
-    $response = json_decode($raw_response);
-    error_log('response: ' . json_encode($response->status->{$indexName}->index->lastModified));
+    $response = json_decode(file_get_contents($url));
     $lastModified = $response->status->{$indexName}->index->lastModified;
     $lastModified = str_replace('T', ' ', $lastModified);
     $lastModified = preg_replace('/\.\d+Z?$/', '', $lastModified);

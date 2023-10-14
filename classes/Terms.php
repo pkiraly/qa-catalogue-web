@@ -209,8 +209,15 @@ class Terms extends Facetable {
     $fileName = $this->getFieldMapFileName();
     $this->getSolrModificationDate();
     error_log('$fileName: ' . $fileName);
-    error_log('getSolrModificationDate: ' . $this->getSolrModificationDate());
-    http://localhost:8983/solr/admin/cores?action=STATUS&core=nls
+    if (file_exists($fileName)) {
+      $fileDate = date("Y-m-d H:i:s", filemtime($fileName));
+      error_log("file date check: $this->getSolrModificationDate() > $fileDate");
+      if ($this->getSolrModificationDate() > $fileDate) {
+        error_log("remove file: " . $fileName);
+        unlink($fileName);
+      }
+    }
+    // error_log('getSolrModificationDate: ' . );
     if (!file_exists($fileName)) {
       $allFields = [];
       foreach ($this->getFields() as $field) {
