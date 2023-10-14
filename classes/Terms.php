@@ -211,7 +211,7 @@ class Terms extends Facetable {
     error_log('$fileName: ' . $fileName);
     if (file_exists($fileName)) {
       $fileDate = date("Y-m-d H:i:s", filemtime($fileName));
-      error_log("file date check: $this->getSolrModificationDate() > $fileDate");
+      error_log('file date check: ' . $this->getSolrModificationDate() . " > $fileDate");
       if ($this->getSolrModificationDate() > $fileDate) {
         error_log("remove file: " . $fileName);
         unlink($fileName);
