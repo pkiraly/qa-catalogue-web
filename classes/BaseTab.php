@@ -451,7 +451,7 @@ abstract class BaseTab implements Tab {
 
     $this->getFieldDefinitions();
 
-    $solrField = preg_replace('/_ss$/', '', $solrField);
+    $solrField = preg_replace('/_(ss|txt)$/', '', $solrField);
     if ($solrField == 'type'
         || ($this->catalogue->getSchemaType() == 'MARC21'
             && (substr($solrField, 0, 2) == '00'
