@@ -203,21 +203,14 @@ class Terms extends Facetable {
    */
   private function fieldsAction(): void {
     $term = getOrDefault('term', '');
-    error_log('$term: ' . $term);
-    error_log('variant: ' . $this->variant);
     $this->output = 'none';
     $fileName = $this->getFieldMapFileName();
-    $this->getSolrModificationDate();
-    error_log('$fileName: ' . $fileName);
     if (file_exists($fileName)) {
       $fileDate = date("Y-m-d H:i:s", filemtime($fileName));
-      error_log('file date check: ' . $this->getSolrModificationDate() . " > $fileDate");
       if ($this->getSolrModificationDate() > $fileDate) {
-        error_log("remove file: " . $fileName);
         unlink($fileName);
       }
     }
-    // error_log('getSolrModificationDate: ' . );
     if (!file_exists($fileName)) {
       $allFields = [];
       foreach ($this->getFields() as $field) {
