@@ -466,7 +466,7 @@ abstract class BaseTab implements Tab {
           if (!isset($this->fieldDefinitions->fields->{$parts[0]}->types))
             error_log('no types for ' . $parts[0]);
           if (!is_array($this->fieldDefinitions->fields->{$parts[0]}->types))
-            error_log(sprintf('$s is not an array, but %s', $parts[0], gettype($this->fieldDefinitions->fields->{$parts[0]}->types)));
+            error_log(sprintf('%s is not an array, but %s', $parts[0], gettype($this->fieldDefinitions->fields->{$parts[0]}->types)));
           foreach ($this->fieldDefinitions->fields->{$parts[0]}->types as $name => $type)
             foreach ($type->positions as $position => $definition)
               if ($position == $parts[1]) {

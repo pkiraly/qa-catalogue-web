@@ -229,20 +229,21 @@ class Terms extends Facetable {
       $allFields = json_decode(file_get_contents($fileName));
     }
     $fields = [];
-    /*
     foreach ($allFields as $field) {
-
       if (
-             ($term == ''
-          || strpos(strtoupper($field->label), strtoupper($term)) !== false
-          || strpos(strtoupper($field->value), strtoupper($term)) !== false)
-        && (
-             ($this->variant == 'tokenized' && preg_match('/_txt$/', $field->value))
-          || ($this->variant == 'phrase'    && preg_match('/_ss$/', $field->value)))
-      )
+           (
+                $term == ''
+             || strpos(strtoupper($field->label), strtoupper($term)) !== false
+             || strpos(strtoupper($field->value), strtoupper($term)) !== false
+           )
+           &&
+           (
+                ($this->variant == 'tokenized' && preg_match('/_txt$/', $field->value))
+             || ($this->variant == 'phrase'    && preg_match('/_ss$/', $field->value))
+           )
+        )
         $fields[] = ['label' => $field->label, 'value' => $field->value];
     }
-    */
     error_log('$fields: ' . json_encode($fields));
     print json_encode($fields);
   }
