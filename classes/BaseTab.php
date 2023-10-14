@@ -161,8 +161,8 @@ abstract class BaseTab implements Tab {
     error_log('url: ' . $url);
     $raw_response = file_get_contents($url);
     $response = json_decode($raw_response);
-    error_log('response: ' . json_encode($response->status->{$indexName}));
-    $lastModified = $response->status->{$indexName}->lastModified;
+    error_log('response: ' . json_encode($response->status->{$indexName}->index->lastModified));
+    $lastModified = $response->status->{$indexName}->index->lastModified;
     // lastModified
     return $lastModified;
   }
