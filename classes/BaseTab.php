@@ -163,7 +163,8 @@ abstract class BaseTab implements Tab {
     $response = json_decode($raw_response);
     error_log('response: ' . json_encode($response->status->{$indexName}->index->lastModified));
     $lastModified = $response->status->{$indexName}->index->lastModified;
-    // lastModified
+    $lastModified = str_replace('T', ' ', $lastModified);
+    $lastModified = preg_replace('/\.\d+Z?$/', '', $lastModified);
     return $lastModified;
   }
 
