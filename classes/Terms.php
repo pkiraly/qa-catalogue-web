@@ -203,6 +203,7 @@ class Terms extends Facetable {
    */
   private function fieldsAction(): void {
     $term = getOrDefault('term', '');
+    error_log('$term: ' . $term);
     $this->output = 'none';
     $fileName = $this->getFieldMapFileName();
     if (!file_exists($fileName)) {
