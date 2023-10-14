@@ -204,6 +204,7 @@ class Terms extends Facetable {
   private function fieldsAction(): void {
     $term = getOrDefault('term', '');
     error_log('$term: ' . $term);
+    error_log('variant: ' . $this->variant);
     $this->output = 'none';
     $fileName = $this->getFieldMapFileName();
     if (!file_exists($fileName)) {
@@ -218,6 +219,7 @@ class Terms extends Facetable {
     }
     $fields = [];
     foreach ($allFields as $field) {
+
       if (
              ($term == ''
           || strpos(strtoupper($field->label), strtoupper($term)) !== false
@@ -228,6 +230,7 @@ class Terms extends Facetable {
       )
         $fields[] = ['label' => $field->label, 'value' => $field->value];
     }
+    error_log('$fields: ' . json_encode($fields));
     print json_encode($fields);
   }
 
