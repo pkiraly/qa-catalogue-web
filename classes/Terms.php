@@ -230,6 +230,7 @@ class Terms extends Facetable {
     }
     $fields = [];
     foreach ($allFields as $field) {
+      error_log('field type: ' . gettype($field));
       if (
            (
                 $term == ''
