@@ -162,6 +162,7 @@ abstract class BaseTab implements Tab {
     $lastModified = $response->status->{$indexName}->index->lastModified;
     $lastModified = str_replace('T', ' ', $lastModified);
     $lastModified = preg_replace('/\.\d+Z?$/', '', $lastModified);
+    error_log("solr lastModified: $lastModified");
     return $lastModified;
   }
 
