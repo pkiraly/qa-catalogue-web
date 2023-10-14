@@ -239,7 +239,6 @@ class Terms extends Facetable {
         )
         $fields[] = ['label' => $label, 'value' => $value];
     }
-    error_log('$fields: ' . json_encode($fields));
     print json_encode($fields);
   }
 
