@@ -207,6 +207,7 @@ class Terms extends Facetable {
     error_log('variant: ' . $this->variant);
     $this->output = 'none';
     $fileName = $this->getFieldMapFileName();
+    error_log('$fileName: ' . $fileName);
     if (!file_exists($fileName)) {
       $allFields = [];
       foreach ($this->getFields() as $field) {
