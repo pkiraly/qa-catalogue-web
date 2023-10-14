@@ -160,6 +160,7 @@ abstract class BaseTab implements Tab {
     $url = $this->getMainSolrEndpoint() . 'admin/cores?action=STATUS&core=' . $indexName;
     error_log('url: ' . $url);
     $raw_response = file_get_contents($url);
+    error_log('raw_response: ' . $raw_response);
     $response = json_decode($raw_response);
     $lastModified = $response->status->{$indexName}->lastModified;
     // lastModified
