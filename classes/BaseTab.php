@@ -155,6 +155,20 @@ abstract class BaseTab implements Tab {
     return $this->solrFields;
   }
 
+  protected function getSolrModificationDate() {
+    $indexName = $this->getIndexName();
+    $url = $this->getMainSolrEndpoint() . '/admin/cores?action=STATUS&core=' . $indexName;
+    $raw_response = file_get_contents($url);
+    $response = json_decode($raw_response);
+    $lastModified = $response->status->{$indexName}->lastModified;
+    // lastModified
+    return $lastModified;
+  }
+
+  /**
+   * Get the main Solr index' base URL (default 'http://localhost:8983/solr/')
+   * @return string
+   */
   protected function getMainSolrEndpoint() {
     if (isset($this->configuration['mainSolrEndpoint'])) {
       if (isset($this->configuration['mainSolrEndpoint'][$this->db]))

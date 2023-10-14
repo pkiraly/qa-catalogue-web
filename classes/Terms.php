@@ -207,7 +207,10 @@ class Terms extends Facetable {
     error_log('variant: ' . $this->variant);
     $this->output = 'none';
     $fileName = $this->getFieldMapFileName();
+    $this->getSolrModificationDate();
     error_log('$fileName: ' . $fileName);
+    error_log('getSolrModificationDate: ' . $this->getSolrModificationDate());
+    http://localhost:8983/solr/admin/cores?action=STATUS&core=nls
     if (!file_exists($fileName)) {
       $allFields = [];
       foreach ($this->getFields() as $field) {
