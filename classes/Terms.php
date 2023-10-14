@@ -229,6 +229,7 @@ class Terms extends Facetable {
       $allFields = json_decode(file_get_contents($fileName));
     }
     $fields = [];
+    /*
     foreach ($allFields as $field) {
 
       if (
@@ -241,6 +242,7 @@ class Terms extends Facetable {
       )
         $fields[] = ['label' => $field->label, 'value' => $field->value];
     }
+    */
     error_log('$fields: ' . json_encode($fields));
     print json_encode($fields);
   }
