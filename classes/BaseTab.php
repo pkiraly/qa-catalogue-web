@@ -463,17 +463,39 @@ abstract class BaseTab implements Tab {
         if (property_exists($this->fieldDefinitions->fields, $parts[0]) &&
             isset($this->fieldDefinitions->fields->{$parts[0]}) &&
             !is_null($this->fieldDefinitions->fields->{$parts[0]})) {
-          if (!isset($this->fieldDefinitions->fields->{$parts[0]}->types))
-            error_log('no types for ' . $parts[0]);
-          if (!is_array($this->fieldDefinitions->fields->{$parts[0]}->types))
-            error_log(sprintf('%s is not an array, but %s', $parts[0], gettype($this->fieldDefinitions->fields->{$parts[0]}->types)));
-          foreach ($this->fieldDefinitions->fields->{$parts[0]}->types as $name => $type)
-            foreach ($type->positions as $position => $definition)
-              if ($position == $parts[1]) {
-                $label = sprintf('%s/%s %s', $parts[0], $parts[1], $definition->label);
-                $found = true;
-                break;
+          if (   isset($this->fieldDefinitions->fields->{$parts[0]}->solr)
+              && $this->fieldDefinitions->fields->{$parts[0]}->solr == $solrField) {
+            $label = sprintf('%s %s', $parts[0], $this->fieldDefinitions->fields->{$parts[0]}->label);
+            $found = true;
+          } else {
+            if (!isset($this->fieldDefinitions->fields->{$parts[0]}->types)) {
+              error_log('no types for ' . $parts[0]);
+            } else {
+              if (is_array($this->fieldDefinitions->fields->{$parts[0]}->types)) {
+                foreach ($this->fieldDefinitions->fields->{$parts[0]}->types as $name => $type) {
+                  foreach ($type->positions as $position => $definition) {
+                    if ($position == $parts[1]) {
+                      $label = sprintf('%s/%s %s', $parts[0], $parts[1], $definition->label);
+                      $found = true;
+                      break;
+                    }
+                  }
+                }
+              } else if (is_object($this->fieldDefinitions->fields->{$parts[0]}->types)) {
+                foreach (get_object_vars($this->fieldDefinitions->fields->{$parts[0]}->types) as $name => $type) {
+                  foreach ($type->positions as $position => $definition) {
+                    if ($position == $parts[1]) {
+                      $label = sprintf('%s/%s %s', $parts[0], $parts[1], $definition->label);
+                      $found = true;
+                      break;
+                    }
+                  }
+                }
+              } else {
+                error_log(sprintf('%s is not an array, but %s', $parts[0], gettype($this->fieldDefinitions->fields->{$parts[0]}->types)));
               }
+            }
+          }
         }
       }
       if (!$found) {

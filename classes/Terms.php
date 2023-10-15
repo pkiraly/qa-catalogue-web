@@ -51,7 +51,6 @@ class Terms extends Facetable {
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
-    $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
 
     if ($this->grouped && $this->groupId != 0)
       $this->filters[] = $this->getRawGroupQuery();
