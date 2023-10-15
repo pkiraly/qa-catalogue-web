@@ -469,7 +469,7 @@ abstract class BaseTab implements Tab {
             $found = true;
           } else {
             if (!isset($this->fieldDefinitions->fields->{$parts[0]}->types)) {
-              error_log('no types for ' . $parts[0]);
+              error_log('no types property for ' . $parts[0]);
             } else {
               if (is_array($this->fieldDefinitions->fields->{$parts[0]}->types)) {
                 foreach ($this->fieldDefinitions->fields->{$parts[0]}->types as $name => $type) {
@@ -492,7 +492,7 @@ abstract class BaseTab implements Tab {
                   }
                 }
               } else {
-                error_log(sprintf('%s is not an array, but %s', $parts[0], gettype($this->fieldDefinitions->fields->{$parts[0]}->types)));
+                error_log(sprintf('%s is not an array, nor an object, but a %s', $parts[0], gettype($this->fieldDefinitions->fields->{$parts[0]}->types)));
               }
             }
           }
