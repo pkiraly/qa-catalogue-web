@@ -6,6 +6,7 @@ class Completeness extends BaseTab {
 
   private $action = 'list';
   private $hasNonCoreTags = FALSE;
+  private $hasTotalPackage = FALSE;
   private $packages = [];
   private $packageIndex = [];
   private $records = [];
@@ -88,6 +89,7 @@ class Completeness extends BaseTab {
       $smarty->assign('selectedType', $this->type);
       $smarty->assign('max', $this->max);
       $smarty->assign('hasNonCoreTags', $this->hasNonCoreTags);
+      $smarty->assign('hasTotalPackage', $this->hasTotalPackage);
       $smarty->assign('sort', $this->sort);
       $smarty->assign('groupFilter', $this->getGroupFilter());
       $smarty->assign('groupQuery', $this->getGroupQuery());
@@ -116,8 +118,10 @@ class Completeness extends BaseTab {
   private function readPackages() {
     $fileName = $this->grouped ? 'completeness-grouped-packages.csv' : 'packages.csv';
     $elementsFile = $this->getFilePath($fileName);
+    error_log('elementsFile: ' . $elementsFile);
 
     if (file_exists($elementsFile)) {
+      $dataElementCounts = $this->getDataElementCounts();
       $start = microtime(true);
       // name,label,count
       $lineNumber = 0;
@@ -160,6 +164,10 @@ class Completeness extends BaseTab {
               $this->hasNonCoreTags = TRUE;
               $record->iscoretag = false;
             }
+            if (isset($dataElementCounts[$record->packageid])) {
+              $record->fieldCount = $dataElementCounts[$record->packageid]['fieldCount'];
+              $record->subfieldCount = $dataElementCounts[$record->packageid]['subfieldCount'];
+            }
             $this->packages[] = $record;
           }
         }
@@ -177,14 +185,43 @@ class Completeness extends BaseTab {
             ? -1
             : 1);
       });
+      if (isset($dataElementCounts['total'])) {
+        $this->packages[] = (object)[
+          'packageid' => 'total',
+          'iscoretag' => false,
+          'label' => 'total',
+          'fieldCount' => $dataElementCounts['total']['fieldCount'],
+          'subfieldCount' => $dataElementCounts['total']['subfieldCount'],
+        ];
+      }
       $tusort = microtime(true) - $start;
       error_log(sprintf('readPackages) read file: %.4f, foreach: %.4f, usort: %.4f', $t1, $tforeach, $tusort));
+
     } else {
       $msg = sprintf("file %s is not existing", $elementsFile);
       error_log($msg);
     }
   }
 
+  private function getDataElementCounts(): array {
+    $dataElements = [];
+    if ($this->hasMarcElementTable()) {
+      $this->hasTotalPackage = true;
+      $result = $this->issueDB->getDataElementsByPackage($this->groupId, $this->type);
+      $dataElements = ['total' => []];
+      while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        $id = (int) $row['packageid'];
+        $type = $row['isField'] ? 'fieldCount' : 'subfieldCount';
+        if (!isset($dataElements[$id]))
+          $dataElements[$id] = [];
+        $dataElements[$id][$type] = $row['count'];
+        if (!isset($dataElements['total'][$type]))
+          $dataElements['total'][$type] = 0;
+        $dataElements['total'][$type] += $row['count'];
+      }
+    }
+    return $dataElements;
+  }
   private function hasMarcElementTable() {
     $this->initializeDB();
     return $this->issueDB->hasMarcElementTable();
@@ -205,8 +242,7 @@ class Completeness extends BaseTab {
 
   private function readCompleteness() {
     SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
-    $hasDBTable = $this->hasMarcElementTable();
-    if ($hasDBTable) {
+    if ($this->hasMarcElementTable()) {
       error_log('hasDBTable');
       $this->types = $this->getDocumentTypes($this->groupId);
       $start = microtime(true);

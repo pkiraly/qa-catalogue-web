@@ -429,6 +429,32 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
+  // get the number of data elements
+  public function getDataElementsByPackage($groupId = '', $documenttype = '') {
+    error_log('groupId type is: ' . gettype($groupId));
+    $where = '';
+    if ($groupId !== '' || $documenttype !== '') {
+      $criteria = [];
+      if ($groupId !== '')
+        $criteria[] = 'groupId = :groupId';
+      if ($documenttype !== '')
+        $criteria[] = 'documenttype = :documenttype';
+      if (!empty($criteria))
+        $where = ' WHERE ' . join(' AND ', $criteria);
+    }
+    $stmt = $this->prepare(
+      'SELECT packageid,
+                    COUNT(DISTINCT path) AS count,
+                    LENGTH(path) = 3 AS isField
+      FROM marc_elements ' . $where . ' 
+      GROUP BY packageId, LENGTH(path) = 3');
+    if ($groupId !== '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
+    if ($documenttype !== '')
+      $stmt->bindValue(':documenttype', $documenttype, SQLITE3_TEXT);
+    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    return $stmt->execute();
+  }
 
   // select * from issue_details JOIN id_groupid USING (id) WHERE errorId = 1 AND groupId = 77 LIMIT 30;
 
