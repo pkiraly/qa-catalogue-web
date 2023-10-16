@@ -187,7 +187,7 @@ class Completeness extends BaseTab {
             : 1);
       });
       if (isset($dataElementCounts['total'])) {
-        error_log('add data element counts to package total' . $record->packageid);
+        error_log('add data element counts to package total');
         $this->packages[] = (object)[
           'packageid' => 'total',
           'iscoretag' => false,
