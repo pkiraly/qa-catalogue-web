@@ -351,7 +351,7 @@ class Data extends Facetable {
    * @return void
    */
   private function searchAction(Smarty $smarty): void {
-    $smarty->assign('showAdvancedSearchForm', $this->configuration['showAdvancedSearchForm'] ?? false);
+    $smarty->assign('showAdvancedSearchForm', $this->showAdvancedSearchForm());
     $smarty->assign('query', $this->query);
     $smarty->assign('start', $this->start);
     $smarty->assign('rows', $this->rows);
@@ -545,5 +545,15 @@ class Data extends Facetable {
     if ($this->grouped)
       $query .= ' AND groupId_is:' . $this->groupId;
     return $query;
+  }
+
+  private function showAdvancedSearchForm() {
+    if (isset($this->configuration['showAdvancedSearchForm'])) {
+      if (is_array($this->configuration['showAdvancedSearchForm']))
+        return $this->configuration['showAdvancedSearchForm'][$this->db] ?? false;
+      elseif (is_bool($this->configuration['showAdvancedSearchForm']))
+        return $this->configuration['showAdvancedSearchForm'];
+    }
+    return false;
   }
 }
