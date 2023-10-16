@@ -17,7 +17,7 @@
       </tr>
       {foreach from=$packages item=package}
         {if !isset($package->iscoretag) || $package->iscoretag}
-          <tr>
+          <trclass="is-core-tag"  id="groups-package-{$package->packageid}">
             <td><a href="#package-{$package->packageid}">{$package->name}</a></td>
             <td>{if ($package->label != 'null')}{$package->label}{/if}</td>
             <td class="text-right">{$package->fieldCount|number_format}</td>
@@ -37,7 +37,7 @@
       {/if}
       {foreach from=$packages item=package}
         {if isset($package->iscoretag) && !$package->iscoretag && $package->packageid != 'total'}
-          <tr>
+          <tr class="is-not-core-tag" id="groups-package-{$package->packageid}">
             <td><a href="#package-{$package->packageid}">{$package->name}</a></td>
             <td>{if ($package->label != 'null')}{$package->label}{/if}</td>
             <td class="text-right">{$package->fieldCount|number_format}</td>
@@ -51,8 +51,8 @@
     {/if}
     {if $hasTotalPackage}
       {foreach from=$packages item=package}
-        {if $package->packageid == 'total'}
-          <tr id="groups-package-{$package->packageid}">
+        {if $package->packageid === 'total'}
+          <tr class="total" id="groups-package-{$package->packageid}">
             <td colspan="2"><h4>{_('Total number of data elements')}</h4></td>
             <td class="text-right align-text-bottom" style="vertical-align: bottom !important;">{$package->fieldCount|number_format}</td>
             <td class="text-right align-text-bottom" style="vertical-align: bottom !important;">{$package->subfieldCount|number_format}</td>
