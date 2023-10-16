@@ -165,6 +165,7 @@ class Completeness extends BaseTab {
               $record->iscoretag = false;
             }
             if (isset($dataElementCounts[$record->packageid])) {
+              error_log('add data element counts to package #' . $record->packageid);
               $record->fieldCount = $dataElementCounts[$record->packageid]['fieldCount'];
               $record->subfieldCount = $dataElementCounts[$record->packageid]['subfieldCount'];
             }
@@ -186,6 +187,7 @@ class Completeness extends BaseTab {
             : 1);
       });
       if (isset($dataElementCounts['total'])) {
+        error_log('add data element counts to package total' . $record->packageid);
         $this->packages[] = (object)[
           'packageid' => 'total',
           'iscoretag' => false,
