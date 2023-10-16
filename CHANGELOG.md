@@ -1,27 +1,38 @@
-# Release 0.7.0 (2023-07-18)
+# Release 0.8.0 (2023-xx-xx)
 
-#126 display the number of data elements at the completeness tab. The "Field groups" table has two new columns: 1) fields,
-  2) positions/indicators/subfields - for the number of distinct data elements used in the records, and a new row: "total" 
-  3) that display the number of total data elements.
+#126 display the number of data elements at the completeness tab. The "Field groups" table has two new
+columns: 1) fields, 2) positions/indicators/subfields - for the number of distinct data elements used
+in the records, and a new row: "total" that display the number of total data elements.
 
 # Release 0.7.0 (2023-07-18)
 
 ## The major features of this release
 
 ### Improved PICA handling
-PICA is an alternative bibliographic metadata schema used in Germany, The Netherlands and France. The development of PICA related features were done in cooperation with K10Plus, the largest union catalogue of Germany. Now the analyses of PICA records covers completeness, validation, subject heading and authority name analyses plus searching and displaying individual records.
+PICA is an alternative bibliographic metadata schema used in Germany, The Netherlands and France. The development of
+PICA related features were done in cooperation with K10Plus, the largest union catalogue of Germany. Now the analyses
+of PICA records covers completeness, validation, subject heading and authority name analyses plus searching and
+displaying individual records.
 
 ### Handling union catalogues
-Union catalogues covers the collections of multiple libraries. Now QA catalogue could display the results of completeness, validation, searching and term list for both the whole catalogue and for any individual library.
+Union catalogues covers the collections of multiple libraries. Now QA catalogue could display the results of
+completeness, validation, searching and term list for both the whole catalogue and for any individual library.
 
 ### Translation
-The main parts of the user interface are translatable and the code contains German and Brazilian Portuguese translations thanks to Jakob Voß (VZG) and Tiago Murakami (Universidade de São Paulo).
+The main parts of the user interface are translatable and the code contains German and Brazilian Portuguese
+translations thanks to Jakob Voß (VZG) and Tiago Murakami (Universidade de São Paulo).
 
 ### SHACL4bib
-Shape Expression Constraints Language (SHACL) has been adapted to MARC and PICA records. It provides a customized analysis for a library, so it can write a configuration file to check records against their own customs and ruleset which are not part of the core standard. This feature was party developed by Jean Michel Nzi Mba as part of his Bachelor thesis. 
+Shape Expression Constraints Language (SHACL) has been adapted to MARC and PICA records. It provides a customized
+analysis for a library, so it can write a configuration file to check records against their own customs and ruleset
+which are not part of the core standard. This feature was party developed by Jean Michel Nzi Mba as part of his
+Bachelor thesis.
 
 ### Other features
-QA catalogue makes use of a Composer based setup to manage dependencies. It also has improved downloading functionalities, so the user can download all IDs that bound to any particular issue, or fit to search terms. The menu system has been improved. In term lists the user can type MARC/PICA codes and substrib or their labels instead of Solr field name (as previously).
+QA catalogue makes use of a Composer based setup to manage dependencies. It also has improved downloading
+functionalities, so the user can download all IDs that bound to any particular issue, or fit to search terms.
+The menu system has been improved. In term lists the user can type MARC/PICA codes and substrib or their labels
+instead of Solr field name (as previously).
 
 ## Contributors
 In the creation of this release Jakob Voß, Tiago Murakami and Jean Michel Nzi Mba provided important contributions.
