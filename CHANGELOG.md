@@ -1,5 +1,11 @@
 # Release 0.7.0 (2023-07-18)
 
+#126 display the number of data elements at the completeness tab. The "Field groups" table has two new columns: 1) fields,
+  2) positions/indicators/subfields - for the number of distinct data elements used in the records, and a new row: "total" 
+  3) that display the number of total data elements.
+
+# Release 0.7.0 (2023-07-18)
+
 ## The major features of this release
 
 ### Improved PICA handling
