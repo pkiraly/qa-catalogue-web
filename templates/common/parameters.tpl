@@ -19,7 +19,8 @@
                 {if !$smarty.foreach.list.last}<br>{/if}
               {/foreach}
             {elseif is_object($value)}
-              {include 'common/parameters-object-value.tpl' parent=$value}
+              {include 'common/parameters-object-value.tpl' value=$value}
+              {if $parameter == 'recordFilter'}json: {json_encode($value)}{/if}
             {elseif is_null($value)}
               &mdash;
             {else}
