@@ -3,7 +3,7 @@
  * suffix
  * prefix
  *}
-$prefix
+{$prefix}
 {if is_bool($value)}{if $value}{_('true')}{else}{_('false')}{/if}{$suffix}
 {elseif is_null($value)}&mdash;{$suffix}
 {elseif is_string($value)}{$value}{$suffix}
