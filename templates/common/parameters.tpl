@@ -24,7 +24,7 @@
                 {if is_bool($value1)}{if $value1}{_('true')}{else}{_('false')}{/if}
                 {elseif is_null($value1)}&mdash;
                 {elseif is_string($value1)}{$value1}
-                {elseif is_array($value1)}{join(', ', $value1)}
+                {elseif is_array($value1)}{if empty($value1)}&mdash;{else}{join(', ', $value1)}{/if}
                 {else}{json_encode($value1)} ({gettype($value1)}){/if}{if !$smarty.foreach.list1.last},{/if}
               {/foreach}
             {elseif is_null($value)}
