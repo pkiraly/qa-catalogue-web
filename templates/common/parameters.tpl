@@ -21,7 +21,7 @@
             {elseif is_object($value)}
               {foreach from=get_object_vars($value) key=key1 item=value1 name=list1}
                 {$key1}:
-                {if is_bool($value1)}{if $value1}{_('true')}{else}{_('false')}{/if}{elseif is_null($value1)}&mdash;{elseif is_string($value1)}{$value1}{else}{json_encode($value1)} ({gettype($value1)}{/if}{if !$smarty.foreach.list1.last},{/if}
+                {if is_bool($value1)}{if $value1}{_('true')}{else}{_('false')}{/if}{elseif is_null($value1)}&mdash;{elseif is_string($value1)}{$value1}{elseif is_array($value1)}{join(', ', $value1}{else}{json_encode($value1)} ({gettype($value1)}){/if}{if !$smarty.foreach.list1.last},{/if}
               {/foreach}
             {elseif is_null($value)}
               &mdash;
