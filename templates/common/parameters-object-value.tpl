@@ -9,8 +9,8 @@
   {if empty($value)}&mdash;{$suffix}
   {else}
     {foreach from=$value item=item name=list}
-      {include 'common/parameters-object-value.tpl' value=$item suffix=$smarty.foreach.list1.last ? '' : ','}{$suffix}
-    {/foreach}
+      {include 'common/parameters-object-value.tpl' value=$item suffix=($smarty.foreach.list1.last ? '' : ',')}
+    {/foreach}{$suffix}
   {/if}
 {elseif is_object($value)}
   {foreach from=get_object_vars($value) key=key item=item name=list}
