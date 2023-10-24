@@ -209,7 +209,8 @@ class Completeness extends BaseTab {
     $dataElements = [];
     if ($this->hasMarcElementTable()) {
       $this->hasTotalPackage = true;
-      $result = $this->issueDB->getDataElementsByPackage($this->groupId, $this->type);
+      $schema = $this->catalogue->getSchemaType();
+      $result = $this->issueDB->getDataElementsByPackage($schema, $this->groupId, $this->type);
       $dataElements = ['total' => []];
       while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
         $id = (int) $row['packageid'];

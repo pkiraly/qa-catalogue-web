@@ -430,7 +430,7 @@ class IssuesDB extends SQLite3 {
   }
 
   // get the number of data elements
-  public function getDataElementsByPackage($groupId = '', $documenttype = '') {
+  public function getDataElementsByPackage($schema, $groupId = '', $documenttype = '') {
     error_log('groupId type is: ' . gettype($groupId));
     $where = '';
     if ($groupId !== '' || $documenttype !== '') {
@@ -442,12 +442,14 @@ class IssuesDB extends SQLite3 {
       if (!empty($criteria))
         $where = ' WHERE ' . join(' AND ', $criteria);
     }
+    $isAField = $schema == 'PICA' ? 'NOT(LIKE(\'%$%\', path))' : 'LENGTH(path) = 3';
     $stmt = $this->prepare(
       'SELECT packageid,
                     COUNT(DISTINCT path) AS count,
-                    LENGTH(path) = 3 AS isField
+                    ' . $isAField . ' AS isField
       FROM marc_elements ' . $where . ' 
-      GROUP BY packageId, LENGTH(path) = 3');
+      GROUP BY packageId, ' . $isAField
+    );
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
     if ($documenttype !== '')
