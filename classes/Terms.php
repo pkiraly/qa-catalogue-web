@@ -207,6 +207,7 @@ class Terms extends Facetable {
     if (file_exists($fileName)) {
       $fileDate = date("Y-m-d H:i:s", filemtime($fileName));
       if ($this->getSolrModificationDate() > $fileDate) {
+        error_log('Clear cached Solr field list');
         unlink($fileName);
       }
     }
@@ -223,22 +224,27 @@ class Terms extends Facetable {
     $fields = [];
     foreach ($allFields as $field) {
       $label = is_object($field) ? $field->label : $field['label'];
-      $value = is_object($field) ? $field->value : $field['value'];
-      if (
-               (
-                    $term == ''
-                 || strpos(strtoupper($label), strtoupper($term)) !== false
-                 || strpos(strtoupper($value), strtoupper($term)) !== false
-               )
-           &&
-               (
-                    ($this->variant == 'tokenized' && preg_match('/_txt$/', $value))
-                 || ($this->variant == 'phrase'    && preg_match('/_ss$/', $value))
-               )
-        )
-        $fields[] = ['label' => $label, 'value' => $value];
+      $fieldName = is_object($field) ? $field->value : $field['value'];
+      if (    $this->isTermPartOfLabelOrFieldName($term, $label, $fieldName)
+           && $this->doesFieldMatchToVariant($fieldName))
+        $fields[] = ['label' => $label, 'value' => $fieldName];
     }
     print json_encode($fields);
+  }
+
+  private function isTermPartOfLabelOrFieldName($term, $label, $fieldName) {
+    return (
+                $term == ''
+             || strpos(strtoupper($label), strtoupper($term)) !== false
+             || strpos(strtoupper($fieldName), strtoupper($term)) !== false
+    );
+  }
+
+  private function doesFieldMatchToVariant($fieldName) {
+    return (
+               ($this->variant == 'tokenized' && preg_match('/_tt$/', $fieldName))
+            || ($this->variant == 'phrase'    && preg_match('/_ss$/', $fieldName))
+    );
   }
 
   /**

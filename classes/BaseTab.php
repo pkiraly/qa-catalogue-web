@@ -146,11 +146,37 @@ abstract class BaseTab implements Tab {
    */
   protected function getSolrFields() {
     if (!isset($this->solrFields)) {
+      // $this->getSolrFieldsByQuery();
+      $this->getSolrFieldsFromLuke();
+    }
+    return $this->solrFields;
+  }
+
+  protected function getSolrFieldsByQuery() {
+    if (!isset($this->solrFields)) {
       $solrPath = $this->getIndexName();
       $baseUrl = $this->getMainSolrEndpoint() . $solrPath; // $this->db;
       $url = $baseUrl . '/select/?q=*:*&wt=csv&rows=0';
       $all_fields = file_get_contents($url);
       $this->solrFields = explode(',', $all_fields);
+      if (isset($this->configuration['showAdvancedSearchForm'])) {
+        $tokenizedVersions = [];
+        foreach ($this->solrFields as $field) {
+          if (preg_match('/_ss$/', $field))
+            $tokenizedVersions[] = preg_replace('/_ss$/', '_tt', $field);
+        }
+        $this->solrFields = array_merge($this->solrFields, $tokenizedVersions);
+      }
+    }
+    return $this->solrFields;
+  }
+
+  protected function getSolrFieldsFromLuke() {
+    if (!isset($this->solrFields)) {
+      $baseUrl = $this->getMainSolrEndpoint() . $this->getIndexName();
+      $url = $baseUrl . '/admin/luke?numTerms=%C3%B6&wt=json';
+      $luke = json_decode(file_get_contents($url));
+      $this->solrFields = array_keys(get_object_vars($luke->fields));
     }
     return $this->solrFields;
   }
@@ -160,9 +186,7 @@ abstract class BaseTab implements Tab {
     $url = $this->getMainSolrEndpoint() . 'admin/cores?action=STATUS&core=' . $indexName;
     $response = json_decode(file_get_contents($url));
     $lastModified = $response->status->{$indexName}->index->lastModified;
-    $lastModified = str_replace('T', ' ', $lastModified);
-    $lastModified = preg_replace('/\.\d+Z?$/', '', $lastModified);
-    error_log("solr lastModified: $lastModified");
+    $lastModified = date("Y-m-d H:i:s", strtotime($lastModified));
     return $lastModified;
   }
 
@@ -451,7 +475,7 @@ abstract class BaseTab implements Tab {
 
     $this->getFieldDefinitions();
 
-    $solrField = preg_replace('/_(ss|txt)$/', '', $solrField);
+    $solrField = preg_replace('/_(ss|tt)$/', '', $solrField);
     if ($solrField == 'type'
         || ($this->catalogue->getSchemaType() == 'MARC21'
             && (substr($solrField, 0, 2) == '00'
