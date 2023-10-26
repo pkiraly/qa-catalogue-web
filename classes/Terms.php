@@ -242,7 +242,7 @@ class Terms extends Facetable {
 
   private function doesFieldMatchToVariant($fieldName) {
     return (
-               ($this->variant == 'tokenized' && preg_match('/_tt$/', $fieldName))
+               ($this->variant == 'tokenized' && preg_match('/_(tt|txt)$/', $fieldName))
             || ($this->variant == 'phrase'    && preg_match('/_ss$/', $fieldName))
     );
   }
