@@ -288,11 +288,7 @@ abstract class BaseTab implements Tab {
       foreach ($filters as $filter)
         $parameters[] = 'fq=' . $filter;
 
-    try {
-        return $this->getSolrResponse($parameters)->facets;
-    } catch(Exception $e) {
-        // TODO: don't catch here but at caller and set error response
-    }
+    return $this->getSolrResponse($parameters)->facets;
   }
 
   protected function countFacets($facet, $query, $termFilter = '', $filters = []) {
@@ -329,11 +325,7 @@ abstract class BaseTab implements Tab {
       foreach ($filters as $filter)
         $parameters[] = 'fq=' . $filter;
 
-    try {
-        return $this->getSolrResponse($parameters)->facets;
-    } catch(Exception $e) {
-        // TODO: don't catch here but at caller and set error response
-    }
+    return $this->getSolrResponse($parameters)->facets; // may throw Exception
   }
 
   private function encodeSolrParams($parameters) {
