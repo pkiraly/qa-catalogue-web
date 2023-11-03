@@ -14,7 +14,6 @@ class Firenze extends Catalogue {
       $rid = preg_replace('/^IT\\\+ICCU\\\+CUB\\\+/', 'CUB', $rid);
     }
 
-     
     return 'https://opac.bncf.firenze.sbn.it/bncf-prod/resource?uri=' . $rid . '&found=1';
   }
 }

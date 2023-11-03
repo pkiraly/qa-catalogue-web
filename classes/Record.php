@@ -468,7 +468,7 @@ class Record {
 
   private function picaTagLink($tag, $pica3=true) {
     $text = $tag;
-    $field = self::$schema->lookup($tag);    
+    $field = self::$schema->lookup($tag);
     if ($pica3 && isset($field->pica3))
       $text .= '=' . $field->pica3;
 

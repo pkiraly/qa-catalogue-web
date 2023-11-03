@@ -73,7 +73,7 @@ abstract class BaseTab implements Tab {
       }
       if (isset($this->analysisParameters->numberOfprocessedRecords)) {
         $this->count = $this->analysisParameters->numberOfprocessedRecords;
-      }    
+      }
     }
     $smarty->assign('count', $this->count);
   }

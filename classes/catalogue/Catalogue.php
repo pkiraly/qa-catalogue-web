@@ -22,7 +22,7 @@ class Catalogue {
     $this->defaultLang = $configuration->getLanguage() ?? $this->defaultLang; // $config["language"] ?? $this->defaultLang;
     $this->linkTemplate = $configuration->getLinkTemplate() ?? $this->linkTemplate; // $config["linkTemplate"] ?? $this->linkTemplate;
   }
- 
+
   public function getOpacLink($id, $record) {
     if ($this->linkTemplate && $id) {
       return str_replace('{id}', $id, $this->linkTemplate);
