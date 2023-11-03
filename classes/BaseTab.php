@@ -4,7 +4,7 @@ include_once 'catalogue/Catalogue.php';
 
 abstract class BaseTab implements Tab {
 
-  protected $configuration;
+  protected Utils\Configuration $configuration;
   protected $db;
   protected $count = 0;
   protected static $marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
@@ -35,12 +35,12 @@ abstract class BaseTab implements Tab {
   public function __construct($configuration, $db) {
     $this->configuration = $configuration;
     $this->db = $db;
-    $this->catalogueName = isset($configuration['catalogue']) ? $configuration['catalogue'] : $db;
+    $this->catalogueName = $this->configuration->getCatalogue(); // isset($configuration['catalogue']) ? $configuration['catalogue'] : $db;
     $this->catalogue = $this->createCatalogue();
     $this->marcVersion = $this->catalogue->getMarcVersion();
-    $this->displayNetwork = isset($configuration['display-network']) && (int) $configuration['display-network'] == 1;
-    $this->displayShacl = isset($configuration['display-shacl']) && (int) $configuration['display-shacl'] == 1;
-    $this->versioning = (isset($this->configuration['versions'][$this->db]) && $this->configuration['versions'][$this->db] === true);
+    $this->displayNetwork = $this->configuration->doDisplayNetwork(); // isset($configuration['display-network']) && (int) $configuration['display-network'] == 1;
+    $this->displayShacl = $this->configuration->doDisplayShacl(); // isset($configuration['display-shacl']) && (int) $configuration['display-shacl'] == 1;
+    $this->versioning = $this->configuration->doVersioning(); // (isset($this->configuration['versions'][$this->db]) && $this->configuration['versions'][$this->db] === true);
 
     $this->count = $this->readCount();
     $this->readLastUpdate();
@@ -88,7 +88,7 @@ abstract class BaseTab implements Tab {
     $classFile = 'catalogue/' . $className . '.php';
     if ($className != "catalogue" && file_exists('classes/' . $classFile)) {
       include_once $classFile;
-      return new $className();
+      return new $className($this->configuration);
     } else {
       return new Catalogue($this->configuration);
     }
@@ -99,11 +99,11 @@ abstract class BaseTab implements Tab {
   }
 
   protected function getFilePath($name) {
-    return sprintf('%s/%s/%s', $this->configuration['dir'], $this->getDirName(), $name);
+    return sprintf('%s/%s/%s', $this->configuration->getDir(), $this->getDirName(), $name); // ['dir']
   }
 
   protected function getVersionedFilePath($version, $name) {
-    return sprintf('%s/_historical/%s/%s/%s', $this->configuration['dir'], $this->getDirName(), $version, $name);
+    return sprintf('%s/_historical/%s/%s/%s', $this->configuration->getDir(), $this->getDirName(), $version, $name);
   }
 
   protected function readCount($countFile = null) {
@@ -159,7 +159,7 @@ abstract class BaseTab implements Tab {
       $url = $baseUrl . '/select/?q=*:*&wt=csv&rows=0';
       $all_fields = file_get_contents($url);
       $this->solrFields = explode(',', $all_fields);
-      if (isset($this->configuration['showAdvancedSearchForm'])) {
+      if ($this->configuration->doShowAdvancedSearchForm()) {
         $tokenizedVersions = [];
         foreach ($this->solrFields as $field) {
           if (preg_match('/_ss$/', $field))
@@ -195,27 +195,11 @@ abstract class BaseTab implements Tab {
    * @return string
    */
   protected function getMainSolrEndpoint() {
-    if (isset($this->configuration['mainSolrEndpoint'])) {
-      if (isset($this->configuration['mainSolrEndpoint'][$this->db]))
-        $mainSolrEndpoint = $this->configuration['mainSolrEndpoint'][$this->db];
-      else
-        $mainSolrEndpoint = $this->configuration['mainSolrEndpoint'];
-    } else {
-      $mainSolrEndpoint =  'http://localhost:8983/solr/';
-    }
-    return $mainSolrEndpoint;
+    return $this->configuration->getMainSolrEndpoint();
   }
 
   protected function getSolrEndpoint4ValidationResults() {
-    if (isset($this->configuration['solrEndpoint4ValidationResults'])) {
-      if (isset($this->configuration['solrEndpoint4ValidationResults'][$this->db]))
-        $solrEndpoint4ValidationResults = $this->configuration['solrEndpoint4ValidationResults'][$this->db];
-      else
-        $solrEndpoint4ValidationResults = $this->configuration['solrEndpoint4ValidationResults'];
-    } else {
-      $solrEndpoint4ValidationResults =  'http://localhost:8983/solr/';
-    }
-    return $solrEndpoint4ValidationResults;
+    return $this->configuration->getSolrForScoresUrl();
   }
 
   protected function getSolrResponse($params) {
@@ -596,14 +580,11 @@ abstract class BaseTab implements Tab {
    * @return mixed
    */
   protected function getIndexName() {
-    $solrPath = (isset($this->configuration['indexName']) && isset($this->configuration['indexName'][$this->db]))
-      ? $this->configuration['indexName'][$this->db]
-      : $this->db;
-    return $solrPath;
+    return $this->configuration->getIndexName() !== null ? $this->configuration->getIndexName() : $this->db;
   }
 
   private function handleHistoricalData() {
-    $historicalDir = sprintf('%s/_historical/%s', $this->configuration['dir'], $this->getDirName());
+    $historicalDir = sprintf('%s/_historical/%s', $this->configuration->getDir(), $this->getDirName());
     if (file_exists($historicalDir))
       $this->historicalDataDir = $historicalDir;
   }
@@ -632,10 +613,7 @@ abstract class BaseTab implements Tab {
    * @return mixed
    */
   protected function getDirName() {
-    $path = (isset($this->configuration['dirName']) && isset($this->configuration['dirName'][$this->db]))
-      ? $this->configuration['dirName'][$this->db]
-      : $this->db;
-    return $path;
+    return $this->configuration->getDirName() !== null ? $this->configuration->getDirName() : $this->db;
   }
 
   protected function sqliteExists() {
@@ -777,6 +755,6 @@ abstract class BaseTab implements Tab {
   }
 
   protected function getDbDir() {
-    return sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
+    return sprintf('%s/%s', $this->configuration->getDir(), $this->getDirName());
   }
 }

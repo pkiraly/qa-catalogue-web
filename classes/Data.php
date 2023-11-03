@@ -318,7 +318,7 @@ class Data extends Facetable {
    */
   private function prepareParametersForIssueQueries($idType, $id): array {
     include_once 'IssuesDB.php';
-    $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
+    $dir = sprintf('%s/%s', $this->configuration->getDir(), $this->getDirName());
     $db = new IssuesDB($dir);
 
     $groupId = $this->grouped ? $this->groupId : '';
@@ -351,7 +351,7 @@ class Data extends Facetable {
    * @return void
    */
   private function searchAction(Smarty $smarty): void {
-    $smarty->assign('showAdvancedSearchForm', $this->showAdvancedSearchForm());
+    $smarty->assign('showAdvancedSearchForm', $this->configuration->doShowAdvancedSearchForm());
     $smarty->assign('query', $this->query);
     $smarty->assign('start', $this->start);
     $smarty->assign('rows', $this->rows);
@@ -531,7 +531,7 @@ class Data extends Facetable {
       $errorId = $id;
     } else {
       include_once 'IssuesDB.php';
-      $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
+      $dir = sprintf('%s/%s', $this->configuration->getDir(), $this->getDirName());
       $db = new IssuesDB($dir);
       if ($idType == 'categoryId') {
         $errorIds = $db->fetchAll($db->getErrorIdsByCategoryId($id, $this->groupId), 'id');
@@ -545,15 +545,5 @@ class Data extends Facetable {
     if ($this->grouped)
       $query .= ' AND groupId_is:' . $this->groupId;
     return $query;
-  }
-
-  private function showAdvancedSearchForm() {
-    if (isset($this->configuration['showAdvancedSearchForm'])) {
-      if (is_array($this->configuration['showAdvancedSearchForm']))
-        return $this->configuration['showAdvancedSearchForm'][$this->db] ?? false;
-      elseif (is_bool($this->configuration['showAdvancedSearchForm']))
-        return $this->configuration['showAdvancedSearchForm'];
-    }
-    return false;
   }
 }

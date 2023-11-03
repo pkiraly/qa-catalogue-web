@@ -11,21 +11,27 @@ if (!file_exists('vendor/autoload.php')) {
 require 'vendor/autoload.php';
 
 require_once 'common-functions.php';
+require_once 'classes/utils/Configuration.php';
+
 $marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
-$configuration = parse_ini_file("configuration.cnf", false, INI_SCANNER_TYPED);
+$configurationArray = parse_ini_file("configuration.cnf", false, INI_SCANNER_TYPED);
 $smarty = createSmarty('templates');
 
-if (isset($configuration['db']) && $configuration['db'] != '')
-  $db = $configuration['db'];
+if (isset($configurationArray['db']) && $configurationArray['db'] != '')
+  $db = $configurationArray['db'];
 else
   $db = getPath();
 
+$configuration = new Utils\Configuration($configurationArray, $db);
+$smarty->assign('templates', $configuration->getTemplates());
+/*
 if (isset($configuration['templates'])) {
   // realpath ensures there is no `/` at the end of the path
   $smarty->assign('templates', realpath($configuration['templates']) ?: 'config');
 } else {
   $smarty->assign('templates', 'config');
 }
+*/
 
 $map = [
   'data'                     => 'Data',
@@ -112,9 +118,13 @@ function getFacetLabel($facet) {
  * @param array $map
  * @return mixed|string
  */
-function getDefaultTab($configuration, array $map, $defaultTab = 'completeness') {
+function getDefaultTab(Utils\Configuration $configuration, array $map, $defaultTab = 'completeness') {
+  $tab = $configuration->getDefaultTab();
+  return in_array($tab, array_keys($map)) ? $tab : $defaultTab;
+  /*
   $key = 'default-tab';
   return (isset($configuration[$key]) && $configuration[$key] != '' && in_array($configuration[$key], array_keys($map)))
     ? $configuration['default-tab']
     : $defaultTab;
+  */
 }

@@ -475,9 +475,9 @@ class Issues extends BaseTab {
 
   protected function getDbDir() : string {
     if ($this->versioning && $this->version != '') {
-      $dir = sprintf('%s/_historical/%s/%s', $this->configuration['dir'], $this->getDirName(), $this->version);
+      $dir = sprintf('%s/_historical/%s/%s', $this->configuration->getDir(), $this->getDirName(), $this->version);
     } else {
-      $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
+      $dir = sprintf('%s/%s', $this->configuration->getDir(), $this->getDirName());
     }
     return $dir;
   }

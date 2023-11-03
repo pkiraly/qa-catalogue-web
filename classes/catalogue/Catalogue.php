@@ -14,13 +14,13 @@ class Catalogue {
   protected $defaultLang = 'en';
   protected $linkTemplate;
 
-  public function __construct($config=[]) {
-    $this->name = $this->name ?? $config["catalogue"] ?? "";
-    $this->label = $config["label"] ?? $this->label;
-    $this->url = $config["url"] ?? $this->url;
-    $this->schemaType = $config["schema"] ?? $this->schemaType;
-    $this->defaultLang = $config["language"] ?? $this->defaultLang;
-    $this->linkTemplate = $config["linkTemplate"] ?? $this->linkTemplate;
+  public function __construct(Utils\Configuration $configuration) {
+    $this->name = $this->name ?? $configuration->getCatalogue() ?? ''; // $config["catalogue"] ?? "";
+    $this->label = $configuration->getLabel() ?? $this->label; // $config["label"] ?? $this->label;
+    $this->url = $configuration->getUrl() ?? $this->url; // $config["url"] ?? $this->url;
+    $this->schemaType = $configuration->getSchema() ?? $this->schemaType; // $config["schema"] ?? $this->schemaType;
+    $this->defaultLang = $configuration->getLanguage() ?? $this->defaultLang; // $config["language"] ?? $this->defaultLang;
+    $this->linkTemplate = $configuration->getLinkTemplate() ?? $this->linkTemplate; // $config["linkTemplate"] ?? $this->linkTemplate;
   }
  
   public function getOpacLink($id, $record) {

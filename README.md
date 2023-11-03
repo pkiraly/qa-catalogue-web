@@ -88,44 +88,53 @@ If the application path does not equals `$CATALOG`, specify an existing catalogu
 echo "catalogue=$CATALOG" >> configuration.cnf
 ```
 
-Configuration parameters:
+Configuration parameters for the working of the software:
 
-- `dir`: the base output directory of data analysis with QA Catalogue
-- `catalogue`: machine name of a catalogue. Based on this the system will use the relevant catalogue representing class
-   in `classes/catalogue` directory. The parameter value should be a small case version of the class name, so e.g. if
-   the class name is `Gent` the parameter value should be `gent`. The value `catalogue` can be used for generic catalogue.
-- `default-tab`: the tab which will be displayed when no tab is selected. This will be the tab which will be opened by 
-   the root URL (the landing page). If no default-tab has been set, `completeness` will be used. The possible values are:
-   `data`, `completeness` (default), `issues`, `functions`, `classifications`, `authorities`, `serials`, `tt-completeness`,
-   `shelf-ready-completeness`, `shacl`, `network`, `terms`, `pareto`, `history`, `timeline`, `settings`, `about`,
-   `record-issues`, `histogram`, `functional-analysis-histogram`, `control-fields`, `download`, `collocations`.
-- `db`: the machine name of the data directory. By default, it comes from the URL as the path of the application
+- `db`: (string) the machine name of the data directory. By default, it comes from the URL as the path of the application
    (qa-catalogue). With this parameter the administrator can overwrite the path.
-- `indexName[<catalogue>]`: name of the Solr index of a particular catalogue, if it is different from the name of the
-    catalogue or the URL path. 
-- `dirName[<catalogue>]`: name of the data directory of a particular catalogue, if it is different from the name of the
+- `multitenant`: (bool) flag to denote if the site is in multi-tenant mode, i.e. it hosts the evaluation of multiple
+   catalogues. If it is set you can specify general and catalogue-specific settings, e.g. `version=false` is a 
+   general setting, while `version[loc]=false` is a library specific settings, which override the previous one.
+   \[Available from v0.8.0\]
+- `dir`, `dir[<catalogue>]`: (string) the base output directory of data analysis with QA Catalogue
+- `catalogue`: (string) machine name of a catalogue. Based on this the system will use the relevant catalogue
+   representing class in `classes/catalogue` directory. The parameter value should be a small case version of the class
+   name, so e.g. if the class name is `Gent` the parameter value should be `gent`. The value `catalogue` can be used
+   for generic catalogue.
+- `default-tab`, `default-tab[<catalogue>]`: (string) the tab which will be displayed when no tab is selected. This
+   will be the tab which will be opened by the root URL (the landing page). If no default-tab has been set,
+   `completeness` will be used. The possible values are: `data`, `completeness` (default), `issues`, `functions`,
+   `classifications`, `authorities`, `serials`, `tt-completeness`, `shelf-ready-completeness`, `shacl`, `network`,
+   `terms`, `pareto`, `history`, `timeline`, `settings`, `about`, `record-issues`, `histogram`,
+   `functional-analysis-histogram`, `control-fields`, `download`, `collocations`.
+- `indexName`, `indexName[<catalogue>]`: (string) name of the Solr index of a particular catalogue, if it is different from the name of the
+    catalogue or the URL path.
+- `dirName`, `dirName[<catalogue>]`: (string) name of the data directory of a particular catalogue, if it is different from the name of the
    catalogue or the URL path.
-- `version[<catalogue>]`: denotes if there are versions for a catalogue. Possible values: 1 (there are versions), 0 
+- `version`, `version[<catalogue>]`: (string) denotes if there are versions for a catalogue. Possible values: 1 (there are versions), 0 
    (there are no versions)
-- `display-network`: show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
-- `display-shacl`: show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
-- `templates`: directory with additional Smarty templates for [customization](#customization).
-- `mainSolrEndpoint`, `mainSolrEndpoint[<catalogue>]`: the URL of the main Solr endpoint. Default value: 
+- `display-network`, `display-network[<catalogue>]`: (bool) show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
+- `display-shacl`, `display-shacl[<catalogue>]`: (bool) show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
+- `templates`, `templates[<catalogue>]`: (string) directory with additional, custom Smarty templates for
+   [customization](#customization). Deafult value is `config`.
+- `mainSolrEndpoint`, `mainSolrEndpoint[<catalogue>]`: (string) the URL of the main Solr endpoint. Default value: 
   `http://localhost:8983/solr/`. In multi-tenant mode you can specify it for a particular catalogue with
- `mainSolrEndpoint[<catalogue>]`. \[Available from v0.8.0\]
-- `solrEndpoint4ValidationResults`, `solrEndpoint4ValidationResults[<catalogue>]`: the URL of the Solr core that is 
-  used for storing the results of validation. Usually this index is merged to the main core, so this property is needed
-  on the special case when the validation is not merged. Default value: `http://localhost:8983/solr/`. 
-  In multi-tenant mode you can specify it for a particular catalogue with `mainSolrEndpoint[<catalogue>]`.
-  \[Available from v0.8.0\]
+  `mainSolrEndpoint[<catalogue>]`. \[Available from v0.8.0\]
+- `solrForScoresUrl`, `solrForScoresUrl[<catalogue>]`: (string) the URL of the Solr core that is 
+   used for storing the results of validation. Usually this index is merged to the main core, so this property is needed
+   on the special case when the validation is not merged. Default value: `http://localhost:8983/solr/`. 
+   In multi-tenant mode you can specify it for a particular catalogue with `mainSolrEndpoint[<catalogue>]`. (Its previous
+   name was `solrEndpoint4ValidationResults`.) \[Available from v0.8.0\]
 
-The following configuration parameters only have effect for generic catalogs (when `catalogue` is not set)
+The following configuration parameters only have effect for generic catalogs (when there no corresponding PHP class is 
+available in the `classes/catalogue` directory):
 
-- `label`: name of the library catalogue
-- `url`: link to library catalogue homepage
-- `schema`: metadata schema type (`MARC21 as default or `PICA`)
-- `linkTemplate`: URL template to link into the library catalogue (`{id}` is replaced by record identifier)
-- `language`: default language of the user interface
+- `label`, `label[<catalogue>]`: (string) name of the library catalogue
+- `url`, `url[<catalogue>]`: (string) link to library catalogue homepage
+- `schema`, `schema[<catalogue>]`: (string) metadata schema type (`MARC21` as default or `PICA`)
+- `linkTemplate`, `linkTemplate[<catalogue>]`: (string) URL template to link into the library catalogue (`{id}` will be
+   replaced by record identifier)
+- `language`, `language[<catalogue>]`: (string) default language of the user interface
 
 Example:
 
