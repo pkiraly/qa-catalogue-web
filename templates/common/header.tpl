@@ -9,8 +9,11 @@
     {if isset($lastUpdate) && $lastUpdate != ''}
       &nbsp; &nbsp; {_('last data update')}: <strong>{$lastUpdate}</strong>
     {/if}
-    {if isset($analysisTimestamp) && !empty($analysisTimestamp)}
+    {if isset($analysisTimestamp)}
       &nbsp; &nbsp; {_('timestamp of analysis')}: <strong>{$analysisTimestamp}</strong>
+    {/if}
+    {if isset($analysisDuration)}
+      ({$analysisDuration})
     {/if}
   </span>
   </div>

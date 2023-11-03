@@ -55,7 +55,6 @@ abstract class BaseTab implements Tab {
     $smarty->assign('db', $this->db);
     $smarty->assign('catalogueName', $this->catalogueName);
     $smarty->assign('catalogue', $this->catalogue);
-    $smarty->assign('count', $this->count);
     $smarty->assign('lastUpdate', $this->lastUpdate);
     $smarty->assign('displayNetwork', $this->displayNetwork);
     $smarty->assign('displayShacl', $this->displayShacl);
@@ -66,10 +65,17 @@ abstract class BaseTab implements Tab {
     $smarty->assign('generalParams', $this->concatParams($this->getGeneralParams()));
 
     $this->readAnalysisParameters();
-    if (!is_null($this->analysisParameters)) {
+    if ($this->analysisParameters) {
       $smarty->assign('analysisParameters', $this->analysisParameters);
       $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
+      if (isset($this->analysisParameters->duration)) {
+        $smarty->assign('analysisDuration', $this->analysisParameters->duration);
+      }
+      if (isset($this->analysisParameters->numberOfprocessedRecords)) {
+        $this->count = $this->analysisParameters->numberOfprocessedRecords;
+      }    
     }
+    $smarty->assign('count', $this->count);
   }
 
   protected function concatParams($params): string {
