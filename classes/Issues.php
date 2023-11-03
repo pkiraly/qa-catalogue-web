@@ -52,14 +52,20 @@ class Issues extends BaseTab {
 
     if ($this->action == 'download' || $this->action == 'query') {
       $this->processDownloadOrQueryRequest();
-    } elseif ($this->action == 'record') {
-      $this->processRecordRequest($smarty);
-    } elseif ($this->action == 'ajaxIssue') {
-      $this->processAjaxIssueRequest($smarty);
-    } elseif ($this->action == 'ajaxIssueByTag') {
-      $this->processAjaxIssueByTagRequest($smarty);
     } else {
-      $this->processListRequest($smarty);
+      try {
+        if ($this->action == 'record') {
+          $this->processRecordRequest($smarty);
+        } elseif ($this->action == 'ajaxIssue') {
+          $this->processAjaxIssueRequest($smarty);
+        } elseif ($this->action == 'ajaxIssueByTag') {
+          $this->processAjaxIssueByTagRequest($smarty);
+        } else {
+          $this->processListRequest($smarty);
+        }
+      } catch(Throwable $e) {
+        $smarty->assign('error', "Failed to read analysis result");
+      }
     }
   }
 
