@@ -78,7 +78,11 @@ include_once('classes/BaseTab.php');
 
 $class = isset($map[$tab]) ? $map[$tab] : 'Completeness';
 $tab = createTab($class);
-$tab->prepareData($smarty);
+try {
+  $tab->prepareData($smarty);
+} catch(Throwable $e) {
+  $smarty->assign('error', 'Failed to read analysis result');
+}
 
 if ($ajax == 1) {
   if (!is_null($tab->getAjaxTemplate()) && $tab->getOutputType() != 'none')
