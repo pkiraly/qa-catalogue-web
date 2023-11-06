@@ -1,7 +1,6 @@
 <?php
 
 class IssuesDB extends SQLite3 {
-  private $db;
 
   function __construct($dir) {
     $file = $dir . '/qa_catalogue.sqlite';

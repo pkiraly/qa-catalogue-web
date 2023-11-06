@@ -75,7 +75,7 @@ class Timeline extends BaseTab {
   private function getByCategoryImage() {
     if (!is_null($this->historicalDataDir) && file_exists($this->historicalDataDir)) {
       $timelineFilename = 'timeline-by-category.png';
-      if (file_exists(sprintf('images/%s/%s', $this->db, $timelineFilename))) {
+      if (file_exists(sprintf('images/%s/%s', $this->id, $timelineFilename))) {
         return $timelineFilename;
       }
     }
@@ -84,7 +84,7 @@ class Timeline extends BaseTab {
 
   private function getByTypeImages() {
     if (!is_null($this->historicalDataDir) && file_exists($this->historicalDataDir)) {
-      $allFiles = scandir(sprintf('images/%s', $this->db));
+      $allFiles = scandir(sprintf('images/%s', $this->id));
       $files = [];
       $regex = '/^timeline-by-type-.*.png$/';
       foreach ($allFiles as $file)

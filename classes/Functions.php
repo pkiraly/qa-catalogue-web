@@ -57,8 +57,8 @@ class Functions extends BaseTab {
   protected $function;
   protected $parameterFile = 'functions.params.json';
 
-  public function __construct($configuration, $db) {
-    parent::__construct($configuration, $db);
+  public function __construct($configuration, $id) {
+    parent::__construct($configuration, $id);
 
     $this->function = getOrDefault('function', 'DiscoverySearch', array_keys($this->functions));
   }

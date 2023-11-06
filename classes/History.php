@@ -22,7 +22,7 @@ class History extends BaseTab {
     $byRecordsFile = $this->getFilePath($fileName);
     error_log('byRecordsFile: ' . $byRecordsFile);
     if (file_exists($byRecordsFile)) {
-      $raw_files = scandir(sprintf('images/%s', $this->db));
+      $raw_files = scandir(sprintf('images/%s', $this->id));
       foreach ($raw_files as $file)
         if (preg_match('/^marc-history\.png$/', $file))
           $files[] = $file;

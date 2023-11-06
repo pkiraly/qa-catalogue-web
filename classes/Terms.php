@@ -18,8 +18,8 @@ class Terms extends Facetable {
    */
   private $variant;
 
-  public function __construct($configuration, $db) {
-    parent::__construct($configuration, $db);
+  public function __construct($configuration, $id) {
+    parent::__construct($configuration, $id);
     parent::readAnalysisParameters('validation.params.json');
     $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
     if ($this->grouped) {
@@ -276,13 +276,13 @@ class Terms extends Facetable {
       $smarty->assign('groups', $this->groups);
     }
 
-    $smarty->assign('facets', $facets);
     $smarty->assign('label', $this->resolveSolrField($this->facet));
     $smarty->assign('basicFacetParams', ['tab=data', 'query=' . $this->query]);
     $smarty->assign('prevLink', $this->createPrevLink());
 
     try {
       $facets = $this->createTermList();
+      $smarty->assign('facets', $facets);
       if (isset($facets->{$this->facet}))
         $smarty->assign('nextLink', $this->createNextLink(get_object_vars($facets->{$this->facet})));
       else

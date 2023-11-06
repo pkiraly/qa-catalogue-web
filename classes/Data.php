@@ -28,8 +28,8 @@ class Data extends Facetable {
   private $searchForm = 'simple';
   protected $parameterFile = 'marctosolr.params.json';
 
-  public function __construct($configuration, $db) {
-    parent::__construct($configuration, $db);
+  public function __construct($configuration, $id) {
+    parent::__construct($configuration, $id);
     $this->facet = getOrDefault('facet', '');
     $this->query = getOrDefault('query', '*:*');
     $this->filters = getOrDefault('filters', []);
@@ -98,7 +98,7 @@ class Data extends Facetable {
   private function buildParameters(Smarty $smarty) {
     $solrParams = [
       'rows=' . $this->rows,
-      'core=' . $this->db,
+      'core=' . $this->id,
     ];
 
     if ($this->type == 'issues') {
@@ -302,7 +302,7 @@ class Data extends Facetable {
   }
 
   public function getRecord($doc) {
-    $record = new Record($doc, $this->configuration, $this->db, $this->catalogue);
+    $record = new Record($doc, $this->configuration, $this->id, $this->catalogue);
     $record->setBasicQueryParameters($this->getBasicUrl(['query', 'filters']));
     $record->setBasicFilterParameters($this->getBasicUrl([]));
     return $record;
@@ -406,7 +406,7 @@ class Data extends Facetable {
     $solrParams = [
       'start=' . $start,
       'rows=' . $rows,
-      'core=' . $this->db,
+      'core=' . $this->id,
       'fl=id',
     ];
 

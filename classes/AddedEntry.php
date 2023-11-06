@@ -55,8 +55,6 @@ class AddedEntry extends BaseTab {
   }
 
   /**
-   * @param $dir
-   * @param $db
    * @param Smarty $smarty
    * @return object
    */
@@ -90,9 +88,8 @@ class AddedEntry extends BaseTab {
   }
 
   /**
-   * @param $dir
-   * @param $db
    * @param Smarty $smarty
+   * @param Smarty $bySubfieldsFile
    * @return object
    */
   protected function readSubfields(Smarty &$smarty, $bySubfieldsFile) {

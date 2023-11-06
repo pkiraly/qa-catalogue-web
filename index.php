@@ -17,12 +17,14 @@ $marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
 $configurationArray = parse_ini_file("configuration.cnf", false, INI_SCANNER_TYPED);
 $smarty = createSmarty('templates');
 
-if (isset($configurationArray['db']) && $configurationArray['db'] != '')
-  $db = $configurationArray['db'];
+if (isset($configurationArray['id']) && $configurationArray['id'] != '')
+  $id = $configurationArray['id'];
+elseif (isset($configurationArray['db']) && $configurationArray['db'] != '')  // this is a deprecated parameter,
+  $id = $configurationArray['db'];                                            // kept for compatibility reason
 else
-  $db = getPath();
+  $id = getPath();
 
-$configuration = new Utils\Configuration($configurationArray, $db);
+$configuration = new Utils\Configuration($configurationArray, $id);
 $smarty->assign('templates', $configuration->getTemplates());
 /*
 if (isset($configuration['templates'])) {
@@ -87,13 +89,13 @@ if ($ajax == 1) {
   $smarty->display($tab->getTemplate());
 
 function createTab($name) {
-  global $configuration, $db;
+  global $configuration, $id;
 
   if ($name == 'Classifications' || $name == 'Authorities')
     include_once('classes/AddedEntry.php');
 
   include_once('classes/' . $name . '.php');
-  return new $name($configuration, $db);
+  return new $name($configuration, $id);
 }
 
 function showMarcUrl($content) {

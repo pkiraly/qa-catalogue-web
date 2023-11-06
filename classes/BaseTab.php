@@ -5,7 +5,7 @@ include_once 'catalogue/Catalogue.php';
 abstract class BaseTab implements Tab {
 
   protected Utils\Configuration $configuration;
-  protected $db;
+  protected $id;
   protected $count = 0;
   protected static $marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
   protected $solrFields;
@@ -30,11 +30,11 @@ abstract class BaseTab implements Tab {
   /**
    * BaseTab constructor.
    * @param $configuration
-   * @param $db
+   * @param $id
    */
-  public function __construct($configuration, $db) {
+  public function __construct($configuration, $id) {
     $this->configuration = $configuration;
-    $this->db = $db;
+    $this->id = $id;
     $this->catalogueName = $this->configuration->getCatalogue(); // isset($configuration['catalogue']) ? $configuration['catalogue'] : $db;
     $this->catalogue = $this->createCatalogue();
     $this->marcVersion = $this->catalogue->getMarcVersion();
@@ -52,7 +52,7 @@ abstract class BaseTab implements Tab {
   public function prepareData(Smarty &$smarty) {
     global $languages;
 
-    $smarty->assign('db', $this->db);
+    $smarty->assign('id', $this->id);
     $smarty->assign('catalogueName', $this->catalogueName);
     $smarty->assign('catalogue', $this->catalogue);
     $smarty->assign('lastUpdate', $this->lastUpdate);
@@ -147,7 +147,6 @@ abstract class BaseTab implements Tab {
   }
 
   /**
-   * @param array $db
    * @return array
    */
   protected function getSolrFields() {
@@ -230,6 +229,10 @@ abstract class BaseTab implements Tab {
    * @return bool
    */
   protected function isCoreAvailable($core): bool {
+    $endpoint = $this->getSolrEndpoint($core);
+    if (is_null($endpoint))
+      return false;
+
     $url = $this->getSolrEndpoint($core) . $core . '/admin/ping';
 
     $ch = curl_init();
@@ -251,7 +254,7 @@ abstract class BaseTab implements Tab {
     return false;
   }
 
-  protected function getSolrEndpoint($core): string {
+  protected function getSolrEndpoint($core): ?string {
     return preg_match('/validation$/', $core)
       ? $this->getSolrEndpoint4ValidationResults()
       : $this->getMainSolrEndpoint();
@@ -265,7 +268,7 @@ abstract class BaseTab implements Tab {
       'facet.offset=' . $offset,
       'facet.field=' . $facet,
       'facet.mincount=1',
-      'core=' . $this->db,
+      'core=' . $this->id,
       'rows=0',
       'wt=json',
       'json.nl=map',
@@ -302,7 +305,7 @@ abstract class BaseTab implements Tab {
       'facet.offset=' . $offset,
       'facet.field=' . $facet,
       'facet.mincount=1',
-      'core=' . $this->db,
+      'core=' . $this->id,
       'rows=0',
       'wt=json',
       'json.nl=map',
@@ -352,11 +355,11 @@ abstract class BaseTab implements Tab {
   }
 
   protected function getFieldMapFileName() {
-    return 'cache/field-map-' . $this->db . '.js';
+    return 'cache/field-map-' . $this->id . '.js';
   }
 
   protected function getFacetFile() {
-    return 'cache/selected-facets-' . $this->db . '.js';
+    return 'cache/selected-facets-' . $this->id . '.js';
   }
 
   protected function getSelectedFacets() {
@@ -586,7 +589,7 @@ abstract class BaseTab implements Tab {
    * @return mixed
    */
   protected function getIndexName() {
-    return $this->configuration->getIndexName() !== null ? $this->configuration->getIndexName() : $this->db;
+    return $this->configuration->getIndexName() !== null ? $this->configuration->getIndexName() : $this->id;
   }
 
   private function handleHistoricalData() {
@@ -619,7 +622,7 @@ abstract class BaseTab implements Tab {
    * @return mixed
    */
   protected function getDirName() {
-    return $this->configuration->getDirName() !== null ? $this->configuration->getDirName() : $this->db;
+    return $this->configuration->getDirName() !== null ? $this->configuration->getDirName() : $this->id;
   }
 
   protected function sqliteExists() {

@@ -90,55 +90,57 @@ echo "catalogue=$CATALOG" >> configuration.cnf
 
 Configuration parameters for the working of the software:
 
-- `db`: (string) the machine name of the data directory. By default, it comes from the URL as the path of the application
-   (qa-catalogue). With this parameter the administrator can overwrite the path.
+- `id`: (string) the machine name of the data directory. By default, it comes from the URL as the path of the application
+   (qa-catalogue). With this parameter the administrator can overwrite the path. Note: this parameter was called `db`
+   previously. For compatibility reason we will support `db` as well for some time. 
 - `multitenant`: (bool) flag to denote if the site is in multi-tenant mode, i.e. it hosts the evaluation of multiple
    catalogues. If it is set you can specify general and catalogue-specific settings, e.g. `version=false` is a 
    general setting, while `version[loc]=false` is a library specific settings, which override the previous one.
    \[Available from v0.8.0\]
-- `dir`, `dir[<catalogue>]`: (string) the base output directory of data analysis with QA Catalogue
-- `catalogue`: (string) machine name of a catalogue. Based on this the system will use the relevant catalogue
+- `dir`, `dir[<id>]`: (string) the base output directory of data analysis with QA Catalogue
+- `catalogue`, `cataloguer[<id>]`: (string) machine name of a catalogue. Based on this the system will use the relevant catalogue
    representing class in `classes/catalogue` directory. The parameter value should be a small case version of the class
    name, so e.g. if the class name is `Gent` the parameter value should be `gent`. The value `catalogue` can be used
    for generic catalogue.
-- `default-tab`, `default-tab[<catalogue>]`: (string) the tab which will be displayed when no tab is selected. This
+- `default-tab`, `default-tab[<id>]`: (string) the tab which will be displayed when no tab is selected. This
    will be the tab which will be opened by the root URL (the landing page). If no default-tab has been set,
    `completeness` will be used. The possible values are: `data`, `completeness` (default), `issues`, `functions`,
    `classifications`, `authorities`, `serials`, `tt-completeness`, `shelf-ready-completeness`, `shacl`, `network`,
    `terms`, `pareto`, `history`, `timeline`, `settings`, `about`, `record-issues`, `histogram`,
    `functional-analysis-histogram`, `control-fields`, `download`, `collocations`.
-- `indexName`, `indexName[<catalogue>]`: (string) name of the Solr index of a particular catalogue, if it is different from the name of the
+- `indexName`, `indexName[<id>]`: (string) name of the Solr index of a particular catalogue, if it is different from the name of the
     catalogue or the URL path.
-- `dirName`, `dirName[<catalogue>]`: (string) name of the data directory of a particular catalogue, if it is different from the name of the
+- `dirName`, `dirName[<id>]`: (string) name of the data directory of a particular catalogue, if it is different from the name of the
    catalogue or the URL path.
-- `version`, `version[<catalogue>]`: (string) denotes if there are versions for a catalogue. Possible values: 1 (there are versions), 0 
+- `version`, `version[<id>]`: (string) denotes if there are versions for a catalogue. Possible values: 1 (there are versions), 0 
    (there are no versions)
-- `display-network`, `display-network[<catalogue>]`: (bool) show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
-- `display-shacl`, `display-shacl[<catalogue>]`: (bool) show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
-- `templates`, `templates[<catalogue>]`: (string) directory with additional, custom Smarty templates for
+- `display-network`, `display-network[<id>]`: (bool) show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
+- `display-shacl`, `display-shacl[<id>]`: (bool) show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
+- `templates`, `templates[<id>]`: (string) directory with additional, custom Smarty templates for
    [customization](#customization). Deafult value is `config`.
-- `mainSolrEndpoint`, `mainSolrEndpoint[<catalogue>]`: (string) the URL of the main Solr endpoint. Default value: 
+- `mainSolrEndpoint`, `mainSolrEndpoint[<id>]`: (string) the URL of the main Solr endpoint. Default value: 
   `http://localhost:8983/solr/`. In multi-tenant mode you can specify it for a particular catalogue with
-  `mainSolrEndpoint[<catalogue>]`. \[Available from v0.8.0\]
-- `solrForScoresUrl`, `solrForScoresUrl[<catalogue>]`: (string) the URL of the Solr core that is 
+  `mainSolrEndpoint[<id>]`. \[Available from v0.8.0\]
+- `solrForScoresUrl`, `solrForScoresUrl[<id>]`: (string) the URL of the Solr core that is 
    used for storing the results of validation. Usually this index is merged to the main core, so this property is needed
    on the special case when the validation is not merged. Default value: `http://localhost:8983/solr/`. 
-   In multi-tenant mode you can specify it for a particular catalogue with `mainSolrEndpoint[<catalogue>]`. (Its previous
+   In multi-tenant mode you can specify it for a particular catalogue with `mainSolrEndpoint[<id>]`. (Its previous
    name was `solrEndpoint4ValidationResults`.) \[Available from v0.8.0\]
 
 The following configuration parameters only have effect for generic catalogs (when there no corresponding PHP class is 
 available in the `classes/catalogue` directory):
 
-- `label`, `label[<catalogue>]`: (string) name of the library catalogue
-- `url`, `url[<catalogue>]`: (string) link to library catalogue homepage
-- `schema`, `schema[<catalogue>]`: (string) metadata schema type (`MARC21` as default or `PICA`)
-- `linkTemplate`, `linkTemplate[<catalogue>]`: (string) URL template to link into the library catalogue (`{id}` will be
+- `label`, `label[<id>]`: (string) name of the library catalogue
+- `url`, `url[<id>]`: (string) link to library catalogue homepage
+- `schema`, `schema[<id>]`: (string) metadata schema type (`MARC21` as default or `PICA`)
+- `linkTemplate`, `linkTemplate[<id>]`: (string) URL template to link into the library catalogue (`{id}` will be
    replaced by record identifier)
-- `language`, `language[<catalogue>]`: (string) default language of the user interface
+- `language`, `language[<id>]`: (string) default language of the user interface
 
 Example:
 
 ```
+id=bvb
 display-network=0
 indexName[bvb]=bayern
 dirName[bvb]=bayern

@@ -4,7 +4,7 @@ namespace Utils;
 
 class Configuration {
   private array $configuration;
-  private string $db;
+  private string $id;
   /**
    * @var string|null
    */
@@ -22,13 +22,13 @@ class Configuration {
    */
   private bool $showAdvancedSearchForm;
   /**
-   * @var string
+   * @var string|null
    */
-  private $mainSolrEndpoint;
+  private ?string $mainSolrEndpoint;
   /**
    * @var string|null
    */
-  private $solrForScoresUrl;
+  private ?string $solrForScoresUrl;
   /**
    * @var string|null
    */
@@ -66,9 +66,9 @@ class Configuration {
    */
   private ?string $linkTemplate;
 
-  public function __construct(array $configuration, string $db) {
+  public function __construct(array $configuration, string $id) {
     $this->configuration = $configuration;
-    $this->db = $db;
+    $this->id = $id;
     $this->initialize();
   }
 
@@ -78,13 +78,13 @@ class Configuration {
 
     // $this->displayNetwork = isset($this->configuration['display-network']) && (int) $this->configuration['display-network'] == 1;
     // $this->displayShacl = isset($this->configuration['display-shacl']) && (int) $this->configuration['display-shacl'] == 1;
-    $this->indexName = $this->getValue('indexName', $this->db);
-    $this->dirName = $this->getValue('dirName', $this->db);
+    $this->indexName = $this->getValue('indexName', $this->id);
+    $this->dirName = $this->getValue('dirName', $this->id);
     $this->defaultTab = $this->getValue('default-tab', 'completeness');
     $this->displayNetwork = $this->getValue('display-network', false);
     $this->displayShacl = $this->getValue('display-shacl', false);
     $this->templates = $this->getValue('templates', 'config');
-    $this->catalogue = $this->getValue('catalogue', $this->db);
+    $this->catalogue = $this->getValue('catalogue', $this->id);
     $this->mainSolrEndpoint = $this->getValue('mainSolrEndpoint', 'http://localhost:8983/solr/');
     $this->solrForScoresUrl = $this->getValue('solrForScoresUrl', null);
     $this->label = $this->getValue('label', null);
@@ -94,8 +94,8 @@ class Configuration {
     $this->linkTemplate = $this->getValue('linkTemplate', null);
 
     if ($this->multitenant) {
-      $this->versioning = (isset($this->configuration['versions'][$this->db]) && $this->configuration['versions'][$this->db] === true);
-      $this->showAdvancedSearchForm = (isset($this->configuration['showAdvancedSearchForm'][$this->db]) && $this->configuration['showAdvancedSearchForm'][$this->db] === true);
+      $this->versioning = (isset($this->configuration['versions'][$this->id]) && $this->configuration['versions'][$this->id] === true);
+      $this->showAdvancedSearchForm = (isset($this->configuration['showAdvancedSearchForm'][$this->id]) && $this->configuration['showAdvancedSearchForm'][$this->id] === true);
     } else {
       $this->versioning = $this->configuration['versions'] ?? false;
       $this->showAdvancedSearchForm = $this->configuration['showAdvancedSearchForm'] ?? false;
@@ -113,7 +113,7 @@ class Configuration {
 
   private function getMultitenantValue($key, $defaultValue) {
     if (isset($this->configuration[$key])) {
-      $value = $this->configuration[$key][$this->db] ?? $this->configuration[$key];
+      $value = $this->configuration[$key][$this->id] ?? $this->configuration[$key];
     } else {
       $value = $defaultValue;
     }
@@ -152,7 +152,7 @@ class Configuration {
     return $this->mainSolrEndpoint;
   }
 
-  public function getSolrForScoresUrl(): string {
+  public function getSolrForScoresUrl(): ?string {
     return $this->solrForScoresUrl;
   }
 
