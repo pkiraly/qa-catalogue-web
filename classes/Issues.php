@@ -53,13 +53,13 @@ class Issues extends BaseTab {
     if ($this->action == 'download' || $this->action == 'query') {
       $this->processDownloadOrQueryRequest();
     } elseif ($this->action == 'record') {
-      $this->processRecordRequest($smarty);
+        $this->processRecordRequest($smarty);
     } elseif ($this->action == 'ajaxIssue') {
-      $this->processAjaxIssueRequest($smarty);
+       $this->processAjaxIssueRequest($smarty);
     } elseif ($this->action == 'ajaxIssueByTag') {
-      $this->processAjaxIssueByTagRequest($smarty);
+       $this->processAjaxIssueByTagRequest($smarty);
     } else {
-      $this->processListRequest($smarty);
+       $this->processListRequest($smarty);
     }
   }
 
