@@ -107,8 +107,9 @@ class Configuration {
     if ($this->multitenant) {
       $value = $this->getMultitenantValue($key, $defaultValue);
     } else {
-      $value = $this->configuration['linkTemplate'] ?? $defaultValue;
+      $value = $this->configuration[$key] ?? $defaultValue;
     }
+    error_log('multitenant: ' . (int)$this->multitenant . ' -- ' . json_encode($value));
     return $value;
   }
 
