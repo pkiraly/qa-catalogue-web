@@ -88,9 +88,12 @@ class RecordIssues extends BaseTab {
   }
 
   private function getIssueDefinitions($ids) {
+    error_log('getIssueDefinitions for: ' . json_encode($ids));
 
     $issues = [];
     $file = $this->getFilePath('issue-summary.csv');
+    error_log($file);
+
     if (file_exists($file)) {
       $header = [];
       $handle = fopen($file, "r");
@@ -103,8 +106,8 @@ class RecordIssues extends BaseTab {
             $header[$i] = 'path';
           } else {
             $record = (object)array_combine($header, $values);
-            if (!isset($record->id))
-              error_log('no id' . json_encode($record));
+            // if (!isset($record->id))
+            //   error_log('no id ' . json_encode($record));
             if (in_array($record->id, $ids)) {
               $key = $record->id;
               unset($record->id);
