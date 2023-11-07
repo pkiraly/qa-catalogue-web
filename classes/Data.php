@@ -367,6 +367,14 @@ class Data extends Facetable {
     $smarty->assign('schemaType', $this->catalogue->getSchemaType());
     $smarty->assign('searchForm', $this->searchForm);
 
+    if ($this->configuration->doShowAdvancedSearchForm() && $this->searchForm != 'advanced') {
+      for ($i = 1; $i <= 3; $i++) {
+        $smarty->assign('field' . $i, '');
+        $smarty->assign('value' . $i, '');
+        $smarty->assign('label' . $i, '');
+      }
+    }
+
     // The following may throw an exception when solr is not reachable
     $solrParams = $this->buildParameters($smarty);
     $smarty->assign('solrUrl', join('&', $solrParams));
