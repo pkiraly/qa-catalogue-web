@@ -12,6 +12,7 @@ class RecordIssues extends BaseTab {
     parent::prepareData($smarty);
     parent::readAnalysisParameters('validation.params.json');
     $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
+    error_log('analysisParameters: ' . json_encode($this->analysisParameters));
     $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
 
     $this->recordId = getOrDefault('recordId', '');
