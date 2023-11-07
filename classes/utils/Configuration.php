@@ -75,7 +75,6 @@ class Configuration {
   private function initialize() {
     $this->multitenant = $this->configuration['multitenant'] ?? false;
     $this->dir = $this->configuration['dir'] ?? null;
-    error_log('id: ' . $this->id);
 
     // $this->displayNetwork = isset($this->configuration['display-network']) && (int) $this->configuration['display-network'] == 1;
     // $this->displayShacl = isset($this->configuration['display-shacl']) && (int) $this->configuration['display-shacl'] == 1;
@@ -109,14 +108,10 @@ class Configuration {
     } else {
       $value = $this->configuration[$key] ?? $defaultValue;
     }
-    error_log('multitenant: ' . (int)$this->multitenant . ' -- ' . json_encode($value));
     return $value;
   }
 
   private function getMultitenantValue($key, $defaultValue) {
-    error_log('isset id-key: ' . (int) isset($this->configuration[$key][$this->id]));
-    error_log('gettype key: ' . gettype($this->configuration[$key]));
-    error_log('config: ' . json_encode($this->configuration));
     if (isset($this->configuration[$key]) && isset($this->configuration[$key][$this->id])) {
       $value = $this->configuration[$key][$this->id];
     } else if (isset($this->configuration[$key]) && is_string($this->configuration[$key])) {
