@@ -88,7 +88,7 @@ class RecordIssues extends BaseTab {
   }
 
   private function getIssueDefinitions($ids) {
-    error_log('getIssueDefinitions for: ' . json_encode($ids));
+    error_log('getIssueDefinitions for: ' . json_encode($ids) . ', groupped: ' . (int)$this->grouped);
 
     $issues = [];
     $file = $this->getFilePath('issue-summary.csv');
