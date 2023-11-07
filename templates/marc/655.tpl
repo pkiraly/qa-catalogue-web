@@ -10,23 +10,23 @@
       {foreach from=$field->subfields key=code item=value name=subfields}
         {assign 'comma' value=(($smarty.foreach.subfields.last) ? '' : ',')}
         {if $code == 'a'}
-          <a href="{$record->filter('655a_GenreForm_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          <a href="{$record->filter('655a_GenreForm_ss', $value)}" class="record-link">{include 'data/subfield.tpl' value=$value}</a>{$comma}
         {elseif $code == 'b'}
-          non-focus term: <a href="{$record->filter('655b_GenreForm_nonfocusTerm_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          non-focus term: <a href="{$record->filter('655b_GenreForm_nonfocusTerm_ss', $value)}" class="record-link">{include 'data/subfield.tpl' value=$value}</a>{$comma}
         {elseif $code == 'c'}
-          facet/hierarchy: <a href="{$record->filter('655c_GenreForm_facet_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          facet/hierarchy: <a href="{$record->filter('655c_GenreForm_facet_ss', $value)}" class="record-link">{include 'data/subfield.tpl' value=$value}</a>{$comma}
         {elseif $code == 'v'}
-          form: <a href="{$record->filter('655v_GenreForm_formSubdivision_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          form: <a href="{$record->filter('655v_GenreForm_formSubdivision_ss', $value)}" class="record-link">{include 'data/subfield.tpl' value=$value}</a>{$comma}
         {elseif $code == 'x'}
-          general: <a href="{$record->filter('650x_Topic_generalSubdivision_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          general: <a href="{$record->filter('650x_Topic_generalSubdivision_ss', $value)}" class="record-link">{include 'data/subfield.tpl' value=$value}</a>{$comma}
         {elseif $code == 'y'}
-          chronological: <a href="{$record->filter('655y_GenreForm_chronologicalSubdivision_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          chronological: <a href="{$record->filter('655y_GenreForm_chronologicalSubdivision_ss', $value)}" class="record-link">{include 'data/subfield.tpl' value=$value}</a>{$comma}
         {elseif $code == 'z'}
-          geographic: <a href="{$record->filter('655z_GenreForm_geographicSubdivision_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          geographic: <a href="{$record->filter('655z_GenreForm_geographicSubdivision_ss', $value)}" class="record-link">{include 'data/subfield.tpl' value=$value}</a>{$comma}
         {elseif $code == '2'}
-          vocabulary: <a href="{$record->filter('6552_GenreForm_source_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          vocabulary: <a href="{$record->filter('6552_GenreForm_source_ss', $value)}" class="record-link">{include 'data/subfield.tpl' value=$value}</a>{$comma}
         {elseif $code == '0'}
-          authority ID: <a href="{$record->filter('6550_GenreForm_authorityRecordControlNumber_ss', $value)}" class="record-link">{$value}</a>{$comma}
+          authority ID: <a href="{$record->filter('6550_GenreForm_authorityRecordControlNumber_ss', $value)}" class="record-link">{include 'data/subfield.tpl' value=$value}</a>{$comma}
         {/if}
       {/foreach}
     </span>

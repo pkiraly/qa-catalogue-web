@@ -6,13 +6,13 @@
   <td>
     {foreach from=$fieldInstances item=field name=fields}
       {if isset($field->subfields->A)}
-        <span class="029F$A">{$field->subfields->A}</span>
+        <span class="029F$A">{include 'data/subfield.tpl' value=$field->subfields->A}</span>
       {/if}
       {if isset($field->subfields->G)}
-        <span class="029F$G">({$field->subfields->G})</span>
+        <span class="029F$G">({include 'data/subfield.tpl' value=$field->subfields->G})</span>
       {/if}
       {if isset($field->subfields->F)}
-        - <span class="029F$F">{$field->subfields->F}</span>
+        - <span class="029F$F">{include 'data/subfield.tpl' value=$field->subfields->F}</span>
       {/if}
       {if !$smarty.foreach.fields.last}<br/>{/if}
     {/foreach}

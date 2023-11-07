@@ -447,7 +447,10 @@ abstract class BaseTab implements Tab {
 
   protected function picaToSolr($input) {
     $input = str_replace('/', '_', $input);
-    return preg_replace_callback('/([^a-zA-Z0-9])/', function ($matches) { return 'x' . dechex(ord($matches[1])); }, $input);
+    // $output = preg_replace_callback('/([^a-zA-Z0-9])/', function ($matches) { return 'x' . dechex(ord($matches[1])); }, $input);
+    $output = preg_replace('/([^a-zA-Z0-9])/', '_', $input);
+    error_log($input . ' --> ' . $output);
+    return $output;
   }
 
   protected function solrToPica($input) {

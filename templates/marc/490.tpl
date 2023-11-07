@@ -16,7 +16,7 @@
 
       {if isset($field->subfields->l)}
         <span class="subarea" data="490l"
-         title="Library of Congress call number">{$field->subfields->l}</span>
+         title="Library of Congress call number">{include 'data/subfield.tpl' value=$field->subfields->l}</span>
       {/if}
 
       {if isset($field->subfields->v)}

@@ -5,9 +5,9 @@
   <td class="record-field-label">Umfang:</td>
   <td>
     {foreach from=$fieldInstances item=field name="fields"}
-      {if isset($field->subfields->a)}<span class="034D$a">{$field->subfields->a}</span>{/if}
-      {if isset($record->getField('034M')) && isset($record->getField('034M')->subfields->a)} : {$record->getField('034M')->subfields->a}{/if}
-      {if isset($record->getField('034I')) && isset($record->getField('034I')->subfields->a)} ; {$record->getField('034I')->subfields->a}{/if}
+      {if isset($field->subfields->a)}<span class="034D$a">{include 'data/subfield.tpl' value=$field->subfields->a}</span>{/if}
+      {if isset($record->getField('034M')) && isset($record->getField('034M')->subfields->a)} : {include 'data/subfield.tpl' value=$record->getField('034M')->subfields->a}{/if}
+      {if isset($record->getField('034I')) && isset($record->getField('034I')->subfields->a)} ; {include 'data/subfield.tpl' value=$record->getField('034I')->subfields->a}{/if}
       {if !$smarty.foreach.fields.last}<br/>{/if}
     {/foreach}
   </td>

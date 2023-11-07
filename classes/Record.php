@@ -220,16 +220,24 @@ class Record {
       } else {
         if (!is_null($value) && is_array($value) && !empty($value)) {
           foreach ($value as $instance) {
-            $firstRow = [$tagToDisplay, $instance->ind1, $instance->ind2];
+            if ($schemaType != 'PICA')
+              $firstRow = [$tagToDisplay, $instance->ind1, $instance->ind2];
+            else
+              $firstRow = [$tagToDisplay, '', ''];
             $i = 0;
             foreach ($instance->subfields as $code => $s_value) {
               $i++;
-              if ($i == 1) {
+              if ($i == 1 && is_string($s_value)) {
                 $firstRow[] = '$' . $code;
                 $firstRow[] = htmlentities($s_value);
                 $rows[] = $firstRow;
               } else {
-                $rows[] = ['', '', '', '$' . $code, htmlentities($s_value)];
+                if (is_string($s_value))
+                  $rows[] = ['', '', '', '$' . $code, htmlentities($s_value)];
+                else if (is_array($s_value)) {
+                  foreach ($s_value as $v)
+                    $rows[] = ['', '', '', '$' . $code, htmlentities($v)];
+                }
               }
             }
           }
@@ -391,8 +399,13 @@ class Record {
   }
 
   public function filter($field, $value) {
-    $filter = 'filters[]=' . urlencode(sprintf('%s:"%s"', $field, $value));
-    return '?' . join('&', array_merge([$filter], $this->basicFilterParameters));
+    $filters = [];
+    if (is_array($value))
+      foreach ($value as $v)
+        $filters[] = 'filters[]=' . urlencode(sprintf('%s:"%s"', $field, $v));
+    else
+      $filter[] = 'filters[]=' . urlencode(sprintf('%s:"%s"', $field, $value));
+    return '?' . join('&', array_merge($filters, $this->basicFilterParameters));
   }
 
   public function get007Category() {
