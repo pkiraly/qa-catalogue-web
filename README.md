@@ -14,41 +14,48 @@ a Solr index are made browseable on the Web with PHP and JavaScript.
 ## Table of Contents
 
 - [Installation](#installation)
+  - [Download](#download)
+  - [Setup](#setup)
+  - [Configuration](#configuration)
 - [Customization](#customization)
+  - [Templates](#templates)
+  - [Catalogue class](#catalogue-class)
 - [Translation](#translation)
-- [Contributing](#contributing)
 - [Maintainers](#maintainers)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Installation
 
 In the following:
 
 - `$DATADIR` denotes the base output directory of data analysis with QA Catalogue
-- `$CATALOG` denotes the name of a catalogue (such as loc, bl, k10plus...)
+- `$APPDIR` denotes the directory where QA Catalogue Web is installed
+- `$CATALOG` denotes the [catalogue class] (such as loc, bl, k10plus...)
 
 Analyse your catalog with [QA Catalogue Backend](https://github.com/pkiraly/qa-catalogue)),
-the result will be saved in `$DATADIR/$CATALOG` and in Solr.
+the result will be saved in a subdirectory of `$DATADIR` and in Solr.
 
 ### Download
 
 Install this software into a web server with PHP enabled (Apache or Nginx with PHP-FPM).
 
 Create a temporary directory and download the current version to an application
-directory served by your webserver (here we use `/var/www/html/$CATALOG`):
+directory served by your webserver (here we use `/var/www/html/$APPDIR`):
 
 ```
 mkdir tmp
 cd tmp
 wget https://github.com/pkiraly/qa-catalogue-web/archive/master.zip
 unzip master.zip
-mv metadata-marc-web-master /var/www/html/$CATALOG
+mv metadata-marc-web-master /var/www/html/$APPDIR
 ```
 
 or clone the git repository:
 
 ```
-git clone https://github.com/pkiraly/qa-catalogue-web.git /var/www/html/$CATALOG
-cd /var/www/html/$CATALOG
+git clone https://github.com/pkiraly/qa-catalogue-web.git /var/www/html/$APPDIR
+cd /var/www/html/$APPDIR
 
 # optionally checkout a tagged release
 git checkout v0.7.0
@@ -67,7 +74,7 @@ sudo locale-gen pt_BR.UTF-8
 Change into the application directory:
 
 ```
-cd /var/www/html/$CATALOG
+cd /var/www/html/$APPDIR
 ```
 
 install PHP dependencies and create required cache directories and permissions:
@@ -76,19 +83,23 @@ install PHP dependencies and create required cache directories and permissions:
 composer install
 ```
 
+### Configuration
+
+[configuration]: #configuration
+
 Prepare configuration file:
 
 ```
 echo "dir=$DATADIR" > configuration.cnf
 ```
 
-If the application path does not equals `$CATALOG`, specify an existing catalogue implementation:
+The [catalogue class] should explicitly be specified:
 
 ```
 echo "catalogue=$CATALOG" >> configuration.cnf
 ```
 
-Configuration parameters for the working of the software:
+Additional configuration parameters are supported:
 
 - `id`: (string) the machine name of the data directory. By default, it comes from the URL as the path of the application
    (qa-catalogue). With this parameter the administrator can overwrite the path. Note: this parameter was called `db`
@@ -98,10 +109,8 @@ Configuration parameters for the working of the software:
    general setting, while `version[loc]=false` is a library specific settings, which override the previous one.
    \[Available from v0.8.0\]
 - `dir`, `dir[<id>]`: (string) the base output directory of data analysis with QA Catalogue
-- `catalogue`, `cataloguer[<id>]`: (string) machine name of a catalogue. Based on this the system will use the relevant catalogue
-   representing class in `classes/catalogue` directory. The parameter value should be a small case version of the class
-   name, so e.g. if the class name is `Gent` the parameter value should be `gent`. The value `catalogue` can be used
-   for generic catalogue.
+- `catalogue`, `cataloguer[<id>]`: (string) the [catalogue class] given in lowercase. 
+   The value `catalogue` can be used for generic catalogue.
 - `default-tab`, `default-tab[<id>]`: (string) the tab which will be displayed when no tab is selected. This
    will be the tab which will be opened by the root URL (the landing page). If no default-tab has been set,
    `completeness` will be used. The possible values are: `data`, `completeness` (default), `issues`, `functions`,
@@ -127,8 +136,7 @@ Configuration parameters for the working of the software:
    In multi-tenant mode you can specify it for a particular catalogue with `mainSolrEndpoint[<id>]`. (Its previous
    name was `solrEndpoint4ValidationResults`.) \[Available from v0.8.0\]
 
-The following configuration parameters only have effect for generic catalogs (when there no corresponding PHP class is 
-available in the `classes/catalogue` directory):
+The following configuration parameters only have effect for generic catalogs ([catalogue class] `catalogue`):
 
 - `label`, `label[<id>]`: (string) name of the library catalogue
 - `url`, `url[<id>]`: (string) link to library catalogue homepage
@@ -150,22 +158,24 @@ setup additional directories and permissions:
 
 ```
 sudo chgrp www-data -R _smarty cache
-ln -s [data directory]/[catalogue]/img images/[catalogue]
+ln -s $DATADIR/[catalogue]/img images/[catalogue]
 ```
 
 On Apache webserver add these lines to its configuration (`/etc/apache2/sites-available/000-default.conf`):
 
 ```
-<Directory /var/www/html/$CATALOG>
+<Directory /var/www/html/$APPDIR>
   AllowOverride All
   Order allow,deny
   allow from all
 </Directory>
 ```
 
-You can access the application at `http://localhost/$CATALOG`.
+You can access the application at `http://localhost/$APPDIR`.
 
 ## Customization
+
+### Templates
 
 Some parts of the web interface can be customized with local files in directory
 `config` (not existing by default) or another directory configured with
@@ -178,11 +188,16 @@ parameter `templates`:
 - `config/about.en.tpl` and `config/about.de.tpl`: Additional information shown
   in the "about" tab.
 
-The name, catalogue link and the record levele catalogue link are different 
-per libraries. The tool has prepared for a number of libraries, but there's
-high chance, that you would like to apply it for another library. 
-You have set these values in a class which extends the `Catalogue` class,
-here is an example: 
+### Catalogue class
+
+[catalogue class]: #catalogue-class
+
+Basic properties and default [configuration](#configuration) settings are defined
+in a catalogue class which extends the generic class `Catalogue`. The application
+includes catalogue classes for known libraries, but you may want to define additional
+changes that go beyond simple configuration settings.
+
+Here is an example of a custom catalogue class: 
 
 ```PHP
 class Gent extends Catalogue {
@@ -198,14 +213,12 @@ class Gent extends Catalogue {
 }
 ```
 
+`$url` contains an URL of the catalogue in the library website, `$marcVersion`
+is the abbreviation of MARC version used in the analyses.
+
 Please create a new file in the directory `classes/catalogue`. You do not have
-to do any other registration. The convention is that the name of the class
-is the first upper case form of the name property (Gent - gent, Cerl - cerl)
-etc. The later should fit the data directory name, the Solr index name, and 
-either the application path or the `catalogue` property of the 
-`configuration.cnf` file. `$url` contains an URL of the catalogue in the library
-website, `$marcVersion` is the abbreviation of MARC version used in the
-analyses.
+to do any other registration. The convention is to uppercase the first letter of
+the class name. In [configuration] this name is given in lowercase (`Gent` => `gent`).
 
 ## Translation
 
