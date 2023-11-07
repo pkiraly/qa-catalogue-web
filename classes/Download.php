@@ -3,6 +3,8 @@
 
 class Download extends BaseTab {
 
+  protected $parameterFile = 'validation.params.json';
+
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 
@@ -13,7 +15,7 @@ class Download extends BaseTab {
         $files = array_merge($files, array_keys($filesInCategory));
       }
       if ($this->catalogue->getSchemaType() == 'PICA') {
-        parent::readAnalysisParameters('validation.params.json');
+        parent::readAnalysisParameters();
         $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
         if (!is_null($this->analysisParameters)) {
           $schemaFile = $this->analysisParameters->picaSchemaFile ?? 'avram-k10plus-title.json';

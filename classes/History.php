@@ -3,9 +3,11 @@
 
 class History extends BaseTab {
 
+  protected $parameterFile = 'completeness.params.json';
+
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
-    parent::readAnalysisParameters('completeness.params.json');
+    parent::readAnalysisParameters();
     $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
     $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
 

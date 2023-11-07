@@ -17,10 +17,11 @@ class Terms extends Facetable {
    * @var mixed|null
    */
   private $variant;
+  protected $parameterFile = 'validation.params.json';
 
   public function __construct($configuration, $id) {
     parent::__construct($configuration, $id);
-    parent::readAnalysisParameters('validation.params.json');
+    parent::readAnalysisParameters();
     $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
     if ($this->grouped) {
       $this->groupBy = $this->analysisParameters->groupBy;

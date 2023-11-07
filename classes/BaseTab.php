@@ -681,6 +681,8 @@ abstract class BaseTab implements Tab {
       if (file_exists($path)) {
         $this->analysisParameters = json_decode(file_get_contents($path));
         $this->analysisParameters->analysisTimestamp = date("Y-m-d H:i:s", filemtime($path));
+      } else {
+
       }
     }
   }
