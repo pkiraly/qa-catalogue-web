@@ -75,6 +75,7 @@ class Configuration {
   private function initialize() {
     $this->multitenant = $this->configuration['multitenant'] ?? false;
     $this->dir = $this->configuration['dir'] ?? null;
+    error_log('id: ' . $this->id);
 
     // $this->displayNetwork = isset($this->configuration['display-network']) && (int) $this->configuration['display-network'] == 1;
     // $this->displayShacl = isset($this->configuration['display-shacl']) && (int) $this->configuration['display-shacl'] == 1;
