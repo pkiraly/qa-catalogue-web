@@ -115,6 +115,9 @@ class Configuration {
 
   private function getMultitenantValue($key, $defaultValue) {
     if (isset($this->configuration[$key])) {
+      error_log('isset id-key: ' . (int) isset($this->configuration[$key][$this->id]));
+      error_log('gettype key: ' . gettype($this->configuration[$key]));
+      error_log('config: ' . json_encode($this->configuration));
       $value = $this->configuration[$key][$this->id] ?? $this->configuration[$key];
     } else {
       $value = $defaultValue;
