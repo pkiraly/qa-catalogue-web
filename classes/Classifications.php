@@ -8,12 +8,18 @@ class Classifications extends AddedEntry {
   protected $parameterFile = 'classifications.params.json';
 
   public function prepareData(Smarty &$smarty) {
+    $t0 = microtime(true);
     parent::prepareData($smarty);
+    $t1 = microtime(true);
 
     $this->readByRecords($smarty);
+    $t2 = microtime(true);
     $this->readByField($smarty);
-
+    $t3 = microtime(true);
     $this->readFrequencyExamples($smarty);
+    $t4 = microtime(true);
+    error_log(sprintf('prepareData: %.2f, readByRecords: %.2f, readByField: %.2f, readFrequencyExamples: %.2f',
+      $t1-$t0, $t2-$t1, $t3-$t2, $t4-$t3));
   }
 
   public function getTemplate() {
