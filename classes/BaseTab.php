@@ -395,6 +395,7 @@ abstract class BaseTab implements Tab {
   }
 
   public function getSolrField($tag, $subfield = '', $onlyStored = false) {
+    error_log('onlyStored: ' . (int) $onlyStored);
     $this->getFieldDefinitions();
 
     if ($subfield == '' && strstr($tag, '$') !== false)
@@ -420,7 +421,8 @@ abstract class BaseTab implements Tab {
       $solrField = $this->picaToSolr($tag . $subfield) . '_ss';
     }
 
-    if (!isset($solrField) || !in_array($solrField, $this->getSolrFields($onlyStored))) {
+    $existingSolrFields = $this->getSolrFields($onlyStored);
+    if (!isset($solrField) || !in_array($solrField, $existingSolrFields)) {
       $solrField1 = isset($solrField) ? $solrField : false;
       $solrField = $tag;
       if ($subfield != '')
@@ -429,7 +431,6 @@ abstract class BaseTab implements Tab {
       $found = FALSE;
       $solrField = str_replace('?', '\?', $solrField);
       $solrField = str_replace('/', '\/', $solrField);
-      $existingSolrFields = $this->getSolrFields();
       foreach ($existingSolrFields as $existingSolrField) {
         if (preg_match('/^' . $solrField . '_/', $existingSolrField)) {
           $parts = explode('_', $existingSolrField);
