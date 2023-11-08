@@ -405,7 +405,6 @@ class Completeness extends BaseTab {
    * @return array
    */
   private function processRecord(object $record): void {
-    error_log('processRecord');
     if (!in_array($record->documenttype, $this->types))
       $this->types[] = $record->documenttype;
 
