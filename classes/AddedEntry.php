@@ -59,25 +59,36 @@ class AddedEntry extends BaseTab {
    * @return object
    */
   protected function readElements(Smarty &$smarty) {
-    error_log('readElements');
+    $t0 = microtime(true);
+    $tArrayCombine = 0.0;
     $fileName = $this->grouped ? 'completeness-grouped-marc-elements.csv' : 'marc-elements.csv';
     $elementsFile = $this->getFilePath($fileName);
-    error_log('$elementsFile: ' . $elementsFile);
+    $useDB = true;
     if (file_exists($elementsFile)) {
-      error_log('file exists');
-      $header = [];
       $elements = [];
-      $in = fopen($elementsFile, "r");
-      while (($line = fgets($in)) != false) {
-        $values = str_getcsv($line);
-        if (empty($header)) {
-          $header = $values;
-        } else {
-          $record = (object)array_combine($header, $values);
-          if ($this->grouped && $record->groupId != $this->groupId)
-            continue;
+      if ($useDB && $this->hasMarcElementTable()) {
+        error_log('read data elements from DB');
+        $result = $this->issueDB->getMarcElements('all', ($this->grouped ? $this->groupId : ''));
+        while ($record = $result->fetchArray(SQLITE3_ASSOC)) {
+          $elements[$record['path']] = $record['subfield'];
+        }
+      } else {
+        error_log('read data elements from: ' . $elementsFile);
+        $header = [];
+        $in = fopen($elementsFile, "r");
+        while (($line = fgets($in)) != false) {
+          $values = str_getcsv($line);
+          if (empty($header)) {
+            $header = $values;
+          } else {
+            $tArrayCombine0 = microtime(true);
+            $record = (object)array_combine($header, $values);
+            $tArrayCombine += microtime(true) - $tArrayCombine0;
+            if ($this->grouped && $record->groupId != $this->groupId)
+              continue;
 
-          $elements[$record->path] = $record->subfield;
+            $elements[$record->path] = $record->subfield;
+          }
         }
       }
       $smarty->assign('hasElements', TRUE);

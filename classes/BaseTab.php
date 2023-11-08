@@ -22,10 +22,11 @@ abstract class BaseTab implements Tab {
   protected $lang = 'en';
   public $analysisParameters = null;
   public $indexingParameters = null;
-  protected $grouped = false;
+  protected bool $grouped = false;
   protected $groupId = false;
-  protected $groupBy;
+  protected string $groupBy;
   protected $parameterFile;
+  protected ?IssuesDB $issueDB = null;
 
   /**
    * BaseTab constructor.
@@ -449,7 +450,6 @@ abstract class BaseTab implements Tab {
     $input = str_replace('/', '_', $input);
     // $output = preg_replace_callback('/([^a-zA-Z0-9])/', function ($matches) { return 'x' . dechex(ord($matches[1])); }, $input);
     $output = preg_replace('/([^a-zA-Z0-9])/', '_', $input);
-    error_log($input . ' --> ' . $output);
     return $output;
   }
 
@@ -770,5 +770,17 @@ abstract class BaseTab implements Tab {
 
   protected function getDbDir() {
     return sprintf('%s/%s', $this->configuration->getDir(), $this->getDirName());
+  }
+
+  protected function initializeDB() {
+    if (is_null($this->issueDB)) {
+      include_once 'IssuesDB.php';
+      $this->issueDB = new IssuesDB($this->getDbDir());
+    }
+  }
+
+  protected function hasMarcElementTable() {
+    $this->initializeDB();
+    return $this->issueDB->hasMarcElementTable();
   }
 }

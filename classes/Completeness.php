@@ -16,7 +16,6 @@ class Completeness extends BaseTab {
   private $max = 0;
   public $groups;
   public $currentGroup;
-  private ?IssuesDB $issueDB = null;
   private $complexControlFields = ['006', '007', '008'];
   private $types007 = [
     "common" => "Common",
@@ -223,22 +222,10 @@ class Completeness extends BaseTab {
     }
     return $dataElements;
   }
-  private function hasMarcElementTable() {
-    $this->initializeDB();
-    return $this->issueDB->hasMarcElementTable();
-    // return $this->issueDB->hasMarcElementTable()->fetchArray(SQLITE3_ASSOC)['count'] == 1;
-  }
 
   private function getDocumentTypes($groupId = '') {
     $this->initializeDB();
     return $this->issueDB->fetchAll($this->issueDB->getDocumentTypes($groupId), 'documenttype');
-  }
-
-  private function initializeDB() {
-    if (is_null($this->issueDB)) {
-      include_once 'IssuesDB.php';
-      $this->issueDB = new IssuesDB($this->getDbDir());
-    }
   }
 
   private function readCompleteness() {
