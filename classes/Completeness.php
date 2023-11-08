@@ -422,7 +422,7 @@ class Completeness extends BaseTab {
       }
     }
     $record->histogram = $histogram;
-    $record->solr = $this->getSolrField($record->path);
+    $record->solr = $this->getSolrField($record->path, '', true);
 
     $record->isField = false;
     $record->isComplexControlField = false;

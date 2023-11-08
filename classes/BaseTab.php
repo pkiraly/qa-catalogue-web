@@ -150,14 +150,20 @@ abstract class BaseTab implements Tab {
   /**
    * @return array
    */
-  protected function getSolrFields() {
+  protected function getSolrFields($onlyStored = false) {
     if (!isset($this->solrFields)) {
-      // $this->getSolrFieldsByQuery();
-      $this->getSolrFieldsFromLuke();
+      if ($onlyStored)
+        $this->getSolrFieldsByQuery();
+      else
+        $this->getSolrFieldsFromLuke();
     }
     return $this->solrFields;
   }
 
+  /**
+   * Returns only the stored Solr fields
+   * @return array|false|string[]
+   */
   protected function getSolrFieldsByQuery() {
     if (!isset($this->solrFields)) {
       $solrPath = $this->getIndexName();
@@ -177,10 +183,14 @@ abstract class BaseTab implements Tab {
     return $this->solrFields;
   }
 
+  /**
+   * Returns all Solr fields (stored and not stored as well)
+   * @return int[]|string[]
+   */
   protected function getSolrFieldsFromLuke() {
     if (!isset($this->solrFields)) {
       $baseUrl = $this->getMainSolrEndpoint() . $this->getIndexName();
-      $url = $baseUrl . '/admin/luke?numTerms=%C3%B6&wt=json';
+      $url = $baseUrl . '/admin/luke?wt=json';
       $luke = json_decode(file_get_contents($url));
       $this->solrFields = array_keys(get_object_vars($luke->fields));
     }
@@ -384,7 +394,7 @@ abstract class BaseTab implements Tab {
     return $this->fieldDefinitions;
   }
 
-  public function getSolrField($tag, $subfield = '') {
+  public function getSolrField($tag, $subfield = '', $onlyStored = false) {
     $this->getFieldDefinitions();
 
     if ($subfield == '' && strstr($tag, '$') !== false)
@@ -410,7 +420,7 @@ abstract class BaseTab implements Tab {
       $solrField = $this->picaToSolr($tag . $subfield) . '_ss';
     }
 
-    if (!isset($solrField) || !in_array($solrField, $this->getSolrFields())) {
+    if (!isset($solrField) || !in_array($solrField, $this->getSolrFields($onlyStored))) {
       $solrField1 = isset($solrField) ? $solrField : false;
       $solrField = $tag;
       if ($subfield != '')
