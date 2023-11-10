@@ -7,7 +7,7 @@ class Terms extends Facetable {
 
   private $facet;
   private $action = 'list';
-  public $grouped = false;
+  public bool $grouped = false;
   public $groupId = false;
   public $groups;
   public $currentGroup;
