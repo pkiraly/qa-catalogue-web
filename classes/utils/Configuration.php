@@ -92,13 +92,14 @@ class Configuration {
     $this->schema = $this->getValue('schema', null); // 'MARC21'
     $this->language = $this->getValue('language', null); // 'en'
     $this->linkTemplate = $this->getValue('linkTemplate', null);
+    $this->showAdvancedSearchForm = $this->getValue('showAdvancedSearchForm', false);
 
     if ($this->multitenant) {
       $this->versioning = (isset($this->configuration['versions'][$this->id]) && $this->configuration['versions'][$this->id] === true);
-      $this->showAdvancedSearchForm = (isset($this->configuration['showAdvancedSearchForm'][$this->id]) && $this->configuration['showAdvancedSearchForm'][$this->id] === true);
+      // $this->showAdvancedSearchForm = (isset($this->configuration['showAdvancedSearchForm'][$this->id]) && $this->configuration['showAdvancedSearchForm'][$this->id] === true);
     } else {
       $this->versioning = $this->configuration['versions'] ?? false;
-      $this->showAdvancedSearchForm = $this->configuration['showAdvancedSearchForm'] ?? false;
+      // $this->showAdvancedSearchForm = $this->configuration['showAdvancedSearchForm'] ?? false;
     }
   }
 
@@ -112,9 +113,10 @@ class Configuration {
   }
 
   private function getMultitenantValue($key, $defaultValue) {
+    // error_log($key . ': ' . gettype($this->{$key}));
     if (isset($this->configuration[$key]) && isset($this->configuration[$key][$this->id])) {
       $value = $this->configuration[$key][$this->id];
-    } else if (isset($this->configuration[$key]) && is_string($this->configuration[$key])) {
+    } else if (isset($this->configuration[$key]) && is_scalar($this->configuration[$key])) {
       $value = $this->configuration[$key];
     } else {
       $value = $defaultValue;

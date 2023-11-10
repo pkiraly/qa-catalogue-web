@@ -52,7 +52,7 @@ class Classifications extends AddedEntry {
   }
 
   private function readByField(Smarty &$smarty) {
-    $solrFields = $this->getSolrFields($this->id);
+    $solrFields = $this->solr()->getSolrFields(); // $this->id
     SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
 
     if ($this->catalogue->getSchemaType() == 'MARC21') {

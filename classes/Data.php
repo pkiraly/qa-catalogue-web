@@ -317,18 +317,14 @@ class Data extends Facetable {
    * @return array
    */
   private function prepareParametersForIssueQueries($idType, $id): array {
-    include_once 'IssuesDB.php';
-    $dir = sprintf('%s/%s', $this->configuration->getDir(), $this->getDirName());
-    $db = new IssuesDB($dir);
-
     $groupId = $this->grouped ? $this->groupId : '';
     $coreToUse = $this->type == 'custom-rule'
                ? ''
                : ($this->isGroupAndErrorIdIndexed() ? $this->getIndexName() : $this->findCoreToUse());
     if ($coreToUse != '') {
-      $recordIds = $this->prepareParametersForIssueQueriesSolr($idType, $db, $id, $groupId, $coreToUse);
+      $recordIds = $this->prepareParametersForIssueQueriesSolr($idType, $id, $groupId, $coreToUse);
     } else {
-      $recordIds = $this->prepareParametersForIssueQueriesSqlite($idType, $db, $id, $groupId);
+      $recordIds = $this->prepareParametersForIssueQueriesSqlite($idType, $id, $groupId);
     }
     return $recordIds;
   }
@@ -446,7 +442,7 @@ class Data extends Facetable {
       $query .= ' AND groupId_is:' . $groupId;
 
     $url = sprintf('%s/%s/select?q=%s&fl=id&start=%d&rows=%d',
-      $this->getSolrEndpoint($core), $core, urlencode($query), $start, $rows);
+      $this->solr()->getEndpoint($core), $core, urlencode($query), $start, $rows);
     $response = json_decode(file_get_contents($url));
     $this->numFound = $response->response->numFound;
     $recordIds = [];
@@ -463,7 +459,7 @@ class Data extends Facetable {
     $coreToUse = '';
     $cores = ['validation', $this->getIndexName() . '_validation'];
     foreach ($cores as $core) {
-      if ($this->isCoreAvailable($core)) {
+      if ($this->solr()->isCoreAvailable($core)) {
         $coreToUse = $core;
         break;
       }
@@ -479,15 +475,15 @@ class Data extends Facetable {
    * @param string $coreToUse The Solr core to use
    * @return array|void
    */
-  private function prepareParametersForIssueQueriesSolr(string $idType, IssuesDB $db, $id, $groupId, string $coreToUse) {
+  private function prepareParametersForIssueQueriesSolr(string $idType, $id, $groupId, string $coreToUse) {
     if ($idType == 'errorId') {
       return $this->getRecordIdByErrorId($coreToUse, $id, $groupId, $this->start, $this->rows);
     } else if ($idType == 'categoryId') {
-      $errorIds = $db->fetchAll($db->getErrorIdsByCategoryId($id, $groupId), 'id');
+      $errorIds = $this->issueDB()->fetchAll($db->getErrorIdsByCategoryId($id, $groupId), 'id');
       error_log("errorIds: " . join(', ', $errorIds));
       return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $errorIds) . ')', $groupId, $this->start, $this->rows);
     } else if ($idType == 'typeId') {
-      $errorIds = $db->fetchAll($db->getErrorIdsByTypeId($id, $groupId), 'id');
+      $errorIds = $this->issueDB()->fetchAll($db->getErrorIdsByTypeId($id, $groupId), 'id');
       return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $errorIds) . ')', $groupId, $this->start, $this->rows);
     }
   }
@@ -499,33 +495,33 @@ class Data extends Facetable {
    * @param $groupId The group identifyer
    * @return array
    */
-  private function prepareParametersForIssueQueriesSqlite(string $idType, IssuesDB $db, $id, $groupId): array {
+  private function prepareParametersForIssueQueriesSqlite(string $idType, $id, $groupId): array {
     if ($idType == 'errorId') {
       $start = microtime(true);
-      $this->numFound = $db->getRecordIdsByErrorIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+      $this->numFound = $this->issueDB()->getRecordIdsByErrorIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
       $t_count = microtime(true) - $start;
-      $result = $db->getRecordIdsByErrorId($id, $groupId, $this->start, $this->rows);
+      $result = $this->issueDB()->getRecordIdsByErrorId($id, $groupId, $this->start, $this->rows);
       $t_retrieve = microtime(true) - $start;
       error_log(sprintf("count: %.2f, retrieve: %.2f", $t_count, $t_retrieve));
     } else if ($idType == 'categoryId') {
-      $this->numFound = $db->getRecordIdsByCategoryIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
-      $result = $db->getRecordIdsByCategoryId($id, $groupId, $this->start, $this->rows);
+      $this->numFound = $this->issueDB()->getRecordIdsByCategoryIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+      $result = $this->issueDB()->getRecordIdsByCategoryId($id, $groupId, $this->start, $this->rows);
     } else if ($idType == 'typeId') {
-      $this->numFound = $db->getRecordIdsByTypeIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
-      $result = $db->getRecordIdsByTypeId($id, $groupId, $this->start, $this->rows);
+      $this->numFound = $this->issueDB()->getRecordIdsByTypeIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+      $result = $this->issueDB()->getRecordIdsByTypeId($id, $groupId, $this->start, $this->rows);
     } else if ($this->type == 'custom-rule') {
-      if ($db->hasColumnInTable($idType, 'shacl')) {
-        $this->numFound = $db->getRecordIdsByShaclCount($idType, $id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
-        $result = $db->getRecordIdsByShacl($idType, $id, $groupId, $this->start, $this->rows);
+      if ($this->issueDB()->hasColumnInTable($idType, 'shacl')) {
+        $this->numFound = $this->issueDB()->getRecordIdsByShaclCount($idType, $id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+        $result = $this->issueDB()->getRecordIdsByShacl($idType, $id, $groupId, $this->start, $this->rows);
       }
     }
-    return $db->fetchAll($result, 'id');
+    return $this->issueDB()->fetchAll($result, 'id');
   }
 
   private function isGroupAndErrorIdIndexed() {
     return !is_null($this->indexingParameters)
            && isset($this->indexingParameters->validationUrl)
-           && in_array('errorId_is', $this->getSolrFields());
+           && in_array('errorId_is', $this->solr()->getSolrFields());
   }
 
   /**
@@ -538,14 +534,11 @@ class Data extends Facetable {
     if ($idType == 'errorId') {
       $errorId = $id;
     } else {
-      include_once 'IssuesDB.php';
-      $dir = sprintf('%s/%s', $this->configuration->getDir(), $this->getDirName());
-      $db = new IssuesDB($dir);
       if ($idType == 'categoryId') {
-        $errorIds = $db->fetchAll($db->getErrorIdsByCategoryId($id, $this->groupId), 'id');
+        $errorIds = $this->issueDB()->fetchAll($this->issueDB()->getErrorIdsByCategoryId($id, $this->groupId), 'id');
         $errorId = '(' . join(' OR ', $errorIds) . ')';
       } else if ($idType == 'typeId') {
-        $errorIds = $db->fetchAll($db->getErrorIdsByTypeId($id, $this->groupId), 'id');
+        $errorIds = $this->issueDB()->fetchAll($this->issueDB()->getErrorIdsByTypeId($id, $this->groupId), 'id');
         $errorId = '(' . join(' OR ', $errorIds) . ')';
       }
     }

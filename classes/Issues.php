@@ -200,15 +200,13 @@ class Issues extends BaseTab {
   }
 
   private function readIssuesAjaxDB($categoryId, $typeId, $path = null, $order = 'records DESC', $page = 0, $limit = 100) {
-    include_once 'IssuesDB.php';
-    $db = new IssuesDB($this->getDbDir());
     $groupId = $this->grouped ? $this->groupId : '';
     if (is_null($path) || empty($path)) {
-      $this->recordCount = $db->getByCategoryTypeAndGroupCount($categoryId, $typeId, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
-      $result = $db->getByCategoryTypeAndGroup($categoryId, $typeId, $groupId, $order, $page * $limit, $limit);
+      $this->recordCount = $this->issueDB()->getByCategoryTypeAndGroupCount($categoryId, $typeId, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+      $result = $this->issueDB()->getByCategoryTypeAndGroup($categoryId, $typeId, $groupId, $order, $page * $limit, $limit);
     } else {
-      $this->recordCount = $db->getByCategoryTypePathAndGroupCount($categoryId, $typeId, $path, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
-      $result = $db->getByCategoryTypePathAndGroup($categoryId, $typeId, $path, $groupId, $order, $page * $limit, $limit);
+      $this->recordCount = $this->issueDB()->getByCategoryTypePathAndGroupCount($categoryId, $typeId, $path, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+      $result = $this->issueDB()->getByCategoryTypePathAndGroup($categoryId, $typeId, $path, $groupId, $order, $page * $limit, $limit);
     }
 
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
@@ -220,15 +218,13 @@ class Issues extends BaseTab {
   }
 
   private function readIssuesAjaxByTag($categoryId, $typeId, $order = 'records DESC', $page = 0, $limit = 100) {
-    include_once 'IssuesDB.php';
-    $db = new IssuesDB($this->getDbDir());
     $groupId = $this->grouped ? $this->groupId : '';
 
     // $this->recordCount = $db->getByCategoryAndTypeGroupedByPathCount($categoryId, $typeId, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
     if ($this->grouped) {
-      $result = $db->getRecordNumberAndVariationsForPathGrouped($typeId, $groupId, $order, $page * $limit, $limit);
+      $result = $this->issueDB()->getRecordNumberAndVariationsForPathGrouped($typeId, $groupId, $order, $page * $limit, $limit);
     } else {
-      $result = $db->getByCategoryAndTypeGroupedByPath($categoryId, $typeId, $groupId, $order, $page * $limit, $limit);
+      $result = $this->issueDB()->getByCategoryAndTypeGroupedByPath($categoryId, $typeId, $groupId, $order, $page * $limit, $limit);
     }
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
       $record = (object) $row;
@@ -340,7 +336,7 @@ class Issues extends BaseTab {
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: ' . $attachment);
 
-    error_log('hasValidationIndex: ' . (int) $this->hasValidationIndex());
+    error_log('hasValidationIndex: ' . (int) $this->solr()->hasValidationIndex());
     if ($errorId != '') {
       if ($this->sqliteExists()) {
         $this->printId($this->getIdsFromDBResult($errorId, 'errorId', 'download'));
@@ -387,16 +383,13 @@ class Issues extends BaseTab {
   }
 
   private function getIdsFromDBResult($id, $type, $action): SQLite3Result {
-    include_once 'IssuesDB.php';
-    $db = new IssuesDB($this->getDbDir());
-
     $groupId = $this->grouped ? $this->groupId : '';
     if ($type == 'errorId')
-      $result = $db->getRecordIdsByErrorId($id, $groupId);
+      $result = $this->issueDB()->getRecordIdsByErrorId($id, $groupId);
     else if ($type == 'categoryId')
-      $result = $db->getRecordIdsByCategoryId($id, $groupId);
+      $result = $this->issueDB()->getRecordIdsByCategoryId($id, $groupId);
     else if ($type == 'typeId')
-      $result = $db->getRecordIdsByTypeId($id, $groupId);
+      $result = $this->issueDB()->getRecordIdsByTypeId($id, $groupId);
     else
       $result = false;
 
@@ -475,9 +468,9 @@ class Issues extends BaseTab {
 
   protected function getDbDir() : string {
     if ($this->versioning && $this->version != '') {
-      $dir = sprintf('%s/_historical/%s/%s', $this->configuration->getDir(), $this->getDirName(), $this->version);
+      $dir = sprintf('%s/_historical/%s/%s', $this->configuration->getDir(), $this->configuration->getDirName(), $this->version);
     } else {
-      $dir = sprintf('%s/%s', $this->configuration->getDir(), $this->getDirName());
+      $dir = sprintf('%s/%s', $this->configuration->getDir(), $this->configuration->getDirName());
     }
     return $dir;
   }

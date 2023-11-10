@@ -25,6 +25,7 @@ else
   $id = getPath();
 
 $configuration = new Utils\Configuration($configurationArray, $id);
+error_log('doShowAdvancedSearchForm: ' . (int) $configuration->doShowAdvancedSearchForm());
 $smarty->assign('templates', $configuration->getTemplates());
 /*
 if (isset($configuration['templates'])) {
@@ -83,6 +84,7 @@ $tab = createTab($class);
 try {
   $tab->prepareData($smarty);
 } catch(Throwable $e) {
+  error_log($e);
   $smarty->assign('error', 'Failed to read analysis result.');
 }
 

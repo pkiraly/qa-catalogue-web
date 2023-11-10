@@ -1,6 +1,7 @@
 <?php
 
 include_once 'catalogue/Catalogue.php';
+require_once 'utils/Solr.php';
 
 abstract class BaseTab implements Tab {
 
@@ -27,6 +28,7 @@ abstract class BaseTab implements Tab {
   protected string $groupBy;
   protected $parameterFile;
   protected ?IssuesDB $issueDB = null;
+  private Utils\Solr $solr;
 
   /**
    * BaseTab constructor.
@@ -106,11 +108,11 @@ abstract class BaseTab implements Tab {
   }
 
   protected function getFilePath($name) {
-    return sprintf('%s/%s/%s', $this->configuration->getDir(), $this->getDirName(), $name); // ['dir']
+    return sprintf('%s/%s/%s', $this->configuration->getDir(), $this->configuration->getDirName(), $name); // ['dir']
   }
 
   protected function getVersionedFilePath($version, $name) {
-    return sprintf('%s/_historical/%s/%s/%s', $this->configuration->getDir(), $this->getDirName(), $version, $name);
+    return sprintf('%s/_historical/%s/%s/%s', $this->configuration->getDir(), $this->configuration->getDirName(), $version, $name);
   }
 
   protected function readCount($countFile = null) {
@@ -138,7 +140,7 @@ abstract class BaseTab implements Tab {
 
   protected function getSolrFieldMap() {
     $solrFieldMap = [];
-    $fields = $this->getSolrFields();
+    $fields = $this->solr()->getSolrFields();
     foreach ($fields as $field) {
       $parts = explode('_', $field);
       $solrFieldMap[$parts[0]] = $field;
@@ -147,219 +149,19 @@ abstract class BaseTab implements Tab {
     return $solrFieldMap;
   }
 
-  /**
-   * @return array
-   */
-  protected function getSolrFields($onlyStored = false) {
-    if (!isset($this->solrFields)) {
-      if ($onlyStored)
-        $this->getSolrFieldsByQuery();
-      else
-        $this->getSolrFieldsFromLuke();
-    }
-    return $this->solrFields;
-  }
-
-  /**
-   * Returns only the stored Solr fields
-   * @return array|false|string[]
-   */
-  protected function getSolrFieldsByQuery() {
-    if (!isset($this->solrFields)) {
-      $solrPath = $this->getIndexName();
-      $baseUrl = $this->getMainSolrEndpoint() . $solrPath; // $this->db;
-      $url = $baseUrl . '/select/?q=*:*&wt=csv&rows=0';
-      $all_fields = file_get_contents($url);
-      $this->solrFields = explode(',', $all_fields);
-      if ($this->configuration->doShowAdvancedSearchForm()) {
-        $tokenizedVersions = [];
-        foreach ($this->solrFields as $field) {
-          if (preg_match('/_ss$/', $field))
-            $tokenizedVersions[] = preg_replace('/_ss$/', '_tt', $field);
-        }
-        $this->solrFields = array_merge($this->solrFields, $tokenizedVersions);
-      }
-    }
-    return $this->solrFields;
-  }
-
-  /**
-   * Returns all Solr fields (stored and not stored as well)
-   * @return int[]|string[]
-   */
-  protected function getSolrFieldsFromLuke() {
-    if (!isset($this->solrFields)) {
-      // foreach (debug_backtrace() as $trace) {
-      //   error_log(' ' . $trace['class'] . '->' . $trace['function']);
-      // }
-      $solrFieldsFile = $this->getFilePath('solr-fields.json');
-      if (file_exists($solrFieldsFile)) {
-        $this->solrFields = json_decode(file_get_contents($solrFieldsFile));
-      } else {
-        $baseUrl = $this->getMainSolrEndpoint() . $this->getIndexName();
-        $url = $baseUrl . '/admin/luke?wt=json';
-        $luke = json_decode(file_get_contents($url));
-        $this->solrFields = array_keys(get_object_vars($luke->fields));
-      }
-    }
-    return $this->solrFields;
-  }
-
-  protected function getSolrModificationDate() {
-    $indexName = $this->getIndexName();
-    $url = $this->getMainSolrEndpoint() . 'admin/cores?action=STATUS&core=' . $indexName;
-    $response = json_decode(file_get_contents($url));
-    $lastModified = $response->status->{$indexName}->index->lastModified;
-    $lastModified = date("Y-m-d H:i:s", strtotime($lastModified));
-    return $lastModified;
-  }
-
-  /**
-   * Get the main Solr index' base URL (default 'http://localhost:8983/solr/')
-   * @return string
-   */
-  protected function getMainSolrEndpoint() {
-    return $this->configuration->getMainSolrEndpoint();
-  }
-
-  protected function getSolrEndpoint4ValidationResults() {
-    return $this->configuration->getSolrForScoresUrl();
-  }
-
   protected function getSolrResponse($params) {
-    $solrPath = $this->getIndexName();
-    $url = $this->getMainSolrEndpoint() . $solrPath . '/select?' . join('&', $this->encodeSolrParams($params));
-    $solrResponse = json_decode(file_get_contents($url));
-    if (!$solrResponse) throw new Exception("Solr request failed");
-    return (object)[
-      'numFound' => $solrResponse->response->numFound,
-      'docs' => $solrResponse->response->docs,
-      'facets' => (isset($solrResponse->facet_counts) ? $solrResponse->facet_counts->facet_fields : []),
-      'params' => $solrResponse->responseHeader->params,
-    ];
+    $this->initializeSolr();
+    return $this->solr->getSolrResponse($params);
   }
 
-  protected function hasValidationIndex() {
-    return $this->isCoreAvailable($this->getIndexName() . '_validation');
+  protected function initializeSolr() {
+    if (!isset($this->solr))
+      $this->solr = new Utils\Solr($this->configuration, $this->getFilePath('solr-fields.json'));
   }
 
-  /**
-   * @param $core The name of the Solr core
-   * @return bool
-   */
-  protected function isCoreAvailable($core): bool {
-    $endpoint = $this->getSolrEndpoint($core);
-    if (is_null($endpoint))
-      return false;
-
-    $url = $this->getSolrEndpoint($core) . $core . '/admin/ping';
-
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,false);
-    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 20);
-    $content = curl_exec($ch);
-    $info = curl_getinfo($ch);
-    $http_code = $info["http_code"];
-    curl_close($ch);
-    if ($http_code == 200) {
-      $response = json_decode($content);
-      return ($response->status == 'OK');
-    }
-    return false;
-  }
-
-  protected function getSolrEndpoint($core): ?string {
-    return preg_match('/validation$/', $core)
-      ? $this->getSolrEndpoint4ValidationResults()
-      : $this->getMainSolrEndpoint();
-  }
-
-  protected function getFacets($facet, $query, $limit, $offset = 0, $termFilter = '', $filters = []) {
-    $parameters = [
-      'q=' . $query,
-      'facet=on',
-      'facet.limit=' . $limit,
-      'facet.offset=' . $offset,
-      'facet.field=' . $facet,
-      'facet.mincount=1',
-      'core=' . $this->id,
-      'rows=0',
-      'wt=json',
-      'json.nl=map',
-    ];
-    if (!empty($termFilter)) {
-      $parameters[] = sprintf('f.%s.facet.contains=%s', $facet, $termFilter);
-      $parameters[] = sprintf('f.%s.facet.contains.ignoreCase=true', $facet);
-    }
-    if (!empty($filters))
-      foreach ($filters as $filter)
-        $parameters[] = 'fq=' . $filter;
-
-    return $this->getSolrResponse($parameters)->facets;
-  }
-
-  protected function countFacets($facet, $query, $termFilter = '', $filters = []) {
-    $limit = 10000;
-    $offset = 0;
-    $total = 0;
-    do {
-      $facets = $this->countFacets2($facet, $query, $limit, $offset, $termFilter, $filters);
-      $count = count((array) $facets->{$facet});
-      $total += $count;
-      $offset += $limit;
-    } while ($count == $limit);
-
-    return $total;
-  }
-  protected function countFacets2($facet, $query, $limit, $offset = 0, $termFilter = '', $filters = []) {
-    $parameters = [
-      'q=' . $query,
-      'facet=on',
-      'facet.limit=' . $limit,
-      'facet.offset=' . $offset,
-      'facet.field=' . $facet,
-      'facet.mincount=1',
-      'core=' . $this->id,
-      'rows=0',
-      'wt=json',
-      'json.nl=map',
-    ];
-    if (!empty($termFilter)) {
-      $parameters[] = sprintf('f.%s.facet.contains=%s', $facet, $termFilter);
-      $parameters[] = sprintf('f.%s.facet.contains.ignoreCase=true', $facet);
-    }
-    if (!empty($filters))
-      foreach ($filters as $filter)
-        $parameters[] = 'fq=' . $filter;
-
-    return $this->getSolrResponse($parameters)->facets; // may throw Exception
-  }
-
-  private function encodeSolrParams($parameters) {
-    $encodedParams = [];
-    foreach ($parameters as $parameter) {
-      if ($parameter == '')
-        continue;
-
-      list($k, $v) = explode('=', $parameter);
-      if ($k == 'core' || $k == '_'  || $k == 'json.wrf' || $v == '') { //
-        continue;
-      }
-      if ($k == 'q') {
-        // error_log('query: ' . $v);
-      }
-      if (!preg_match('/%/', $v))
-        $v = urlencode($v);
-
-      $encodedParams[] = $k . '=' . $v;
-    }
-    $encodedParams[] = 'indent=false';
-    return $encodedParams;
+  protected function solr(): Utils\Solr {
+    $this->initializeSolr();
+    return $this->solr;
   }
 
   protected function readHistogram($histogramFile) {
@@ -428,7 +230,7 @@ abstract class BaseTab implements Tab {
       $solrField = $this->picaToSolr($tag . $subfield) . '_ss';
     }
 
-    $existingSolrFields = $this->getSolrFields($onlyStored);
+    $existingSolrFields = $this->solr()->getSolrFields($onlyStored);
     if (!isset($solrField) || !in_array($solrField, $existingSolrFields)) {
       $solrField1 = isset($solrField) ? $solrField : false;
       $solrField = $tag;
@@ -606,15 +408,8 @@ abstract class BaseTab implements Tab {
     return $this->output;
   }
 
-  /**
-   * @return mixed
-   */
-  protected function getIndexName() {
-    return $this->configuration->getIndexName() !== null ? $this->configuration->getIndexName() : $this->id;
-  }
-
   private function handleHistoricalData() {
-    $historicalDir = sprintf('%s/_historical/%s', $this->configuration->getDir(), $this->getDirName());
+    $historicalDir = sprintf('%s/_historical/%s', $this->configuration->getDir(), $this->configuration->getDirName());
     if (file_exists($historicalDir))
       $this->historicalDataDir = $historicalDir;
   }
@@ -787,18 +582,18 @@ abstract class BaseTab implements Tab {
   }
 
   protected function getDbDir() {
-    return sprintf('%s/%s', $this->configuration->getDir(), $this->getDirName());
+    return sprintf('%s/%s', $this->configuration->getDir(), $this->configuration->getDirName());
   }
 
-  protected function initializeDB() {
+  protected function issueDB(): IssuesDB {
     if (is_null($this->issueDB)) {
       include_once 'IssuesDB.php';
       $this->issueDB = new IssuesDB($this->getDbDir());
     }
+    return $this->issueDB;
   }
 
   protected function hasMarcElementTable() {
-    $this->initializeDB();
-    return $this->issueDB->hasMarcElementTable();
+    return $this->issueDB()->hasMarcElementTable();
   }
 }

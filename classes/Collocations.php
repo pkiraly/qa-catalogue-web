@@ -108,7 +108,7 @@ class Collocations extends BaseTab {
   }
 
   private function getFields() {
-    $fieldNames = $this->getSolrFields();
+    $fieldNames = $this->solr()->getSolrFields();
     sort($fieldNames);
     return $fieldNames;
   }

@@ -224,8 +224,7 @@ class Completeness extends BaseTab {
   }
 
   private function getDocumentTypes($groupId = '') {
-    $this->initializeDB();
-    return $this->issueDB->fetchAll($this->issueDB->getDocumentTypes($groupId), 'documenttype');
+    return $this->issueDB()->fetchAll($this->issueDB->getDocumentTypes($groupId), 'documenttype');
   }
 
   private function readCompleteness() {

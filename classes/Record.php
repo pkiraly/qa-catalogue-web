@@ -404,7 +404,7 @@ class Record {
       foreach ($value as $v)
         $filters[] = 'filters[]=' . urlencode(sprintf('%s:"%s"', $field, $v));
     else
-      $filter[] = 'filters[]=' . urlencode(sprintf('%s:"%s"', $field, $value));
+      $filters[] = 'filters[]=' . urlencode(sprintf('%s:"%s"', $field, $value));
     return '?' . join('&', array_merge($filters, $this->basicFilterParameters));
   }
 

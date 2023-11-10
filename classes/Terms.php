@@ -90,11 +90,11 @@ class Terms extends Facetable {
   }
 
   private function createTermList() {
-    return $this->getFacets($this->facet, $this->query, $this->facetLimit, $this->offset, $this->termFilter, $this->filters);
+    return $this->solr()->getFacets($this->facet, $this->query, $this->facetLimit, $this->offset, $this->termFilter, $this->filters);
   }
 
   private function getCount() {
-    return $this->countFacets($this->facet, $this->query, $this->termFilter, $this->filters);
+    return $this->solr()->countTotalFacets($this->facet, $this->query, $this->termFilter, $this->filters);
   }
 
   private function createPrevLink() {
@@ -145,7 +145,7 @@ class Terms extends Facetable {
   }
 
   private function getFields() {
-    $fieldNames = $this->getSolrFields();
+    $fieldNames = $this->solr()->getSolrFields();
     sort($fieldNames);
     return $fieldNames;
   }
@@ -177,7 +177,7 @@ class Terms extends Facetable {
     $limit = 1000;
     $offset = 0;
     do {
-      $facets = $this->getFacets($this->facet, $this->query, $limit, $offset, $this->termFilter, $this->filters);
+      $facets = $this->solr()->getFacets($this->facet, $this->query, $limit, $offset, $this->termFilter, $this->filters);
       $i = 0;
       foreach ($facets as $facet => $values) {
         foreach ($values as $term => $count) {
@@ -207,7 +207,7 @@ class Terms extends Facetable {
     $fileName = $this->getFieldMapFileName();
     if (file_exists($fileName)) {
       $fileDate = date("Y-m-d H:i:s", filemtime($fileName));
-      if ($this->getSolrModificationDate() > $fileDate) {
+      if ($this->solr()->getSolrModificationDate() > $fileDate) {
         error_log('Clear cached Solr field list');
         unlink($fileName);
       }

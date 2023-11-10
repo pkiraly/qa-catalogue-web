@@ -115,7 +115,7 @@ class Download extends BaseTab {
   }
 
   private function getFilenames($filter = '') {
-    $dir = sprintf('%s/%s', $this->configuration->getDir(), $this->getDirName());
+    $dir = sprintf('%s/%s', $this->configuration->getDir(), $this->configuration->getDirName());
     $allFiles = scandir($dir);
     $files = [];
     $regex = '/^' . $filter . '$/';

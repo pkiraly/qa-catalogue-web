@@ -105,6 +105,7 @@ class AddedEntry extends BaseTab {
    */
   protected function readSubfields(Smarty &$smarty, $bySubfieldsFile) {
     if (file_exists($bySubfieldsFile)) {
+      error_log('bySubfieldsFile: ' . $bySubfieldsFile);
       $header = [];
       $subfields = [];
       $subfieldsById = [];
@@ -114,6 +115,10 @@ class AddedEntry extends BaseTab {
         if (empty($header)) {
           $header = $values;
         } else {
+          if (count($header) != count($values)) {
+            error_log("wrong line: " . $line);
+            continue;
+          }
           $record = (object)array_combine($header, $values);
           if (!isset($record->subfields)) {
             error_log('no subfields: ' . $line . ' (' . $bySubfieldsFile . ')');
@@ -184,11 +189,11 @@ class AddedEntry extends BaseTab {
 
     if (isset($record->abbreviation4solr)
         && $record->abbreviation4solr != ''
-        && in_array($record->abbreviation4solr, $this->getSolrFields())) {
+        && in_array($record->abbreviation4solr, $this->solr()->getSolrFields())) {
       $record->facet2 = $base . '_' . $record->abbreviation4solr . '_ss';
     } elseif (isset($record->abbreviation)
         && $record->abbreviation != ''
-        && in_array($record->abbreviation, $this->getSolrFields())) {
+        && in_array($record->abbreviation, $this->solr()->getSolrFields())) {
       $record->facet2 = $base . '_' . $record->abbreviation . '_ss';
     }
   }
