@@ -83,7 +83,7 @@ $tab = createTab($class);
 try {
   $tab->prepareData($smarty);
 } catch(Throwable $e) {
-  $smarty->assign('error', 'Failed to read analysis result');
+  $smarty->assign('error', 'Failed to read analysis result.');
 }
 
 if ($ajax == 1) {

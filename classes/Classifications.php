@@ -192,14 +192,16 @@ class Classifications extends AddedEntry {
           } else if ($record->field == '852') {
             $this->createFacets($record, '852a_Location_location');
             $this->ind1Orsubfield2($record, '852ind1_852_shelvingScheme_ss', '852__852___ss');
-          } else if (in_array($record->field, $picaFields)) {
+          } else if ($this->catalogue->getSchemaType() == 'PICA'
+                     && in_array($record->field, $picaFields)) {
             $record->facet = $this->picaToSolr($record->field) . '_full_ss';
             $record->facet2 = $record->facet; // . '_full_ss';
 
             $definition = SchemaUtil::getDefinition($record->field);
             $pica3 = ($definition != null && isset($definition->pica3) ? '=' . $definition->pica3 : '');
             $record->withPica3 = $record->field . $pica3;
-          } else if (in_array($record->field, ['044A', '044C', '044H', '044N', '044S', '045A', '045B', '045F', '045N', '045N/01', '045N/02', '045R', '045C', '045E', '045G'])
+          } else if ($this->catalogue->getSchemaType() == 'PICA'
+                    && in_array($record->field, ['044A', '044C', '044H', '044N', '044S', '045A', '045B', '045F', '045N', '045N/01', '045N/02', '045R', '045C', '045E', '045G'])
                     || preg_match('/^(045B|144Z|145S)/', $record->field)) {
             $record->facet = $this->picaToSolr($record->field) . '_full_ss';
             $record->facet2 = $record->facet; // . '_full_ss';

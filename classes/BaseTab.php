@@ -189,9 +189,9 @@ abstract class BaseTab implements Tab {
    */
   protected function getSolrFieldsFromLuke() {
     if (!isset($this->solrFields)) {
-      foreach (debug_backtrace() as $trace) {
-        error_log(' ' . $trace['class'] . '->' . $trace['function']);
-      }
+      // foreach (debug_backtrace() as $trace) {
+      //   error_log(' ' . $trace['class'] . '->' . $trace['function']);
+      // }
       $solrFieldsFile = $this->getFilePath('solr-fields.json');
       if (file_exists($solrFieldsFile)) {
         $this->solrFields = json_decode(file_get_contents($solrFieldsFile));
