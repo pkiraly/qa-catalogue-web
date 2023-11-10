@@ -20,9 +20,9 @@ class Data extends Facetable {
   private $typeCache006 = [];
   private $type = 'solr';
   private $numFound = null;
-  public $grouped = false;
+  public bool $grouped = false;
   public $groupId = false;
-  public $groupBy = false;
+  public string $groupBy;
   public $params;
   public $action;
   private $searchForm = 'simple';
