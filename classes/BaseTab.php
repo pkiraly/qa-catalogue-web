@@ -191,7 +191,9 @@ abstract class BaseTab implements Tab {
    */
   protected function getSolrFieldsFromLuke() {
     if (!isset($this->solrFields)) {
-      error_log('debug_backtrace: ' . json_encode(debug_backtrace()));
+      foreach (debug_backtrace() as $trace) {
+        error_log(' ' . $trace->class);
+      }
       $baseUrl = $this->getMainSolrEndpoint() . $this->getIndexName();
       $url = $baseUrl . '/admin/luke?wt=json';
       $luke = json_decode(file_get_contents($url));
