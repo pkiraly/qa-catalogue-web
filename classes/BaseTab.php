@@ -151,8 +151,6 @@ abstract class BaseTab implements Tab {
    * @return array
    */
   protected function getSolrFields($onlyStored = false) {
-    if (!$onlyStored)
-      error_log(json_encode(debug_backtrace()));
     if (!isset($this->solrFields)) {
       if ($onlyStored)
         $this->getSolrFieldsByQuery();
