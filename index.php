@@ -37,6 +37,7 @@ if (isset($configuration['templates'])) {
 */
 
 $map = [
+  'start'                    => 'Start',
   'data'                     => 'Data',
   'completeness'             => 'Completeness',
   'issues'                   => 'Issues',
@@ -62,7 +63,9 @@ $map = [
   'collocations'             => 'Collocations',
 ];
 
-$defaultTab = getDefaultTab($configuration, $map, 'completeness');
+
+
+$defaultTab = getDefaultTab($configuration, $map, 'start');
 $tab = getOrDefault('tab', $defaultTab);
 $ajax = getOrDefault('ajax', 0, [0, 1]);
 $smarty->assign('tab', $tab);
@@ -79,7 +82,7 @@ $languages = [
 include_once('classes/Tab.php');
 include_once('classes/BaseTab.php');
 
-$class = isset($map[$tab]) ? $map[$tab] : 'Completeness';
+$class = isset($map[$tab]) ? $map[$tab] : 'Start';
 $tab = createTab($class);
 try {
   $tab->prepareData($smarty);

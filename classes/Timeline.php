@@ -1,6 +1,5 @@
 <?php
 
-
 class Timeline extends BaseTab {
 
   private $hasNonCoreTags = FALSE;

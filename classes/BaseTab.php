@@ -2,6 +2,7 @@
 
 include_once 'catalogue/Catalogue.php';
 require_once 'utils/Solr.php';
+include_once 'DataFetch.php';
 
 abstract class BaseTab implements Tab {
 
@@ -45,7 +46,7 @@ abstract class BaseTab implements Tab {
     $this->displayShacl = $this->configuration->doDisplayShacl(); // isset($configuration['display-shacl']) && (int) $configuration['display-shacl'] == 1;
     $this->versioning = $this->configuration->doVersioning(); // (isset($this->configuration['versions'][$this->db]) && $this->configuration['versions'][$this->db] === true);
 
-    $this->count = $this->readCount();
+    $this->count = $this->readCount($this->getFilePath('count.csv'));
     $this->readLastUpdate();
     $this->handleHistoricalData();
     $this->lang = getOrDefault('lang', $this->catalogue->getDefaultLang(), ['en', 'de', 'pt']);
