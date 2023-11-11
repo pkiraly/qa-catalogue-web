@@ -55,6 +55,7 @@ new Chart(authoritiesGraphContext, {
 
 const completensGraphContext = document.getElementById('completenessGraph');
 
+
 var completeness = new Chart(completensGraphContext, {
   type: 'bar',
   data: {
@@ -82,7 +83,7 @@ var completeness = new Chart(completensGraphContext, {
     },
     onClick: onCompletenessClicked,
     responsive: true,
-    aspectRatio: 1,
+    ratio: 1,
     parsing: {
       xAxisKey: 'label',
       yAxisKey: 'Completeness'
@@ -166,50 +167,43 @@ function updateCompletenessContent(level, packageName, label) {
   completeness.update();
 }
 
-var boothShelfReadyContext = document.getElementById("boothShelfReady");
+const boothShelfReadyContext = document.getElementById('boothShelfReady');
 {literal}
-const boothShelfReadyData = Object.keys(shelf_ready_data).map((i) => ({x: i, y: shelf_ready_data[i]}));
+const boothShelfReady = Object.keys(shelf_ready_data).map((i) => ({"Score": parseFloat(i), "Number of Records": parseInt(shelf_ready_data[i])}));
+console.debug(boothShelfReady);
 {/literal}
-var previous_ticks = 0;
-var previous_tooltip = 0;
-var boothShelfReadyChart = new Chart(boothShelfReadyContext, {
-  type: 'bar',
-  data: {
-      datasets: [{
-          label: 'Records',
-          data: boothShelfReadyData,
-          backgroundColor: '#37ba00',
-          borderWidth: 1,
-          barPercentage: 1,
-          categoryPercentage: 1
-      }]
-  },
-  options: {
-    scales: {
-      x: {
-        type: 'linear',
-        ticks: {
-          stepSize: 1,
-          callback: (i,a) => {
-            const retval = previous_ticks + ' - ' + i;
-            previous_ticks = i;
-            return retval;
-          }
+
+const options = {
+  container: boothShelfReadyContext,
+  data: boothShelfReady,
+  series: [
+    {
+      type: 'histogram',
+      aggregation: 'sum',
+      xKey: 'Score',
+      yKey: 'Number of Records',
+      fill: "#37ba00",
+      stroke: "green",
+      highlightStyle: {
+        item: {
+          fill: 'green'
         },
-        offset: true,
-        grid: {
-        	display: false
-        },
-        border: {
-          color: 'blue'
-        }
-      }
+      },
     },
-    plugins: {
-      legend: {
-        display: false,
-      }
+  ],
+  axes: [
+    {
+      type: 'number',
+      position: 'bottom',
+      title: { text: 'Score' },
     },
-    aspectRatio: 1
-  }
-});
+    {
+      type: 'number',
+      position: 'left',
+      title: { text: 'No. Records' },
+    },
+  ],
+};
+
+agCharts.AgChart.create(options);
+

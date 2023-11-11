@@ -15,9 +15,7 @@
 
     <div class='grid-container'>
 
-      {include 'start/grid-item.tpl' id='issuesGraph' title='Issues' ref="?tab=issues{$generalParams}"}
       {include 'start/grid-item.tpl' id='authoritiesGraph' title='Subject analysis' ref="?tab=classifications{$generalParams}"}
-      {include 'start/grid-item.tpl' id='authoritiesNameGraph' title='Authority name analysis' ref="?tab=authorities{$generalParams}"}
 
       <div class='grid-item'>
         <div class='grid-item-title'>
@@ -25,17 +23,27 @@
           <a class='btn' id="completenessBack" style='float:right'>❮</a>
         </div>
         <div class='grid-item-content'>
-          <canvas class="graph" id="completenessGraph"></canvas>
+          <canvas class="graph" id="completenessGraph" height="100%"></canvas>
         </div>
       </div>
 
-      {include 'start/grid-item.tpl' id='boothShelfReady' title='Booth shelf ready' ref="?tab=shelf-ready-completeness{$generalParams}"}
-      
+      {include 'start/grid-item.tpl' id='authoritiesNameGraph' title='Authority name analysis' ref="?tab=authorities{$generalParams}"}
+      {include 'start/grid-item.tpl' id='issuesGraph' title='Issues' ref="?tab=issues{$generalParams}"}
+
+      <div class='grid-item'>
+        <div class='grid-item-title'>
+          <a class='grid-item-title-text' href='?tab=shelf-ready-completeness{$generalParams}'>Booth shelf ready</a>
+        </div>
+        <div class='grid-item-content'>
+          <div class="graph" id="boothShelfReady"></div>
+        </div>
+      </div>      
 
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-treemap/dist/chartjs-chart-treemap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ag-charts-community@8.1.0/dist/ag-charts-community.min.js"></script>
     <script language="JavaScript" type="text/javascript">
       {include file="js/start.js.tpl"}
     </script>
