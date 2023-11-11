@@ -132,10 +132,4 @@ function getFacetLabel($facet) {
 function getDefaultTab(Utils\Configuration $configuration, array $map, $defaultTab = 'completeness') {
   $tab = $configuration->getDefaultTab();
   return in_array($tab, array_keys($map)) ? $tab : $defaultTab;
-  /*
-  $key = 'default-tab';
-  return (isset($configuration[$key]) && $configuration[$key] != '' && in_array($configuration[$key], array_keys($map)))
-    ? $configuration['default-tab']
-    : $defaultTab;
-  */
 }

@@ -113,18 +113,20 @@ Additional configuration parameters are supported:
    The value `catalogue` can be used for generic catalogue.
 - `default-tab`, `default-tab[<id>]`: (string) the tab which will be displayed when no tab is selected. This
    will be the tab which will be opened by the root URL (the landing page). If no default-tab has been set,
-   `completeness` will be used. The possible values are: `data`, `completeness` (default), `issues`, `functions`,
+   `start` will be used. The possible values are: `start` (default), `data`, `completeness`, `issues`, `functions`,
    `classifications`, `authorities`, `serials`, `tt-completeness`, `shelf-ready-completeness`, `shacl`, `network`,
    `terms`, `pareto`, `history`, `timeline`, `settings`, `about`, `record-issues`, `histogram`,
    `functional-analysis-histogram`, `control-fields`, `download`, `collocations`.
-- `indexName`, `indexName[<id>]`: (string) name of the Solr index of a particular catalogue, if it is different from the name of the
-    catalogue or the URL path.
-- `dirName`, `dirName[<id>]`: (string) name of the data directory of a particular catalogue, if it is different from the name of the
-   catalogue or the URL path.
-- `version`, `version[<id>]`: (string) denotes if there are versions for a catalogue. Possible values: 1 (there are versions), 0 
-   (there are no versions)
-- `display-network`, `display-network[<id>]`: (bool) show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
-- `display-shacl`, `display-shacl[<id>]`: (bool) show or hide the network tab. Possible values: 1 (to display the tab), or 0 (not to display)
+- `indexName`, `indexName[<id>]`: (string) name of the Solr index of a particular catalogue, if it is different from
+   the name of the catalogue or the URL path.
+- `dirName`, `dirName[<id>]`: (string) name of the data directory of a particular catalogue, if it is different from
+   the name of the catalogue or the URL path.
+- `version`, `version[<id>]`: (string) denotes if there are versions for a catalogue. Possible values: 1 (there are
+   versions), 0 (there are no versions)
+- `display-network`, `display-network[<id>]`: (bool) show or hide the network tab. Possible values: 1 (to display
+   the tab), or 0 (not to display)
+- `display-shacl`, `display-shacl[<id>]`: (bool) show or hide the network tab. Possible values: 1 (to display the tab),
+   or 0 (not to display)
 - `templates`, `templates[<id>]`: (string) directory with additional, custom Smarty templates for
    [customization](#customization). Deafult value is `config`.
 - `mainSolrEndpoint`, `mainSolrEndpoint[<id>]`: (string) the URL of the main Solr endpoint. Default value: 
