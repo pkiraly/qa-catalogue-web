@@ -29,87 +29,86 @@ class Start extends BaseTab {
     $records = [];
     $idDictionary = [];
 
-    if (file_exists($elementsFile)) {
-      error_log('completeness file: ' . $elementsFile);
-      $start = microtime(true);
+    $handle = fopen($packageFile, "r");
+    if ($handle) {
       $lineNumber = 0;
       $header = [];
-
-      $handle = fopen($elementsFile, "r");
-      if ($handle) {
-        while (($line = fgets($handle)) !== false) {
-          $lineNumber++;
-          $values = str_getcsv($line);
-          if ($lineNumber == 1) {
-            $header = $values;
-          } else {
-            if (count($header) != count($values)) {
-              error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
-                $elementsFile, $lineNumber, count($header), count($values)));
-              error_log($line);
-            }
-            $record = array_combine($header, $values);
-
-            if (isset($record["documenttype"]) && $record["documenttype"] != $type)
-              continue;
-
-            if (!is_null($groupId) && $record->groupId != $groupId)
-              continue;
-
-            $path = explode("$", $record["path"], 2);
-            if (count($path) == 1) {
-              $path[1] = "";
-              $name = $record["tag"];
-            } else {
-              $name = $record["subfield"];
-            }
-
-            $records[$record["packageid"]][$path[0]]['$'.$path[1]] = (object) [
-              'count' => $record["number-of-record"],
-              'name' => $name
-            ];
+      while (($line = fgets($handle)) !== false) {
+        $lineNumber++;
+        $values = str_getcsv($line);
+        if ($lineNumber == 1) {
+          $header = $values;
+        } else {
+          if (count($header) != count($values)) {
+            error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
+              $elementsFile, $lineNumber, count($header), count($values)));
+            error_log($line);
           }
+          $record = array_combine($header, $values);
+
+          if (isset($record["documenttype"]) && $record["documenttype"] != $type)
+            continue;
+
+          if (!is_null($groupId) && $record->groupId != $groupId)
+            continue;
+
+          $records[$record["name"]][""][""] = (object) [
+            'count' => $record["count"],
+            'name' => $record["label"]
+          ];
+
+          $idDictionary[$record["packageid"]] = $record["name"];
         }
-        fclose($handle);
-      } else {
-        $msg = sprintf("file %s is not existing", $elementsFile);
-        error_log($msg);
       }
-
-      $lineNumber = 0;
-      $handle = fopen($packageFile, "r");
-      if ($handle) {
-        while (($line = fgets($handle)) !== false) {
-          $lineNumber++;
-          $values = str_getcsv($line);
-          if ($lineNumber == 1) {
-            $header = $values;
-          } else {
-            if (count($header) != count($values)) {
-              error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
-                $elementsFile, $lineNumber, count($header), count($values)));
-              error_log($line);
-            }
-            $record = array_combine($header, $values);
-
-            if (isset($record["documenttype"]) && $record["documenttype"] != $type)
-              continue;
-
-            if (!is_null($groupId) && $record->groupId != $groupId)
-              continue;
-
-            $records[$record["packageid"]][""][""] = (object) [
-              'count' => $record["count"],
-              'name' => $record["label"]
-            ];
-          }
-        }
-        fclose($handle);
-      } else {
-        $msg = sprintf("file %s is not existing", $packageFile);
-        error_log($msg);
-      }
+      fclose($handle);
+    } else {
+      $msg = sprintf("file %s is not existing", $packageFile);
+      error_log($msg);
     }
+
+    $handle = fopen($elementsFile, "r");
+    if ($handle) {
+      $lineNumber = 0;
+      $header = [];
+      while (($line = fgets($handle)) !== false) {
+        $lineNumber++;
+        $values = str_getcsv($line);
+        if ($lineNumber == 1) {
+          $header = $values;
+        } else {
+          if (count($header) != count($values)) {
+            error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
+              $elementsFile, $lineNumber, count($header), count($values)));
+            error_log($line);
+          }
+          $record = array_combine($header, $values);
+
+          if (isset($record["documenttype"]) && $record["documenttype"] != $type)
+            continue;
+
+          if (!is_null($groupId) && $record->groupId != $groupId)
+            continue;
+
+          $path = explode("$", $record["path"], 2);
+          if (count($path) == 1) {
+            $path[1] = "";
+            $name = $record["tag"];
+          } else {
+            $name = $record["subfield"];
+          }
+
+          $records[$idDictionary[$record["packageid"]]][$path[0]]['$'.$path[1]] = (object) [
+            'count' => $record["number-of-record"],
+            'name' => $name
+          ];
+        }
+      }
+      fclose($handle);
+    } else {
+      $msg = sprintf("file %s is not existing", $elementsFile);
+      error_log($msg);
+    }
+      
     return $records;
   }
 
