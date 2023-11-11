@@ -21,9 +21,9 @@
         <div class='grid-item-title'>
           <a class='grid-item-title-text' href='?tab=completeness{$generalParams}'>Completeness</a>
           <a class='btn' id="completenessBack" style='float:right'>❮</a>
-	  <div class='trunc-container' style='float:right;max-width:calc(100% - 128px - 34px - 5px)'>
+	        <div class='trunc-container' style='float:right;max-width:calc(100% - 128px - 34px - 5px)'>
             <a class='trunc-label' id="location" style='font-size:10pt;padding-top:.6rem'></a>
-	  </div>
+          </div>
         </div>
         <div class='grid-item-content'>
           <canvas class="graph" id="completenessGraph"></canvas>
@@ -38,7 +38,7 @@
           <a class='grid-item-title-text' href='?tab=shelf-ready-completeness{$generalParams}'>Booth shelf ready</a>
         </div>
         <div class='grid-item-content'>
-          <div class="graph" id="boothShelfReady"></div>
+          <div class="spec-graph" id="boothShelfReady"></div>
         </div>
       </div>      
 
