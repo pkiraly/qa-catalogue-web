@@ -170,8 +170,8 @@ var boothShelfReadyContext = document.getElementById("boothShelfReady");
 {literal}
 const boothShelfReadyData = Object.keys(shelf_ready_data).map((i) => ({x: i, y: shelf_ready_data[i]}));
 {/literal}
-var previous_ticks = {$shelf_ready_min};
-var previous_tooltip = {$shelf_ready_min};
+var previous_ticks = 0;
+var previous_tooltip = 0;
 var boothShelfReadyChart = new Chart(boothShelfReadyContext, {
   type: 'bar',
   data: {
@@ -192,7 +192,7 @@ var boothShelfReadyChart = new Chart(boothShelfReadyContext, {
           stepSize: 1,
           callback: (i,a) => {
             const retval = previous_ticks + ' - ' + i;
-            previous_ticks++;
+            previous_ticks = i;
             return retval;
           }
         },

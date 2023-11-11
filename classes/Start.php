@@ -20,15 +20,10 @@ class Start extends BaseTab {
     $smarty->assign('authorities', Authorities::readByRecords($this->getFilePath('authorities-by-records.csv'), $this->count));
     $smarty->assign('classifications', Classifications::readByRecords($this->getFilePath('classifications-by-records.csv'), $this->count));
     
-    $suffixes = Completeness::getShelfReadyFileNames($this->getFilePath('shelf-ready-completeness-fields.csv'));
-    $files = [];
-    foreach ($suffixes as $key => $suffix) {
-      $files[] = $this->getFilePath("shelf-ready-completeness-histogram-" . $suffix . ".csv");
-    }
-
-    $shelf_ready_completeness = Completeness::getShelfReadyCompleteness($files);
-    $smarty->assign('shelf_ready_completeness', json_encode(Start::createHistogram($shelf_ready_completeness, 9)));
-    $smarty->assign('shelf_ready_min', min(array_keys($shelf_ready_completeness)));
+    $shelf_ready_completeness = Start::getHistogram($this->getFilePath("shelf-ready-completeness-histogram-total.csv"));
+    $shelf_ready_completeness_a = Start::createHistogram($shelf_ready_completeness, 12);
+    $smarty->assign('shelf_ready_completeness', json_encode($shelf_ready_completeness_a));
+    $smarty->assign('shelf_ready_min', min(array_keys($shelf_ready_completeness_a)));
   }
 
   public static function readCompleteness($type, $elementsFile, $packageFile, $groupId = null) {
@@ -111,20 +106,47 @@ class Start extends BaseTab {
     $keys = array_keys($data);
     $min = min($keys);
     $max = max($keys);
-    $delta = $max - $current_bin;
+    $delta = $max - $min;
     $bin_size = $delta / $bins;
 
     $output = [];
+    $prev_bin = 0;
 
     for ($current_bin = $min + $bin_size; $current_bin <= $max; $current_bin += $bin_size) {
-      $output[$current_bin] = 0;
+      $output[$current_bin] = 0.0;
       foreach ($data as $key=>$value) {
-        if ($key <= $current_bin) {
+        if ($key <= $current_bin && $key > $prev_bin) {
           $output[$current_bin] = $output[$current_bin] + $value;
         }
       }
+      $prev_bin = $current_bin;
     }
-
+    print_r($output);
     return $output;
+  }
+
+  public static function getHistogram($filepath) {
+    $data = [];
+    $handle = fopen($filepath, "r");
+    if ($handle) {
+      $lineNumber = 0;
+      while (($line = fgets($handle)) !== false) {
+        $lineNumber++;
+        $values = str_getcsv($line);
+        if ($lineNumber == 1) {
+          $header = $values;
+        } else {
+          if (count($header) != count($values)) {
+            error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
+            $elementsFile, $lineNumber, count($header), count($values)));
+            error_log($line);
+          }
+          $entry = (object)array_combine($header, $values);
+          
+          $data[$entry->count] = $entry->frequency;
+        }
+      }
+    }
+    return $data;
   }
 }
