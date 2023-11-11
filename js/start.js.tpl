@@ -5,7 +5,7 @@ const issuesGraphContext = document.getElementById('issuesGraph');
 new Chart(issuesGraphContext, {
     type: 'doughnut',
     data: {
-        labels: ['Without issues', 'With undefined fields', 'With issues'],
+        labels: ['Without &', 'Undefined', 'With issues'],
         datasets: [{
             label: '# of Records',
             data: ['{$issueStats->summary->good|escape:javascript}', '{$issueStats->summary->unclear|escape:javascript}', '{$issueStats->summary->bad|escape:javascript}'],
@@ -14,15 +14,32 @@ new Chart(issuesGraphContext, {
         }]
     },
     options: {
-      responsive: true
+      responsive: true,
+      plugins: {
+        legend: {
+          align: 'start',
+          position: 'bottom',
+          labels: {
+            usePointStyle: true,
+            sort: (a, b, data) => {
+              {literal}
+              if (a.text === "Undefined")
+              {return 1;}
+              else
+              {return -1;}
+              {/literal}
+            }
+          }
+        }
       }
+    },
 });
 
 const authoritiesNameGraphContext = document.getElementById('authoritiesNameGraph');
 new Chart(authoritiesNameGraphContext, {
     type: 'doughnut',
     data: {
-        labels: ['With authority name', 'Without authority name'],
+        labels: ['With &', 'Without authority name'],
         datasets: [{
             label: '# of Records',
             data: ['{$authorities->withClassification->count|escape:javascript}', '{$authorities->withoutClassification->count|escape:javascript}'],
@@ -31,7 +48,16 @@ new Chart(authoritiesNameGraphContext, {
         }]
     },
     options: {
-      responsive: true
+      responsive: true,
+      plugins: {
+        legend: {
+          align: 'start',
+          position: 'bottom',
+          labels: {
+            usePointStyle: true
+          }
+        }
+      }
     }
 });
 
@@ -39,7 +65,7 @@ const authoritiesGraphContext = document.getElementById('authoritiesGraph');
 new Chart(authoritiesGraphContext, {
     type: 'doughnut',
     data: {
-        labels: ['With subjects', 'Without subjects'],
+        labels: ['With &', 'Without subjects'],
         datasets: [{
             label: '# of Records',
             data: ['{$classifications->withClassification->count|escape:javascript}', '{$classifications->withoutClassification->count|escape:javascript}'],
@@ -48,7 +74,16 @@ new Chart(authoritiesGraphContext, {
         }]
     },
     options: {
-      responsive: true
+      responsive: true,
+      plugins: {
+        legend: {
+          align: 'start',
+          position: 'bottom',
+          labels: {
+            usePointStyle: true
+          }
+        }
+      }
     }
 });
 
