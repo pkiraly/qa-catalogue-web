@@ -9,13 +9,13 @@ new Chart(issuesGraphContext, {
         datasets: [{
             label: '# of Records',
             data: ['{$issueStats->summary->good|escape:javascript}', '{$issueStats->summary->unclear|escape:javascript}', '{$issueStats->summary->bad|escape:javascript}'],
-            backgroundColor: ["#37ba00", "#FFFF00", "#FF4136"],
+            backgroundColor: ["#24A259", "#FFD166", "#EF476F"],
             borderWidth: 1
         }]
     },
     options: {
       responsive: true
-    }
+      }
 });
 
 const authoritiesNameGraphContext = document.getElementById('authoritiesNameGraph');
@@ -26,7 +26,7 @@ new Chart(authoritiesNameGraphContext, {
         datasets: [{
             label: '# of Records',
             data: ['{$authorities->withClassification->count|escape:javascript}', '{$authorities->withoutClassification->count|escape:javascript}'],
-            backgroundColor: ["#37ba00", "#FF4136"],
+            backgroundColor: ["#24A259", "#EF476F"],
             borderWidth: 1
         }]
     },
@@ -43,7 +43,7 @@ new Chart(authoritiesGraphContext, {
         datasets: [{
             label: '# of Records',
             data: ['{$classifications->withClassification->count|escape:javascript}', '{$classifications->withoutClassification->count|escape:javascript}'],
-            backgroundColor: ["#37ba00", "#FF4136"],
+            backgroundColor: ["#24A259", "#EF476F"],
             borderWidth: 1
         }]
     },
@@ -64,8 +64,8 @@ var completeness = new Chart(completensGraphContext, {
       {
         label: '# of records',
         key: 'Completeness',
-        borderColor: 'green',
-        backgroundColor: '#37ba00',
+        backgroundColor: '#118AB2',
+        hoverBackgroundColor: '#073B4C',
         borderWidth: 1,
         spacing: 0
       }
@@ -107,11 +107,14 @@ var completeness = new Chart(completensGraphContext, {
     },
     onClick: onCompletenessClicked,
     responsive: true,
-    ratio: 1,
     parsing: {
       yAxisKey: 'label',
       xAxisKey: 'Completeness'
     },
+    hover: {
+      mode: 'index',
+   }
+
   }
 });
 
@@ -214,11 +217,11 @@ const options = {
       aggregation: 'sum',
       xKey: 'Score',
       yKey: 'Number of Records',
-      fill: "#37ba00",
-      stroke: "green",
+      fill: "#118AB2",
+      stroke: "#073B4C",
       highlightStyle: {
         item: {
-          fill: 'green'
+          fill: '#073B4C'
         },
       },
     },
@@ -244,4 +247,3 @@ const options = {
 };
 
 agCharts.AgChart.create(options);
-
