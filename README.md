@@ -128,7 +128,7 @@ Additional configuration parameters are supported:
 - `display-shacl`, `display-shacl[<id>]`: (bool) show or hide the network tab. Possible values: 1 (to display the tab),
    or 0 (not to display)
 - `templates`, `templates[<id>]`: (string) directory with additional, custom Smarty templates for
-   [customization](#customization). Deafult value is `config`.
+   [customization](#customization). Default value is `config`.
 - `mainSolrEndpoint`, `mainSolrEndpoint[<id>]`: (string) the URL of the main Solr endpoint. Default value: 
   `http://localhost:8983/solr/`. In multi-tenant mode you can specify it for a particular catalogue with
   `mainSolrEndpoint[<id>]`. \[Available from v0.8.0\]
