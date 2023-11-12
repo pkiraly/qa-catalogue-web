@@ -2,7 +2,7 @@
 
 include_once 'catalogue/Catalogue.php';
 require_once 'utils/Solr.php';
-include_once 'DataFetch.php';
+// include_once 'DataFetch.php';
 
 abstract class BaseTab implements Tab {
 
@@ -496,7 +496,7 @@ abstract class BaseTab implements Tab {
         $this->analysisParameters = json_decode(file_get_contents($path));
         $this->analysisParameters->analysisTimestamp = date("Y-m-d H:i:s", filemtime($path));
       } else {
-
+        error_log(sprintf('parameterFile %s does not exist', $path));
       }
     }
   }

@@ -48,6 +48,24 @@ class Record {
     return null;
   }
 
+  public function getAllSubfields($fieldName, $subfieldName): array {
+    $subfields = [];
+    if (isset($this->record->{$fieldName})) {
+      $fields = $this->record->{$fieldName};
+      if (!is_array($fields))
+        $fields = [$fields];
+      foreach ($fields as $field) {
+        if (property_exists($field->subfields, $subfieldName)) {
+          if (is_array($field->subfields->{$subfieldName}))
+            $subfields = array_merge($subfields, $field->subfields->{$subfieldName});
+          else
+            $subfields[] = $field->subfields->{$subfieldName};
+        }
+      }
+    }
+    return $subfields;
+  }
+
   public function resolveLeader($definition, $code) {
     if ($code == '" "')
       $code = ' ';

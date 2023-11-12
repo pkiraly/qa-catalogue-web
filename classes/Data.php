@@ -27,6 +27,7 @@ class Data extends Facetable {
   public $action;
   private $searchForm = 'simple';
   protected $parameterFile = 'marctosolr.params.json';
+  private ?array $allGroups;
 
   public function __construct($configuration, $id) {
     parent::__construct($configuration, $id);
@@ -37,9 +38,6 @@ class Data extends Facetable {
     $this->rows = (int) getOrDefault('rows', 10, $this->itemsPerPageSelectors);
     $this->type = getOrDefault('type', 'solr', ['solr', 'issues', 'custom-rule']);
     $this->action = getOrDefault('action', 'search', ['search', 'download']);
-    $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
-    if ($this->grouped)
-      $this->groupBy = $this->analysisParameters->groupBy;
     $this->groupId = getOrDefault('groupId', 0);
     $this->searchForm = getOrDefault('search-form', 'simple', ['simple', 'advanced']);
 
@@ -69,6 +67,9 @@ class Data extends Facetable {
         $this->downloadAction();
       } else {
         parent::prepareData($smarty);
+        $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
+        if ($this->grouped)
+          $this->groupBy = $this->analysisParameters->groupBy;
         $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
         $this->searchAction($smarty);
      }
@@ -354,8 +355,11 @@ class Data extends Facetable {
     $smarty->assign('facetLimit', $this->facetLimit);
     $smarty->assign('filters', $this->createFilters());
     $smarty->assign('offset', $this->offset);
-    if ($this->grouped)
+    $smarty->assign('grouped', $this->grouped);
+    if ($this->grouped) {
       $smarty->assign('groupId', $this->groupId);
+      $smarty->assign('groupBy', $this->parseGroupBy($this->groupBy));
+    }
     $smarty->assign('itemsPerPage', $this->getItemPerPage());
     $smarty->assign('basicFacetParams', $this->getBasicUrl());
     $smarty->assign('ajaxFacet', $this->ajaxFacet);
@@ -546,5 +550,23 @@ class Data extends Facetable {
     if ($this->grouped)
       $query .= ' AND groupId_is:' . $this->groupId;
     return $query;
+  }
+
+  private function parseGroupBy($groupBy) {
+    $parts = explode('$', $groupBy);
+    return (object)[
+      'full' => $groupBy,
+      'tag' => $parts[0],
+      'subfield' => $parts[1]
+    ];
+  }
+
+  public function getLibraryById($id) {
+    if (!isset($this->allGroups)) {
+      $this->allGroups = [];
+      foreach ($this->readGroups() as $group)
+        $this->allGroups[$group->id] = $group->group;
+    }
+    return $this->allGroups[$id] ?? $id;
   }
 }
