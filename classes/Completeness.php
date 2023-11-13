@@ -203,7 +203,7 @@ class Completeness extends BaseTab {
 
         $this->max = max($this->max, $record->count);
         if ($this->max != 0)
-          $record->percent = $package->count * 100 / $this->max;
+          $record->percent = $record->count * 100 / $this->max;
 
       if (!$record->iscoretag) {
         $this->hasNonCoreTags = TRUE;
