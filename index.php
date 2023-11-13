@@ -25,16 +25,7 @@ else
   $id = getPath();
 
 $configuration = new Utils\Configuration($configurationArray, $id);
-error_log('doShowAdvancedSearchForm: ' . (int) $configuration->doShowAdvancedSearchForm());
 $smarty->assign('templates', $configuration->getTemplates());
-/*
-if (isset($configuration['templates'])) {
-  // realpath ensures there is no `/` at the end of the path
-  $smarty->assign('templates', realpath($configuration['templates']) ?: 'config');
-} else {
-  $smarty->assign('templates', 'config');
-}
-*/
 
 $map = [
   'start'                    => 'Start',
@@ -62,8 +53,6 @@ $map = [
   'download'                 => 'Download',
   'collocations'             => 'Collocations',
 ];
-
-
 
 $defaultTab = getDefaultTab($configuration, $map, 'start');
 $tab = getOrDefault('tab', $defaultTab);

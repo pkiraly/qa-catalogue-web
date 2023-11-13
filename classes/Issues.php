@@ -263,7 +263,7 @@ class Issues extends BaseTab {
 
   private function readCategories() {
     if ($this->grouped) {
-      $this->categories = Issues::filterByGroup($this->readIssueCsv('issue-by-category.csv', ''), 'id');
+      $this->categories = Issues::filterByGroup($this->readIssueCsv('issue-by-category.csv', ''), 'id', $this->grouped, $this->groupId);
       $total = $this->currentGroup->count;
     } else {
       $this->categories = $this->readIssueCsv('issue-by-category.csv', 'id');
@@ -277,7 +277,7 @@ class Issues extends BaseTab {
 
   private function readTypes() {
     if ($this->grouped) {
-      $this->types = Issues::filterByGroup($this->readIssueCsv('issue-by-type.csv', ''), 'id');
+      $this->types = Issues::filterByGroup($this->readIssueCsv('issue-by-type.csv', ''), 'id', $this->grouped, $this->groupId);
       $total = $this->currentGroup->count;
     } else {
       $this->types = $this->readIssueCsv('issue-by-type.csv', 'id');
@@ -305,9 +305,9 @@ class Issues extends BaseTab {
     return $elementsFile;
   }
 
-  public static function readTotal($filepath, $total, $group = null) {
+  public static function readTotal($filepath, $total, $grouped = false, $group = null) {
     if (!is_null($group)) {
-      $statistics = Issues::filterByGroup(readCsv($filepath, ''), 'type', $group->id);
+      $statistics = Issues::filterByGroup(readCsv($filepath, ''), 'type', $grouped, $group->id);
       $total = $group->count;
     } else {
       $statistics = readCsv($filepath, 'type');
@@ -355,7 +355,7 @@ class Issues extends BaseTab {
       if ($this->sqliteExists()) {
         $this->printId($this->getIdsFromDBResult($errorId, 'errorId', 'download'));
       } else {
-        $recordIds = $this->getIdsFromCsv($errorId, $action);
+        $recordIds = $this->getIdsFromCsv($errorId, $this->action);
         echo join("\n", $recordIds);
       }
     } else if ($categoryId != '') {
@@ -499,10 +499,10 @@ class Issues extends BaseTab {
     }
   }
 
-  public static function filterByGroup($statistics, $key, $groupId = null) {
+  public static function filterByGroup($statistics, $key, $grouped = false, $groupId = null) {
     $filtered = [];
     foreach ($statistics as $record) {
-      if ($record->groupId != $groupId)
+      if ($grouped && $record->groupId != $groupId)
         continue;
       unset($record->groupId);
       $filtered[$record->{$key}] = $record;
@@ -675,7 +675,11 @@ class Issues extends BaseTab {
     $smarty->assign('records', $this->records);
     $smarty->assign('categories', $this->categories);
     $smarty->assign('types', $this->types);
-    $smarty->assign('topStatistics', Issues::readTotal($this->filePath('issue-total.csv'), $this->count, $this->grouped ? $this->currentGroup : null));
+    $smarty->assign('topStatistics', Issues::readTotal(
+      $this->filePath('issue-total.csv'),
+      $this->count,
+      $this->grouped,
+      ($this->grouped ? $this->currentGroup : null)));
     $smarty->assign('total', $this->count);
     $smarty->assign('fieldNames', ['path', 'message', 'url', 'instances', 'records']);
     $smarty->assign('listType', 'full-list');
