@@ -258,7 +258,8 @@ class Completeness extends BaseTab {
       foreach (array_keys($this->records) as $packageId) {
         if ($packageId != 0) {
           foreach ($this->records[$packageId] as $tag => $field) {
-            usort($this->records[$packageId][$tag]['subfields'], function($a, $b) {return $a->subfieldSort <=> $b->subfieldSort;});
+            if (!is_null($this->records[$packageId][$tag]['subfields']))
+              usort($this->records[$packageId][$tag]['subfields'], function($a, $b) {return $a->subfieldSort <=> $b->subfieldSort;});
           }
         }
       }
