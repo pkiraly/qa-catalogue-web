@@ -118,7 +118,7 @@ function getFacetLabel($facet) {
  * @param array $map
  * @return mixed|string
  */
-function getDefaultTab(Utils\Configuration $configuration, array $map, $defaultTab = 'completeness') {
+function getDefaultTab(Utils\Configuration $configuration, array $map, $defaultTab = 'issues') {
   $tab = $configuration->getDefaultTab();
   return in_array($tab, array_keys($map)) ? $tab : $defaultTab;
 }

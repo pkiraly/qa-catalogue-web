@@ -80,7 +80,7 @@ class Configuration {
     // $this->displayShacl = isset($this->configuration['display-shacl']) && (int) $this->configuration['display-shacl'] == 1;
     $this->indexName = $this->getValue('indexName', $this->id);
     $this->dirName = $this->getValue('dirName', $this->id);
-    $this->defaultTab = $this->getValue('default-tab', 'start');
+    $this->defaultTab = $this->getValue('default-tab', 'issues');
     $this->displayNetwork = $this->getValue('display-network', false);
     $this->displayShacl = $this->getValue('display-shacl', false);
     $this->templates = $this->getValue('templates', 'config');
