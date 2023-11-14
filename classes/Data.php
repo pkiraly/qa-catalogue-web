@@ -321,7 +321,7 @@ class Data extends Facetable {
     $groupId = $this->grouped ? $this->groupId : '';
     $coreToUse = $this->type == 'custom-rule'
                ? ''
-               : ($this->isGroupAndErrorIdIndexed() ? $this->getIndexName() : $this->findCoreToUse());
+               : ($this->isGroupAndErrorIdIndexed() ? $this->configuration->getIndexName() : $this->findCoreToUse());
     if ($coreToUse != '') {
       $recordIds = $this->prepareParametersForIssueQueriesSolr($idType, $id, $groupId, $coreToUse);
     } else {
@@ -461,7 +461,7 @@ class Data extends Facetable {
    */
   private function findCoreToUse(): string {
     $coreToUse = '';
-    $cores = ['validation', $this->getIndexName() . '_validation'];
+    $cores = ['validation', $this->configuration->getIndexName() . '_validation'];
     foreach ($cores as $core) {
       if ($this->solr()->isCoreAvailable($core)) {
         $coreToUse = $core;
