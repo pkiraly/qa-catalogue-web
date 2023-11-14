@@ -9,15 +9,23 @@ require_once 'ShelfReadyCompleteness.php';
 
 class Start extends BaseTab {
 
+  protected $parameterFile = 'completeness.params.json';
+
   public function getTemplate() {
     return 'start/start.tpl';
   }
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
+    $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
+
 
     $smarty->assign('issueStats', Issues::readTotal($this->getFilePath('issue-total.csv'), $this->count));
-    $smarty->assign('fields', json_encode(Start::readCompleteness('all', $this->getFilePath('marc-elements.csv'), $this->getFilePath('packages.csv'))));
+    $smarty->assign('fields', json_encode(Start::readCompleteness(
+      'all',
+      $this->getFilePath($this->grouped ? 'completeness-grouped-marc-elements.csv' : 'marc-elements.csv'),
+      $this->getFilePath($this->grouped ? 'completeness-grouped-packages.csv' : 'packages.csv')
+    )));
     $smarty->assign('authorities', Authorities::readByRecords($this->getFilePath('authorities-by-records.csv'), $this->count));
     $smarty->assign('classifications', Classifications::readByRecords($this->getFilePath('classifications-by-records.csv'), $this->count));
 

@@ -103,6 +103,17 @@ class Solr {
     return $this->getSolrResponse($parameters)->facets;
   }
 
+  public function searchFacets($params) {
+    $url = $this->mainSolrEndpoint . $this->indexName . '/select?' . $params;
+    $response = json_decode(file_get_contents($url));
+    if ($response && isset($response->facet_counts)) {
+      return $response->facet_counts->facet_fields;
+    } else {
+      return (object)[];
+    }
+  }
+
+
   public function getSolrModificationDate(): string {
     $url = $this->mainSolrEndpoint . 'admin/cores?action=STATUS&core=' . $this->indexName;
     $response = json_decode(file_get_contents($url));
