@@ -7,7 +7,7 @@ require_once 'Authorities.php';
 require_once 'Classifications.php';
 require_once 'ShelfReadyCompleteness.php';
 
-class Start extends BaseTab {
+class Dashboard extends BaseTab {
 
   protected $parameterFile = 'completeness.params.json';
 
@@ -21,7 +21,7 @@ class Start extends BaseTab {
 
 
     $smarty->assign('issueStats', Issues::readTotal($this->getFilePath('issue-total.csv'), $this->count));
-    $smarty->assign('fields', json_encode(Start::readCompleteness(
+    $smarty->assign('fields', json_encode(Dashboard::readCompleteness(
       'all',
       $this->getFilePath($this->grouped ? 'completeness-grouped-marc-elements.csv' : 'marc-elements.csv'),
       $this->getFilePath($this->grouped ? 'completeness-grouped-packages.csv' : 'packages.csv')

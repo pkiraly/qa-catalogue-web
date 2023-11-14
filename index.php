@@ -28,7 +28,7 @@ $configuration = new Utils\Configuration($configurationArray, $id);
 $smarty->assign('templates', $configuration->getTemplates());
 
 $map = [
-  'start'                    => 'Start',
+  'dashboard'                => 'Dashboard',
   'data'                     => 'Data',
   'completeness'             => 'Completeness',
   'issues'                   => 'Issues',
@@ -54,7 +54,7 @@ $map = [
   'collocations'             => 'Collocations',
 ];
 
-$defaultTab = getDefaultTab($configuration, $map, 'start');
+$defaultTab = getDefaultTab($configuration, $map, 'issues');
 $tab = getOrDefault('tab', $defaultTab);
 $ajax = getOrDefault('ajax', 0, [0, 1]);
 $smarty->assign('tab', $tab);
