@@ -29,7 +29,7 @@
             <span class="work-title" title="Geographic subdivision">{include 'data/subfield.tpl' value=$field->subfields->z}</span>
           {/if}
 
-          {if property_exists($field->subfields, '2') || property_exists(include 'data/subfield.tpl' value=$field->subfields, '0')}[
+          {if property_exists($field->subfields, '2') || property_exists($field->subfields, '0')}[
             {* 6482_ChronologicalSubject_source_ss *}
             {if property_exists($field->subfields, '2')}
               vocabulary: {include 'data/subfield.tpl' value=$field->subfields->{'2'}}</a>
