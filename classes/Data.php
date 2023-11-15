@@ -440,7 +440,7 @@ class Data extends Facetable {
     return $solrParams;
   }
 
-  private function getRecordIdByErrorId($core, $errorId, $groupId = null, $start = 0, $rows = 10) {
+  private function getRecordIdByErrorId($core, $errorId, $groupId = null, $start = 0, $rows = 10): array {
     $query = 'errorId_is:' . $errorId;
     if (!is_null($groupId))
       $query .= ' AND groupId_is:' . $groupId;
