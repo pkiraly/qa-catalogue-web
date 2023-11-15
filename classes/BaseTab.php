@@ -4,7 +4,6 @@ include_once 'catalogue/Catalogue.php';
 require_once 'utils/Solr.php';
 // include_once 'DataFetch.php';
 
-use Monolog\Level;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -41,7 +40,7 @@ abstract class BaseTab implements Tab {
    * @param $configuration
    * @param $id
    */
-  public function __construct($configuration, $id) {
+  public function __construct(Utils\Configuration $configuration, string $id) {
     $this->configuration = $configuration;
     $this->id = $id;
     $this->catalogueName = $this->configuration->getCatalogue(); // isset($configuration['catalogue']) ? $configuration['catalogue'] : $db;
@@ -63,10 +62,6 @@ abstract class BaseTab implements Tab {
 
   public function prepareData(Smarty &$smarty) {
     global $languages;
-
-    $this->log->info('info');
-    $this->log->warning('warning');
-    $this->log->error('error');
 
     $smarty->assign('id', $this->id);
     $smarty->assign('catalogueName', $this->catalogueName);
@@ -308,7 +303,7 @@ abstract class BaseTab implements Tab {
             $found = true;
           } else {
             if (!isset($this->fieldDefinitions->fields->{$parts[0]}->types)) {
-              error_log('no types property for ' . $parts[0]);
+              $this->log->warning('no types property for ' . $parts[0]);
             } else {
               if (is_array($this->fieldDefinitions->fields->{$parts[0]}->types)) {
                 foreach ($this->fieldDefinitions->fields->{$parts[0]}->types as $name => $type)
@@ -329,7 +324,7 @@ abstract class BaseTab implements Tab {
                   }
                 }
               } else {
-                error_log(sprintf('%s is not an array, nor an object, but a %s', $parts[0], gettype($this->fieldDefinitions->fields->{$parts[0]}->types)));
+                $this->log->warning(sprintf('%s is not an array, nor an object, but a %s', $parts[0], gettype($this->fieldDefinitions->fields->{$parts[0]}->types)));
               }
             }
           }
@@ -492,7 +487,7 @@ abstract class BaseTab implements Tab {
         $this->analysisParameters = json_decode(file_get_contents($path));
         $this->analysisParameters->analysisTimestamp = date("Y-m-d H:i:s", filemtime($path));
       } else {
-        error_log(sprintf('parameterFile %s does not exist', $path));
+        $this->log->error(sprintf('parameterFile %s does not exist', $path));
       }
     }
   }

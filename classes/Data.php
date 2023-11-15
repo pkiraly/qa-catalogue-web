@@ -260,7 +260,7 @@ class Data extends Facetable {
         }
         ksort($positions);
       } else {
-        error_log('invalid type: ' . $type);
+        $this->log->error('invalid type: ' . $type);
       }
       $this->typeCache008[$type] = $positions;
     }
@@ -276,7 +276,7 @@ class Data extends Facetable {
           $positions["" . $id] = $data;
         }
       } else {
-        error_log('invalid type: ' . $category);
+        $this->log->error('invalid type: ' . $category);
       }
       $this->typeCache007[$category] = $positions;
     }
@@ -295,7 +295,7 @@ class Data extends Facetable {
           $positions["" . $id] = $data;
         }
       } else {
-        error_log('invalid type: ' . $category);
+        $this->log->error('invalid type: ' . $category);
       }
       $this->typeCache006[$category] = $positions;
     }
@@ -482,7 +482,7 @@ class Data extends Facetable {
       return $this->getRecordIdByErrorId($coreToUse, $id, $groupId, $this->start, $this->rows);
     } else if ($idType == 'categoryId') {
       $errorIds = $this->issueDB()->fetchAll($db->getErrorIdsByCategoryId($id, $groupId), 'id');
-      error_log("errorIds: " . join(', ', $errorIds));
+      $this->log->info("errorIds: " . join(', ', $errorIds));
       return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $errorIds) . ')', $groupId, $this->start, $this->rows);
     } else if ($idType == 'typeId') {
       $errorIds = $this->issueDB()->fetchAll($db->getErrorIdsByTypeId($id, $groupId), 'id');
@@ -504,7 +504,7 @@ class Data extends Facetable {
       $t_count = microtime(true) - $start;
       $result = $this->issueDB()->getRecordIdsByErrorId($id, $groupId, $this->start, $this->rows);
       $t_retrieve = microtime(true) - $start;
-      error_log(sprintf("count: %.2f, retrieve: %.2f", $t_count, $t_retrieve));
+      $this->log->warning(sprintf("count: %.2f, retrieve: %.2f", $t_count, $t_retrieve));
     } else if ($idType == 'categoryId') {
       $this->numFound = $this->issueDB()->getRecordIdsByCategoryIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
       $result = $this->issueDB()->getRecordIdsByCategoryId($id, $groupId, $this->start, $this->rows);

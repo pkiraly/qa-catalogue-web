@@ -2,7 +2,7 @@
 
 namespace Utils;
 
-use Monolog\Level;
+use Monolog\Logger;
 
 class Configuration {
   private array $configuration;
@@ -71,7 +71,7 @@ class Configuration {
    * @var string
    */
   private string $logFile;
-  private Level $logLevel;
+  private int $logLevel;
 
   public function __construct(array $configuration, string $id) {
     $this->configuration = $configuration;
@@ -101,7 +101,7 @@ class Configuration {
     $this->linkTemplate = $this->getValue('linkTemplate', null);
     $this->showAdvancedSearchForm = $this->getValue('showAdvancedSearchForm', false);
     $this->logFile = $this->getValue('logFile', 'logs/qa-catalogue.log');
-    $this->logLevel = Level::fromName($this->getValue('logLevel', 'WARNING'));
+    $this->logLevel = Logger::toMonologLevel($this->getValue('logLevel', 'WARNING'));
 
     if ($this->multitenant) {
       $this->versioning = (isset($this->configuration['versions'][$this->id]) && $this->configuration['versions'][$this->id] === true);
@@ -209,7 +209,7 @@ class Configuration {
     return $this->logFile;
   }
 
-  public function getLogLevel(): Level {
+  public function getLogLevel(): int {
     return $this->logLevel;
   }
 }
