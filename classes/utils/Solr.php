@@ -19,7 +19,7 @@ class Solr {
     $this->solrFieldsFile = $solrFieldsFile;
   }
 
-  public function getSolrResponse($params) {
+  public function getSolrResponse($params): object {
     $url = $this->mainSolrEndpoint . $this->indexName . '/select?' . join('&', $this->encodeParams($params));
     $solrResponse = json_decode(file_get_contents($url));
     if (!$solrResponse) throw new Exception("Solr request failed");
@@ -118,8 +118,7 @@ class Solr {
     $url = $this->mainSolrEndpoint . 'admin/cores?action=STATUS&core=' . $this->indexName;
     $response = json_decode(file_get_contents($url));
     $lastModified = $response->status->{$this->indexName}->index->lastModified;
-    $lastModified = date("Y-m-d H:i:s", strtotime($lastModified));
-    return $lastModified;
+    return date("Y-m-d H:i:s", strtotime($lastModified));
   }
 
   /**
@@ -180,18 +179,22 @@ class Solr {
   }
 
   private function encodeParams($parameters): array {
+    if (array_is_list($parameters))
+      return $this->encodeList($parameters);
+    else
+      return $this->encodeAssocArray($parameters);
+  }
+
+  private function encodeList($parameters): array {
     $encodedParams = [];
     foreach ($parameters as $parameter) {
       if ($parameter == '')
         continue;
 
       list($k, $v) = explode('=', $parameter);
-      if ($k == 'core' || $k == '_'  || $k == 'json.wrf' || $v == '') { //
+      if ($this->isSkippable($k, $v))
         continue;
-      }
-      if ($k == 'q') {
-        // error_log('query: ' . $v);
-      }
+
       if (!preg_match('/%/', $v))
         $v = urlencode($v);
 
@@ -199,5 +202,24 @@ class Solr {
     }
     $encodedParams[] = 'indent=false';
     return $encodedParams;
+  }
+
+  private function encodeAssocArray($parameters): array {
+    $encodedParams = [];
+    foreach ($parameters as $k => $v) {
+      if ($this->isSkippable($k, $v))
+        continue;
+
+      if (!preg_match('/%/', $v))
+        $v = urlencode($v);
+
+      $encodedParams[] = $k . '=' . $v;
+    }
+    $encodedParams[] = 'indent=false';
+    return $encodedParams;
+  }
+
+  private function isSkippable($k, $v): bool {
+    return ($k == 'core' || $k == '_'  || $k == 'json.wrf' || $v == '');
   }
 }
