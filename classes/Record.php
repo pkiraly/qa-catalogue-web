@@ -3,12 +3,12 @@
 
 class Record {
   private $configuration;
-  private $db;
   private $doc;
   private $record;
   private $basicQueryParameters;
   private $basicFilterParameters;
   private $catalogue;
+  private $log;
   private static bool $isSchemaInitialized = false;
   private static $schema = null;
   private static $fields = null;
@@ -17,12 +17,12 @@ class Record {
    * Record constructor.
    * @param $doc
    */
-  public function __construct($doc, $configuration, $db, $catalogue) {
+  public function __construct($doc, $configuration, $catalogue, $log) {
     $this->doc = $doc;
     $this->record = json_decode($doc->record_sni);
     $this->configuration = $configuration;
-    $this->db = $db;
     $this->catalogue = $catalogue;
+    $this->log = $log;
   }
 
   public function getFirstField($fieldName, $withSpaceReplace = FALSE) {
@@ -277,7 +277,7 @@ class Record {
       $tagToDisplay = $schemaType == 'PICA' ? $this->picaTagLink($tag) : $this->marcTagLink($tag, $definition);
 
       if ($tag_defined && !isset($definition->label))
-        error_log('no tag label for ' . $tag);
+        $this->log->warning('no tag label for ' . $tag);
       $tagLabel = $tag_defined && isset($definition->label) ? $definition->label : '';
       if ($schemaType == 'MARC21' && preg_match('/^00/', $tag)) {
         $rows[] = [$tagToDisplay, '', $tagLabel, '', $value];
