@@ -7,6 +7,7 @@ translate.sh
 config/
 vendor/
 _smarty/
+logs/
 
 # data files
 metadata-qa/

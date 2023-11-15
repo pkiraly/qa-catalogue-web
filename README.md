@@ -137,6 +137,11 @@ Additional configuration parameters are supported:
    on the special case when the validation is not merged. Default value: `http://localhost:8983/solr/`. 
    In multi-tenant mode you can specify it for a particular catalogue with `mainSolrEndpoint[<id>]`. (Its previous
    name was `solrEndpoint4ValidationResults`.) \[Available from v0.8.0\]
+- `logFile`, `logFile[id]`: (string) a path of the log file. Default value: `logs/qa-catalogue.log`.  \[Available 
+   from v0.8.0\]
+- `logLevel`, `logLevel[id]`: (string) the minimal logging level. Possible values are: `DEBUG`, `INFO`, `NOTICE`, 
+   `WARNING`, `ERROR`, `CRITICAL`, `ALERT`, `EMERGENCY`. If you set `WARNING` you will not receive `DEBUG`, `INFO`, 
+   and `NOTICE` messages. Default: `WARNING`.
 
 The following configuration parameters only have effect for generic catalogs ([catalogue class] `catalogue`):
 
