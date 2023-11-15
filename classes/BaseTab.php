@@ -150,11 +150,6 @@ abstract class BaseTab implements Tab {
     return $solrFieldMap;
   }
 
-  protected function getSolrResponse($params) {
-    $this->initializeSolr();
-    return $this->solr->getSolrResponse($params);
-  }
-
   protected function initializeSolr() {
     if (!isset($this->solr))
       $this->solr = new Utils\Solr($this->configuration, $this->getFilePath('solr-fields.json'));
