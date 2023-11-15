@@ -217,6 +217,16 @@ class Completeness extends BaseTab {
 
     foreach ($this->packages as $package)
       $package->percent = $package->count * 100 / $this->max;
+
+    if (isset($dataElementCounts['total'])) {
+      $this->packages[] = (object)[
+        'packageid' => 'total',
+        'iscoretag' => false,
+        'label' => 'total',
+        'fieldCount' => $dataElementCounts['total']['fieldCount'],
+        'subfieldCount' => $dataElementCounts['total']['subfieldCount'],
+      ];
+    }
   }
 
   private function getDataElementCounts(): array {
