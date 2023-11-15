@@ -378,7 +378,7 @@ class Data extends Facetable {
     // The following may throw an exception when solr is not reachable
     $solrParams = $this->buildParameters($smarty);
     $smarty->assign('solrUrl', join('&', $solrParams));
-    $response = $this->getSolrResponse($solrParams);
+    $response = $this->solr()->getSolrResponse($solrParams);
     if (is_null($this->numFound)) {
       $this->numFound = $response->numFound;
     }
@@ -401,7 +401,7 @@ class Data extends Facetable {
     $rows = 1000;
     do {
       $solrParams = $this->buildParametersForDownload($start, $rows);
-      $response = $this->getSolrResponse($solrParams);
+      $response = $this->solr()->getSolrResponse($solrParams);
       foreach ($response->docs as $doc) {
         echo $doc->id, "\n";
         $total++;
@@ -445,12 +445,10 @@ class Data extends Facetable {
     if (!is_null($groupId))
       $query .= ' AND groupId_is:' . $groupId;
 
-    $url = sprintf('%s/%s/select?q=%s&fl=id&start=%d&rows=%d',
-      $this->solr()->getEndpoint($core), $core, urlencode($query), $start, $rows);
-    $response = json_decode(file_get_contents($url));
-    $this->numFound = $response->response->numFound;
+    $response = $this->solr()->getSolrResponse(['q' => $query, 'fl' => 'id', 'start' => $start, 'rows' => $rows]);
+    $this->numFound = $response->numFound;
     $recordIds = [];
-    foreach ($response->response->docs as $doc) {
+    foreach ($response->docs as $doc) {
       $recordIds[] = $doc->id;
     }
     return $recordIds;
