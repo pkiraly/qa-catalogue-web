@@ -1,6 +1,6 @@
 <form id="search">
   <input type="hidden" name="tab" value="data">
-  <input type="hidden" name="search-form" value="simple">
+  <input type="hidden" name="searchform" value="simple">
   <input type="hidden" name="lang" value="{$lang}">
   <input type="text" name="query" id="query" value="{htmlentities($query)}" size="60">
   <button type="submit" class="btn">

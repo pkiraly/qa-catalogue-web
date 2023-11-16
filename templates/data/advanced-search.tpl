@@ -1,6 +1,6 @@
 <form id="search">
   <input type="hidden" name="tab" value="data">
-  <input type="hidden" name="search-form" value="advanced">
+  <input type="hidden" name="searchform" value="advanced">
   <input type="hidden" name="lang" value="{$lang}">
 
   <div class="field-search">
