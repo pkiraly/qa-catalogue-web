@@ -17,6 +17,10 @@
           titles: <a href="{$record->filter('600c_PersonalNameSubject_titlesAndWords_ss', $value)}" class="record-link">{include 'data/subfield.tpl' value=$value}</a>{$comma}
         {elseif $code == 'd'}
           dates: <a href="{$record->filter('600d_PersonalNameSubject_dates_ss', $value)}" class="record-link">{include 'data/subfield.tpl' value=$value}</a>{$comma}
+        {elseif $code == 'v'}
+          form: <a href="{$record->filter('600v_PersonalNameSubject_formSubdivision_ss', $value)}" class="record-link">{include 'data/subfield.tpl' value=$value}</a>{$comma}
+        {elseif $code == 'x'}
+          general: <a href="{$record->filter('600x_PersonalNameSubject_generalSubdivision_ss', $value)}" class="record-link">{include 'data/subfield.tpl' value=$value}</a>{$comma}
         {elseif $code == '2'}
           vocabulary: {$value}</a>{$comma}
         {elseif $code == '0'}

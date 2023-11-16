@@ -25,7 +25,7 @@ class Data extends Facetable {
   public string $groupBy;
   public $params;
   public $action;
-  private $searchForm = 'simple';
+  private $searchform = 'simple';
   protected $parameterFile = 'marctosolr.params.json';
   private ?array $allGroups;
 
@@ -39,7 +39,15 @@ class Data extends Facetable {
     $this->type = getOrDefault('type', 'solr', ['solr', 'issues', 'custom-rule']);
     $this->action = getOrDefault('action', 'search', ['search', 'download']);
     $this->groupId = getOrDefault('groupId', 0);
-    $this->searchForm = getOrDefault('search-form', 'simple', ['simple', 'advanced']);
+    $this->searchform = getOrDefault('searchform', 'simple', ['simple', 'advanced']);
+    if ($this->searchform == 'advanced') {
+      for ($i = 1; $i <= 3; $i++) {
+        $field = 'field' . $i;
+        $value = 'value' . $i;
+        $this->{$field} = getOrDefault($field, '');
+        $this->{$value} = getOrDefault($value, '');
+      }
+    }
 
     $this->params = [
       'facet' => $this->facet,
@@ -48,7 +56,7 @@ class Data extends Facetable {
       'scheme' => $this->scheme,
       'lang' => $this->lang,
       'type' => $this->type,
-      'search-form' => $this->searchForm,
+      'searchform' => $this->searchform,
     ];
 
     $this->parameters = [
@@ -82,16 +90,23 @@ class Data extends Facetable {
     return 'data/data.tpl';
   }
 
+  /**
+   * Get the page parameters
+   * @param array $excluded The keys to exclude
+   * @return string[]
+   */
   private function getBasicUrl(array $excluded = []) {
     $urlParams = ['tab=data'];
-    $baseParams = ['query', 'facet', 'filters', 'start', 'rows', 'type', 'groupId'];
-    foreach ($baseParams as $p) {
-      if (!in_array($p, $excluded))
-        if (is_array($this->$p))
-          foreach ($this->$p as $value)
-            $urlParams[] = $p . '[]=' . urlencode($value);
+    $baseParams = ['query', 'facet', 'filters', 'start', 'rows', 'type', 'groupId', 'searchform'];
+    if ($this->searchform == 'advanced')
+      $baseParams = array_merge($baseParams, ['field1', 'value1', 'field2', 'value2', 'field3', 'value3']);
+    foreach ($baseParams as $property) {
+      if (!in_array($property, $excluded))
+        if (is_array($this->{$property}))
+          foreach ($this->{$property} as $value)
+            $urlParams[] = $property . '[]=' . urlencode($value);
         else
-          $urlParams[] = $p . '=' . urlencode($this->$p);
+          $urlParams[] = $property . '=' . urlencode($this->{$property});
     }
     return $urlParams;
   }
@@ -122,9 +137,9 @@ class Data extends Facetable {
         $solrParams[] = 'q=' . urlencode($query);
       }
     } else {
-      if ($this->searchForm == 'simple') {
+      if ($this->searchform == 'simple') {
         $solrParams[] = 'q=' . $this->query;
-      } else if ($this->searchForm == 'advanced') {
+      } else if ($this->searchform == 'advanced') {
         $fields = [];
         for ($i = 1; $i <= 3; $i++) {
           $field = getOrDefault('field' . $i, '');
@@ -180,6 +195,7 @@ class Data extends Facetable {
     $items = [];
     if ($numFound > 0) {
       $baseParams = $this->getBasicUrl(['start']);
+      $this->log->warning(json_encode($baseParams));
       if ($this->start > 0) {
         for ($i = 1; $i <= 3; $i++) {
           $start = $this->start - ($i * $this->rows);
@@ -365,9 +381,9 @@ class Data extends Facetable {
     $smarty->assign('ajaxFacet', $this->ajaxFacet);
 
     $smarty->assign('schemaType', $this->catalogue->getSchemaType());
-    $smarty->assign('searchForm', $this->searchForm);
+    $smarty->assign('searchform', $this->searchform);
 
-    if ($this->configuration->doShowAdvancedSearchForm() && $this->searchForm != 'advanced') {
+    if ($this->configuration->doShowAdvancedSearchForm() && $this->searchform != 'advanced') {
       for ($i = 1; $i <= 3; $i++) {
         $smarty->assign('field' . $i, '');
         $smarty->assign('value' . $i, '');
