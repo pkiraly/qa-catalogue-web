@@ -121,12 +121,12 @@ Additional configuration parameters are supported:
    the name of the catalogue or the URL path.
 - `dirName`, `dirName[<id>]`: (string) name of the data directory of a particular catalogue, if it is different from
    the name of the catalogue or the URL path.
-- `version`, `version[<id>]`: (string) denotes if there are versions for a catalogue. Possible values: 1 (there are
-   versions), 0 (there are no versions)
-- `display-network`, `display-network[<id>]`: (bool) show or hide the network tab. Possible values: 1 (to display
-   the tab), or 0 (not to display)
-- `display-shacl`, `display-shacl[<id>]`: (bool) show or hide the network tab. Possible values: 1 (to display the tab),
-   or 0 (not to display)
+- `versions`, `versions[<id>]`: (bool) denotes if there are versions for a catalogue. Possible values: true (there are
+   versions), false (there are no versions). Default is `false`.
+- `display-network`, `display-network[<id>]`: (bool) show or hide the network tab. Possible values: true (display
+   the tab), or false (not to display). Default is `false`.
+- `display-shacl`, `display-shacl[<id>]`: (bool) show or hide the SHACL-based custom validation tab. Possible values: 
+   true (display the tab), or false (not to display). Default is `false`.
 - `templates`, `templates[<id>]`: (string) directory with additional, custom Smarty templates for
    [customization](#customization). Default value is `config`.
 - `mainSolrEndpoint`, `mainSolrEndpoint[<id>]`: (string) the URL of the main Solr endpoint. Default value: 
@@ -137,6 +137,8 @@ Additional configuration parameters are supported:
    on the special case when the validation is not merged. Default value: `http://localhost:8983/solr/`. 
    In multi-tenant mode you can specify it for a particular catalogue with `mainSolrEndpoint[<id>]`. (Its previous
    name was `solrEndpoint4ValidationResults`.) \[Available from v0.8.0\]
+- `showAdvancedSearchForm`, `showAdvancedSearchForm[id]`: (bool) show or hide advanced search form. Deafult is `false`
+   \[Available from v0.8.0\]
 - `logFile`, `logFile[id]`: (string) a path of the log file. Default value: `logs/qa-catalogue.log`.  \[Available 
    from v0.8.0\]
 - `logLevel`, `logLevel[id]`: (string) the minimal logging level. Possible values are: `DEBUG`, `INFO`, `NOTICE`, 

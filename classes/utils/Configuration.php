@@ -85,31 +85,26 @@ class Configuration {
 
     // $this->displayNetwork = isset($this->configuration['display-network']) && (int) $this->configuration['display-network'] == 1;
     // $this->displayShacl = isset($this->configuration['display-shacl']) && (int) $this->configuration['display-shacl'] == 1;
+    $this->catalogue = $this->getValue('catalogue', $this->id);
+    $this->defaultTab = $this->getValue('default-tab', 'issues');
     $this->indexName = $this->getValue('indexName', $this->id);
     $this->dirName = $this->getValue('dirName', $this->id);
-    $this->defaultTab = $this->getValue('default-tab', 'issues');
+    $this->versioning = $this->getValue('versions', false);
     $this->displayNetwork = $this->getValue('display-network', false);
     $this->displayShacl = $this->getValue('display-shacl', false);
     $this->templates = $this->getValue('templates', 'config');
-    $this->catalogue = $this->getValue('catalogue', $this->id);
     $this->mainSolrEndpoint = $this->getValue('mainSolrEndpoint', 'http://localhost:8983/solr/');
     $this->solrForScoresUrl = $this->getValue('solrForScoresUrl', null);
-    $this->label = $this->getValue('label', null);
-    $this->url = $this->getValue('url', null);
-    $this->schema = $this->getValue('schema', null); // 'MARC21'
-    $this->language = $this->getValue('language', null); // 'en'
-    $this->linkTemplate = $this->getValue('linkTemplate', null);
     $this->showAdvancedSearchForm = $this->getValue('showAdvancedSearchForm', false);
     $this->logFile = $this->getValue('logFile', 'logs/qa-catalogue.log');
     $this->logLevel = Logger::toMonologLevel($this->getValue('logLevel', 'WARNING'));
 
-    if ($this->multitenant) {
-      $this->versioning = (isset($this->configuration['versions'][$this->id]) && $this->configuration['versions'][$this->id] === true);
-      // $this->showAdvancedSearchForm = (isset($this->configuration['showAdvancedSearchForm'][$this->id]) && $this->configuration['showAdvancedSearchForm'][$this->id] === true);
-    } else {
-      $this->versioning = $this->configuration['versions'] ?? false;
-      // $this->showAdvancedSearchForm = $this->configuration['showAdvancedSearchForm'] ?? false;
-    }
+    // for the Catalogue class configuration
+    $this->label = $this->getValue('label', null);
+    $this->url = $this->getValue('url', null);
+    $this->schema = $this->getValue('schema', null); // 'MARC21'
+    $this->linkTemplate = $this->getValue('linkTemplate', null);
+    $this->language = $this->getValue('language', null); // 'en'
   }
 
   private function getValue($key, $defaultValue) {
