@@ -95,7 +95,7 @@ class Data extends Facetable {
    * @param array $excluded The keys to exclude
    * @return string[]
    */
-  private function getBasicUrl(array $excluded = []) {
+  private function getBasicUrl(array $excluded = []): array {
     $urlParams = ['tab=data'];
     $baseParams = ['query', 'facet', 'filters', 'start', 'rows', 'type', 'groupId', 'searchform'];
     if ($this->searchform == 'advanced')
@@ -111,7 +111,7 @@ class Data extends Facetable {
     return $urlParams;
   }
 
-  private function buildParameters(Smarty $smarty) {
+  private function buildParameters(Smarty $smarty): array {
     $solrParams = [
       'rows=' . $this->rows,
       'core=' . $this->id,
@@ -179,7 +179,7 @@ class Data extends Facetable {
     return $facetParameters;
   }
 
-  private function getItemPerPage() {
+  private function getItemPerPage(): array {
     $items = [];
     $baseParams = $this->getBasicUrl(['start', 'rows']);
     foreach ($this->itemsPerPageSelectors as $rows) {
@@ -191,11 +191,10 @@ class Data extends Facetable {
     return $items;
   }
 
-  private function createPrevNextLinks($numFound) {
+  private function createPrevNextLinks($numFound): array {
     $items = [];
     if ($numFound > 0) {
       $baseParams = $this->getBasicUrl(['start']);
-      $this->log->warning(json_encode($baseParams));
       if ($this->start > 0) {
         for ($i = 1; $i <= 3; $i++) {
           $start = $this->start - ($i * $this->rows);
