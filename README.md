@@ -139,8 +139,10 @@ Additional configuration parameters are supported:
    name was `solrEndpoint4ValidationResults`.) \[Available from v0.8.0\]
 - `showAdvancedSearchForm`, `showAdvancedSearchForm[id]`: (bool) show or hide advanced search form. Deafult is `false`
    \[Available from v0.8.0\]
-- `logFile`, `logFile[id]`: (string) a path of the log file. Default value: `logs/qa-catalogue.log`.  \[Available 
-   from v0.8.0\]
+- `logHandler`, `logHandler[id]`: (string) where to log to. Allowed values are `file`, and `error_log` (default).
+   \[Available from v0.8.0\]
+- `logFile`, `logFile[id]`: (string) a path of the log file if `logHandler` is set to `file`. Make sure the file
+   is writeable by the webserver. Default value: `logs/qa-catalogue.log`.  \[Available from v0.8.0\]
 - `logLevel`, `logLevel[id]`: (string) the minimal logging level. Possible values are: `DEBUG`, `INFO`, `NOTICE`, 
    `WARNING`, `ERROR`, `CRITICAL`, `ALERT`, `EMERGENCY`. If you set `WARNING` you will not receive `DEBUG`, `INFO`, 
    and `NOTICE` messages. Default: `WARNING`.
