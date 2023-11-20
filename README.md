@@ -87,7 +87,7 @@ composer install
 
 [configuration]: #configuration
 
-Prepare configuration file:
+A configuration file in INI format is required. Prepare configuration file:
 
 ```
 echo "dir=$DATADIR" > configuration.cnf
@@ -99,62 +99,57 @@ The [catalogue class] should explicitly be specified:
 echo "catalogue=$CATALOG" >> configuration.cnf
 ```
 
-Additional configuration parameters are supported:
+Additional configuration parameters are listed below. Data type and version number when the parameter was introduced are given in parentheses:
 
-- `id`: (string) the machine name of the data directory. By default, it comes from the URL as the path of the application
+- `id` (string) the machine name of the data directory. By default, it comes from the URL as the path of the application
    (qa-catalogue). With this parameter the administrator can overwrite the path. Note: this parameter was called `db`
-   previously. For compatibility reason we will support `db` as well for some time. 
-- `multitenant`: (bool) flag to denote if the site is in multi-tenant mode, i.e. it hosts the evaluation of multiple
-   catalogues. If it is set you can specify general and catalogue-specific settings, e.g. `version=false` is a 
+   previously. For compatibility reason we will support `db` as well for some time.
+- `multitenant`: (bool, v0.8.0) flag to denote if the site is in multi-tenant mode, i.e. it hosts the evaluation of multiple
+   catalogues. If it is set you can specify general and catalogue-specific settings, e.g. `version=false` is a
    general setting, while `version[loc]=false` is a library specific settings, which override the previous one.
-   \[Available from v0.8.0\]
-- `dir`, `dir[<id>]`: (string) the base output directory of data analysis with QA Catalogue
-- `catalogue`, `cataloguer[<id>]`: (string) the [catalogue class] given in lowercase. 
+
+The following parameters can be set either for all catalogues (`parameter=value`) or for each individual catalogue (`parameter[id]=...`).
+
+- `dir` (string) the base output directory of data analysis with QA Catalogue
+- `catalogue` (string) the [catalogue class] given in lowercase.
    The value `catalogue` can be used for generic catalogue.
-- `default-tab`, `default-tab[<id>]`: (string) the tab which will be displayed when no tab is selected. This
+- `default-tab` (string) the tab which will be displayed when no tab is selected. This
    will be the tab which will be opened by the root URL (the landing page). If no default-tab has been set,
    `start` will be used. The possible values are: `start` (default), `data`, `completeness`, `issues`, `functions`,
    `classifications`, `authorities`, `serials`, `tt-completeness`, `shelf-ready-completeness`, `shacl`, `network`,
    `terms`, `pareto`, `history`, `timeline`, `settings`, `about`, `record-issues`, `histogram`,
    `functional-analysis-histogram`, `control-fields`, `download`, `collocations`.
-- `indexName`, `indexName[<id>]`: (string) name of the Solr index of a particular catalogue, if it is different from
+- `indexName` (string) name of the Solr index of a particular catalogue, if it is different from
    the name of the catalogue or the URL path.
-- `dirName`, `dirName[<id>]`: (string) name of the data directory of a particular catalogue, if it is different from
+- `dirName` (string) name of the data directory of a particular catalogue, if it is different from
    the name of the catalogue or the URL path.
-- `versions`, `versions[<id>]`: (bool) denotes if there are versions for a catalogue. Possible values: true (there are
-   versions), false (there are no versions). Default is `false`.
-- `display-network`, `display-network[<id>]`: (bool) show or hide the network tab. Possible values: true (display
-   the tab), or false (not to display). Default is `false`.
-- `display-shacl`, `display-shacl[<id>]`: (bool) show or hide the SHACL-based custom validation tab. Possible values: 
-   true (display the tab), or false (not to display). Default is `false`.
-- `templates`, `templates[<id>]`: (string) directory with additional, custom Smarty templates for
-   [customization](#customization). Default value is `config`.
-- `mainSolrEndpoint`, `mainSolrEndpoint[<id>]`: (string) the URL of the main Solr endpoint. Default value: 
-  `http://localhost:8983/solr/`. In multi-tenant mode you can specify it for a particular catalogue with
-  `mainSolrEndpoint[<id>]`. \[Available from v0.8.0\]
-- `solrForScoresUrl`, `solrForScoresUrl[<id>]`: (string) the URL of the Solr core that is 
+- `versions` (bool) denotes if there are versions for a catalogue. Possible values: true (there are
+   versions), false (there are no versions). Default: `false`.
+- `display-network` (bool) show or hide the network tab. Possible values: true (display
+   the tab), or false (not to display). Default: `false`.
+- `display-shacl` (bool) show or hide the SHACL-based custom validation tab. Possible values:
+   true (display the tab), or false (not to display). Default: `false`.
+- `templates` (string) directory with additional, custom Smarty templates for
+   [customization](#customization). Default: `config`.
+- `mainSolrEndpoint` (string, v0.8.0) the URL of the main Solr endpoint. Default: `http://localhost:8983/solr/`.
+- `solrForScoresUrl` (string, v0.8.0) the URL of the Solr core that is
    used for storing the results of validation. Usually this index is merged to the main core, so this property is needed
-   on the special case when the validation is not merged. Default value: `http://localhost:8983/solr/`. 
+   on the special case when the validation is not merged. Default: `http://localhost:8983/solr/`.
    In multi-tenant mode you can specify it for a particular catalogue with `mainSolrEndpoint[<id>]`. (Its previous
-   name was `solrEndpoint4ValidationResults`.) \[Available from v0.8.0\]
-- `showAdvancedSearchForm`, `showAdvancedSearchForm[id]`: (bool) show or hide advanced search form. Deafult is `false`
-   \[Available from v0.8.0\]
-- `logHandler`, `logHandler[id]`: (string) where to log to. Allowed values are `file`, and `error_log` (default).
-   \[Available from v0.8.0\]
-- `logFile`, `logFile[id]`: (string) a path of the log file if `logHandler` is set to `file`. Make sure the file
-   is writeable by the webserver. Default value: `logs/qa-catalogue.log`.  \[Available from v0.8.0\]
-- `logLevel`, `logLevel[id]`: (string) the minimal logging level. Possible values are: `DEBUG`, `INFO`, `NOTICE`, 
-   `WARNING`, `ERROR`, `CRITICAL`, `ALERT`, `EMERGENCY`. If you set `WARNING` you will not receive `DEBUG`, `INFO`, 
+   name was `solrEndpoint4ValidationResults`.)
+- `showAdvancedSearchForm` (bool, v.0.8.0) show or hide advanced search form. Default: `false`
+- `logHandler` (string) where to log to. Allowed values are `file`, and `error_log` (default).
+- `logFile` (string, v0.8.0) a path of the log file if `logHandler` is set to `file`. Make sure the file
+   is writeable by the webserver. Default: `logs/qa-catalogue.log`.
+- `logLevel` (string, v0.8.0) the minimal logging level. Possible values are: `DEBUG`, `INFO`, `NOTICE`,
+   `WARNING`, `ERROR`, `CRITICAL`, `ALERT`, `EMERGENCY`. If you set `WARNING` you will not receive `DEBUG`, `INFO`,
    and `NOTICE` messages. Default: `WARNING`.
-
-The following configuration parameters only have effect for generic catalogs ([catalogue class] `catalogue`):
-
-- `label`, `label[<id>]`: (string) name of the library catalogue
-- `url`, `url[<id>]`: (string) link to library catalogue homepage
-- `schema`, `schema[<id>]`: (string) metadata schema type (`MARC21` as default or `PICA`)
-- `linkTemplate`, `linkTemplate[<id>]`: (string) URL template to link into the library catalogue (`{id}` will be
-   replaced by record identifier)
-- `language`, `language[<id>]`: (string) default language of the user interface
+- `label` (string) name of the library catalogue
+- `url` (string) link to library catalogue homepage
+- `schema` (string) metadata schema type (`MARC21` as default or `PICA`)
+- `language` (string) default language of the user interface
+- `linkTemplate` (string) URL template to link into the library catalogue (`{id}` will be
+   replaced by record identifier). This parameter does not work for all cataloueg classes.
 
 Example:
 
@@ -208,7 +203,7 @@ in a catalogue class which extends the generic class `Catalogue`. The applicatio
 includes catalogue classes for known libraries, but you may want to define additional
 changes that go beyond simple configuration settings.
 
-Here is an example of a custom catalogue class: 
+Here is an example of a custom catalogue class:
 
 ```PHP
 class Gent extends Catalogue {
@@ -239,7 +234,7 @@ two language files (German and English). In `.tpl` files you can add translatabl
 ```
 {_('translatable text')}
 ```
-`_` is a built-in alias for the PHP function `gettext`. If there are variables in the 
+`_` is a built-in alias for the PHP function `gettext`. If there are variables in the
 translated string, in the `.tpl` file you should use the `_t` function, defined by the project,
 like this:
 
@@ -273,7 +268,7 @@ msgstr "Found <span id=\"numFound\">%s</span> records"
 Of course the message identifier could be different, and dense but now
 I think that it is more understandable (so translatable) this way. When
 you add a translation please add a comment to denote which page the original
-text appears, such as 
+text appears, such as
 
 ```
 # completeness
@@ -295,7 +290,7 @@ sudo service apache2 restart
 
 Please let us know if you would like to see more languages supported.
 
-Troubleshouting: if the translation would not work you can check if a given 
+Troubleshouting: if the translation would not work you can check if a given
 language (locale) is available in your system. In Linux you can check it with
 
 ```bash
