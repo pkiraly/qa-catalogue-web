@@ -5,7 +5,6 @@ require_once 'utils/Solr.php';
 // include_once 'DataFetch.php';
 
 use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 
 abstract class BaseTab implements Tab {
 
@@ -56,8 +55,7 @@ abstract class BaseTab implements Tab {
     $this->lang = getOrDefault('lang', $this->catalogue->getDefaultLang(), ['en', 'de', 'pt']);
     setLanguage($this->lang);
 
-    $this->log = new Logger(get_class($this));
-    $this->log->pushHandler(new StreamHandler($configuration->getLogFile(), $configuration->getLogLevel()));
+    $this->log = $configuration->createLogger(get_class($this));
   }
 
   public function prepareData(Smarty &$smarty) {

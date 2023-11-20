@@ -15,17 +15,17 @@ class Catalogue {
   protected $linkTemplate;
 
   public function __construct(Utils\Configuration $configuration) {
-    $this->name = $this->name ?? $configuration->getCatalogue() ?? ''; // $config["catalogue"] ?? "";
-    $this->label = $configuration->getLabel() ?? $this->label; // $config["label"] ?? $this->label;
-    $this->url = $configuration->getUrl() ?? $this->url; // $config["url"] ?? $this->url;
-    $this->schemaType = $configuration->getSchema() ?? $this->schemaType; // $config["schema"] ?? $this->schemaType;
-    $this->defaultLang = $configuration->getLanguage() ?? $this->defaultLang; // $config["language"] ?? $this->defaultLang;
-    $this->linkTemplate = $configuration->getLinkTemplate() ?? $this->linkTemplate; // $config["linkTemplate"] ?? $this->linkTemplate;
+    $this->name = $this->name ?? $configuration->getCatalogue() ?? '';
+    $this->label = $configuration->getLabel() ?? $this->label;
+    $this->url = $configuration->getUrl() ?? $this->url;
+    $this->schemaType = $configuration->getSchema() ?? $this->schemaType;
+    $this->defaultLang = $configuration->getLanguage() ?? $this->defaultLang;
+    $this->linkTemplate = $configuration->getLinkTemplate() ?? $this->linkTemplate;
   }
 
   public function getOpacLink($id, $record) {
     if ($this->linkTemplate && $id) {
-      return str_replace('{id}', $id, $this->linkTemplate);
+      return str_replace('{id}', trim($id), $this->linkTemplate);
     }
   }
 
@@ -41,9 +41,6 @@ class Catalogue {
     return $this->url;
   }
 
-  /**
-   * @return string
-   */
   public function getSchemaType(): string {
     return $this->schemaType;
   }
@@ -66,9 +63,6 @@ class Catalogue {
       substr($input, 3);
   }
 
-  /**
-   * @return string
-   */
   public function getDefaultLang(): string {
     return $this->defaultLang;
   }

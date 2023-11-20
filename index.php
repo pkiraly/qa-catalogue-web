@@ -1,11 +1,15 @@
 <?php
 set_time_limit(0);
 
+$configFile = "configuration.cnf";
+
 // catch incomplete installation
 if (!file_exists('vendor/autoload.php')) {
   die("Installation incomplete: <code>composer install</code> must be run first!");
 } elseif (!is_writable('_smarty') || !is_writable('cache')) {
   die("Installation incomplete: <code>_smarty</code> and <code>cache</code> must be writeable!");
+} elseif(!file_exists($configFile)) {
+  die("Installation incomplete: missing $configFile");
 }
 
 require 'vendor/autoload.php';
@@ -13,18 +17,16 @@ require 'vendor/autoload.php';
 require_once 'common-functions.php';
 require_once 'classes/utils/Configuration.php';
 
-$marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
-$configurationArray = parse_ini_file("configuration.cnf", false, INI_SCANNER_TYPED);
-$smarty = createSmarty('templates');
-
+$configurationArray = parse_ini_file($configFile, false, INI_SCANNER_TYPED);
 if (isset($configurationArray['id']) && $configurationArray['id'] != '')
   $id = $configurationArray['id'];
 elseif (isset($configurationArray['db']) && $configurationArray['db'] != '')  // this is a deprecated parameter,
   $id = $configurationArray['db'];                                            // kept for compatibility reason
 else
   $id = getPath();
-
 $configuration = new Utils\Configuration($configurationArray, $id);
+
+$smarty = createSmarty('templates');
 $smarty->assign('templates', $configuration->getTemplates());
 
 $map = [
@@ -71,12 +73,21 @@ $languages = [
 include_once('classes/Tab.php');
 include_once('classes/BaseTab.php');
 
-$class = isset($map[$tab]) ? $map[$tab] : 'Start';
-$tab = createTab($class);
+$logger = $configuration->createLogger('index');
+
+try {
+  $class = isset($map[$tab]) ? $map[$tab] : 'Start';
+  $tab = createTab($class);
+} catch(Throwable $e) {
+  $logger->error("Failed to initialize $class tab",(array)$e);
+  // TODO: show another tab instead?
+  die("Failed to initialize $class tab.");
+}
+
 try {
   $tab->prepareData($smarty);
 } catch(Throwable $e) {
-  error_log($e);
+  $logger->error('Failed to read analysis result', (array)$e);
   $smarty->assign('error', 'Failed to read analysis result.');
 }
 
@@ -97,10 +108,8 @@ function createTab($name) {
 }
 
 function showMarcUrl($content) {
-  global $marcBaseUrl;
-
   if (!preg_match('/^http/', $content))
-    $content = $marcBaseUrl . $content;
+    $content = 'https://www.loc.gov/marc/bibliographic/' . $content;
 
   return $content;
 }

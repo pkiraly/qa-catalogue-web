@@ -3,6 +3,9 @@
 namespace Utils;
 
 use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\ErrorLogHandler;
+
 
 class Configuration {
   private array $configuration;
@@ -96,7 +99,10 @@ class Configuration {
     $this->mainSolrEndpoint = $this->getValue('mainSolrEndpoint', 'http://localhost:8983/solr/');
     $this->solrForScoresUrl = $this->getValue('solrForScoresUrl', null);
     $this->showAdvancedSearchForm = $this->getValue('showAdvancedSearchForm', false);
+
+    // logging internals, not made available outside of this class
     $this->logFile = $this->getValue('logFile', 'logs/qa-catalogue.log');
+    $this->logHandler = $this->getValue('logHandler', 'error_log');
     $this->logLevel = Logger::toMonologLevel($this->getValue('logLevel', 'WARNING'));
 
     // for the Catalogue class configuration
@@ -200,11 +206,14 @@ class Configuration {
     return $this->linkTemplate;
   }
 
-  public function getLogFile(): string {
-    return $this->logFile;
+  public function createLogger($name): Logger {
+    $logger = new Logger($name);
+    if ($this->logHandler === "file") {
+      $logger->pushHandler(new StreamHandler($this->logFile, $this->logLevel));
+    } else {
+      $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, $this->logLevel));
+    }
+    return $logger;
   }
 
-  public function getLogLevel(): int {
-    return $this->logLevel;
-  }
 }
