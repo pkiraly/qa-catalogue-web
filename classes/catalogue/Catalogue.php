@@ -25,7 +25,7 @@ class Catalogue {
 
   public function getOpacLink($id, $record) {
     if ($this->linkTemplate && $id) {
-      return str_replace('{id}', $id, $this->linkTemplate);
+      return str_replace('{id}', trim($id), $this->linkTemplate);
     }
   }
 

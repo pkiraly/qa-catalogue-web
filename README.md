@@ -149,7 +149,7 @@ The following parameters can be set either for all catalogues (`parameter=value`
 - `schema` (string) metadata schema type (`MARC21` as default or `PICA`)
 - `language` (string) default language of the user interface
 - `linkTemplate` (string) URL template to link into the library catalogue (`{id}` will be
-   replaced by record identifier). This parameter does not work for all cataloueg classes.
+   replaced by the trimmed record identifier). This parameter does not work for all cataloueg classes.
 
 Example:
 
