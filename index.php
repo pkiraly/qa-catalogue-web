@@ -57,7 +57,7 @@ $map = [
 ];
 
 $defaultTab = getDefaultTab($configuration, $map, 'issues');
-$tab = getOrDefault('tab', $defaultTab);
+$tab = getOrDefault('tab', $defaultTab, array_keys($map));
 $ajax = getOrDefault('ajax', 0, [0, 1]);
 $smarty->assign('tab', $tab);
 $smarty->assign('isCompleteness', in_array($tab, ['completeness', 'serials', 'tt-completeness', 'shelf-ready-completeness', 'functions']));
@@ -76,7 +76,7 @@ include_once('classes/BaseTab.php');
 $logger = $configuration->createLogger('index');
 
 try {
-  $class = isset($map[$tab]) ? $map[$tab] : 'Start';
+  $class = $map[$tab] ?? $configuration->getDefaultTab();
   $tab = createTab($class);
 } catch(Throwable $e) {
   $logger->error("Failed to initialize $class tab",(array)$e);
