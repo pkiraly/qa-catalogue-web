@@ -13,6 +13,16 @@
       "msgfmt locale/de_DE/LC_MESSAGES/messages.po -o locale/de_DE/LC_MESSAGES/messages.mo",
       "msgfmt locale/en_GB/LC_MESSAGES/messages.po -o locale/en_GB/LC_MESSAGES/messages.mo",
       "msgfmt locale/pt_BR/LC_MESSAGES/messages.po -o locale/pt_BR/LC_MESSAGES/messages.mo"
+    ],
+    "test": "echo testing not implemented yet",
+    "release": [
+      "git checkout develop && git pull",
+      "@test",
+      "git push",
+      "git checkout master && git pull --rebase",
+      "git merge develop",
+      "git push --follow-tags",
+      "git checkout develop"
     ]
   },
   "repositories": [
