@@ -17,7 +17,12 @@
     "test": "echo testing not implemented yet",
     "release": [
       "git checkout develop && git pull",
-      "@test"
+      "@test",
+      "git push",
+      "git checkout master && git pull --rebase",
+      "git merge develop",
+      "git push --follow-tags",
+      "git checkout develop"
     ]
   },
   "repositories": [
