@@ -3,7 +3,6 @@ configuration.cnf
 images/
 libs/
 cache/
-translate.sh
 config/
 vendor/
 _smarty/
