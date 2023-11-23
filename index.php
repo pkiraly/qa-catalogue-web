@@ -15,7 +15,6 @@ if (!file_exists('vendor/autoload.php')) {
 require 'vendor/autoload.php';
 
 require_once 'common-functions.php';
-require_once 'classes/utils/Configuration.php';
 
 $configurationArray = parse_ini_file($configFile, false, INI_SCANNER_TYPED);
 if (isset($configurationArray['id']) && $configurationArray['id'] != '')

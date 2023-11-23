@@ -1,12 +1,5 @@
 <?php
 
-require_once 'Issues.php';
-require_once 'Completeness.php';
-require_once 'AddedEntry.php';
-require_once 'Authorities.php';
-require_once 'Classifications.php';
-require_once 'ShelfReadyCompleteness.php';
-
 class Dashboard extends BaseTab {
 
   protected $parameterFile = 'completeness.params.json';

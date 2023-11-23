@@ -1,7 +1,5 @@
 <?php
 
-include_once 'SchemaUtil.php';
-
 class Authorities extends AddedEntry {
 
   protected $parameterFile = 'authorities.params.json';

@@ -1,10 +1,5 @@
 <?php
 
-include_once 'Link.php';
-include_once 'Record.php';
-include_once 'Facet.php';
-include_once 'Facetable.php';
-
 class Data extends Facetable {
 
   private $facet;

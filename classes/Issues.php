@@ -491,7 +491,6 @@ class Issues extends BaseTab {
 
   private function injectPica3(&$record) {
     if ($this->catalogue->getSchemaType() == 'PICA') {
-      include_once 'SchemaUtil.php';
       SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
       $definition = SchemaUtil::getDefinition($record->path);
       $pica3 = ($definition != null && isset($definition->pica3) ? '=' . $definition->pica3 : '');

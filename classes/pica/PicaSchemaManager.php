@@ -1,7 +1,6 @@
 <?php
 
-include_once 'Range.php';
-include_once __DIR__ . '/../catalogue/Catalogue.php';
+namespace Pica;
 
 class PicaSchemaManager {
 
