@@ -59,7 +59,7 @@
       {foreach from=$packages item=package}
         {if $package->packageid === 'total'}
           <tr class="total" id="groups-package-{$package->packageid}">
-            <td colspan="2"><h4>{_('Total number of data elements')}</h4></td>
+            <td colspan="2"><b>{_('Total number of data elements')}</b></td>
             <td class="text-right align-text-bottom" style="vertical-align: bottom !important;">{$package->fieldCount|number_format}</td>
             <td class="text-right align-text-bottom" style="vertical-align: bottom !important;">{$package->subfieldCount|number_format}</td>
             <td class="chart"></td>

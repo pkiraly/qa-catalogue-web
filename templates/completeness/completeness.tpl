@@ -10,6 +10,7 @@
         {_('completeness_definition')}
       </p>
 
+      <h3>{_('Filter')}</h3>
       {include 'common/group-selector.tpl'}
 
       <div id="document-type-selector">
