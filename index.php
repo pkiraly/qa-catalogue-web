@@ -27,6 +27,7 @@ else
 $configuration = new Utils\Configuration($configurationArray, $id);
 
 $smarty = createSmarty('templates');
+$smarty->assign('clientVersion', Utils\GitVersion::getVersion());
 $smarty->assign('templates', $configuration->getTemplates());
 
 $map = [
@@ -79,6 +80,7 @@ try {
   $class = $map[$tab] ?? $configuration->getDefaultTab();
   $tab = createTab($class);
 } catch(Throwable $e) {
+  var_dump($e);
   $logger->error("Failed to initialize $class tab",(array)$e);
   // TODO: show another tab instead?
   die("Failed to initialize $class tab.");

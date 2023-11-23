@@ -142,7 +142,7 @@ class Configuration {
     return $this->multitenant;
   }
 
-  public function getDir(): string {
+  public function getDir(): ?string {
     return $this->dir;
   }
 

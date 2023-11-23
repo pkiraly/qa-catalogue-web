@@ -77,11 +77,19 @@ Change into the application directory:
 cd /var/www/html/$APPDIR
 ```
 
-install PHP dependencies and create required cache directories and permissions:
+Install PHP dependencies and create required cache directories and permissions:
 
 ```
 composer install
 ```
+
+The script will further tell you to change ownership of directories if the
+application is served as `wwww-data` but installed as another user.
+
+If you also want to locally change the source code (see [contributing](#contributing)),
+allow `www-data` to get the current state of the working directory:
+
+    sudo -u www-data git config --global --add safe.directory "$PWD"
 
 ### Configuration
 
