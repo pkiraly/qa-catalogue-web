@@ -5,8 +5,8 @@
   "scripts": {
     "post-install-cmd": [
       "mkdir -p cache libs images _smarty/templates_c _smarty/cache",
-      "touch cache/selected-facets.js",
-      "chmod g+w -R _smarty cache",
+      "[ -f cache/selected-facets.js ] || touch cache/selected-facets.js",
+      "chmod g+w -R _smarty cache || true",
       "@version",
       "# you may need to execute <comment>sudo chgrp www-data -R _smarty cache</comment>"
     ],
