@@ -326,8 +326,7 @@ class Record {
 
   public static function initializeSchemaManager() {
     if (is_null(self::$schema)) {
-      include_once('pica/PicaSchemaManager.php');
-      self::$schema = new PicaSchemaManager();
+      self::$schema = new Pica\PicaSchemaManager();
     }
   }
 

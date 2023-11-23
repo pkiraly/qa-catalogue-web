@@ -1,7 +1,5 @@
 <?php
 
-include_once 'SchemaUtil.php';
-
 class Completeness extends BaseTab {
 
   private $action = 'list';

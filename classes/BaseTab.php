@@ -1,14 +1,12 @@
 <?php
 
-include_once 'catalogue/Catalogue.php';
-require_once 'utils/Solr.php';
-// include_once 'DataFetch.php';
-
+use Utils\Solr;
+use Utils\Configuration;
 use Monolog\Logger;
 
 abstract class BaseTab implements Tab {
 
-  protected Utils\Configuration $configuration;
+  protected Configuration $configuration;
   protected $id;
   protected $count = 0;
   protected static $marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
@@ -31,7 +29,7 @@ abstract class BaseTab implements Tab {
   protected string $groupBy;
   protected $parameterFile;
   protected ?IssuesDB $issueDB = null;
-  private Utils\Solr $solr;
+  private Solr $solr;
   protected Logger $log;
 
   /**
@@ -39,7 +37,7 @@ abstract class BaseTab implements Tab {
    * @param $configuration
    * @param $id
    */
-  public function __construct(Utils\Configuration $configuration, string $id) {
+  public function __construct(Configuration $configuration, string $id) {
     $this->configuration = $configuration;
     $this->id = $id;
     $this->catalogueName = $this->configuration->getCatalogue(); // isset($configuration['catalogue']) ? $configuration['catalogue'] : $db;
@@ -101,7 +99,7 @@ abstract class BaseTab implements Tab {
     $className = strtoupper(substr($this->catalogueName, 0, 1)) . substr($this->catalogueName, 1);
     $classFile = 'catalogue/' . $className . '.php';
     if ($className != "catalogue" && file_exists('classes/' . $classFile)) {
-      include_once $classFile;
+      include_once $classFile; 
       return new $className($this->configuration);
     } else {
       return new Catalogue($this->configuration);
@@ -156,10 +154,10 @@ abstract class BaseTab implements Tab {
 
   protected function initializeSolr() {
     if (!isset($this->solr))
-      $this->solr = new Utils\Solr($this->configuration, $this->getFilePath('solr-fields.json'));
+      $this->solr = new Solr($this->configuration, $this->getFilePath('solr-fields.json'));
   }
 
-  protected function solr(): Utils\Solr {
+  protected function solr(): Solr {
     $this->initializeSolr();
     return $this->solr;
   }
@@ -514,8 +512,7 @@ abstract class BaseTab implements Tab {
     $subfield = $isFull ? '' : substr($solrField, -1);
     $label = $isFull ? $field : sprintf('%s$%s', $field, $subfield);
 
-    include_once('classes/pica/PicaSchemaManager.php');
-    $manager = new PicaSchemaManager();
+    $manager = new Pica\PicaSchemaManager();
     $f = $manager->lookup($field);
     if ($f !== FALSE) {
       $label .= ': ' . $f->label;
@@ -574,7 +571,6 @@ abstract class BaseTab implements Tab {
 
   protected function issueDB(): IssuesDB {
     if (is_null($this->issueDB)) {
-      include_once 'IssuesDB.php';
       $this->issueDB = new IssuesDB($this->getDbDir());
     }
     return $this->issueDB;

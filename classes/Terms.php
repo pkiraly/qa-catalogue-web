@@ -1,8 +1,5 @@
 <?php
 
-include_once 'Facet.php';
-include_once 'Facetable.php';
-
 class Terms extends Facetable {
 
   private $facet;
