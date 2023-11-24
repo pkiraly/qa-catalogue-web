@@ -24,12 +24,6 @@ function getPostedOrDefault($key, $default_value = NULL, $allowed_values = []) {
   return $value;
 }
 
-function getPath() {
-  $parsed_url = parse_url($_SERVER['REQUEST_URI']);
-  $path = preg_replace(',\/,', '', $parsed_url['path']);
-  return $path;
-}
-
 function createSmarty($templateDir) {
   define('APPLICATION_DIR', __DIR__);
   define('_SMARTY', APPLICATION_DIR . '/_smarty/');
