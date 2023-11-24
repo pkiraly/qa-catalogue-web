@@ -113,8 +113,8 @@ Additional configuration parameters are listed below. Data type and version numb
    (qa-catalogue). With this parameter the administrator can overwrite the path. Note: this parameter was called `db`
    previously. For compatibility reason we will support `db` as well for some time.
 - `multitenant`: (bool, v0.8.0) flag to denote if the site is in multi-tenant mode, i.e. it hosts the evaluation of multiple
-   catalogues. If it is set you can specify general and catalogue-specific settings, e.g. `version=false` is a
-   general setting, while `version[loc]=false` is a library specific settings, which override the previous one.
+   catalogues. If it is set you can specify general and catalogue-specific settings, e.g. `versions=false` is a
+   general setting, while `versions[loc]=false` is a library specific settings, which override the previous one.
 
 The following parameters can be set either for all catalogues (`parameter=value`) or for each individual catalogue (`parameter[id]=...`).
 
