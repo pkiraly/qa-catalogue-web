@@ -120,7 +120,7 @@ The following parameters can be set either for all catalogues (`parameter=value`
 
 - `dir` (string) the base output directory of data analysis with QA Catalogue
 - `catalogue` (string) the [catalogue class] given in lowercase.
-   The value `catalogue` can be used for generic catalogue.
+   The value `catalogue` can be used for generic catalogue. Set to value of `id` by default.
 - `default-tab` (string) the tab which will be displayed when no tab is selected. This
    will be the tab which will be opened by the root URL (the landing page). If no default-tab has been set,
    `start` will be used. The possible values are: `start` (default), `data`, `completeness`, `issues`, `functions`,

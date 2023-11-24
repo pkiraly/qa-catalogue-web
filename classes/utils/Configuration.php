@@ -31,10 +31,10 @@ class Configuration {
   private string $logFile;
   private int $logLevel;
 
-  public static function fromIniFile(string $file, array $defaults) {
+  public static function fromIniFile(string $file, array $defaults=[]) {
 
     // read INI file, remove sections and fields with empty string value
-    $ini = parse_ini_file($file, false, INI_SCANNER_TYPED);
+    $ini = @parse_ini_file($file, false, INI_SCANNER_TYPED);
     if (!$ini) {
       throw new Exception("failed to read config file!");
     }
