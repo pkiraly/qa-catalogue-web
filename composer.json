@@ -4,15 +4,31 @@
   "license": "GPL-3.0-or-later",
   "scripts": {
     "post-install-cmd": [
-      "mkdir -p cache libs images _smarty/templates_c _smarty/cache",
-      "touch cache/selected-facets.js",
-      "chmod g+w -R _smarty cache",
-      "# you need to execute <comment>sudo chgrp www-data -R _smarty cache</comment>"
+      "mkdir -p cache libs images _smarty/templates_c _smarty/cache || true",
+      "[ -f cache/selected-facets.js ] || touch cache/selected-facets.js",
+      "chmod g+w -R _smarty cache || true",
+      "@version",
+      "# you may need to execute <comment>sudo chgrp www-data -R _smarty cache</comment>"
     ],
     "translate": [
       "msgfmt locale/de_DE/LC_MESSAGES/messages.po -o locale/de_DE/LC_MESSAGES/messages.mo",
       "msgfmt locale/en_GB/LC_MESSAGES/messages.po -o locale/en_GB/LC_MESSAGES/messages.mo",
       "msgfmt locale/pt_BR/LC_MESSAGES/messages.po -o locale/pt_BR/LC_MESSAGES/messages.mo"
+    ],
+    "test": "./vendor/bin/phpunit tests --display-warnings",
+    "release": [
+      "git checkout develop && git pull",
+      "@test",
+      "git push",
+      "git checkout master && git pull --rebase",
+      "git merge develop",
+      "@version",
+      "git push --follow-tags",
+      "git checkout develop"
+    ],
+    "version": [
+      "Utils\\GitVersion::saveVersion",
+      "cat version.ini"
     ]
   },
   "repositories": [
@@ -22,8 +38,19 @@
     }
   ],
   "require": {
+    "psr/log": "~1.1",
     "smarty/smarty": "^3.1",
     "monolog/monolog": "^2.5",
     "ext-sqlite3": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "": [ "classes/", "classes/catalogue/" ],
+      "Pica\\": "classes/pica/",
+      "Utils\\": "classes/utils/"
+    }
   }
 }

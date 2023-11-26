@@ -1,0 +1,6 @@
+id=abc
+
+multitenant=true
+
+dir=this-will-be-overridden
+dir[abc]=new-value

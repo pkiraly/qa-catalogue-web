@@ -5,89 +5,64 @@ namespace Utils;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\ErrorLogHandler;
-
+use Exception;
 
 class Configuration {
   private array $configuration;
   private string $id;
-  /**
-   * @var string|null
-   */
   private ?string $catalogue;
   private bool $multitenant = false;
   private bool $displayNetwork;
   private bool $displayShacl;
   private bool $versioning;
-  /**
-   * @var string
-   */
   private ?string $dir;
-  /**
-   * @var bool|mixed
-   */
   private bool $showAdvancedSearchForm;
-  /**
-   * @var string|null
-   */
   private ?string $mainSolrEndpoint;
-  /**
-   * @var string|null
-   */
   private ?string $solrForScoresUrl;
-  /**
-   * @var string|null
-   */
   private ?string $indexName;
-  /**
-   * @var string
-   */
   private string $dirName;
-  /**
-   * @var string
-   */
   private string $templates;
-  /**
-   * @var string
-   */
   private string $defaultTab;
-  /**
-   * @var string|null
-   */
   private ?string $label;
-  /**
-   * @var string|null
-   */
   private ?string $url;
-  /**
-   * @var string|null
-   */
   private ?string $schema;
-  /**
-   * @var string|null
-   */
   private ?string $language;
-  /**
-   * @var string|null
-   */
   private ?string $linkTemplate;
-  /**
-   * @var string
-   */
   private string $logFile;
   private int $logLevel;
 
-  public function __construct(array $configuration, string $id) {
-    $this->configuration = $configuration;
-    $this->id = $id;
-    $this->initialize();
+  public static function fromIniFile(string $file, array $defaults=[]) {
+
+    // read INI file, remove sections and fields with empty string value
+    $ini = @parse_ini_file($file, false, INI_SCANNER_TYPED);
+    if (!$ini) {
+      throw new Exception("failed to read config file!");
+    }
+
+    $inr = array_filter($ini, function($value) {
+      return $value !== '' && !is_array($value);
+    });
+
+    // deprecated parameter, kept for backwards compatibility
+    if (!isset($ini['id']) && isset($ini['db'])) {
+      $ini['id'] = $ini['db'];
+    }
+
+    // merge in defaults
+    return new Configuration(array_merge($defaults, $ini));
   }
 
-  private function initialize() {
-    $this->multitenant = $this->configuration['multitenant'] ?? false;
-    $this->dir = $this->configuration['dir'] ?? null;
+  private function __construct(array $configuration) {
 
-    // $this->displayNetwork = isset($this->configuration['display-network']) && (int) $this->configuration['display-network'] == 1;
-    // $this->displayShacl = isset($this->configuration['display-shacl']) && (int) $this->configuration['display-shacl'] == 1;
+    // global
+    $this->configuration = $configuration;
+    $this->id = $configuration["id"]; // REQUIRED
+    $this->multitenant = $configuration['multitenant'] ?? false;
+
+    // multi-tennant
+    // $this->displayNetwork = isset($configuration['display-network']) && (int) $configuration['display-network'] == 1;
+    // $this->displayShacl = isset($configuration['display-shacl']) && (int) $configuration['display-shacl'] == 1;
+    $this->dir = $this->getValue('dir', 'output');
     $this->catalogue = $this->getValue('catalogue', $this->id);
     $this->defaultTab = $this->getValue('default-tab', 'issues');
     $this->indexName = $this->getValue('indexName', $this->id);
@@ -119,6 +94,13 @@ class Configuration {
     } else {
       $value = $this->configuration[$key] ?? $defaultValue;
     }
+    // expected boolean
+    if (is_bool($defaultValue)) {
+      $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+      if (!is_bool($value)) {
+        throw new Exception("$key must be boolean (1/0/true/false/on/off/yes/no)");
+      }
+    }
     return $value;
   }
 
@@ -134,6 +116,10 @@ class Configuration {
     return $value;
   }
 
+  public function getId(): string {
+    return $this->id;
+  }
+
   public function getCatalogue(): ?string {
     return $this->catalogue;
   }
@@ -142,7 +128,7 @@ class Configuration {
     return $this->multitenant;
   }
 
-  public function getDir(): string {
+  public function getDir(): ?string {
     return $this->dir;
   }
 

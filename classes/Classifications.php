@@ -1,7 +1,5 @@
 <?php
 
-include_once 'SchemaUtil.php';
-
 class Classifications extends AddedEntry {
 
   protected $frequencyExamples;
@@ -83,8 +81,7 @@ class Classifications extends AddedEntry {
         '852' => 'Location',
       ];
     } elseif ($this->catalogue->getSchemaType() == 'PICA') {
-      include_once('pica/PicaSchemaManager.php');
-      $schema = new PicaSchemaManager();
+      $schema = new Pica\PicaSchemaManager();
       $fields = $this->readPicaSubjectFieldsFromFile();
       if (empty($fields)) {
         $fields = [

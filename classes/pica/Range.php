@@ -1,5 +1,7 @@
 <?php
 
+namespace Pica;
+
 class Range {
 
   private $raw;

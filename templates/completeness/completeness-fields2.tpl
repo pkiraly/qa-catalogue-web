@@ -50,7 +50,7 @@
       {foreach from=$records key=packageId item=tags name=packages}
         <tr{if !$smarty.foreach.packages.first} class="padded"{/if}>
           <td colspan="11" class="package" id="package-{$packageId}">
-            <strong>{$packageId}.</strong> {$packageIndex[$packageId]}
+            {$packageIndex[$packageId]}
           </td>
         </tr>
         {if $packageId == 0}

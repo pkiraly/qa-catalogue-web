@@ -1,32 +1,37 @@
 <?php
-set_time_limit(0);
+
+// First check installation and initalize configuration
 
 $configFile = "configuration.cnf";
+$configDefaults = [
+  "id" => preg_replace(',\/,', '', parse_url($_SERVER['REQUEST_URI'])['path'])
+];
 
-// catch incomplete installation
-if (!file_exists('vendor/autoload.php')) {
+try {
+  require 'vendor/autoload.php';
+} catch(Throwable $e) {
   die("Installation incomplete: <code>composer install</code> must be run first!");
-} elseif (!is_writable('_smarty') || !is_writable('cache')) {
+} 
+
+if (!is_writable('_smarty') || !is_writable('cache')) {
   die("Installation incomplete: <code>_smarty</code> and <code>cache</code> must be writeable!");
 } elseif(!file_exists($configFile)) {
   die("Installation incomplete: missing $configFile");
 }
 
-require 'vendor/autoload.php';
+try {
+  $configuration = Utils\Configuration::fromIniFile($configFile, $configDefaults);
+} catch(Throwable $e) {
+  die("Invalid configuration: " . $e->getMessage());
+}
+
+// Then initialize environment based on configuration
+set_time_limit(0);
 
 require_once 'common-functions.php';
-require_once 'classes/utils/Configuration.php';
-
-$configurationArray = parse_ini_file($configFile, false, INI_SCANNER_TYPED);
-if (isset($configurationArray['id']) && $configurationArray['id'] != '')
-  $id = $configurationArray['id'];
-elseif (isset($configurationArray['db']) && $configurationArray['db'] != '')  // this is a deprecated parameter,
-  $id = $configurationArray['db'];                                            // kept for compatibility reason
-else
-  $id = getPath();
-$configuration = new Utils\Configuration($configurationArray, $id);
 
 $smarty = createSmarty('templates');
+$smarty->assign('clientVersion', Utils\GitVersion::getVersion());
 $smarty->assign('templates', $configuration->getTemplates());
 
 $map = [
@@ -70,15 +75,13 @@ $languages = [
   'pt' => 'pt_BR.UTF-8'
 ];
 
-include_once('classes/Tab.php');
-include_once('classes/BaseTab.php');
-
 $logger = $configuration->createLogger('index');
 
 try {
   $class = $map[$tab] ?? $configuration->getDefaultTab();
   $tab = createTab($class);
 } catch(Throwable $e) {
+  var_dump($e);
   $logger->error("Failed to initialize $class tab",(array)$e);
   // TODO: show another tab instead?
   die("Failed to initialize $class tab.");
@@ -98,13 +101,13 @@ if ($ajax == 1) {
   $smarty->display($tab->getTemplate());
 
 function createTab($name) {
-  global $configuration, $id;
+  global $configuration;
 
   if ($name == 'Classifications' || $name == 'Authorities')
     include_once('classes/AddedEntry.php');
 
   include_once('classes/' . $name . '.php');
-  return new $name($configuration, $id);
+  return new $name($configuration, $configuration->getId());
 }
 
 function showMarcUrl($content) {
