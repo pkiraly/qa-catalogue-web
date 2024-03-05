@@ -290,7 +290,6 @@ class Record {
         case 'MARC21' :
                default: $tagToDisplay = $this->marcTagLink($tag, $definition);
       }
-      error_log('tagToDisplay: ' . $tagToDisplay);
 
       if ($tag_defined && !isset($definition->label))
         $this->log->warning('no tag label for ' . $tag);
