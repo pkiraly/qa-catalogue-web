@@ -1,5 +1,6 @@
 <?php
 
+use Utils\Configuration;
 // First check installation and initalize configuration
 
 $configFile = "configuration.cnf";
@@ -20,7 +21,7 @@ if (!is_writable('_smarty') || !is_writable('cache')) {
 }
 
 try {
-  $configuration = Utils\Configuration::fromIniFile($configFile, $configDefaults);
+  $configuration = Configuration::fromIniFile($configFile, $configDefaults);
 } catch(Throwable $e) {
   die("Invalid configuration: " . $e->getMessage());
 }
