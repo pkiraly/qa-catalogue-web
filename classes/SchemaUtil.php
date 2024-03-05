@@ -11,7 +11,7 @@ class SchemaUtil {
 
   public static function initializeSchema(string $schemaType) {
     if (!self::$isSchemaInitialized) {
-      self::$schemaType = $schemaType
+      self::$schemaType = $schemaType;
       if ($schemaType == SchemaType::MARC21) {
         self::initializeMarcFields();
       } elseif ($schemaType == SchemaType::PICA) {
