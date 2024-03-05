@@ -1,7 +1,7 @@
 <div class="marc-details" id="marc-details-{$id}">
   {if isset($doc->record_sni)}
     <table id="marc-details-{$id}-table">
-      {foreach from=$record->getMarcFields() item=row}
+      {foreach from=$record->getMarcFields('UNIMARC') item=row}
         <tr>
           {foreach from=$row item=cell}
             {if is_object($cell)}

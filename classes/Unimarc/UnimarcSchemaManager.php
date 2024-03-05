@@ -14,7 +14,7 @@ class UnimarcSchemaManager {
     $catalogue = $tab->getCatalogue();
     $schemaType = $catalogue->getSchemaType();
 
-    $schemaFile = 'schemas/avram-k10plus.json';
+    $schemaFile = 'schemas/avram-unimarc.json';
     $this->fields = json_decode(file_get_contents($schemaFile))->fields;
     foreach ($this->fields as $id => $field) {
       $this->createRange($field);
@@ -27,6 +27,7 @@ class UnimarcSchemaManager {
   }
 
   public function lookup($searchTerm) {
+    error_log("lookup($searchTerm)");
     if (isset($this->fields->{$searchTerm}))
       return $this->fields->{$searchTerm};
 

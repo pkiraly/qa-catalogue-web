@@ -9,7 +9,7 @@
         <th class="value-label"></th>
       </thead>
       <tbody>
-        {foreach from=$record->resolveMarcFields() item=row}
+        {foreach from=$record->resolveMarcFields('UNIMARC') item=row}
           <tr>
             {foreach from=$row item=cell}
               {if is_object($cell)}

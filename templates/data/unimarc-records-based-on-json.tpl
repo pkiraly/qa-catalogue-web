@@ -1,4 +1,3 @@
-::UNIMARC::
 {foreach from=$docs item=doc}
   {assign var="record" value=$controller->getRecord($doc)}
   {assign var="id" value=$doc->id|regex_replace:"/ +$/":""}
@@ -16,19 +15,19 @@
       <ul class="nav nav-tabs" id="record-views-{$id}">
         <li class="nav-item">
           <a class="nav-link active" data-toggle="tab" role="tab" aria-selected="true"
-             id="marc-human-tab-{$id}" href="#marc-human-{$id}" aria-controls="marc-human-tab">Record</a>
+             id="marc-human-tab-{$id}" href="#marc-human-{$id}" aria-controls="marc-human-tab">{_('Record')}</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
-             id="marc-raw-tab-{$id}" href="#marc-raw-{$id}" aria-controls="marc-raw-tab">MARC21</a>
+             id="marc-raw-tab-{$id}" href="#marc-raw-{$id}" aria-controls="marc-raw-tab">{_('UNIMARC')}</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
-             id="marc-labels-tab-{$id}" href="#marc-labels-{$id}" aria-controls="marc-labels-tab">for humans</a>
+             id="marc-labels-tab-{$id}" href="#marc-labels-{$id}" aria-controls="marc-labels-tab">{_('for humans')}</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
-             id="marc-leader-tab-{$id}" href="#marc-leader-{$id}" aria-controls="marc-leader-tab">Leader</a>
+             id="marc-leader-tab-{$id}" href="#marc-leader-{$id}" aria-controls="marc-leader-tab">{_('Leader')}</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"

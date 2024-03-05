@@ -8,90 +8,9 @@
   {include 'unimarc/021.tpl'}{* LEGAL DEPOSIT NUMBER *}
   {include 'unimarc/675.tpl'}{* UDC *}
   {include 'unimarc/317.tpl'}{* PROVENANCE NOTE *}
+  {include 'unimarc/327.tpl'}{* CONTENTS NOTE *}
+  {include 'unimarc/330.tpl'}{* SUMMARY/ABSTRACT NOTE *}
 </table>
-{* include 'marc/773.tpl' *}
-{*
-{assign var="tag245" value=$record->getField('245')}
-{assign var="tag773" value=$record->getField('773')}
-{if isset($tag245->subfields->a) || isset($tag245->subfields->b)}
-  {include 'data/conditional-foreach.tpl' obj=$tag245->subfields key='a'}
-  {include 'data/conditional-foreach.tpl' obj=$tag245->subfields key='b'}
-{elseif isset($tag773)}
-  {include 'data/conditional-foreach.tpl' obj=$tag773->subfields key='t'}
-  {if isset($tag245->subfields->n)}
-    {include 'data/conditional-foreach.tpl' obj=$tag245->subfields key='n'}
-  {/if}
-{/if}
-*}
-{* 245c_Title_responsibilityStatement_ss *}
-{if isset($tag245->subfields->c)}
-  {include 'data/conditional-foreach.tpl' obj=$tag245->subfields key='c'
-    label='<i class="fa fa-pencil" aria-hidden="true"></i>' suffix='<br/>'}
-    {* 773a_PartOf_ss *}
-{elseif isset($tag773->subfields->a)}
-  {include 'data/conditional-foreach.tpl' obj=$tag773->subfields key='a'
-    label='<i class="fa fa-pencil" aria-hidden="true"></i>' suffix='<br/>'}
-{/if}
-
-{* 250a_Edition_editionStatement_ss *}
-{assign var="fieldInstances" value=$record->getFields('250')}
-{if !is_null($fieldInstances)}
-  {foreach from=$fieldInstances item=field}
-    {if isset($field->subfields->a)}
-      <span class="250a_Edition_editionStatement_ss">{$field->subfields->a}</span>
-    {/if}
-  {/foreach}
-  <br/>
-{/if}
-
-{if $record->hasPublication()}
-    {* 250a_Edition_editionStatement_ss *}
-  {assign var="tag260" value=$record->getField('260')}
-  <i class="fa fa-calendar" aria-hidden="true"></i>
-  Published
-  {include 'data/conditional-foreach.tpl' obj=$tag260->subfields key='a' label='in' tag='260a'}{* 260a_Publication_place_ss *}
-  {include 'data/conditional-foreach.tpl' obj=$tag260->subfields key='b' label='by' tag='260b'}{* 260b_Publication_agent_ss *}
-  {include 'data/conditional-foreach.tpl' obj=$tag260->subfields key='c' label='in' tag='260c'}{* 260c_Publication_date_ss *}
-  <br/>
-{/if}
-
-{include 'marc/264.tpl'}
-
-{if $record->hasPhysicalDescription()}
-  {assign var="tag300" value=$record->getField('300')}
-  {* 300a_PhysicalDescription_extent_ss *}
-  {include 'data/conditional-foreach.tpl' obj=$tag300->subfields key='a' tag='300a'}
-  {* 300c_PhysicalDescription_dimensions_ss *}
-  {include 'data/conditional-foreach.tpl' obj=$tag300->subfields key='b' tag='300b'}
-  {* 300c_PhysicalDescription_dimensions_ss *}
-  {include 'data/conditional-foreach.tpl' obj=$tag300->subfields key='c' tag='300c'}
-  <br/>
-{/if}
-
-{* Series Statement *}
-{include 'marc/490.tpl'}
-
-{* Dates of Publication *}
-{include 'marc/362.tpl'}
-
-{* 520a_Summary_ss *}
-{assign var="tag520s" value=$record->getFields('520')}
-{if !is_null($tag520s)}
-  <em>summary:</em> <span class="520">
-  {foreach from=$tag520s item=field}
-    {include 'data/conditional-foreach.tpl' obj=$field->subfields key='a' suffix='<br/>'}
-  {/foreach}
-  </span>
-{/if}
-
-{* 505a_TableOfContents_ss *}
-{assign var="tag505s" value=$record->getFields('505')}
-{if !is_null($tag505s)}
-  <!-- 505a_TableOfContents_ss -->
-  {foreach from=$tag505s item=field}
-    {include 'data/conditional-foreach.tpl' obj=$field->subfields key='a' suffix='<br/>'}
-  {/foreach}
-{/if}
 
 {* Host Item Entry *}
 {include 'marc/773.tpl'}
