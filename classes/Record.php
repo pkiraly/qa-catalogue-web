@@ -1,5 +1,7 @@
 <?php
 
+use Unimarc\UnimarcSchemaManager;
+use Pica\PicaSchemaManager;
 
 class Record {
   private $configuration;
@@ -272,9 +274,22 @@ class Record {
     foreach ($this->record as $tag => $value) {
       if ($tag == 'leader')
         $tag = 'LDR';
-      $tag_defined = isset(self::$fields->{$tag});
-      $definition = $tag_defined ? self::$fields->{$tag} : null;
-      $tagToDisplay = $schemaType == 'PICA' ? $this->picaTagLink($tag) : $this->marcTagLink($tag, $definition);
+      if ($schemaType == 'MARC21') {
+        $tag_defined = isset(self::$fields->{$tag});
+        $definition = $tag_defined ? self::$fields->{$tag} : null;
+      } elseif ($schemaType == 'UNIMARC') {
+        $definition = self::$schema->lookup($tag);
+        $tag_defined = $definition != null;
+      } elseif ($schemaType == 'PICA') {
+        $definition = self::$schema->lookup($tag);
+        $tag_defined = $definition != null;
+      }
+      switch ($schemaType) {
+        case 'PICA'   : $tagToDisplay = $this->picaTagLink($tag); break;
+        case 'UNIMARC': $tagToDisplay = $this->unimarcTagLink($tag); break;
+        case 'MARC21' :
+               default: $tagToDisplay = $this->marcTagLink($tag, $definition);
+      }
 
       if ($tag_defined && !isset($definition->label))
         $this->log->warning('no tag label for ' . $tag);
@@ -318,15 +333,20 @@ class Record {
       if ($schemaType == 'MARC21') {
         self::initializeMarcFields();
       } elseif ($schemaType == 'PICA') {
-        self::initializeSchemaManager();
+        self::initializeSchemaManager($schemaType);
+      } elseif ($schemaType == 'UNIMARC') {
+        self::initializeSchemaManager($schemaType);
       }
       self::$isSchemaInitialized = true;
     }
   }
 
-  public static function initializeSchemaManager() {
+  public static function initializeSchemaManager($schemaType) {
     if (is_null(self::$schema)) {
-      self::$schema = new Pica\PicaSchemaManager();
+      if ($schemaType == 'PICA')
+        self::$schema = new PicaSchemaManager();
+      elseif ($schemaType == 'UNIMARC')
+        self::$schema = new UnimarcSchemaManager();
     }
   }
 
@@ -501,6 +521,18 @@ class Record {
     $field = self::$schema->lookup($tag);
     if ($pica3 && isset($field->pica3))
       $text .= '=' . $field->pica3;
+
+    if (isset($field->url))
+      $tagToDisplay = (object)['url' => $field->url, 'text' => $text];
+    else
+      $tagToDisplay = $text;
+
+    return $tagToDisplay;
+  }
+
+  private function unimarcTagLink($tag) {
+    $text = $tag;
+    $field = self::$schema->lookup($tag);
 
     if (isset($field->url))
       $tagToDisplay = (object)['url' => $field->url, 'text' => $text];

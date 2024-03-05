@@ -90,6 +90,8 @@
             <div id="records">
               {if $schemaType == 'PICA'}
                 {include 'data/pica-records-based-on-json.tpl'}
+              {elseif $schemaType == 'UNIMARC'}
+                {include 'data/unimarc-records-based-on-json.tpl'}
               {else}
                 {include 'data/marc-records-based-on-json.tpl'}
               {/if}

@@ -215,6 +215,7 @@ class Terms extends Facetable {
         $label = $this->resolveSolrField($field);
         $allFields[] = ['label' => $label, 'value' => $field];
       }
+      error_log("generate " . $fileName);
       file_put_contents($fileName, json_encode($allFields));
     } else {
       $allFields = json_decode(file_get_contents($fileName));
@@ -227,6 +228,7 @@ class Terms extends Facetable {
            && $this->doesFieldMatchToVariant($fieldName))
         $fields[] = ['label' => $label, 'value' => $fieldName];
     }
+
     print json_encode($fields);
   }
 
