@@ -326,7 +326,6 @@ class Record {
         }
       }
     }
-    error_log(json_encode($rows));
     return $rows;
   }
 

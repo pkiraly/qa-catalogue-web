@@ -199,12 +199,10 @@ class Terms extends Facetable {
    * @return void
    */
   private function fieldsAction(): void {
-    error_log("fieldsAction");
     $term = getOrDefault('term', '');
     $this->output = 'none';
     $fileName = $this->getFieldMapFileName();
     if (file_exists($fileName)) {
-      error_log("file_exists " . $fileName);
       $fileDate = date("Y-m-d H:i:s", filemtime($fileName));
       if ($this->solr()->getSolrModificationDate() > $fileDate) {
         error_log('Clear cached Solr field list');
@@ -222,12 +220,10 @@ class Terms extends Facetable {
     } else {
       $allFields = json_decode(file_get_contents($fileName));
     }
-    error_log('allFields n=' . count($allFields));
     $fields = [];
     foreach ($allFields as $field) {
       $label = is_object($field) ? $field->label : $field['label'];
       $fieldName = is_object($field) ? $field->value : $field['value'];
-      error_log($term . ', label: ' . $label . ', fieldName: ' . $fieldName);
       if (    $this->isTermPartOfLabelOrFieldName($term, $label, $fieldName)
            && $this->doesFieldMatchToVariant($fieldName))
         $fields[] = ['label' => $label, 'value' => $fieldName];
