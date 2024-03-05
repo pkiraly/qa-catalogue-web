@@ -16,6 +16,8 @@ class SchemaUtil {
         self::initializeMarcFields();
       } elseif ($schemaType == SchemaType::PICA) {
         self::initializeSchemaManager($schemaType);
+      } elseif ($schemaType == SchemaType::UNIMARC) {
+        self::initializeSchemaManager($schemaType);
       }
       self::$isSchemaInitialized = true;
     }
