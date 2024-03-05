@@ -7,26 +7,24 @@ class SchemaUtil {
   private static bool $isSchemaInitialized = false;
   public static $schema = null;
   public static $fields = null;
-  private static SchemaType $schemaType;
 
-  public static function initializeSchema(string $_schemaType) {
-    $schemaType = SchemaType::tryFrom($_schemaType) ?? SchemaType::MARC21;
+  public static function initializeSchema(string $schemaType) {
     if (!self::$isSchemaInitialized) {
       self::$schemaType = $schemaType;
-      if ($schemaType == 'MARC21') {
+      if ($schemaType == SchemaType::MARC21) {
         self::initializeMarcFields();
-      } elseif ($schemaType == 'PICA') {
+      } elseif ($schemaType == SchemaType::PICA) {
         self::initializeSchemaManager($schemaType);
       }
       self::$isSchemaInitialized = true;
     }
   }
 
-  public static function initializeSchemaManager(SchemaType $schemaType) {
+  public static function initializeSchemaManager(string $schemaType) {
     if (is_null(self::$schema)) {
-      if ($schemaType == 'PICA')
+      if ($schemaType == SchemaType::PICA)
         self::$schema = new Pica\PicaSchemaManager();
-      else if ($schemaType == 'UNIMARC')
+      else if ($schemaType == SchemaType::UNIMARC)
         self::$schema = new Unimarc\UnimarcSchemaManager();
     }
   }
