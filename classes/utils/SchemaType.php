@@ -2,8 +2,17 @@
 
 namespace Utils;
 
-enum SchemaType: String {
-  case MARC21  = 'MARC21';
-  case PICA    = 'PICA';
-  case UNIMARC = 'UNIMARC';
+abstract class SchemaType {
+  const MARC21  = 'MARC21';
+  const PICA    = 'PICA';
+  const UNIMARC = 'UNIMARC';
+
+  public static function tryFrom(string $type): SchemaType {
+    switch ($type) {
+      case 'MARC21': return SchemaType::MARC21;
+      case 'PICA': return SchemaType::PICA;
+      case 'UNIMARC': return SchemaType::UNIMARC;
+    }
+    return SchemaType::MARC21;
+  }
 }
