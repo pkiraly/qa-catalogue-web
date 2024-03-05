@@ -154,7 +154,7 @@ The following parameters can be set either for all catalogues (`parameter=value`
    and `NOTICE` messages. Default: `WARNING`.
 - `label` (string) name of the library catalogue
 - `url` (string) link to library catalogue homepage
-- `schema` (string) metadata schema type (`MARC21` as default or `PICA`)
+- `schema` (string) metadata schema type (`MARC21` as default, `PICA`  or `UNIMARC`)
 - `language` (string) default language of the user interface
 - `linkTemplate` (string) URL template to link into the library catalogue (`{id}` will be
    replaced by the trimmed record identifier). This parameter does not work for all cataloueg classes.
