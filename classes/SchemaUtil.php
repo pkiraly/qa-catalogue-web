@@ -7,13 +7,16 @@ class SchemaUtil {
   private static bool $isSchemaInitialized = false;
   public static $schema = null;
   public static $fields = null;
+  private static string $schemaType;
 
   public static function initializeSchema(string $schemaType) {
     if (!self::$isSchemaInitialized) {
-      self::$schemaType = $schemaType;
+      self::$schemaType = $schemaType
       if ($schemaType == SchemaType::MARC21) {
         self::initializeMarcFields();
       } elseif ($schemaType == SchemaType::PICA) {
+        self::initializeSchemaManager($schemaType);
+      } elseif ($schemaType == SchemaType::UNIMARC) {
         self::initializeSchemaManager($schemaType);
       }
       self::$isSchemaInitialized = true;
@@ -36,10 +39,12 @@ class SchemaUtil {
   }
 
   public static function getDefinition($tag) {
-    if (self::$schemaType == 'MARC21') {
+    if (self::$schemaType == SchemaType::MARC21) {
       if (isset(self::$fields->{$tag}))
         return self::$fields->{$tag};
-    } else if (self::$schemaType == 'PICA') {
+    } else if (self::$schemaType == SchemaType::PICA) {
+      return self::$schema->lookup($tag);
+    } else if (self::$schemaType == SchemaType::UNIMARC) {
       return self::$schema->lookup($tag);
     }
     return null;
