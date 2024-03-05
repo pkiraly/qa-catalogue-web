@@ -25,6 +25,10 @@
         <a class="nav-link1 {if $tab == 'completeness'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
            id="completeness-tab" aria-controls="completeness"
            href="?tab=completeness{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Completeness')}</a>
+      {elseif $catalogue->getSchemaType() == 'UNIMARC'}
+        <a class="nav-link1 {if $tab == 'completeness'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+           id="completeness-tab" aria-controls="completeness"
+           href="?tab=completeness{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Completeness')}</a>
       {/if}
     </li>
     <li class="nav-item1">
