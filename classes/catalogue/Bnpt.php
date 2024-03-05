@@ -4,8 +4,8 @@
 class Bnpt extends Catalogue {
 
   protected $name = 'bnpt';
-  protected $label = 'Biblioteka Narodowa (Polish National Library)';
-  protected $url = 'https://bn.org.pl/';
+  protected $label = 'Biblioteca Nacional de Portugal (Portugal National Library)';
+  protected $url = 'https://www.bnportugal.gov.pt/';
 
   function getOpacLink($id, $record) {
     foreach ($record->getDoc()->{'035a_SystemControlNumber_ss'} as $tag35a) {
@@ -14,8 +14,7 @@ class Bnpt extends Catalogue {
         break;
       }
     }
-    return sprintf(
-      'https://katalogi.bn.org.pl/discovery/fulldisplay?docid=alma%s&context=L&vid=48OMNIS_NLOP:48OMNIS_NLOP&search_scope=NLOP_IZ_NZ&tab=LibraryCatalog&lang=pl',
-      trim($identifier));
+    return sprintf('http://id.bnportugal.gov.pt/bib/catbnp/%s', trim($identifier));
   }
 }
+
