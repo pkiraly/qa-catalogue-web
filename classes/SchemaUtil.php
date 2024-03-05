@@ -1,27 +1,33 @@
 <?php
 
+use Utils\SchemaType;
+
 class SchemaUtil {
 
   private static bool $isSchemaInitialized = false;
   public static $schema = null;
   public static $fields = null;
-  private static string $schemaType;
+  private static SchemaType $schemaType;
 
-  public static function initializeSchema($schemaType) {
+  public static function initializeSchema(string $_schemaType) {
+    $schemaType = SchemaType::tryFrom($_schemaType) ?? SchemaType::MARC21;
     if (!self::$isSchemaInitialized) {
       self::$schemaType = $schemaType;
       if ($schemaType == 'MARC21') {
         self::initializeMarcFields();
       } elseif ($schemaType == 'PICA') {
-        self::initializeSchemaManager();
+        self::initializeSchemaManager($schemaType);
       }
       self::$isSchemaInitialized = true;
     }
   }
 
-  public static function initializeSchemaManager() {
+  public static function initializeSchemaManager(SchemaType $schemaType) {
     if (is_null(self::$schema)) {
-      self::$schema = new Pica\PicaSchemaManager();
+      if ($schemaType == 'PICA')
+        self::$schema = new Pica\PicaSchemaManager();
+      else if ($schemaType == 'UNIMARC')
+        self::$schema = new Unimarc\UnimarcSchemaManager();
     }
   }
 
