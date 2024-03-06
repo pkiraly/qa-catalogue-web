@@ -6,6 +6,7 @@
     <h2>
       <i class="fa fa-{$record->type2icon($type)}" title="type: {$type}"></i>
       <strong>{$id}</strong>
+      <a href="?tab=data&query=id%3A{$id}{$generalParams}" title="{_("Link to this record")}"><i class="fa fa-link" aria-hidden="true"></i></a>
       {include "../common/opac-link.tpl" url=$record->opacLink($doc->id)}
     </h2>
 
@@ -23,6 +24,12 @@
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="true"
              id="pica-labels-tab-{$id}" href="#pica-labels-{$id}" aria-controls="pica-labels-tab">{_('Fields')}</a>
         </li>
+        {if $grouped}
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
+               id="pica-holdings-tab-{$id}" href="#pica-holdings-{$id}" aria-controls="pica-holdings-tab">{_('Holdings')}</a>
+          </li>
+        {/if}
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
              id="pica-solr-tab-{$id}" href="#pica-solr-{$id}" aria-controls="pica-solr-tab">Solr</a>
@@ -43,6 +50,11 @@
         <div class="tab-pane record-tab" id="pica-labels-{$id}" role="tabpanel" aria-labelledby="data-tab">
           {include 'data/pica/labels-view.tpl'}
         </div>
+        {if $grouped}
+          <div class="tab-pane record-tab" id="pica-holdings-{$id}" role="tabpanel" aria-labelledby="data-tab">
+            {include 'data/pica/holdings-view.tpl'}
+          </div>
+        {/if}
         <div class="tab-pane record-tab" id="pica-solr-{$id}" role="tabpanel" aria-labelledby="data-tab">
           {include 'data/pica/solr-view.tpl'}
         </div>

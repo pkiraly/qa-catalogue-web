@@ -1,11 +1,13 @@
 <?php
 
-include_once 'catalogue/Catalogue.php';
+use Utils\Solr;
+use Utils\Configuration;
+use Monolog\Logger;
 
 abstract class BaseTab implements Tab {
 
-  protected $configuration;
-  protected $db;
+  protected Configuration $configuration;
+  protected $id;
   protected $count = 0;
   protected static $marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
   protected $solrFields;
@@ -22,39 +24,44 @@ abstract class BaseTab implements Tab {
   protected $lang = 'en';
   public $analysisParameters = null;
   public $indexingParameters = null;
-  protected $grouped = false;
+  protected bool $grouped = false;
   protected $groupId = false;
-  protected $groupBy;
+  protected string $groupBy;
+  protected $parameterFile;
+  protected ?IssuesDB $issueDB = null;
+  private Solr $solr;
+  protected Logger $log;
 
   /**
    * BaseTab constructor.
    * @param $configuration
-   * @param $db
+   * @param $id
    */
-  public function __construct($configuration, $db) {
+  public function __construct(Configuration $configuration, string $id) {
     $this->configuration = $configuration;
-    $this->db = $db;
-    $this->catalogueName = isset($configuration['catalogue']) ? $configuration['catalogue'] : $db;
+    $this->id = $id;
+    $this->catalogueName = $this->configuration->getCatalogue(); // isset($configuration['catalogue']) ? $configuration['catalogue'] : $db;
     $this->catalogue = $this->createCatalogue();
     $this->marcVersion = $this->catalogue->getMarcVersion();
-    $this->displayNetwork = isset($configuration['display-network']) && (int) $configuration['display-network'] == 1;
-    $this->displayShacl = isset($configuration['display-shacl']) && (int) $configuration['display-shacl'] == 1;
-    $this->versioning = (isset($this->configuration['versions'][$this->db]) && $this->configuration['versions'][$this->db] === true);
+    $this->displayNetwork = $this->configuration->doDisplayNetwork(); // isset($configuration['display-network']) && (int) $configuration['display-network'] == 1;
+    $this->displayShacl = $this->configuration->doDisplayShacl(); // isset($configuration['display-shacl']) && (int) $configuration['display-shacl'] == 1;
+    $this->versioning = $this->configuration->doVersioning(); // (isset($this->configuration['versions'][$this->db]) && $this->configuration['versions'][$this->db] === true);
 
-    $this->count = $this->readCount();
+    $this->count = $this->readCount($this->getFilePath('count.csv'));
     $this->readLastUpdate();
     $this->handleHistoricalData();
     $this->lang = getOrDefault('lang', $this->catalogue->getDefaultLang(), ['en', 'de', 'pt']);
     setLanguage($this->lang);
+
+    $this->log = $configuration->createLogger(get_class($this));
   }
 
   public function prepareData(Smarty &$smarty) {
     global $languages;
 
-    $smarty->assign('db', $this->db);
+    $smarty->assign('id', $this->id);
     $smarty->assign('catalogueName', $this->catalogueName);
     $smarty->assign('catalogue', $this->catalogue);
-    $smarty->assign('count', $this->count);
     $smarty->assign('lastUpdate', $this->lastUpdate);
     $smarty->assign('displayNetwork', $this->displayNetwork);
     $smarty->assign('displayShacl', $this->displayShacl);
@@ -63,6 +70,19 @@ abstract class BaseTab implements Tab {
     $smarty->assign('lang', $this->lang);
     $smarty->assign('languages', $languages);
     $smarty->assign('generalParams', $this->concatParams($this->getGeneralParams()));
+
+    $this->readAnalysisParameters();
+    if ($this->analysisParameters) {
+      $smarty->assign('analysisParameters', $this->analysisParameters);
+      $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
+      if (isset($this->analysisParameters->duration)) {
+        $smarty->assign('analysisDuration', $this->analysisParameters->duration);
+      }
+      if (isset($this->analysisParameters->numberOfprocessedRecords)) {
+        $this->count = $this->analysisParameters->numberOfprocessedRecords;
+      }
+    }
+    $smarty->assign('count', $this->count);
   }
 
   protected function concatParams($params): string {
@@ -70,18 +90,17 @@ abstract class BaseTab implements Tab {
   }
 
   protected function getGeneralParams(): array {
-    $params = [
+    return [
       'lang=' . $this->lang
     ];
-    return $params;
   }
 
   public function createCatalogue() {
     $className = strtoupper(substr($this->catalogueName, 0, 1)) . substr($this->catalogueName, 1);
     $classFile = 'catalogue/' . $className . '.php';
     if ($className != "catalogue" && file_exists('classes/' . $classFile)) {
-      include_once $classFile;
-      return new $className();
+      include_once $classFile; 
+      return new $className($this->configuration);
     } else {
       return new Catalogue($this->configuration);
     }
@@ -91,15 +110,15 @@ abstract class BaseTab implements Tab {
     // TODO: Implement getTemplate() method.
   }
 
-  protected function getFilePath($name) {
-    return sprintf('%s/%s/%s', $this->configuration['dir'], $this->getDirName(), $name);
+  protected function getFilePath($name): string {
+    return sprintf('%s/%s/%s', $this->configuration->getDir(), $this->configuration->getDirName(), $name); // ['dir']
   }
 
-  protected function getVersionedFilePath($version, $name) {
-    return sprintf('%s/_historical/%s/%s/%s', $this->configuration['dir'], $this->getDirName(), $version, $name);
+  protected function getVersionedFilePath($version, $name): string {
+    return sprintf('%s/_historical/%s/%s/%s', $this->configuration->getDir(), $this->configuration->getDirName(), $version, $name);
   }
 
-  protected function readCount($countFile = null) {
+  protected function readCount($countFile = null): int {
     if (is_null($countFile))
       $countFile = $this->getFilePath('count.csv');
     if (file_exists($countFile)) {
@@ -122,9 +141,9 @@ abstract class BaseTab implements Tab {
       $this->lastUpdate = trim(file_get_contents($file));
   }
 
-  protected function getSolrFieldMap() {
+  protected function getSolrFieldMap(): array {
     $solrFieldMap = [];
-    $fields = $this->getSolrFields();
+    $fields = $this->solr()->getSolrFields();
     foreach ($fields as $field) {
       $parts = explode('_', $field);
       $solrFieldMap[$parts[0]] = $field;
@@ -133,147 +152,17 @@ abstract class BaseTab implements Tab {
     return $solrFieldMap;
   }
 
-  /**
-   * @param array $db
-   * @return array
-   */
-  protected function getSolrFields() {
-    if (!isset($this->solrFields)) {
-      $solrPath = $this->getIndexName();
-      $baseUrl = 'http://localhost:8983/solr/' . $solrPath; // $this->db;
-      $url = $baseUrl . '/select/?q=*:*&wt=csv&rows=0';
-      $all_fields = file_get_contents($url);
-      $this->solrFields = explode(',', $all_fields);
-    }
-    return $this->solrFields;
+  protected function initializeSolr() {
+    if (!isset($this->solr))
+      $this->solr = new Solr($this->configuration, $this->getFilePath('solr-fields.json'));
   }
 
-  protected function getSolrResponse($params) {
-    $solrPath = $this->getIndexName();
-    $url = 'http://localhost:8983/solr/' . $solrPath . '/select?' . join('&', $this->encodeSolrParams($params));
-    $solrResponse = json_decode(file_get_contents($url));
-    $response = (object)[
-      'numFound' => $solrResponse->response->numFound,
-      'docs' => $solrResponse->response->docs,
-      'facets' => (isset($solrResponse->facet_counts) ? $solrResponse->facet_counts->facet_fields : []),
-      'params' => $solrResponse->responseHeader->params,
-    ];
-
-    return $response;
+  protected function solr(): Solr {
+    $this->initializeSolr();
+    return $this->solr;
   }
 
-  protected function hasValidationIndex() {
-    return $this->isCoreAvailable($this->getIndexName() . '_validation');
-  }
-
-  protected function isCoreAvailable($core) {
-    $url = 'http://localhost:8983/solr/' . $core . '/admin/ping';
-
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,false);
-    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 20);
-    $content = curl_exec($ch);
-    $info = curl_getinfo($ch);
-    $http_code = $info["http_code"];
-    curl_close($ch);
-    if ($http_code == 200) {
-      $response = json_decode($content);
-      return ($response->status == 'OK');
-    }
-    return false;
-  }
-
-  protected function getFacets($facet, $query, $limit, $offset = 0, $termFilter = '', $filters = []) {
-    $parameters = [
-      'q=' . $query,
-      'facet=on',
-      'facet.limit=' . $limit,
-      'facet.offset=' . $offset,
-      'facet.field=' . $facet,
-      'facet.mincount=1',
-      'core=' . $this->db,
-      'rows=0',
-      'wt=json',
-      'json.nl=map',
-    ];
-    if (!empty($termFilter)) {
-      $parameters[] = sprintf('f.%s.facet.contains=%s', $facet, $termFilter);
-      $parameters[] = sprintf('f.%s.facet.contains.ignoreCase=true', $facet);
-    }
-    if (!empty($filters))
-      foreach ($filters as $filter)
-        $parameters[] = 'fq=' . $filter;
-
-    $response = $this->getSolrResponse($parameters);
-    return $response->facets;
-  }
-
-  protected function countFacets($facet, $query, $termFilter = '', $filters = []) {
-    $limit = 10000;
-    $offset = 0;
-    $total = 0;
-    do {
-      $facets = $this->countFacets2($facet, $query, $limit, $offset, $termFilter, $filters);
-      $count = count((array) $facets->{$facet});
-      $total += $count;
-      $offset += $limit;
-    } while ($count == $limit);
-
-    return $total;
-  }
-  protected function countFacets2($facet, $query, $limit, $offset = 0, $termFilter = '', $filters = []) {
-    $parameters = [
-      'q=' . $query,
-      'facet=on',
-      'facet.limit=' . $limit,
-      'facet.offset=' . $offset,
-      'facet.field=' . $facet,
-      'facet.mincount=1',
-      'core=' . $this->db,
-      'rows=0',
-      'wt=json',
-      'json.nl=map',
-    ];
-    if (!empty($termFilter)) {
-      $parameters[] = sprintf('f.%s.facet.contains=%s', $facet, $termFilter);
-      $parameters[] = sprintf('f.%s.facet.contains.ignoreCase=true', $facet);
-    }
-    if (!empty($filters))
-      foreach ($filters as $filter)
-        $parameters[] = 'fq=' . $filter;
-
-    $response = $this->getSolrResponse($parameters);
-    return $response->facets;
-  }
-
-  private function encodeSolrParams($parameters) {
-    $encodedParams = [];
-    foreach ($parameters as $parameter) {
-      if ($parameter == '')
-        continue;
-
-      list($k, $v) = explode('=', $parameter);
-      if ($k == 'core' || $k == '_'  || $k == 'json.wrf' || $v == '') { //
-        continue;
-      }
-      if ($k == 'q') {
-        // error_log('query: ' . $v);
-      }
-      if (!preg_match('/%/', $v))
-        $v = urlencode($v);
-
-      $encodedParams[] = $k . '=' . $v;
-    }
-    $encodedParams[] = 'indent=false';
-    return $encodedParams;
-  }
-
-  protected function readHistogram($histogramFile) {
+  protected function readHistogram($histogramFile): array {
     $records = [];
     if (file_exists($histogramFile)) {
       $records = readCsv($histogramFile);
@@ -284,12 +173,12 @@ abstract class BaseTab implements Tab {
     return $records;
   }
 
-  protected function getFieldMapFileName() {
-    return 'cache/field-map-' . $this->db . '.js';
+  protected function getFieldMapFileName(): string {
+    return 'cache/field-map-' . $this->id . '.js';
   }
 
-  protected function getFacetFile() {
-    return 'cache/selected-facets-' . $this->db . '.js';
+  protected function getFacetFile(): string {
+    return 'cache/selected-facets-' . $this->id . '.js';
   }
 
   protected function getSelectedFacets() {
@@ -313,7 +202,7 @@ abstract class BaseTab implements Tab {
     return $this->fieldDefinitions;
   }
 
-  public function getSolrField($tag, $subfield = '') {
+  public function getSolrField($tag, $subfield = '', $onlyStored = false) {
     $this->getFieldDefinitions();
 
     if ($subfield == '' && strstr($tag, '$') !== false)
@@ -322,11 +211,11 @@ abstract class BaseTab implements Tab {
     if (isset($this->fieldDefinitions->fields->{$tag})) {
       $tagDefinition = $this->getTagDefinition($tag);
 
-      if (isset($tagDefinition->subfields->{$subfield}->solr)) {
+      if (isset($tagDefinition->subfields->{$subfield}->solr))
         $solrField = $tagDefinition->subfields->{$subfield}->solr . '_ss';
-      } elseif ($this->hasVersionSpecificSolrField($tagDefinition, $subfield)) {
+      elseif ($this->hasVersionSpecificSolrField($tagDefinition, $subfield))
         $solrField = $tagDefinition->versionSpecificSubfields->{$this->marcVersion}->{$subfield}->solr . '_ss';
-      } elseif (isset($tagDefinition->solr)) {
+      elseif (isset($tagDefinition->solr)) {
         $solrField = sprintf('%s%s_%s_%s_ss', $tag, $subfield, $tagDefinition->solr, $subfield);
       } else {
         // leader\d+
@@ -339,7 +228,8 @@ abstract class BaseTab implements Tab {
       $solrField = $this->picaToSolr($tag . $subfield) . '_ss';
     }
 
-    if (!isset($solrField) || !in_array($solrField, $this->getSolrFields())) {
+    $existingSolrFields = $this->solr()->getSolrFields($onlyStored);
+    if (!isset($solrField) || !in_array($solrField, $existingSolrFields)) {
       $solrField1 = isset($solrField) ? $solrField : false;
       $solrField = $tag;
       if ($subfield != '')
@@ -348,7 +238,6 @@ abstract class BaseTab implements Tab {
       $found = FALSE;
       $solrField = str_replace('?', '\?', $solrField);
       $solrField = str_replace('/', '\/', $solrField);
-      $existingSolrFields = $this->getSolrFields();
       foreach ($existingSolrFields as $existingSolrField) {
         if (preg_match('/^' . $solrField . '_/', $existingSolrField)) {
           $parts = explode('_', $existingSolrField);
@@ -377,7 +266,8 @@ abstract class BaseTab implements Tab {
 
   protected function picaToSolr($input) {
     $input = str_replace('/', '_', $input);
-    return preg_replace_callback('/([^a-zA-Z0-9])/', function ($matches) { return 'x' . dechex(ord($matches[1])); }, $input);
+    // $output = preg_replace_callback('/([^a-zA-Z0-9])/', function ($matches) { return 'x' . dechex(ord($matches[1])); }, $input);
+    return preg_replace('/([^a-zA-Z0-9])/', '_', $input);
   }
 
   protected function solrToPica($input) {
@@ -390,7 +280,8 @@ abstract class BaseTab implements Tab {
 
     $this->getFieldDefinitions();
 
-    $solrField = preg_replace('/_ss$/', '', $solrField);
+    $solrField = preg_replace('/_(ss|tt)$/', '', $solrField);
+    $label = $solrField;
     if ($solrField == 'type'
         || ($this->catalogue->getSchemaType() == 'MARC21'
             && (substr($solrField, 0, 2) == '00'
@@ -402,17 +293,37 @@ abstract class BaseTab implements Tab {
         if (property_exists($this->fieldDefinitions->fields, $parts[0]) &&
             isset($this->fieldDefinitions->fields->{$parts[0]}) &&
             !is_null($this->fieldDefinitions->fields->{$parts[0]})) {
-          if (!isset($this->fieldDefinitions->fields->{$parts[0]}->types))
-            error_log('no types for ' . $parts[0]);
-          if (!is_array($this->fieldDefinitions->fields->{$parts[0]}->types))
-            error_log(sprintf('$s is not an array, but %s', $parts[0], gettype($this->fieldDefinitions->fields->{$parts[0]}->types)));
-          foreach ($this->fieldDefinitions->fields->{$parts[0]}->types as $name => $type)
-            foreach ($type->positions as $position => $definition)
-              if ($position == $parts[1]) {
-                $label = sprintf('%s/%s %s', $parts[0], $parts[1], $definition->label);
-                $found = true;
-                break;
+          if (   isset($this->fieldDefinitions->fields->{$parts[0]}->solr)
+              && $this->fieldDefinitions->fields->{$parts[0]}->solr == $solrField) {
+            $label = sprintf('%s %s', $parts[0], $this->fieldDefinitions->fields->{$parts[0]}->label);
+            $found = true;
+          } else {
+            if (!isset($this->fieldDefinitions->fields->{$parts[0]}->types)) {
+              $this->log->warning('no types property for ' . $parts[0]);
+            } else {
+              if (is_array($this->fieldDefinitions->fields->{$parts[0]}->types)) {
+                foreach ($this->fieldDefinitions->fields->{$parts[0]}->types as $name => $type)
+                  foreach ($type->positions as $position => $definition)
+                    if ($position == $parts[1]) {
+                      $label = sprintf('%s/%s %s', $parts[0], $parts[1], $definition->label);
+                      $found = true;
+                      break;
+                    }
+              } else if (is_object($this->fieldDefinitions->fields->{$parts[0]}->types)) {
+                foreach (get_object_vars($this->fieldDefinitions->fields->{$parts[0]}->types) as $name => $type) {
+                  foreach ($type->positions as $position => $definition) {
+                    if ($position == $parts[1]) {
+                      $label = sprintf('%s/%s %s', $parts[0], $parts[1], $definition->label);
+                      $found = true;
+                      break;
+                    }
+                  }
+                }
+              } else {
+                $this->log->warning(sprintf('%s is not an array, nor an object, but a %s', $parts[0], gettype($this->fieldDefinitions->fields->{$parts[0]}->types)));
               }
+            }
+          }
         }
       }
       if (!$found) {
@@ -467,13 +378,12 @@ abstract class BaseTab implements Tab {
 
   protected function solrToMarcCode($solrField) {
     $solrField = preg_replace('/_ss$/', '', $solrField);
+    $label = $solrField;
     if ($this->catalogue->getSchemaType() == 'MARC21') {
       if ($solrField == 'type' || substr($solrField, 0, 2) == '00' || substr($solrField, 0, 6) == 'Leader') {
         if (substr($solrField, 0, 2) == '00' || substr($solrField, 0, 6) == 'Leader') {
           $parts = explode('_', $solrField);
           $label = sprintf('%s/%s', $parts[0], $parts[1]);
-        } else {
-          $label = $solrField;
         }
       } else {
         $label = sprintf('%s$%s', substr($solrField, 0, 3), substr($solrField, 3, 1));
@@ -493,18 +403,8 @@ abstract class BaseTab implements Tab {
     return $this->output;
   }
 
-  /**
-   * @return mixed
-   */
-  protected function getIndexName() {
-    $solrPath = (isset($this->configuration['indexName']) && isset($this->configuration['indexName'][$this->db]))
-      ? $this->configuration['indexName'][$this->db]
-      : $this->db;
-    return $solrPath;
-  }
-
   private function handleHistoricalData() {
-    $historicalDir = sprintf('%s/_historical/%s', $this->configuration['dir'], $this->getDirName());
+    $historicalDir = sprintf('%s/_historical/%s', $this->configuration->getDir(), $this->configuration->getDirName());
     if (file_exists($historicalDir))
       $this->historicalDataDir = $historicalDir;
   }
@@ -519,7 +419,7 @@ abstract class BaseTab implements Tab {
     return $versions;
   }
 
-  protected function getHistoricalFilePaths($name) {
+  protected function getHistoricalFilePaths($name): array {
     $files = [];
     if (!is_null($this->historicalDataDir)) {
       foreach ($this->getVersions() as $version) {
@@ -529,17 +429,7 @@ abstract class BaseTab implements Tab {
     return $files;
   }
 
-  /**
-   * @return mixed
-   */
-  protected function getDirName() {
-    $path = (isset($this->configuration['dirName']) && isset($this->configuration['dirName'][$this->db]))
-      ? $this->configuration['dirName'][$this->db]
-      : $this->db;
-    return $path;
-  }
-
-  protected function sqliteExists() {
+  protected function sqliteExists(): bool {
     return file_exists($this->getFilePath('qa_catalogue.sqlite'));
   }
 
@@ -586,16 +476,24 @@ abstract class BaseTab implements Tab {
     return http_build_query($params);
   }
 
-  protected function readAnalysisParameters($paramFile) {
-    $path = $this->getFilePath($paramFile);
-    if (file_exists($path))
-      $this->analysisParameters = json_decode(file_get_contents($path));
+  protected function readAnalysisParameters() {
+    if (!is_null($this->parameterFile)) {
+      $path = $this->getFilePath($this->parameterFile);
+      if (file_exists($path)) {
+        $this->analysisParameters = json_decode(file_get_contents($path));
+        $this->analysisParameters->analysisTimestamp = date("Y-m-d H:i:s", filemtime($path));
+      } else {
+        $this->log->error(sprintf('parameterFile %s does not exist', $path));
+      }
+    }
   }
 
   protected function readIndexingParameters($paramFile) {
     $path = $this->getFilePath($paramFile);
-    if (file_exists($path))
+    if (file_exists($path)) {
       $this->indexingParameters = json_decode(file_get_contents($path));
+      $this->analysisParameters->analysisTimestamp = date("Y-m-d H:i:s", filemtime($path));
+    }
   }
 
   /**
@@ -614,8 +512,7 @@ abstract class BaseTab implements Tab {
     $subfield = $isFull ? '' : substr($solrField, -1);
     $label = $isFull ? $field : sprintf('%s$%s', $field, $subfield);
 
-    include_once('classes/pica/PicaSchemaManager.php');
-    $manager = new PicaSchemaManager();
+    $manager = new Pica\PicaSchemaManager();
     $f = $manager->lookup($field);
     if ($f !== FALSE) {
       $label .= ': ' . $f->label;
@@ -634,9 +531,7 @@ abstract class BaseTab implements Tab {
   protected function readGroups(): array {
     $groups = readCsv($this->getFilePath('completeness-groups.csv'));
     usort($groups, function ($a, $b) {
-      if ($a->group == $b->group) {
-        return 0;
-      }
+      if ($a->group == $b->group) return 0;
       return ($a->group < $b->group) ? -1 : 1;
     });
     return $groups;
@@ -649,13 +544,12 @@ abstract class BaseTab implements Tab {
     return $this->catalogue;
   }
 
-  protected function selectCurrentGroup() {
-    foreach ($this->groups as $group) {
+  protected function selectCurrentGroup(): object {
+    foreach ($this->groups as $group)
       if ($group->id == $this->groupId) {
         return $group;
         break;
       }
-    }
   }
 
   protected function getRawGroupQuery() {
@@ -672,6 +566,17 @@ abstract class BaseTab implements Tab {
   }
 
   protected function getDbDir() {
-    return sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
+    return sprintf('%s/%s', $this->configuration->getDir(), $this->configuration->getDirName());
+  }
+
+  protected function issueDB(): IssuesDB {
+    if (is_null($this->issueDB)) {
+      $this->issueDB = new IssuesDB($this->getDbDir());
+    }
+    return $this->issueDB;
+  }
+
+  protected function hasMarcElementTable(): bool {
+    return $this->issueDB()->hasMarcElementTable();
   }
 }

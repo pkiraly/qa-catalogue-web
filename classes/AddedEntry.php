@@ -5,7 +5,7 @@ class AddedEntry extends BaseTab {
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
-    parent::readAnalysisParameters('completeness.params.json');
+
     $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
     $this->groupId = getOrDefault('groupId', 0);
   }
@@ -55,31 +55,40 @@ class AddedEntry extends BaseTab {
   }
 
   /**
-   * @param $dir
-   * @param $db
    * @param Smarty $smarty
    * @return object
    */
   protected function readElements(Smarty &$smarty) {
-    error_log('readElements');
+    $t0 = microtime(true);
+    $tArrayCombine = 0.0;
     $fileName = $this->grouped ? 'completeness-grouped-marc-elements.csv' : 'marc-elements.csv';
     $elementsFile = $this->getFilePath($fileName);
-    error_log('$elementsFile: ' . $elementsFile);
+    $useDB = true;
     if (file_exists($elementsFile)) {
-      error_log('file exists');
-      $header = [];
       $elements = [];
-      $in = fopen($elementsFile, "r");
-      while (($line = fgets($in)) != false) {
-        $values = str_getcsv($line);
-        if (empty($header)) {
-          $header = $values;
-        } else {
-          $record = (object)array_combine($header, $values);
-          if ($this->grouped && $record->groupId != $this->groupId)
-            continue;
+      if ($useDB && $this->hasMarcElementTable()) {
+        error_log('read data elements from DB');
+        $result = $this->issueDB->getMarcElements('all', ($this->grouped ? $this->groupId : ''));
+        while ($record = $result->fetchArray(SQLITE3_ASSOC)) {
+          $elements[$record['path']] = $record['subfield'];
+        }
+      } else {
+        error_log('read data elements from: ' . $elementsFile);
+        $header = [];
+        $in = fopen($elementsFile, "r");
+        while (($line = fgets($in)) != false) {
+          $values = str_getcsv($line);
+          if (empty($header)) {
+            $header = $values;
+          } else {
+            $tArrayCombine0 = microtime(true);
+            $record = (object)array_combine($header, $values);
+            $tArrayCombine += microtime(true) - $tArrayCombine0;
+            if ($this->grouped && $record->groupId != $this->groupId)
+              continue;
 
-          $elements[$record->path] = $record->subfield;
+            $elements[$record->path] = $record->subfield;
+          }
         }
       }
       $smarty->assign('hasElements', TRUE);
@@ -90,13 +99,13 @@ class AddedEntry extends BaseTab {
   }
 
   /**
-   * @param $dir
-   * @param $db
    * @param Smarty $smarty
+   * @param Smarty $bySubfieldsFile
    * @return object
    */
   protected function readSubfields(Smarty &$smarty, $bySubfieldsFile) {
     if (file_exists($bySubfieldsFile)) {
+      error_log('bySubfieldsFile: ' . $bySubfieldsFile);
       $header = [];
       $subfields = [];
       $subfieldsById = [];
@@ -106,6 +115,10 @@ class AddedEntry extends BaseTab {
         if (empty($header)) {
           $header = $values;
         } else {
+          if (count($header) != count($values)) {
+            error_log("wrong line: " . $line);
+            continue;
+          }
           $record = (object)array_combine($header, $values);
           if (!isset($record->subfields)) {
             error_log('no subfields: ' . $line . ' (' . $bySubfieldsFile . ')');
@@ -176,11 +189,11 @@ class AddedEntry extends BaseTab {
 
     if (isset($record->abbreviation4solr)
         && $record->abbreviation4solr != ''
-        && in_array($record->abbreviation4solr, $this->getSolrFields())) {
+        && in_array($record->abbreviation4solr, $this->solr()->getSolrFields())) {
       $record->facet2 = $base . '_' . $record->abbreviation4solr . '_ss';
     } elseif (isset($record->abbreviation)
         && $record->abbreviation != ''
-        && in_array($record->abbreviation, $this->getSolrFields())) {
+        && in_array($record->abbreviation, $this->solr()->getSolrFields())) {
       $record->facet2 = $base . '_' . $record->abbreviation . '_ss';
     }
   }

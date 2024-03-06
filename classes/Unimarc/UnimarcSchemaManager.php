@@ -1,9 +1,10 @@
 <?php
 
-include_once 'Range.php';
-include_once __DIR__ . '/../catalogue/Catalogue.php';
+namespace Unimarc;
 
-class PicaSchemaManager {
+use Pica\Range;
+
+class UnimarcSchemaManager {
 
   private $fields;
   private $tagIndex = [];
@@ -13,8 +14,7 @@ class PicaSchemaManager {
     $catalogue = $tab->getCatalogue();
     $schemaType = $catalogue->getSchemaType();
 
-    // $schemaFile = 'schemas/avram-k10plus.json';
-    $schemaFile = 'schemas/avram-k10plus-title.json';
+    $schemaFile = 'schemas/avram-unimarc.json';
     $this->fields = json_decode(file_get_contents($schemaFile))->fields;
     foreach ($this->fields as $id => $field) {
       $this->createRange($field);
@@ -27,6 +27,7 @@ class PicaSchemaManager {
   }
 
   public function lookup($searchTerm) {
+    error_log("lookup($searchTerm)");
     if (isset($this->fields->{$searchTerm}))
       return $this->fields->{$searchTerm};
 

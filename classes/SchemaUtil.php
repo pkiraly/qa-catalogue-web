@@ -1,5 +1,7 @@
 <?php
 
+use Utils\SchemaType;
+
 class SchemaUtil {
 
   private static bool $isSchemaInitialized = false;
@@ -7,22 +9,26 @@ class SchemaUtil {
   public static $fields = null;
   private static string $schemaType;
 
-  public static function initializeSchema($schemaType) {
+  public static function initializeSchema(string $schemaType) {
     if (!self::$isSchemaInitialized) {
       self::$schemaType = $schemaType;
-      if ($schemaType == 'MARC21') {
+      if ($schemaType == SchemaType::MARC21) {
         self::initializeMarcFields();
-      } elseif ($schemaType == 'PICA') {
-        self::initializeSchemaManager();
+      } elseif ($schemaType == SchemaType::PICA) {
+        self::initializeSchemaManager($schemaType);
+      } elseif ($schemaType == SchemaType::UNIMARC) {
+        self::initializeSchemaManager($schemaType);
       }
       self::$isSchemaInitialized = true;
     }
   }
 
-  public static function initializeSchemaManager() {
+  public static function initializeSchemaManager(string $schemaType) {
     if (is_null(self::$schema)) {
-      include_once('pica/PicaSchemaManager.php');
-      self::$schema = new PicaSchemaManager();
+      if ($schemaType == SchemaType::PICA)
+        self::$schema = new Pica\PicaSchemaManager();
+      else if ($schemaType == SchemaType::UNIMARC)
+        self::$schema = new Unimarc\UnimarcSchemaManager();
     }
   }
 
@@ -33,10 +39,12 @@ class SchemaUtil {
   }
 
   public static function getDefinition($tag) {
-    if (self::$schemaType == 'MARC21') {
+    if (self::$schemaType == SchemaType::MARC21) {
       if (isset(self::$fields->{$tag}))
         return self::$fields->{$tag};
-    } else if (self::$schemaType == 'PICA') {
+    } else if (self::$schemaType == SchemaType::PICA) {
+      return self::$schema->lookup($tag);
+    } else if (self::$schemaType == SchemaType::UNIMARC) {
       return self::$schema->lookup($tag);
     }
     return null;

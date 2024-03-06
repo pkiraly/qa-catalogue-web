@@ -2,11 +2,10 @@
 
 class Shacl4Bib extends BaseTab {
 
-  public static String $paramsFile = 'shacl.params.json';
+  public static String $paramsFile = 'shacl4bib.params.json';
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
-    parent::readAnalysisParameters(Shacl4Bib::$paramsFile);
     $schemaFile = $this->analysisParameters->shaclConfigurationFile;
     $schemaFile = substr($schemaFile, strrpos($schemaFile, '/') + 1);
     $schemaFilePath = $this->getFilePath($schemaFile);

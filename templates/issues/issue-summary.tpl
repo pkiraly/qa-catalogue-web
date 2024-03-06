@@ -8,17 +8,17 @@
 </div>
 
 <div style="width: 500px; background-color: maroon">
-  <div style="width: {ceil($topStatistics[1]->goodPercent * 5)}px; background-color: #37ba00; height: 10px;">&nbsp;</div>
+  <div style="width: {ceil($topStatistics->statistics[1]->goodPercent * 5)}px; background-color: #37ba00; height: 10px;">&nbsp;</div>
 </div>
 
 <div class="row" style="width: 500px; margin: 0 0 20px 0">
   <div class="col-sm" style="margin: 0; padding: 0">
-    {$topStatistics[1]->good|number_format:0}
-    ({$topStatistics[1]->goodPercent|number_format:2}%)
+    {$topStatistics->statistics[1]->good|number_format:0}
+    ({$topStatistics->statistics[1]->goodPercent|number_format:2}%)
   </div>
   <div class="col-sm text-right" style="margin: 0; padding: 0">
-    {$topStatistics[1]->bad|number_format:0}
-    ({$topStatistics[1]->badPercent|number_format:2}%)
+    {$topStatistics->statistics[1]->bad|number_format:0}
+    ({$topStatistics->statistics[1]->badPercent|number_format:2}%)
   </div>
 </div>
 
@@ -33,15 +33,15 @@
 </div>
 
 <div style="width: 500px; background-color: maroon">
-  <div style="width: {ceil($topStatistics[2]->goodPercent * 5)}px; background-color: #37ba00; height: 10px;">&nbsp;</div>
+  <div style="width: {ceil($topStatistics->statistics[2]->goodPercent * 5)}px; background-color: #37ba00; height: 10px;">&nbsp;</div>
 </div>
 
 <div class="row" style="width: 500px; margin: 0 0 20px 0">
   <div class="col-sm" style="margin: 0; padding: 0">
-    {$topStatistics[2]->good|number_format:0} ({($topStatistics[2]->goodPercent)|number_format:2}%)
+    {$topStatistics->statistics[2]->good|number_format:0} ({($topStatistics->statistics[2]->goodPercent)|number_format:2}%)
   </div>
   <div class="col-sm text-right" style="margin: 0; padding: 0">
-    {$topStatistics[2]->bad|number_format:0} ({$topStatistics[2]->badPercent|number_format:2}%)
+    {$topStatistics->statistics[2]->bad|number_format:0} ({$topStatistics->statistics[2]->badPercent|number_format:2}%)
   </div>
 </div>
 

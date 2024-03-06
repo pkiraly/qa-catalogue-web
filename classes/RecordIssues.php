@@ -7,10 +7,12 @@ class RecordIssues extends BaseTab {
   protected $issues = [];
   protected $types = [];
   protected $typeCounter = [];
+  protected $parameterFile = 'validation.params.json';
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
-    parent::readAnalysisParameters('validation.params.json');
+    parent::readAnalysisParameters();
+    $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
     $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
 
     $this->recordId = getOrDefault('recordId', '');
@@ -87,7 +89,6 @@ class RecordIssues extends BaseTab {
   }
 
   private function getIssueDefinitions($ids) {
-
     $issues = [];
     $file = $this->getFilePath('issue-summary.csv');
     if (file_exists($file)) {
@@ -103,8 +104,8 @@ class RecordIssues extends BaseTab {
           } else {
             $record = (object)array_combine($header, $values);
             if (!isset($record->id))
-              error_log('no id' . json_encode($record));
-            if (in_array($record->id, $ids)) {
+              error_log('no id ' . json_encode($record));
+            if (isset($record->id) && in_array($record->id, $ids)) {
               $key = $record->id;
               unset($record->id);
               $issues[$key] = $record;

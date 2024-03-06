@@ -3,10 +3,14 @@ configuration.cnf
 images/
 libs/
 cache/
-translate.sh
 config/
 vendor/
 _smarty/
+logs/
+version.ini
+
+# data files
+metadata-qa/
 
 # eidtor files
 .idea/

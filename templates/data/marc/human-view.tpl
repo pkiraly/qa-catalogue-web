@@ -103,6 +103,7 @@
       {include 'marc/711.tpl'}{* Additional meeting names *}
       {include 'marc/720.tpl'}{* uncontrolled name *}
       {include 'marc/730.tpl'}{* Additional uniform title *}
+      {include 'marc/740.tpl'}{* Additional uniform title *}
     {/if}
 
     {if $record->hasSubjectHeadings()}

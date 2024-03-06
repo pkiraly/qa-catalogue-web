@@ -3,6 +3,8 @@
 
 class TtCompleteness extends BaseTab {
 
+  protected $parameterFile = 'tt-completeness.params.json';
+
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 

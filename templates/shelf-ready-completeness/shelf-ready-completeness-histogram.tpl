@@ -39,8 +39,6 @@
 
 <p>The histograms of the individual components:</p>
 
-<p>{json_encode($fields)}</p>
-
 <table>
 {foreach from=$fields key=index item=field}
   {if $index % 3 == 0}
@@ -62,7 +60,7 @@
 <script src="js/histogram.js" type="text/javascript"></script>
 <script>
 // $()
-var db = '{$db}';
+var db = '{$id}';
 var count = {$count};
 var units = 'score';
 var fields = {json_encode($fields)};

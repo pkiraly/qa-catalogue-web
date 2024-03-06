@@ -1,21 +1,24 @@
 <?php
 
-include_once 'Facet.php';
-include_once 'Facetable.php';
-
 class Terms extends Facetable {
 
   private $facet;
   private $action = 'list';
-  public $grouped = false;
+  public bool $grouped = false;
   public $groupId = false;
   public $groups;
   public $currentGroup;
   public $params;
+  /**
+   * The field type variant (tokenized or phrase)
+   * @var mixed|null
+   */
+  private $variant;
+  protected $parameterFile = 'validation.params.json';
 
-  public function __construct($configuration, $db) {
-    parent::__construct($configuration, $db);
-    parent::readAnalysisParameters('validation.params.json');
+  public function __construct($configuration, $id) {
+    parent::__construct($configuration, $id);
+    parent::readAnalysisParameters();
     $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
     if ($this->grouped) {
       $this->groupBy = $this->analysisParameters->groupBy;
@@ -31,6 +34,7 @@ class Terms extends Facetable {
     $this->ajaxFacet = getOrDefault('ajax', 0, [0, 1]);
     $this->facetLimit = getOrDefault('limit', 100, [10, 25, 50, 100]);
     $this->action = getOrDefault('action', 'list', ['list', 'download', 'fields', 'term-count']);
+    $this->variant = getOrDefault('variant', 'phrase', ['phrase', 'tokenized']);
 
     $this->params = [
       'facet' => $this->facet,
@@ -83,11 +87,11 @@ class Terms extends Facetable {
   }
 
   private function createTermList() {
-    return $this->getFacets($this->facet, $this->query, $this->facetLimit, $this->offset, $this->termFilter, $this->filters);
+    return $this->solr()->getFacets($this->facet, $this->query, $this->facetLimit, $this->offset, $this->termFilter, $this->filters);
   }
 
   private function getCount() {
-    return $this->countFacets($this->facet, $this->query, $this->termFilter, $this->filters);
+    return $this->solr()->countTotalFacets($this->facet, $this->query, $this->termFilter, $this->filters);
   }
 
   private function createPrevLink() {
@@ -138,7 +142,7 @@ class Terms extends Facetable {
   }
 
   private function getFields() {
-    $fieldNames = $this->getSolrFields();
+    $fieldNames = $this->solr()->getSolrFields();
     sort($fieldNames);
     return $fieldNames;
   }
@@ -170,7 +174,7 @@ class Terms extends Facetable {
     $limit = 1000;
     $offset = 0;
     do {
-      $facets = $this->getFacets($this->facet, $this->query, $limit, $offset, $this->termFilter, $this->filters);
+      $facets = $this->solr()->getFacets($this->facet, $this->query, $limit, $offset, $this->termFilter, $this->filters);
       $i = 0;
       foreach ($facets as $facet => $values) {
         foreach ($values as $term => $count) {
@@ -198,24 +202,49 @@ class Terms extends Facetable {
     $term = getOrDefault('term', '');
     $this->output = 'none';
     $fileName = $this->getFieldMapFileName();
+    if (file_exists($fileName)) {
+      $fileDate = date("Y-m-d H:i:s", filemtime($fileName));
+      if ($this->solr()->getSolrModificationDate() > $fileDate) {
+        error_log('Clear cached Solr field list');
+        unlink($fileName);
+      }
+    }
     if (!file_exists($fileName)) {
       $allFields = [];
       foreach ($this->getFields() as $field) {
         $label = $this->resolveSolrField($field);
         $allFields[] = ['label' => $label, 'value' => $field];
       }
+      error_log("generate " . $fileName);
       file_put_contents($fileName, json_encode($allFields));
     } else {
       $allFields = json_decode(file_get_contents($fileName));
     }
     $fields = [];
     foreach ($allFields as $field) {
-      if ($term == ''
-        || strpos(strtoupper($field->label), strtoupper($term)) !== false
-        || strpos(strtoupper($field->value), strtoupper($term)) !== false)
-        $fields[] = ['label' => $field->label, 'value' => $field->value];
+      $label = is_object($field) ? $field->label : $field['label'];
+      $fieldName = is_object($field) ? $field->value : $field['value'];
+      if (    $this->isTermPartOfLabelOrFieldName($term, $label, $fieldName)
+           && $this->doesFieldMatchToVariant($fieldName))
+        $fields[] = ['label' => $label, 'value' => $fieldName];
     }
+
     print json_encode($fields);
+  }
+
+  private function isTermPartOfLabelOrFieldName($term, $label, $fieldName) {
+    return (
+                $term == ''
+             || strpos(strtoupper($label), strtoupper($term)) !== false
+             || strpos(strtoupper($fieldName), strtoupper($term)) !== false
+    );
+  }
+
+  private function doesFieldMatchToVariant($fieldName) {
+    return (
+               ($this->variant == 'tokenized' && preg_match('/_(tt|txt)$/', $fieldName))
+            || ($this->variant == 'phrase'    && preg_match('/_ss$/', $fieldName))
+    );
   }
 
   /**
@@ -238,7 +267,6 @@ class Terms extends Facetable {
     $smarty->assign('ajaxFacet', $this->ajaxFacet);
     $smarty->assign('params',    $this->params);
 
-    $facets = $this->createTermList();
     if ($this->grouped) {
       $this->groups = $this->readGroups();
       $this->currentGroup = $this->selectCurrentGroup();
@@ -248,17 +276,24 @@ class Terms extends Facetable {
       $smarty->assign('groups', $this->groups);
     }
 
-    $smarty->assign('facets', $facets);
     $smarty->assign('label', $this->resolveSolrField($this->facet));
     $smarty->assign('basicFacetParams', ['tab=data', 'query=' . $this->query]);
     $smarty->assign('prevLink', $this->createPrevLink());
-    if (isset($facets->{$this->facet}))
-      $smarty->assign('nextLink', $this->createNextLink(get_object_vars($facets->{$this->facet})));
-    else
-      $smarty->assign('nextLink', '');
 
-    // if ($this->facet == '' && $this->query == '')
-    $smarty->assign('solrFields', $this->getFields());
+    try {
+      $facets = $this->createTermList();
+      $smarty->assign('facets', $facets);
+      if (isset($facets->{$this->facet}))
+        $smarty->assign('nextLink', $this->createNextLink(get_object_vars($facets->{$this->facet})));
+      else
+        $smarty->assign('nextLink', '');
+
+      // if ($this->facet == '' && $this->query == '')
+      $smarty->assign('solrFields', $this->getFields());
+    } catch(Exception $e) {
+      $smarty->assign('error', $e->getMessage());
+    }
+
     error_log('done');
   }
 }

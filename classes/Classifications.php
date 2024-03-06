@@ -1,17 +1,15 @@
 <?php
 
-include_once 'SchemaUtil.php';
-
 class Classifications extends AddedEntry {
 
   protected $frequencyExamples;
+  protected $parameterFile = 'classifications.params.json';
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 
-    $this->readByRecords($smarty);
+    $this->loadByRecords($smarty);
     $this->readByField($smarty);
-
     $this->readFrequencyExamples($smarty);
   }
 
@@ -19,41 +17,39 @@ class Classifications extends AddedEntry {
     return 'classifications/classifications.tpl';
   }
 
-  private function readByRecords(Smarty &$smarty) {
+  private function loadByRecords(Smarty &$smarty) {
+    $records = Classifications::readByRecords($this->getFilePath('classifications-by-records.csv'), $this->count);
 
-    $byRecordsFile = $this->getFilePath('classifications-by-records.csv');
+    $smarty->assign('count', $this->count);
+    $smarty->assign('withClassification', $records->withClassification);
+    $smarty->assign('withoutClassification', $records->withoutClassification);
+  }
+
+  public static function readByRecords($filepath, $total) {
     $records = [];
-    if (file_exists($byRecordsFile)) {
+    if (file_exists($filepath)) {
       $header = [];
-      $withClassification = NULL;
-      $withoutClassification = NULL;
-      $in = fopen($byRecordsFile, "r");
+      $in = fopen($filepath, "r");
       while (($line = fgets($in)) != false) {
         $values = str_getcsv($line);
         if (empty($header)) {
           $header = $values;
         } else {
           $record = (object)array_combine($header, $values);
-          $record->percent = $record->count / $this->count;
-          $records[] = $record;
+          $record->percent = $record->count / $total;
           if ($record->{'records-with-classification'} === 'true') {
-            $withClassification = $record;
+            $records["withClassification"] = $record;
           } else {
-            $withoutClassification = $record;
+            $records["withoutClassification"] = $record;
           }
         }
       }
-
-      $smarty->assign('records', $records);
-      $smarty->assign('count', $this->count);
-      $smarty->assign('withClassification', $withClassification);
-      $smarty->assign('withoutClassification', $withoutClassification);
+      return (object)$records;
     }
   }
 
   private function readByField(Smarty &$smarty) {
-
-    $solrFields = $this->getSolrFields($this->db);
+    $solrFields = $this->solr()->getSolrFields(); // $this->id
     SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
 
     if ($this->catalogue->getSchemaType() == 'MARC21') {
@@ -85,26 +81,29 @@ class Classifications extends AddedEntry {
         '852' => 'Location',
       ];
     } elseif ($this->catalogue->getSchemaType() == 'PICA') {
-      include_once('pica/PicaSchemaManager.php');
-      $schema = new PicaSchemaManager();
-      $fields = [
-        "045A" => "LCC-Notation",
-        "045F" => "DDC-Notation",
-        "045R" => "Regensburger Verbundklassifikation (RVK)",
-        "045B" => "Allgemeine Systematik für Bibliotheken (ASB)",
-        "045B/00" => "Allgemeine Systematik für Bibliotheken (ASB)",
-        "045B/01" => "Systematik der Stadtbibliothek Duisburg (SSD)",
-        "045B/02" => "Systematik für Bibliotheken (SfB)",
-        "045B/03" => "Klassifikation für Allgemeinbibliotheken (KAB)",
-        "045B/04" => "Systematiken der ekz",
-        "045B/05" => "Gattungsbegriffe (DNB)",
-        "045C" => "Notation – Beziehung",
-        "045E" => "Sachgruppen der Deutschen Nationalbibliografie bis 2003",
-        "045G" => "Sachgruppen der Deutschen Nationalbibliografie ab 2004",
-        "041A" => "Sachbegriff - Bevorzugte Benennung",
-        "144Z/00-99" => "Lokale Schlagwörter",
-        "145S/00-99" => "Lesesaalsystematik der SBB"
-      ];
+      $schema = new Pica\PicaSchemaManager();
+      $fields = $this->readPicaSubjectFieldsFromFile();
+      if (empty($fields)) {
+        $fields = [
+          "045A" => "LCC-Notation",
+          "045F" => "DDC-Notation",
+          "045R" => "Regensburger Verbundklassifikation (RVK)",
+          "045B" => "Allgemeine Systematik für Bibliotheken (ASB)",
+          "045B/00" => "Allgemeine Systematik für Bibliotheken (ASB)",
+          "045B/01" => "Systematik der Stadtbibliothek Duisburg (SSD)",
+          "045B/02" => "Systematik für Bibliotheken (SfB)",
+          "045B/03" => "Klassifikation für Allgemeinbibliotheken (KAB)",
+          "045B/04" => "Systematiken der ekz",
+          "045B/05" => "Gattungsbegriffe (DNB)",
+          "045C" => "Notation – Beziehung",
+          "045E" => "Sachgruppen der Deutschen Nationalbibliografie bis 2003",
+          "045G" => "Sachgruppen der Deutschen Nationalbibliografie ab 2004",
+          "041A" => "Sachbegriff - Bevorzugte Benennung",
+          "144Z/00-99" => "Lokale Schlagwörter",
+          "145S/00-99" => "Lesesaalsystematik der SBB"
+        ];
+      }
+      $picaFields = array_keys($fields);
     }
 
     $solrFieldMap = $this->getSolrFieldMap();
@@ -113,8 +112,8 @@ class Classifications extends AddedEntry {
     if (!file_exists($byRecordsFile)) {
       $byRecordsFile = $this->getFilePath('classifications-by-field.csv');
     }
-
     if (file_exists($byRecordsFile)) {
+      error_log('classification file: ' . $byRecordsFile);
       $header = [];
       $records = [];
       $in = fopen($byRecordsFile, "r");
@@ -189,8 +188,17 @@ class Classifications extends AddedEntry {
           } else if ($record->field == '852') {
             $this->createFacets($record, '852a_Location_location');
             $this->ind1Orsubfield2($record, '852ind1_852_shelvingScheme_ss', '852__852___ss');
-          } else if (in_array($record->field, ['045A', '045B', '045F', '045R', '045C', '045E', '045G'])
-              || preg_match('/^(045B|144Z|145S)/', $record->field)) {
+          } else if ($this->catalogue->getSchemaType() == 'PICA'
+                     && in_array($record->field, $picaFields)) {
+            $record->facet = $this->picaToSolr($record->field) . '_full_ss';
+            $record->facet2 = $record->facet; // . '_full_ss';
+
+            $definition = SchemaUtil::getDefinition($record->field);
+            $pica3 = ($definition != null && isset($definition->pica3) ? '=' . $definition->pica3 : '');
+            $record->withPica3 = $record->field . $pica3;
+          } else if ($this->catalogue->getSchemaType() == 'PICA'
+                    && in_array($record->field, ['044A', '044C', '044H', '044N', '044S', '045A', '045B', '045F', '045N', '045N/01', '045N/02', '045R', '045C', '045E', '045G'])
+                    || preg_match('/^(045B|144Z|145S)/', $record->field)) {
             $record->facet = $this->picaToSolr($record->field) . '_full_ss';
             $record->facet2 = $record->facet; // . '_full_ss';
 
@@ -238,13 +246,28 @@ class Classifications extends AddedEntry {
   }
 
     /**
-   * @param $dir
-   * @param $db
    * @param Smarty $smarty
    * @return object
    */
   private function readClassificationSubfields(Smarty &$smarty) {
     $bySubfieldsFile = $this->getFilePath('classifications-by-schema-subfields.csv');
     $this->readSubfields($smarty, $bySubfieldsFile);
+  }
+
+  private function readPicaSubjectFieldsFromFile() :array {
+    $subjectsFile = $this->getFilePath('k10plus-subjects.tsv');
+    $fields = [];
+    if (file_exists($subjectsFile)) {
+      $in = fopen($subjectsFile, "r");
+      while (($line = fgets($in)) != false) {
+        $parts = explode("\t", $line);
+        $tag = $parts[0];
+        if ($parts[1] != '')
+          $tag .= '/' . $parts[1];
+        $fields[$tag] = $parts[2];
+      }
+      fclose($in);
+    }
+    return $fields;
   }
 }

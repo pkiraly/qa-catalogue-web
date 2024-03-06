@@ -1,13 +1,13 @@
 <?php
 
-include_once 'SchemaUtil.php';
-
 class Authorities extends AddedEntry {
+
+  protected $parameterFile = 'authorities.params.json';
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
 
-    $this->readByRecords($smarty);
+    $this->loadByRecords($smarty);
     $this->readByField($smarty);
 
     $this->readFrequencyExamples($smarty);
@@ -17,42 +17,41 @@ class Authorities extends AddedEntry {
     return 'authorities/authorities.tpl';
   }
 
-  private function readByRecords(Smarty &$smarty) {
+  private function loadByRecords(Smarty &$smarty) {
+    $records = Authorities::readByRecords($this->getFilePath('authorities-by-records.csv'), $this->count);
 
-    $byRecordsFile = $this->getFilePath('authorities-by-records.csv');
+    $smarty->assign('count', $this->count);
+    $smarty->assign('withClassification', $records->withClassification);
+    $smarty->assign('withoutClassification', $records->withoutClassification);
+  }
+
+  public static function readByRecords($filepath, $total) {
     $records = [];
-    if (file_exists($byRecordsFile)) {
+    if (file_exists($filepath)) {
       $header = [];
-      $withClassification = NULL;
-      $withoutClassification = NULL;
-      $in = fopen($byRecordsFile, "r");
+      $in = fopen($filepath, "r");
       while (($line = fgets($in)) != false) {
         $values = str_getcsv($line);
         if (empty($header)) {
           $header = $values;
         } else {
           $record = (object)array_combine($header, $values);
-          $record->percent = $record->count / $this->count;
-          $records[] = $record;
+          $record->percent = $record->count / $total;
           if ($record->{'records-with-authorities'} === 'true') {
-            $withClassification = $record;
+            $records["withClassification"] = $record;
           } else {
-            $withoutClassification = $record;
+            $records["withoutClassification"] = $record;
           }
         }
       }
-
-      $smarty->assign('records', $records);
-      $smarty->assign('count', $this->count);
-      $smarty->assign('withClassification', $withClassification);
-      $smarty->assign('withoutClassification', $withoutClassification);
+      return (object)$records;
     }
   }
 
   private function readByField(Smarty &$smarty) {
     // global $solrFields;
 
-    $solrFields = $this->getSolrFields($this->db);
+    $solrFields = $this->solr()->getSolrFields(); // $this->id
     SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
     if ($this->catalogue->getSchemaType() == 'MARC21') {
       $fields = [
@@ -213,8 +212,6 @@ class Authorities extends AddedEntry {
   }
 
   /**
-   * @param $dir
-   * @param $db
    * @param Smarty $smarty
    * @return object
    */

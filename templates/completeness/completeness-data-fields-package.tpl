@@ -29,7 +29,7 @@
           {/if}
         {/if}
       </td>
-      <td class="subfield">{$record->subfield}</td>
+      <td class="subfield">{if property_exists($record, 'subfield')}{$record->subfield}{/if}</td>
       {include 'completeness/completeness-numbers.tpl'}
     </tr>
   {/foreach}

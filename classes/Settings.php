@@ -43,7 +43,7 @@ class Settings extends BaseTab {
   private function getFields() {
     $fields = [];
     $selectedFacets = $this->getSelectedFacets();
-    $fieldNames = $this->getSolrFields();
+    $fieldNames = $this->solr()->getSolrFields();
     sort($fieldNames);
 
     foreach ($fieldNames as $fieldName) {
@@ -70,7 +70,7 @@ class Settings extends BaseTab {
 
   private function saveSelectedFacets($selectedFacets) {
     $file = $this->getFacetFile();
-    $fieldNames = $this->getSolrFields();
+    $fieldNames = $this->solr()->getSolrFields();
     if (is_string($selectedFacets))
       $selectedFacets = [$selectedFacets];
     $checkedFacets = [];
@@ -84,7 +84,7 @@ class Settings extends BaseTab {
 
   private function addSelectedFacets($selectedFacets) {
     $file = $this->getFacetFile();
-    $fieldNames = $this->getSolrFields();
+    $fieldNames = $this->solr()->getSolrFields();
     if (is_string($selectedFacets))
       $selectedFacets = [$selectedFacets];
     $checkedFacets = file_exists($file) ? json_decode(file_get_contents($file)) : [];

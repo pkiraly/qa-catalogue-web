@@ -1,14 +1,16 @@
 <?php
 
+use Unimarc\UnimarcSchemaManager;
+use Pica\PicaSchemaManager;
 
 class Record {
   private $configuration;
-  private $db;
   private $doc;
   private $record;
   private $basicQueryParameters;
   private $basicFilterParameters;
   private $catalogue;
+  private $log;
   private static bool $isSchemaInitialized = false;
   private static $schema = null;
   private static $fields = null;
@@ -17,12 +19,12 @@ class Record {
    * Record constructor.
    * @param $doc
    */
-  public function __construct($doc, $configuration, $db, $catalogue) {
+  public function __construct($doc, $configuration, $catalogue, $log) {
     $this->doc = $doc;
     $this->record = json_decode($doc->record_sni);
     $this->configuration = $configuration;
-    $this->db = $db;
     $this->catalogue = $catalogue;
+    $this->log = $log;
   }
 
   public function getFirstField($fieldName, $withSpaceReplace = FALSE) {
@@ -46,6 +48,24 @@ class Record {
     if (isset($this->record->{$fieldName}))
       return $this->record->{$fieldName};
     return null;
+  }
+
+  public function getAllSubfields($fieldName, $subfieldName): array {
+    $subfields = [];
+    if (isset($this->record->{$fieldName})) {
+      $fields = $this->record->{$fieldName};
+      if (!is_array($fields))
+        $fields = [$fields];
+      foreach ($fields as $field) {
+        if (property_exists($field->subfields, $subfieldName)) {
+          if (is_array($field->subfields->{$subfieldName}))
+            $subfields = array_merge($subfields, $field->subfields->{$subfieldName});
+          else
+            $subfields[] = $field->subfields->{$subfieldName};
+        }
+      }
+    }
+    return $subfields;
   }
 
   public function resolveLeader($definition, $code) {
@@ -220,16 +240,24 @@ class Record {
       } else {
         if (!is_null($value) && is_array($value) && !empty($value)) {
           foreach ($value as $instance) {
-            $firstRow = [$tagToDisplay, $instance->ind1, $instance->ind2];
+            if ($schemaType != 'PICA')
+              $firstRow = [$tagToDisplay, $instance->ind1, $instance->ind2];
+            else
+              $firstRow = [$tagToDisplay, '', ''];
             $i = 0;
             foreach ($instance->subfields as $code => $s_value) {
               $i++;
-              if ($i == 1) {
+              if ($i == 1 && is_string($s_value)) {
                 $firstRow[] = '$' . $code;
                 $firstRow[] = htmlentities($s_value);
                 $rows[] = $firstRow;
               } else {
-                $rows[] = ['', '', '', '$' . $code, htmlentities($s_value)];
+                if (is_string($s_value))
+                  $rows[] = ['', '', '', '$' . $code, htmlentities($s_value)];
+                else if (is_array($s_value)) {
+                  foreach ($s_value as $v)
+                    $rows[] = ['', '', '', '$' . $code, htmlentities($v)];
+                }
               }
             }
           }
@@ -246,12 +274,25 @@ class Record {
     foreach ($this->record as $tag => $value) {
       if ($tag == 'leader')
         $tag = 'LDR';
-      $tag_defined = isset(self::$fields->{$tag});
-      $definition = $tag_defined ? self::$fields->{$tag} : null;
-      $tagToDisplay = $schemaType == 'PICA' ? $this->picaTagLink($tag) : $this->marcTagLink($tag, $definition);
+      if ($schemaType == 'MARC21') {
+        $tag_defined = isset(self::$fields->{$tag});
+        $definition = $tag_defined ? self::$fields->{$tag} : null;
+      } elseif ($schemaType == 'UNIMARC') {
+        $definition = self::$schema->lookup($tag);
+        $tag_defined = $definition != null;
+      } elseif ($schemaType == 'PICA') {
+        $definition = self::$schema->lookup($tag);
+        $tag_defined = $definition != null;
+      }
+      switch ($schemaType) {
+        case 'PICA'   : $tagToDisplay = $this->picaTagLink($tag); break;
+        case 'UNIMARC': $tagToDisplay = $this->unimarcTagLink($tag); break;
+        case 'MARC21' :
+               default: $tagToDisplay = $this->marcTagLink($tag, $definition);
+      }
 
       if ($tag_defined && !isset($definition->label))
-        error_log('no tag label for ' . $tag);
+        $this->log->warning('no tag label for ' . $tag);
       $tagLabel = $tag_defined && isset($definition->label) ? $definition->label : '';
       if ($schemaType == 'MARC21' && preg_match('/^00/', $tag)) {
         $rows[] = [$tagToDisplay, '', $tagLabel, '', $value];
@@ -292,16 +333,20 @@ class Record {
       if ($schemaType == 'MARC21') {
         self::initializeMarcFields();
       } elseif ($schemaType == 'PICA') {
-        self::initializeSchemaManager();
+        self::initializeSchemaManager($schemaType);
+      } elseif ($schemaType == 'UNIMARC') {
+        self::initializeSchemaManager($schemaType);
       }
       self::$isSchemaInitialized = true;
     }
   }
 
-  public static function initializeSchemaManager() {
+  public static function initializeSchemaManager($schemaType) {
     if (is_null(self::$schema)) {
-      include_once('pica/PicaSchemaManager.php');
-      self::$schema = new PicaSchemaManager();
+      if ($schemaType == 'PICA')
+        self::$schema = new PicaSchemaManager();
+      elseif ($schemaType == 'UNIMARC')
+        self::$schema = new UnimarcSchemaManager();
     }
   }
 
@@ -391,8 +436,13 @@ class Record {
   }
 
   public function filter($field, $value) {
-    $filter = 'filters[]=' . urlencode(sprintf('%s:"%s"', $field, $value));
-    return '?' . join('&', array_merge([$filter], $this->basicFilterParameters));
+    $filters = [];
+    if (is_array($value))
+      foreach ($value as $v)
+        $filters[] = 'filters[]=' . urlencode(sprintf('%s:"%s"', $field, $v));
+    else
+      $filters[] = 'filters[]=' . urlencode(sprintf('%s:"%s"', $field, $value));
+    return '?' . join('&', array_merge($filters, $this->basicFilterParameters));
   }
 
   public function get007Category() {
@@ -468,9 +518,21 @@ class Record {
 
   private function picaTagLink($tag, $pica3=true) {
     $text = $tag;
-    $field = self::$schema->lookup($tag);    
+    $field = self::$schema->lookup($tag);
     if ($pica3 && isset($field->pica3))
       $text .= '=' . $field->pica3;
+
+    if (isset($field->url))
+      $tagToDisplay = (object)['url' => $field->url, 'text' => $text];
+    else
+      $tagToDisplay = $text;
+
+    return $tagToDisplay;
+  }
+
+  private function unimarcTagLink($tag) {
+    $text = $tag;
+    $field = self::$schema->lookup($tag);
 
     if (isset($field->url))
       $tagToDisplay = (object)['url' => $field->url, 'text' => $text];

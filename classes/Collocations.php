@@ -45,12 +45,12 @@ class Collocations extends BaseTab {
     $params .= '&facet.field=' . $this->facet1;
     $params .= '&facet.field=' . $this->facet2;
 
-    $facets = $this->searchFacets($params);
+    $facets = $this->solr()->searchFacets($params);
 
     $results = [];
     $f1_values = $facets->{$this->facet1};
     foreach ($f1_values as $value1 => $count1) {
-      $facets = $this->searchFacets($params . '&fq=' . $this->facet1 . ':' . urlencode('"' . $value1 . '"'));
+      $facets = $this->solr()->searchFacets($params . '&fq=' . $this->facet1 . ':' . urlencode('"' . $value1 . '"'));
       foreach ($facets->{$this->facet2} as $value2 => $count2) {
         $results[] = [$value1, $value2, $count2, $this->createSearchUrl($value1, $value2)];
         if (count($results) > 1000)
@@ -72,17 +72,6 @@ class Collocations extends BaseTab {
     return urlencode(sprintf('%s:"%s"', $field, $value));
   }
 
-  private function searchFacets($params) {
-    $solrPath = $this->getIndexName();
-    $url = 'http://localhost:8983/solr/' . $solrPath . '/select?' . $params;
-    $response = json_decode(file_get_contents($url));
-    if ($response && isset($response->facet_counts)) {
-        return $response->facet_counts->facet_fields;
-    } else {
-        return (object)[];
-    }
-  }
-
   function str_putcsv(array $input, $delimiter = ',', $enclosure = '"') {
     $fp = fopen('php://temp', 'r+b');
 
@@ -92,7 +81,6 @@ class Collocations extends BaseTab {
     fclose($fp);
     return $data;
   }
-
 
   private function asCsv($terms) {
     header("Content-type: text/csv");
@@ -108,7 +96,7 @@ class Collocations extends BaseTab {
   }
 
   private function getFields() {
-    $fieldNames = $this->getSolrFields();
+    $fieldNames = $this->solr()->getSolrFields();
     sort($fieldNames);
     return $fieldNames;
   }

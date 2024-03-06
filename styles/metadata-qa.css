@@ -745,3 +745,21 @@ p.metric-definition {
 .details .nav-link {
   padding: .2rem 1rem;
 }
+
+/* analysis parameters
+   ---------------------- */
+#parameters {
+  font-size: .8em;
+  color: #666666;
+  margin: 40px 0;
+}
+
+#parameters table tr td:first-of-type {
+  text-align: right;
+  padding-right: 5px;
+}
+
+#parameters strong {
+  color: var(--highlight-color);
+  border-bottom: 1px solid #666666;
+}

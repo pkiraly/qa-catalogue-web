@@ -14,14 +14,14 @@
 </ul>
 <script src="js/histogram.js" type="text/javascript"></script>
 <script>
-var db = '{$db}';
-var count = {$count};
+const db = '{$id}';
+const count = {$count};
 {literal}
-var units = 'authorities';
-var histogramDataUrl = '?tab=histogram&file=authorities-histogram';
-var histogramSvgClass = 'histogram-chart';
+const units = 'authorities';
+const histogramDataUrl = '?tab=histogram&file=authorities-histogram';
+const histogramSvgClass = 'histogram-chart';
 
-var tooltip = d3.select("body")
+const tooltip = d3.select("body")
     .append("div")
     .style("opacity", 0)
     .attr("class", "tooltip")

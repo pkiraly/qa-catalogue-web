@@ -1,0 +1,22 @@
+.grid-item-title {
+  height: 10%;
+}
+
+.grid-item-title-text {
+  padding-left: 25px;
+  vertical-align: middle;
+  display: inline;
+  color: black;
+}
+
+.grid-item-title-text:hover {
+  text-decoration: underline;
+  cursor: pointer;
+  color: black;
+}
+
+.grid-item-content {
+  height: 90%;
+  padding: 10px;
+  position: relative;
+}

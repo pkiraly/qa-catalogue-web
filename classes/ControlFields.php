@@ -32,7 +32,8 @@ class ControlFields extends BaseTab {
     $solrField = ($this->field == 'Leader')
       ? $this->solrFieldsMap[$this->field][$this->position]->solr
       : $this->solrFieldsMap[$this->field][$this->type][$this->position]->solr;
-    $termResponse = $this->getFacets($solrField, '*:*', 100, 0);
+    // TODO: this will throw an Exception if Solr is not reachable
+    $termResponse = $this->solr()->getFacets($solrField, '*:*', 100, 0);
     $terms = $termResponse->{$solrField};
     $count = count(get_object_vars($terms));
 
@@ -62,7 +63,7 @@ class ControlFields extends BaseTab {
 
   private function mapSolrFields() {
     $fields = $this->getFieldDefinitions()->fields;
-    foreach ($this->getSolrFields() as $field) {
+    foreach ($this->solr()->getSolrFields() as $field) {
       if (preg_match('/^leader(\d\d)/', $field, $matches)) {
         $position = $matches[1];
         if (in_array($position, $this->supportedPositions['Leader'])) {
@@ -104,7 +105,7 @@ class ControlFields extends BaseTab {
   }
 
   private function createTermList() {
-    return $this->getFacets($this->facet, $this->query, $this->facetLimit, $this->offset);
+    return $this->solr()->getFacets($this->facet, $this->query, $this->facetLimit, $this->offset);
   }
 
   private function asCsv($terms) {

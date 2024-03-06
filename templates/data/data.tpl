@@ -12,14 +12,30 @@
         <div class="row">
           <div class="col-3 search-block"></div>
           <div class="col search-block">
-            <form id="search">
-              <input type="hidden" name="tab" value="data">
-              <input type="text" name="query" id="query" value="{htmlentities($query)}" size="60">
-              <button type="submit" class="btn">
-                <i class="fa fa-search" aria-hidden="true"></i> {_('search')}
-              </button>
-            </form>
+            {if $showAdvancedSearchForm}
+              <ul class="nav nav-tabs" id="searchforms">
+                <li class="nav-item">
+                  <a class="nav-link {if $searchform == 'simple'}active{/if}" data-toggle="tab" role="tab" aria-selected="true"
+                     id="simple-search-tab" href="#simple-search" aria-controls="simple-search-tab">simple search</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {if $searchform == 'advanced'}active{/if}" data-toggle="tab" role="tab" aria-selected="true"
+                     id="advanced-search-tab" href="#advanced-search" aria-controls="advanced-search-tab">advanced search</a>
+                </li>
+              </ul>
+              <div class="tab-content" id="search-tabs">
+                <div class="tab-pane {if $searchform == 'simple'}active{/if}" id="simple-search" role="tabpanel" aria-labelledby="data-tab">
+                  {include 'data/simple-search.tpl'}
+                </div>
+                <div class="tab-pane {if $searchform == 'advanced'}active{/if} record-tab" id="advanced-search" role="tabpanel" aria-labelledby="data-tab">
+                  {include 'data/advanced-search.tpl'}
+                </div>
+              </div>
+            {else}
+              {include 'data/simple-search.tpl'}
+            {/if}
           </div>
+        </div>
         </div>
         <div class="row">
         </div>
@@ -74,6 +90,8 @@
             <div id="records">
               {if $schemaType == 'PICA'}
                 {include 'data/pica-records-based-on-json.tpl'}
+              {elseif $schemaType == 'UNIMARC'}
+                {include 'data/unimarc-records-based-on-json.tpl'}
               {else}
                 {include 'data/marc-records-based-on-json.tpl'}
               {/if}
