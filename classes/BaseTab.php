@@ -1,8 +1,8 @@
 <?php
 
-use Utils\Solr;
-use Utils\Configuration;
 use Monolog\Logger;
+use Utils\Configuration;
+use Utils\Solr;
 
 abstract class BaseTab implements Tab {
 
@@ -512,7 +512,7 @@ abstract class BaseTab implements Tab {
     $subfield = $isFull ? '' : substr($solrField, -1);
     $label = $isFull ? $field : sprintf('%s$%s', $field, $subfield);
 
-    $manager = new Pica\PicaSchemaManager();
+    $manager = new \Schema\Pica\PicaSchemaManager();
     $f = $manager->lookup($field);
     if ($f !== FALSE) {
       $label .= ': ' . $f->label;

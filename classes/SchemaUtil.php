@@ -11,7 +11,7 @@ class SchemaUtil {
 
   public static function initializeSchema(string $schemaType) {
     if (!self::$isSchemaInitialized) {
-      self::$schemaType = $schemaType
+      self::$schemaType = $schemaType;
       if ($schemaType == SchemaType::MARC21) {
         self::initializeMarcFields();
       } elseif ($schemaType == SchemaType::PICA) {
@@ -26,9 +26,9 @@ class SchemaUtil {
   public static function initializeSchemaManager(string $schemaType) {
     if (is_null(self::$schema)) {
       if ($schemaType == SchemaType::PICA)
-        self::$schema = new Pica\PicaSchemaManager();
+        self::$schema = new \Schema\Pica\PicaSchemaManager();
       else if ($schemaType == SchemaType::UNIMARC)
-        self::$schema = new Unimarc\UnimarcSchemaManager();
+        self::$schema = new \Schema\Unimarc\UnimarcSchemaManager();
     }
   }
 

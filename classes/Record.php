@@ -1,7 +1,7 @@
 <?php
 
-use Unimarc\UnimarcSchemaManager;
-use Pica\PicaSchemaManager;
+use Schema\Pica\PicaSchemaManager;
+use Schema\Unimarc\UnimarcSchemaManager;
 
 class Record {
   private $configuration;

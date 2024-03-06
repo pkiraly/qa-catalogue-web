@@ -81,7 +81,7 @@ class Classifications extends AddedEntry {
         '852' => 'Location',
       ];
     } elseif ($this->catalogue->getSchemaType() == 'PICA') {
-      $schema = new Pica\PicaSchemaManager();
+      $schema = new \Schema\Pica\PicaSchemaManager();
       $fields = $this->readPicaSubjectFieldsFromFile();
       if (empty($fields)) {
         $fields = [
