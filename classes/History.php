@@ -21,9 +21,9 @@ class History extends BaseTab {
   private function listFiles() {
     $files = [];
     $fileName = $this->grouped ? 'completeness-grouped-marc-elements.csv' : 'marc-elements.csv';
-    $byRecordsFile = $this->getFilePath($fileName);
-    error_log('byRecordsFile: ' . $byRecordsFile);
-    if (file_exists($byRecordsFile)) {
+    $elementsFile = $this->getFilePath($fileName);
+    error_log('elementsFile: ' . $elementsFile);
+    if (file_exists($elementsFile)) {
       $raw_files = scandir(sprintf('images/%s', $this->id));
       foreach ($raw_files as $file)
         if (preg_match('/^marc-history\.png$/', $file))

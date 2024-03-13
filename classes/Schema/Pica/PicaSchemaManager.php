@@ -13,7 +13,7 @@ class PicaSchemaManager extends SchemaManager {
     $this->supportRange = true;
 
     // $schemaFile = 'schemas/avram-k10plus.json';
-    $schemaFile = 'schemas/avram-k10plus-title.json';
+    $this->schemaFile = 'schemas/avram-k10plus-title.json';
     $this->extractFields();
   }
 }

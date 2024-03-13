@@ -1,5 +1,3 @@
-
-
 {include 'common/html-head.tpl'}
 
 <link rel="stylesheet" type="text/css" href="styles/start.css">

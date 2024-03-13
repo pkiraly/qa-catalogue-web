@@ -10,7 +10,7 @@
         {_('history_definition')}
       </p>
 
-      {if (count($files) > 0) }
+      {if (count($files) > 0)}
         <p>
           {if ($catalogue->getSchemaType() == 'MARC21')}
             {_('history_definition_marc')}
