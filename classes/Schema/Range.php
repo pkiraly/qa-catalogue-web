@@ -1,6 +1,6 @@
 <?php
 
-namespace Pica;
+namespace Schema;
 
 class Range {
 

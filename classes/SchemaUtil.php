@@ -26,9 +26,9 @@ class SchemaUtil {
   public static function initializeSchemaManager(string $schemaType) {
     if (is_null(self::$schema)) {
       if ($schemaType == SchemaType::PICA)
-        self::$schema = new Pica\PicaSchemaManager();
+        self::$schema = new \Schema\Pica\PicaSchemaManager();
       else if ($schemaType == SchemaType::UNIMARC)
-        self::$schema = new Unimarc\UnimarcSchemaManager();
+        self::$schema = new \Schema\Unimarc\UnimarcSchemaManager();
     }
   }
 
