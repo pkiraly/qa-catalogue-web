@@ -159,6 +159,8 @@ The following parameters can be set either for all catalogues (`parameter=value`
 - `linkTemplate` (string) URL template to link into the library catalogue (`{id}` will be
    replaced by the trimmed record identifier). This parameter does not work for all cataloueg classes.
 
+The parameter `include` can be used to include another configuration file and merge its parameters into the base configuration. Recursive inclusion is not supported and include is ignored if the referenced file does not exist.
+
 Example:
 
 ```
