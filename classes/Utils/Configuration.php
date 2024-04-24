@@ -30,6 +30,7 @@ class Configuration {
   private ?string $linkTemplate;
   private string $logFile;
   private int $logLevel;
+  private bool $extractGitVersion;
 
   public static function fromIniFile(string $file, array $defaults=[]) {
 
@@ -39,9 +40,13 @@ class Configuration {
       throw new Exception("failed to read config file!");
     }
 
-    $inr = array_filter($ini, function($value) {
-      return $value !== '' && !is_array($value);
-    });
+    if ($ini['include'] && file_exists($ini['include'])) {
+      $include = @parse_ini_file($ini['include'], false, INI_SCANNER_TYPED);
+      if (!$include) {
+        throw new Exception("failed to include config file!");
+      }
+      $ini = array_merge($ini, $include);
+    }
 
     // deprecated parameter, kept for backwards compatibility
     if (!isset($ini['id']) && isset($ini['db'])) {
@@ -74,6 +79,7 @@ class Configuration {
     $this->mainSolrEndpoint = $this->getValue('mainSolrEndpoint', 'http://localhost:8983/solr/');
     $this->solrForScoresUrl = $this->getValue('solrForScoresUrl', null);
     $this->showAdvancedSearchForm = $this->getValue('showAdvancedSearchForm', false);
+    $this->extractGitVersion = $this->getValue('extractGitVersion', true);
 
     // logging internals, not made available outside of this class
     $this->logFile = $this->getValue('logFile', 'logs/qa-catalogue.log');
@@ -202,4 +208,7 @@ class Configuration {
     return $logger;
   }
 
+  public function doExtractGitVersion(): bool {
+    return $this->extractGitVersion;
+  }
 }

@@ -21,9 +21,9 @@ class GitVersion {
     file_put_contents("version.ini", $ini);
   }
 
-  public static function getVersion() {
+  public static function getVersion(bool $extractGitVersion = true) {
     $version = [];
-    if (is_dir(".git")) {
+    if (is_dir(".git") && $extractGitVersion) {
       $version = self::extractVersion();
     }
     if (empty($version) && file_exists("version.ini")) {

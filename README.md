@@ -117,6 +117,8 @@ Additional configuration parameters are listed below. Data type and version numb
 - `multitenant`: (bool, v0.8.0) flag to denote if the site is in multi-tenant mode, i.e. it hosts the evaluation of multiple
    catalogues. If it is set you can specify general and catalogue-specific settings, e.g. `versions=false` is a
    general setting, while `versions[loc]=false` is a library specific settings, which override the previous one.
+- `extractGitVersion` (bool, v0.8.0): a flag that enables to display the current git commit hash on the bottom of
+   the user interface.  Default is `true`.
 
 The following parameters can be set either for all catalogues (`parameter=value`) or for each individual catalogue (`parameter[id]=...`).
 
@@ -160,6 +162,8 @@ The following parameters can be set either for all catalogues (`parameter=value`
 - `language` (string) default language of the user interface
 - `linkTemplate` (string) URL template to link into the library catalogue (`{id}` will be
    replaced by the trimmed record identifier). This parameter does not work for all cataloueg classes.
+
+The parameter `include` can be used to include another configuration file and merge its parameters into the base configuration. Recursive inclusion is not supported and include is ignored if the referenced file does not exist.
 
 Example:
 
