@@ -40,7 +40,7 @@ class Configuration {
       throw new Exception("failed to read config file!");
     }
 
-    if ($ini['include'] && file_exists($ini['include'])) {
+    if (isset($ini['include']) && file_exists($ini['include'])) {
       $include = @parse_ini_file($ini['include'], false, INI_SCANNER_TYPED);
       if (!$include) {
         throw new Exception("failed to include config file!");
