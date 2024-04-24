@@ -115,6 +115,8 @@ Additional configuration parameters are listed below. Data type and version numb
 - `multitenant`: (bool, v0.8.0) flag to denote if the site is in multi-tenant mode, i.e. it hosts the evaluation of multiple
    catalogues. If it is set you can specify general and catalogue-specific settings, e.g. `versions=false` is a
    general setting, while `versions[loc]=false` is a library specific settings, which override the previous one.
+- `extractGitVersion` (bool, v0.8.0): a flag that enables to display the current git commit hash on the bottom of
+   the user interface.  Default is `true`.
 
 The following parameters can be set either for all catalogues (`parameter=value`) or for each individual catalogue (`parameter[id]=...`).
 

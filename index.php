@@ -32,7 +32,7 @@ set_time_limit(0);
 require_once 'common-functions.php';
 
 $smarty = createSmarty('templates');
-$smarty->assign('clientVersion', Utils\GitVersion::getVersion());
+$smarty->assign('clientVersion', Utils\GitVersion::getVersion($configuration->doExtractGitVersion()));
 $smarty->assign('templates', $configuration->getTemplates());
 
 $map = [
