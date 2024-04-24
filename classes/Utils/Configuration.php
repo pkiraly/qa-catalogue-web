@@ -40,9 +40,13 @@ class Configuration {
       throw new Exception("failed to read config file!");
     }
 
-    $inr = array_filter($ini, function($value) {
-      return $value !== '' && !is_array($value);
-    });
+    if ($ini['include'] && file_exists($ini['include'])) {
+      $include = @parse_ini_file($ini['include'], false, INI_SCANNER_TYPED);
+      if (!$include) {
+        throw new Exception("failed to include config file!");
+      }
+      $ini = array_merge($ini, $include);
+    }
 
     // deprecated parameter, kept for backwards compatibility
     if (!isset($ini['id']) && isset($ini['db'])) {
