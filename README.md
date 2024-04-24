@@ -4,12 +4,14 @@
 
 ![Output sample](https://github.com/pkiraly/qa-catalogue-web/raw/gh-pages/img/issues-v1.gif)
 
-This web application provides a web interface to results of
-[QA Catalogue](https://github.com/pkiraly/qa-catalogue)
-for quality analysis and statistics of metadata from library catalogues.
+This application provides a web interface for searching, browsing, and
+displaying [QA Catalogue](https://github.com/pkiraly/qa-catalogue) data from
+library catalogues for quality analysis and statistics of metadata.
 
-The results in form of CSV files, JSON files, a SQLite database, images and
-a Solr index are made browseable on the Web with PHP and JavaScript.
+Catalog information is made available from CSV files, JSON files, SQLite
+database, images, and a [Solr](https://solr.apache.org/) search
+index. The reports are made accessible using a Web browser and has been
+implemented by PHP and JavaScript.
 
 ## Table of Contents
 
@@ -33,12 +35,12 @@ In the following:
 - `$APPDIR` denotes the directory where QA Catalogue Web is installed
 - `$CATALOG` denotes the [catalogue class] (such as loc, bl, k10plus...)
 
-Analyse your catalog with [QA Catalogue Backend](https://github.com/pkiraly/qa-catalogue)),
-the result will be saved in a subdirectory of `$DATADIR` and in Solr.
+Analyse your catalog using the [QA Catalogue Backend](https://github.com/pkiraly/qa-catalogue))
+and the result will be saved in `$DATADIR/$CATALOG` and a Solr index.
 
 ### Download
 
-Install this software into a web server with PHP enabled (Apache or Nginx with PHP-FPM).
+Install this software into a web server with PHP enabled such as (Apache or Nginx with [PHP-FPM](https://www.php.net/manual/en/install.fpm.php)).
 
 Create a temporary directory and download the current version to an application
 directory served by your webserver (here we use `/var/www/html/$APPDIR`):
@@ -62,7 +64,7 @@ git checkout v0.7.0
 ```
 
 Requirements:
-```
+```bash
 sudo apt install locales gettext php-sqlite3 php-yaml php-curl composer
 sudo locale-gen en_GB.UTF-8
 sudo locale-gen de_DE.UTF-8
@@ -73,13 +75,13 @@ sudo locale-gen pt_BR.UTF-8
 
 Change into the application directory:
 
-```
+```bash
 cd /var/www/html/$APPDIR
 ```
 
 Install PHP dependencies and create required cache directories and permissions:
 
-```
+```bash
 composer install
 ```
 
@@ -97,13 +99,13 @@ allow `www-data` to get the current state of the working directory:
 
 A configuration file in INI format is required. Prepare configuration file:
 
-```
+```bash
 echo "dir=$DATADIR" > configuration.cnf
 ```
 
 The [catalogue class] should explicitly be specified:
 
-```
+```bash
 echo "catalogue=$CATALOG" >> configuration.cnf
 ```
 
@@ -174,15 +176,15 @@ dirName[bvb]=bayern
 
 setup additional directories and permissions:
 
-```
+```bash
 sudo chgrp www-data -R _smarty cache
 ln -s $DATADIR/[catalogue]/img images/[catalogue]
 ```
 
 On Apache webserver add these lines to its configuration (`/etc/apache2/sites-available/000-default.conf`):
 
-```
-<Directory /var/www/html/$APPDIR>
+```apache
+<Directory /var/www/html/$CATALOG>
   AllowOverride All
   Order allow,deny
   allow from all
@@ -210,10 +212,13 @@ parameter `templates`:
 
 [catalogue class]: #catalogue-class
 
+The name, catalogue link and the record level catalogue link are different
+per libraries. The tool has prepared for a number of libraries, but there's
+high chance, that you would like to apply it for another library.
+
 Basic properties and default [configuration](#configuration) settings are defined
-in a catalogue class which extends the generic class `Catalogue`. The application
-includes catalogue classes for known libraries, but you may want to define additional
-changes that go beyond simple configuration settings.
+in a catalogue class which extends the generic class `Catalogue`. Such a class enables
+you to define additional changes that go beyond simple configuration settings.
 
 Here is an example of a custom catalogue class:
 
@@ -235,8 +240,13 @@ class Gent extends Catalogue {
 is the abbreviation of MARC version used in the analyses.
 
 Please create a new file in the directory `classes/catalogue`. You do not have
-to do any other registration. The convention is to uppercase the first letter of
-the class name. In [configuration] this name is given in lowercase (`Gent` => `gent`).
+to do any other registration. The convention is that the name of the class
+is the first upper case form of the name property (`Gent` - gent, `Cerl` - cerl)
+etc.  The later should fit the data directory name, the Solr index name, and
+either the application path or the `catalogue` property of the
+[configuration](#configuration). `$url` contains an URL of the catalogue in the library
+website, `$marcVersion` is the abbreviation of MARC version used in the
+analyses.
 
 ## Translation
 
@@ -330,5 +340,4 @@ Contributions are welcome!
 
 ## License
 
-GNU General Public License
-
+[GNU General Public License - GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html)
