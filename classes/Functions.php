@@ -80,28 +80,32 @@ class Functions extends BaseTab {
     $elements = $this->readMarcElements();
 
     $file = $this->getFilePath('functional-analysis-mapping.csv');
-    if (file_exists($file)) {
-      $records = readCsv($file);
-      foreach ($records as $record) {
-        if ($record->frbrfunction == $this->function) {
-          $smarty->assign('fieldCount', $record->count);
-          $rawFields = explode(';', $record->fields);
-          $fields = [];
-          foreach ($rawFields as $field) {
-            $item = (object)['name' => $field];
-            if (preg_match('/ind[12]$/', $field)) {
-              $tag = substr($field, 0, 3);
-              if (isset($elements[$tag]))
-                $item->link = $tag;
-            } else {
-              if (isset($elements[$field]))
-                $item->link = $field;
-            }
-            $fields[] = $item;
-          }
-          $smarty->assign('fields', $fields);
-        }
+    if (!file_exists($file)) {
+      return;
+    }
+
+    $records = readCsv($file);
+    foreach ($records as $record) {
+      if ($record->frbrfunction != $this->function) {
+        continue;
       }
+
+      $smarty->assign('fieldCount', $record->count);
+      $rawFields = explode(';', $record->fields);
+      $fields = [];
+      foreach ($rawFields as $field) {
+        $item = (object)['name' => $field];
+        if (preg_match('/ind[12]$/', $field)) {
+          $tag = substr($field, 0, 3);
+          if (isset($elements[$tag])) {
+            $item->link = $tag;
+          }
+        } else if (isset($elements[$field])) {
+            $item->link = $field;
+        }
+        $fields[] = $item;
+      }
+      $smarty->assign('fields', $fields);
     }
   }
 

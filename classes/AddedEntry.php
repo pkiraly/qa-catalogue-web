@@ -14,10 +14,13 @@ class AddedEntry extends BaseTab {
     $debug = FALSE; // ($record->field == '052');
     if ($debug)
       error_log('location: ' . $record->location);
+    // Query in form of "052ind1_GeographicClassification_codeSource_ss
+    // Or starting with "0522_GeographicClassification_source_ss:scheme"
 
+    // %%22 is actually %22 in the URL encoding, which is a double quote (")
     if ($record->location == 'ind1') {
       $record->q = sprintf('%s:%%22%s%%22', $ind1, $record->scheme);
-    } else if ($record->location == '$2') {
+    } elseif ($record->location == '$2') {
       if ($record->scheme == 'undetectable') {
         $record->q = sprintf('%s:%%22Source specified in subfield \$2%%22 NOT %s:*', $ind1, $subfield2);
       } else {
@@ -181,20 +184,30 @@ class AddedEntry extends BaseTab {
   }
 
   /**
-   * @param $record
-   * @param $base
+   * This method is used to create facets for a given field. The method sets the facet and facet2 properties of the
+   * classificationRecord object.
+   * @param object $classificationRecord Represents a bibliographic field, result of the classification process
+   *                                     (not to mistake for a bibliographic record).
+   * @param string $base The base name for the facet.
    */
-  protected function createFacets(&$record, $base) {
-    $record->facet = $base . '_ss';
+  protected function createFacets(object &$classificationRecord, string $base) {
+    $classificationRecord->facet = $base . '_ss';
 
-    if (isset($record->abbreviation4solr)
-        && $record->abbreviation4solr != ''
-        && in_array($record->abbreviation4solr, $this->solr()->getSolrFields())) {
-      $record->facet2 = $base . '_' . $record->abbreviation4solr . '_ss';
-    } elseif (isset($record->abbreviation)
-        && $record->abbreviation != ''
-        && in_array($record->abbreviation, $this->solr()->getSolrFields())) {
-      $record->facet2 = $base . '_' . $record->abbreviation . '_ss';
+    // The main difference between abbreviation and abbreviation4solr is that the latter gets stripped of
+    // special characters or whitespaces.
+    // This part with abbreviations is supposed to target the indexFieldsWithSchemas part of the Solr indexing in
+    // the qa-catalogue tool.
+    if (isset($classificationRecord->abbreviation4solr)
+        && $classificationRecord->abbreviation4solr != ''
+        && in_array($classificationRecord->abbreviation4solr, $this->solr()->getSolrFields())) {
+      $classificationRecord->facet2 = $base . '_' . $classificationRecord->abbreviation4solr . '_ss';
+      return;
+    }
+
+    if (isset($classificationRecord->abbreviation)
+        && $classificationRecord->abbreviation != ''
+        && in_array($classificationRecord->abbreviation, $this->solr()->getSolrFields())) {
+      $classificationRecord->facet2 = $base . '_' . $classificationRecord->abbreviation . '_ss';
     }
   }
 
