@@ -333,10 +333,6 @@ var count = {$count};
 var units = 'score';
 var fields = {json_encode($fields)};
 {literal}
-console.log(db);
-console.log(count);
-console.log(units);
-console.log(fields);
 
 var tooltip = d3.select("body")
   .append("div")
