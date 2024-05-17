@@ -301,7 +301,7 @@ class Issues extends BaseTab {
     } else {
       $elementsFile = $this->getFilePath($filename);
     }
-    
+
     return $elementsFile;
   }
 
@@ -313,6 +313,16 @@ class Issues extends BaseTab {
       $statistics = readCsv($filepath, 'type');
     }
 
+    foreach (["0", "1", "2"] as $key) {
+      if (!isset($statistics[$key]))
+        $statistics[$key] = (object)[
+          "type" => "0",
+          "instances" => "0",
+          "records" => "0",
+          "percent" => 0
+        ];
+    }
+
     foreach ($statistics as &$item) {
       $item->good = $total - $item->records;
       $item->goodPercent = ($item->good / $total) * 100;
@@ -320,15 +330,6 @@ class Issues extends BaseTab {
       $item->badPercent = ($item->bad / $total) * 100;
     }
 
-    if (!isset($statistics["0"]))
-      $statistics["0"] = (object)[
-        "type" => "0",
-        "instances" => "0",
-        "records" => "0",
-        "percent" => 0
-      ];
-      
-      
     $result = (object)[
       "statistics" => $statistics,
       "summary" => (object)[
