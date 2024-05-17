@@ -109,7 +109,7 @@ class Dashboard extends BaseTab {
       $msg = sprintf("file %s is not existing", $elementsFile);
       error_log($msg);
     }
-      
+
     return $records;
   }
 

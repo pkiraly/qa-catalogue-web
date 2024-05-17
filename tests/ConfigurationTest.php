@@ -19,8 +19,8 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase {
 
   /**
    * @dataProvider invalidFiles
-   */ 
-  public function testInvalidConfiguration($file) {    
+   */
+  public function testInvalidConfiguration($file) {
     $this->expectException(Exception::class);
     Configuration::fromIniFile($file,["id"=>"path"]);
   }

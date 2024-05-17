@@ -735,7 +735,7 @@ p.metric-definition {
   color: var(--dim-color);
   margin-left: 5px;
   padding-left: 15px;
-  border-left: 5px dotted #cccccc;    
+  border-left: 5px dotted #cccccc;
 }
 
 .marc-labels-table .label {

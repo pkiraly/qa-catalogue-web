@@ -38,7 +38,7 @@
         <div class='grid-item-content'>
           <div class="spec-graph" id="boothShelfReady"></div>
         </div>
-      </div>      
+      </div>
 
     </div>
 

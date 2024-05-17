@@ -162,7 +162,7 @@ class Solr {
    */
   protected function getSolrFieldsFromLuke(): array {
     if (!isset($this->solrFields)) {
-      if (file_exists($this->solrFieldsFile)) {
+      if (file_exists($this->solrFieldsFile) && filesize($this->solrFieldsFile) > 0) {
         $this->solrFields = json_decode(file_get_contents($this->solrFieldsFile));
       } else {
         $baseUrl = $this->mainSolrEndpoint . $this->indexName;

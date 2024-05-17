@@ -197,7 +197,6 @@ function updateCompletenessContent(level, packageId, label) {
     break;
 
     case 1:
-      
       tree = Object.entries(obj[packageId]).filter(function(entry) { // Remove summary entries
               return entry[0] !== "";
             }).map(function(entry) {
