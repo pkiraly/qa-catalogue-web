@@ -29,6 +29,7 @@ class Configuration {
   private ?string $linkTemplate;
   private string $logFile;
   private int $logLevel;
+  private string $logHandler;
   private bool $extractGitVersion;
 
   public static function fromIniFile(string $file, array $defaults=[]) {

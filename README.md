@@ -340,6 +340,8 @@ Please notify us if you would like to use it. Happy searching!
 QA Catalogue Web is managed in a public git repository at [pkiraly/qa-catalogue-web](https://github.com/pkiraly/qa-catalogue-web).
 Contributions are welcome!
 
+Run `composer run analyses` for static code analysis.
+
 ## License
 
 [GNU General Public License - GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html)

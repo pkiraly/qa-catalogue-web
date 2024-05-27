@@ -77,9 +77,9 @@ $languages = [
 ];
 
 $logger = $configuration->createLogger('index');
+$class = $map[$tab] ?? $configuration->getDefaultTab();
 
 try {
-  $class = $map[$tab] ?? $configuration->getDefaultTab();
   $tab = createTab($class);
 } catch(Throwable $e) {
   var_dump($e);

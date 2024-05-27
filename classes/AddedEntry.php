@@ -263,7 +263,7 @@ class AddedEntry extends BaseTab {
     return $matrices;
   }
 
-  public function termLink($facet, $query, $scheme) {
+  public function termLink($facet, $query, $scheme): string {
     static $baseParams;
     if (!isset($baseParams)) {
       $baseParams = [
@@ -286,7 +286,7 @@ class AddedEntry extends BaseTab {
     return '?' . join('&', $params);
   }
 
-  public function queryLink($id) {
+  public function queryLink($id): string {
     static $baseParams;
     if (!isset($baseParams)) {
       $baseParams = [

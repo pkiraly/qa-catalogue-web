@@ -353,10 +353,6 @@ class Data extends Facetable {
     return '?' . join('&', $params);
   }
 
-  /**
-   * @param Smarty $smarty
-   * @return void
-   */
   private function searchAction(Smarty $smarty): void {
     $smarty->assign('showAdvancedSearchForm', $this->configuration->doShowAdvancedSearchForm());
     $smarty->assign('query', $this->query);
@@ -464,9 +460,6 @@ class Data extends Facetable {
     return $recordIds;
   }
 
-  /**
-   * @return false|string
-   */
   private function findCoreToUse(): string {
     $coreToUse = '';
     $cores = ['validation', $this->configuration->getIndexName() . '_validation'];

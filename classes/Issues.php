@@ -514,7 +514,7 @@ class Issues extends BaseTab {
    * @param $query ('categoryId:$category->id'|, )
    * @return void
    */
-  public function queryLink($query) {
+  public function queryLink($query): string {
     static $baseParams;
     if (!isset($baseParams)) {
       $baseParams = [

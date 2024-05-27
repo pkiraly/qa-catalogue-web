@@ -26,6 +26,7 @@ class ShelfReadyCompleteness extends BaseTab {
 
   public static function getHistogram($filepath) {
     $data = [];
+    $header = []
     $handle = fopen($filepath, "r");
     if ($handle) {
       $lineNumber = 0;
