@@ -26,9 +26,19 @@
            id="completeness-tab" aria-controls="completeness"
            href="?tab=completeness{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Completeness')}</a>
       {elseif $catalogue->getSchemaType() == 'UNIMARC'}
-        <a class="nav-link1 {if $tab == 'completeness'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+        <a class="nav-link1 {if $isCompleteness}active{/if} dropdown-toggle"
+           data-toggle="dropdown" role="tab1" aria-selected="true"
            id="completeness-tab" aria-controls="completeness"
-           href="?tab=completeness{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Completeness')}</a>
+           href="#">{_('Completeness')}</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="?tab=completeness{$generalParams}">{_('Completeness')}</a>
+          <div class="dropdown-divider"></div>
+          <div style="padding: .25rem 1.5rem; color: #999999"><em>Weighted completeness versions</em></div>
+          <a class="dropdown-item" href="?tab=serials{$generalParams}"> &nbsp; Carlstone's serials analysis</a>
+          <a class="dropdown-item" href="?tab=tt-completeness{$generalParams}"> &nbsp; Thompson—Traill's e-book completeness</a>
+          <a class="dropdown-item" href="?tab=shelf-ready-completeness{$generalParams}"> &nbsp; Booth's shelf-ready completeness</a>
+          <a class="dropdown-item" href="?tab=functions{$generalParams}"> &nbsp; Functional analysis</a>
+        </div>
       {/if}
     </li>
     <li class="nav-item1">
@@ -63,11 +73,13 @@
            href="?tab=pareto{$generalParams}">Pareto</a>
       </li>
     {/if}
-    <li class="nav-item1">
-      <a class="nav-link1{if $tab == 'history'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
-         id="history-tab" aria-controls="history"
-         href="?tab=history{$generalParams}">{_('History')}</a>
-    </li>
+    {if $catalogue->getSchemaType() != 'UNIMARC'}
+      <li class="nav-item1">
+        <a class="nav-link1{if $tab == 'history'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
+           id="history-tab" aria-controls="history"
+           href="?tab=history{$generalParams}">{_('History')}</a>
+      </li>
+    {/if}
     {if !is_null($historicalDataDir)}
       <li class="nav-item1">
         <a class="nav-link1{if $tab == 'timeline'} active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"

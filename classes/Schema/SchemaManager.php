@@ -14,8 +14,13 @@ abstract class SchemaManager {
   protected function extractFields(): void {
     $this->fields = json_decode(file_get_contents($this->schemaFile))->fields;
     foreach ($this->fields as $id => $field) {
-      if ($this->supportRange)
+      if ($this->supportRange) {
         $this->createRange($field);
+      }
+
+      if (!isset($field->tag)) {
+        continue;
+      }
 
       if (!isset($this->tagIndex[$field->tag])) {
         $this->tagIndex[$field->tag] = [];
