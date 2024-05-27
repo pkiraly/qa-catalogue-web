@@ -97,7 +97,7 @@ class Configuration {
         $value = $this->configuration[$key][$this->id];
       }
     }
-    $valu ??= $defaultValue;
+    $value ??= $defaultValue;
 
     // expected boolean
     if (is_bool($defaultValue)) {
