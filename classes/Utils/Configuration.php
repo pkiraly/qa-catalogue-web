@@ -11,7 +11,6 @@ class Configuration {
   private array $configuration;
   private string $id;
   private ?string $catalogue;
-  private bool $multitenant = false;
   private bool $displayNetwork;
   private bool $displayShacl;
   private bool $versioning;
@@ -62,11 +61,7 @@ class Configuration {
     // global
     $this->configuration = $configuration;
     $this->id = $configuration["id"]; // REQUIRED
-    $this->multitenant = $configuration['multitenant'] ?? false;
 
-    // multi-tennant
-    // $this->displayNetwork = isset($configuration['display-network']) && (int) $configuration['display-network'] == 1;
-    // $this->displayShacl = isset($configuration['display-shacl']) && (int) $configuration['display-shacl'] == 1;
     $this->dir = $this->getValue('dir', 'output');
     $this->catalogue = $this->getValue('catalogue', $this->id);
     $this->defaultTab = $this->getValue('default-tab', 'issues');
@@ -95,11 +90,15 @@ class Configuration {
   }
 
   private function getValue($key, $defaultValue) {
-    if ($this->multitenant) {
-      $value = $this->getMultitenantValue($key, $defaultValue);
-    } else {
-      $value = $this->configuration[$key] ?? $defaultValue;
+    if (isset($this->configuration[$key])) {
+      if (isset($this->configuration[$key][$this->id])) { 
+        $value = $this->configuration[$key];
+      } elseif (is_scalar($this->configuration[$key])) {
+        $value = $this->configuration[$key][$this->id];
+      }
     }
+    $valu ??= $defaultValue;
+
     // expected boolean
     if (is_bool($defaultValue)) {
       $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
@@ -110,17 +109,6 @@ class Configuration {
     return $value;
   }
 
-  private function getMultitenantValue($key, $defaultValue) {
-    // error_log($key . ': ' . gettype($this->{$key}));
-    if (isset($this->configuration[$key]) && isset($this->configuration[$key][$this->id])) {
-      $value = $this->configuration[$key][$this->id];
-    } else if (isset($this->configuration[$key]) && is_scalar($this->configuration[$key])) {
-      $value = $this->configuration[$key];
-    } else {
-      $value = $defaultValue;
-    }
-    return $value;
-  }
 
   public function getId(): string {
     return $this->id;
@@ -128,10 +116,6 @@ class Configuration {
 
   public function getCatalogue(): ?string {
     return $this->catalogue;
-  }
-
-  public function isMultitenant(): bool {
-    return $this->multitenant;
   }
 
   public function getDir(): ?string {
