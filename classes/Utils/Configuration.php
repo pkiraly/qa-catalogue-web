@@ -57,7 +57,6 @@ class Configuration {
   }
 
   private function __construct(array $configuration) {
-
     // global
     $this->configuration = $configuration;
     $this->id = $configuration["id"]; // REQUIRED
@@ -91,10 +90,10 @@ class Configuration {
 
   private function getValue($key, $defaultValue) {
     if (isset($this->configuration[$key])) {
-      if (isset($this->configuration[$key][$this->id])) { 
-        $value = $this->configuration[$key];
-      } elseif (is_scalar($this->configuration[$key])) {
+      if (isset($this->configuration[$key][$this->id])) {
         $value = $this->configuration[$key][$this->id];
+      } elseif (is_scalar($this->configuration[$key])) {
+        $value = $this->configuration[$key];
       }
     }
     $value ??= $defaultValue;
