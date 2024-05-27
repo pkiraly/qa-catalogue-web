@@ -114,9 +114,6 @@ Additional configuration parameters are listed below. Data type and version numb
 - `id` (string) the machine name of the data directory. By default, it comes from the URL as the path of the application
    (qa-catalogue). With this parameter the administrator can overwrite the path. Note: this parameter was called `db`
    previously. For compatibility reason we will support `db` as well for some time.
-- `multitenant`: (bool, v0.8.0) flag to denote if the site is in multi-tenant mode, i.e. it hosts the evaluation of multiple
-   catalogues. If it is set you can specify general and catalogue-specific settings, e.g. `versions=false` is a
-   general setting, while `versions[loc]=false` is a library specific settings, which override the previous one.
 - `extractGitVersion` (bool, v0.8.0): a flag that enables to display the current git commit hash on the bottom of
    the user interface.  Default is `true`.
 
@@ -164,6 +161,11 @@ The following parameters can be set either for all catalogues (`parameter=value`
    replaced by the trimmed record identifier). This parameter does not work for all cataloueg classes.
 
 The parameter `include` can be used to include another configuration file and merge its parameters into the base configuration. Recursive inclusion is not supported and include is ignored if the referenced file does not exist.
+
+Multiple catalogues can be configured in one file. To do so, add an individual
+catalogue `id` in brackets after a configuration field to override its default
+value. For instance if `versions=false` is a general setting, while
+`versions[loc]=false` is a library specific setting.
 
 Example:
 
