@@ -16,28 +16,26 @@
 {include 'marc/773.tpl'}
 
 {* Electronic Location and Access *}
-{include 'marc/856.tpl'}
+{include 'unimarc/856.tpl'}
 
-{if $record->hasAuthorityNames() || $record->hasSubjectHeadings()}
+{if $record->hasAuthorityNames('UNIMARC') || $record->hasSubjectHeadings('UNIMARC')}
   <table class="authority-names">
-    {if $record->hasAuthorityNames()}
+    {if $record->hasAuthorityNames('UNIMARC')}
       <tr><td colspan="2" class="heading">Authority names</td></tr>
       {* TODO: 740, 751, 752, 753, 754, 800, 810, 811, 830 *}
-      {include 'marc/100.tpl'}{* Main personal names *}
-      {include 'marc/110.tpl'}{* Main corporate names *}
-      {include 'marc/111.tpl'}{* Main meeting names *}
-      {include 'marc/130.tpl'}{* Main meeting names *}
-      {include 'marc/700.tpl'}{* Additional personal names *}
-      {include 'marc/710.tpl'}{* Additional corporate names *}
-      {include 'marc/711.tpl'}{* Additional meeting names *}
-      {include 'marc/720.tpl'}{* uncontrolled name *}
-      {include 'marc/730.tpl'}{* Additional uniform title *}
-      {include 'marc/740.tpl'}{* Additional uniform title *}
+      {include 'unimarc/700.tpl'}{* Personal name - Primary responsibility *}
+      {include 'unimarc/701.tpl'}{* Personal name - Alternative responsibility *}
+      {include 'unimarc/702.tpl'}{* Personal name - Secondary responsibility *}
+      {include 'unimarc/710.tpl'}{* Coprorate body name - Primary responsibility *}
+      {include 'unimarc/711.tpl'}{* Coprorate body name - Alternative responsibility *}
+      {include 'unimarc/712.tpl'}{* Coprorate body name - Secondary responsibility *}
+      {include 'unimarc/730.tpl'}{* Name - entity responsible *}
     {/if}
 
-    {if $record->hasSubjectHeadings()}
+    {if $record->hasSubjectHeadings('UNIMARC')}
       <tr><td colspan="2" class="heading">Subjects</td></tr>
-      {* TODO: 055, 654, 656, 657, 658, 662 *}
+      {include 'unimarc/600.tpl'}{* Personal names as subjects *}
+      {include 'unimarc/601.tpl'}{* Corporate names as subjects *}
       {include 'marc/052.tpl'}{* geographic classification *}
       {include 'marc/072.tpl'}{* subject category code *}
       {include 'marc/080.tpl'}{* UDC *}
@@ -46,8 +44,6 @@
       {include 'marc/084.tpl'}{* other classifications *}
       {include 'marc/085.tpl'}{* synthesized classifications *}
       {include 'marc/086.tpl'}{* government document classifications *}
-      {include 'marc/600.tpl'}{* Personal names as subjects *}
-      {include 'marc/610.tpl'}{* Corporate names as subjects *}
       {include 'marc/611.tpl'}{* Meeting names as subjects *}
       {include 'marc/630.tpl'}{* Uniform title as subjects *}
       {include 'marc/647.tpl'}{* named event *}
@@ -61,8 +57,9 @@
 {/if}
 
 {* Cataloging Source *}
-{include 'marc/040.tpl'}
+{include 'unimarc/801.tpl'}
 
+{* This seems to be a MARC21-only approach, and that only for some specific local implementation with the field 912 *}
 {if $record->hasSimilarBooks()}
   <div class="similarity">
     <i class="fa fa-search" aria-hidden="true"></i>

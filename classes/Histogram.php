@@ -72,58 +72,60 @@ class Histogram extends BaseTab {
   }
 
   private function read($filename) {
-    if ($filename != '') {
-      $absoluteFilePath = $this->getFilePath($filename . '.csv');
-      $limit = $this->allowable_histograms[$filename]['limit'];
-      $field_name = $this->allowable_histograms[$filename]['name'];
-      if (isset($this->allowable_histograms[$filename]['buckets'])) {
-        $method = $this->allowable_histograms[$filename]['buckets'];
-        $buckets = [];
+    if ($filename == '') {
+      return;
+    }
+    $absoluteFilePath = $this->getFilePath($filename . '.csv');
+    $limit = $this->allowable_histograms[$filename]['limit'];
+    $field_name = $this->allowable_histograms[$filename]['name'];
+    if (isset($this->allowable_histograms[$filename]['buckets'])) {
+      $method = $this->allowable_histograms[$filename]['buckets'];
+      $buckets = [];
+    } else {
+      $method = FALSE;
+    }
+    if (!file_exists($absoluteFilePath)) {
+      return;
+    }
+    $content = '';
+    $max = 0;
+    $lastBucket = 0;
+    $in = fopen($absoluteFilePath, "r");
+    while (($line = fgets($in)) != false) {
+      $values = str_getcsv($line);
+      if (empty($header)) {
+        $header = $values;
+        $content .= $line;
       } else {
-        $method = FALSE;
-      }
-      if (file_exists($absoluteFilePath)) {
-        $content = '';
-        $max = 0;
-        $lastBucket = 0;
-        $in = fopen($absoluteFilePath, "r");
-        while (($line = fgets($in)) != false) {
-          $values = str_getcsv($line);
-          if (empty($header)) {
-            $header = $values;
-            $content .= $line;
-          } else {
-            $record = (object)array_combine($header, $values);
-            $max = $record->{$field_name};
-            if ($method == 'round') {
-              $round = (string) (round($record->{$field_name} * 2) / 2);
-              if (!isset($buckets[$round]))
-                $buckets[$round] = 0;
-              $buckets[$round] += $record->frequency;
-            } elseif ($record->{$field_name} >= $limit) {
-              $lastBucket += $record->frequency;
-            } else {
-              $content .= $line;
-            }
-          }
-        }
+        $record = (object)array_combine($header, $values);
+        $max = $record->{$field_name};
         if ($method == 'round') {
-          foreach ($buckets as $round => $frequency) {
-            $content .= "$round,$frequency\n";
-          }
+          $round = (string) (round($record->{$field_name} * 2) / 2);
+          if (!isset($buckets[$round]))
+            $buckets[$round] = 0;
+          $buckets[$round] += $record->frequency;
+        } elseif ($record->{$field_name} >= $limit) {
+          $lastBucket += $record->frequency;
+        } else {
+          $content .= $line;
         }
-
-        if ($lastBucket != 0) {
-          $content .= sprintf(
-            "%s,%d\n",
-            (($max > $limit) ? $limit . '-' . $max : $max),
-            $lastBucket
-          );
-        }
-
-        header("Content-type: text/csv");
-        echo $content;
       }
     }
+    if ($method == 'round') {
+      foreach ($buckets as $round => $frequency) {
+        $content .= "$round,$frequency\n";
+      }
+    }
+
+    if ($lastBucket != 0) {
+      $content .= sprintf(
+        "%s,%d\n",
+        (($max > $limit) ? $limit . '-' . $max : $max),
+        $lastBucket
+      );
+    }
+
+    header("Content-type: text/csv");
+    echo $content;
   }
 }

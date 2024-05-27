@@ -195,16 +195,30 @@ class Record {
     ]);
   }
 
-  public function hasSubjectHeadings() {
-    return $this->hasField(['080', '600', '610', '611', '630', '647', '648', '650', '651', '653', '655']);
+  public function hasSubjectHeadings($schemaType = 'MARC21') {
+    if ($schemaType != 'UNIMARC') {
+      // TODO: Cover PICA separately
+      return $this->hasField(['080', '600', '610', '611', '630', '647', '648', '650', '651', '653', '655']);
+    } else {
+      // TODO: Cover more UNIMARC subject fields
+      return $this->hasField(['600', '601', '602', '604', '605', '606',
+        '607', '608', '610', '615', '616', '617', '620', '621', '623', '626', '631', '632', '660', '661', '670', '675',
+        '676', '680', '686']);
+    }
   }
 
-  public function hasAuthorityNames() {
-    return $this->hasField([
-      '100', '110', '111', '130',
-      '700', '710', '711', '720', '730', '740', '751', '752', '753', '754',
-      '800', '810', '811', '830',
-    ]);
+  public function hasAuthorityNames($schemaType = 'MARC21') {
+    if ($schemaType != 'UNIMARC') {
+        return $this->hasField([
+          '100', '110', '111', '130',
+          '700', '710', '711', '720', '730', '740', '751', '752', '753', '754',
+          '800', '810', '811', '830',
+        ]);
+    } else {
+      return $this->hasField([
+        '700', '701', '702', '710', '711', '712', '500', '501', '506', '507', '576', '577', '730', '620'
+      ]);
+    }
   }
 
   public function hasField($fields) {
@@ -296,34 +310,51 @@ class Record {
       $tagLabel = $tag_defined && isset($definition->label) ? $definition->label : '';
       if ($schemaType == 'MARC21' && preg_match('/^00/', $tag)) {
         $rows[] = [$tagToDisplay, '', $tagLabel, '', $value];
-      } else if ($tag == 'leader') {
+        continue;
+      }
+      if ($tag == 'leader') {
         $rows[] = ['LDR', '', 'leader', '', $value];
-      } else {
-        if (!is_null($value) && is_array($value) && !empty($value)) {
-          foreach ($value as $instance) {
-            $rows[] = [$tagToDisplay, '', $tagLabel, '', ''];
-            $hasInd1 = $tag_defined && isset($definition->indicator1) && !is_null($definition->indicator1);
-            $ind1Label = $hasInd1 ? $definition->indicator1->label : '';
-            $ind1Value = $hasInd1 && isset($definition->indicator1->codes->{$instance->ind1})
-              ? $definition->indicator1->codes->{$instance->ind1}->label : '';
-            if ($ind1Label != '' || $ind1Value != '' || $instance->ind1 != ' ')
-              $rows[] = ['', 'ind1', $ind1Label, $instance->ind1, $ind1Value];
+        continue;
+      }
 
-            $hasInd2 = $tag_defined && isset($definition->indicator2) && !is_null($definition->indicator2);
-            $ind2Label = $hasInd2 ? $definition->indicator2->label : '';
-            $ind2Value = $hasInd2 && isset($definition->indicator2->codes->{$instance->ind2})
-              ? $definition->indicator2->codes->{$instance->ind2}->label : '';
-            if ($ind2Label != '' || $ind2Value != '' || $instance->ind2 != ' ')
-              $rows[] = ['', 'ind2', $ind2Label, $instance->ind2, $ind2Value];
+      if (is_null($value) || !is_array($value) || empty($value)) {
+        continue;
+      }
 
-            foreach ($instance->subfields as $code => $s_value) {
-              $hasCode = $tag_defined && isset($definition->subfields) && isset($definition->subfields->{$code});
-              $codeLabel = $hasCode ? $definition->subfields->{$code}->label : '';
-              $rows[] = ['', '$' . $code, $codeLabel, '', $s_value];
-            }
-          }
+      foreach ($value as $instance) {
+        $rows[] = [$tagToDisplay, '', $tagLabel, '', ''];
+        $hasInd1 = $tag_defined && isset($definition->indicator1) && !is_null($definition->indicator1);
+        $ind1Label = $hasInd1 ? $definition->indicator1->label : '';
+        $ind1Value = '';
+        if ($hasInd1 && isset($definition->indicator1->codes->{$instance->ind1})
+          && isset($definition->indicator1->codes->{$instance->ind1}->label)) {
+          $ind1Value = $definition->indicator1->codes->{$instance->ind1}->label;
+        } elseif ($hasInd1 && isset($definition->indicator1->codes->{$instance->ind1})) {
+          $ind1Value = $definition->indicator1->codes->{$instance->ind1};
+        }
+
+        if ($ind1Label != '' || $ind1Value != '' || $instance->ind1 != ' ')
+          $rows[] = ['', 'ind1', $ind1Label, $instance->ind1, $ind1Value];
+
+        $hasInd2 = $tag_defined && isset($definition->indicator2) && !is_null($definition->indicator2);
+        $ind2Label = $hasInd2 ? $definition->indicator2->label : '';
+        $ind2Value = '';
+        if ($hasInd2 && isset($definition->indicator2->codes->{$instance->ind2})
+          && isset($definition->indicator2->codes->{$instance->ind2}->label)) {
+          $ind2Value = $definition->indicator2->codes->{$instance->ind2}->label;
+        } elseif ($hasInd2 && isset($definition->indicator2->codes->{$instance->ind2})) {
+          $ind2Value = $definition->indicator2->codes->{$instance->ind2};
+        }
+        if ($ind2Label != '' || $ind2Value != '' || $instance->ind2 != ' ')
+          $rows[] = ['', 'ind2', $ind2Label, $instance->ind2, $ind2Value];
+
+        foreach ($instance->subfields as $code => $s_value) {
+          $hasCode = $tag_defined && isset($definition->subfields) && isset($definition->subfields->{$code});
+          $codeLabel = $hasCode ? $definition->subfields->{$code}->label : '';
+          $rows[] = ['', '$' . $code, $codeLabel, '', $s_value];
         }
       }
+
     }
     return $rows;
   }
@@ -343,10 +374,12 @@ class Record {
 
   public static function initializeSchemaManager($schemaType) {
     if (is_null(self::$schema)) {
-      if ($schemaType == 'PICA')
+      if ($schemaType == 'PICA') {
         self::$schema = new PicaSchemaManager();
-      elseif ($schemaType == 'UNIMARC')
+      }
+      elseif ($schemaType == 'UNIMARC') {
         self::$schema = new UnimarcSchemaManager();
+      }
     }
   }
 
