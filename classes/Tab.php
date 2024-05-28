@@ -6,7 +6,7 @@ abstract class Tab {
    * TODO: can be generated automatically with
    * strtolower(preg_replace('/([A-Z])/','-$1', lcfirst($class)))
    */
-  private const names = [
+  protected const names = [
     'dashboard'                => 'Dashboard',
     'data'                     => 'Data',
     'completeness'             => 'Completeness',

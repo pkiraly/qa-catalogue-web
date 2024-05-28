@@ -128,16 +128,14 @@ The following parameters can be set either for all catalogues (`parameter=value`
    `classifications`, `authorities`, `serials`, `tt-completeness`, `shelf-ready-completeness`, `shacl`, `network`,
    `terms`, `pareto`, `history`, `timeline`, `settings`, `about`, `record-issues`, `histogram`,
    `functional-analysis-histogram`, `control-fields`, `download`, `collocations`.
+- `display-...` (bool) show or hide selected tabs, for instance `show-issues`, `show-shacl`.
+   By default all tabs are shown if approriate data is available. Only `shacl` and `network` are disabled by default.
 - `indexName` (string) name of the Solr index of a particular catalogue, if it is different from
    the name of the catalogue or the URL path.
 - `dirName` (string) name of the data directory of a particular catalogue, if it is different from
    the name of the catalogue or the URL path.
 - `versions` (bool) denotes if there are versions for a catalogue. Possible values: true (there are
    versions), false (there are no versions). Default: `false`.
-- `display-network` (bool) show or hide the network tab. Possible values: true (display
-   the tab), or false (not to display). Default: `false`.
-- `display-shacl` (bool) show or hide the SHACL-based custom validation tab. Possible values:
-   true (display the tab), or false (not to display). Default: `false`.
 - `templates` (string) directory with additional, custom Smarty templates for
    [customization](#customization). Default: `config`.
 - `mainSolrEndpoint` (string, v0.8.0) the URL of the main Solr endpoint. Default: `http://localhost:8983/solr/`.

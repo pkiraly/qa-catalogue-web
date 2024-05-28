@@ -17,8 +17,7 @@ abstract class BaseTab extends Tab {
   protected $marcVersion ;
   protected $lastUpdate = '';
   protected $output = 'html';
-  protected $displayNetwork = false;
-  protected $displayShacl = false;
+  protected $display = [];
   protected $historicalDataDir = null;
   protected $versioning = false;
   protected $lang = 'en';
@@ -45,8 +44,6 @@ abstract class BaseTab extends Tab {
     $this->catalogueName = $this->configuration->getCatalogue(); // isset($configuration['catalogue']) ? $configuration['catalogue'] : $db;
     $this->catalogue = $this->createCatalogue();
     $this->marcVersion = $this->catalogue->getMarcVersion();
-    $this->displayNetwork = $this->configuration->display("network");
-    $this->displayShacl = $this->configuration->display("shacl");
     $this->versioning = $this->configuration->doVersioning(); // (isset($this->configuration['versions'][$this->db]) && $this->configuration['versions'][$this->db] === true);
 
     $this->count = $this->readCount($this->getFilePath('count.csv'));
@@ -56,6 +53,18 @@ abstract class BaseTab extends Tab {
     setLanguage($this->lang);
 
     $this->log = $configuration->createLogger(get_class($this));
+
+    // which tabs to show
+    foreach (array_keys(Tab::names) as $tab)
+      $this->display[$tab] = $this->configuration->display($tab, $tab != "shacl" && $tab != "network");
+    if ($this->catalogue->getSchemaType() != 'MARC21') {
+      $this->display["pareto"] = false;
+      $this->display["control-fields"] = false;
+    }
+    if ($this->catalogue->getSchemaType() == 'UNIMARC' || is_null($historicalDataDir)) {
+      $this->display["history"] = false;
+    }
+    // TODO: disable more tabs when no data is available
   }
 
   public function prepareData(Smarty &$smarty) {
@@ -65,8 +74,7 @@ abstract class BaseTab extends Tab {
     $smarty->assign('catalogueName', $this->catalogueName);
     $smarty->assign('catalogue', $this->catalogue);
     $smarty->assign('lastUpdate', $this->lastUpdate);
-    $smarty->assign('displayNetwork', $this->displayNetwork);
-    $smarty->assign('displayShacl', $this->displayShacl);
+    $smarty->assign('display', $this->display);
     $smarty->assign('historicalDataDir', $this->historicalDataDir);
     $smarty->assign('controller', $this);
     $smarty->assign('lang', $this->lang);

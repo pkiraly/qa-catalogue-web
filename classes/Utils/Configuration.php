@@ -11,7 +11,6 @@ class Configuration {
   private array $configuration;
   private string $id;
   private ?string $catalogue;
-  private bool $displayNetwork;
   private bool $versioning;
   private ?string $dir;
   private bool $showAdvancedSearchForm;
@@ -129,8 +128,8 @@ class Configuration {
     return $this->dir;
   }
 
-  public function display(string $tab): bool {
-    return $this->display[$tab] ?? false;
+  public function display(string $tab, bool $default): ?bool {
+    return $this->display[$tab] ?? $default;
   }
 
   public function doVersioning(): bool {
