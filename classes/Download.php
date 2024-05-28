@@ -60,7 +60,7 @@ class Download extends BaseTab {
     $categories['T&T completeness'] += $this->getTtCompletenessHistograms();
     $categories['Shelf-Ready completeness'] += $this->getShelfReadyCompletenessHistograms();
     if ($this->displayShacl) {
-      $path = $this->getFilePath(Shacl4Bib::$paramsFile);
+      $path = $this->getFilePath(Shacl::$paramsFile);
       if (file_exists($path)) {
         $shaclParameters = json_decode(file_get_contents($path));
         $schemaFile = $shaclParameters->shaclConfigurationFile;

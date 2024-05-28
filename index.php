@@ -35,36 +35,9 @@ $smarty = createSmarty('templates');
 $smarty->assign('clientVersion', Utils\GitVersion::getVersion($configuration->doExtractGitVersion()));
 $smarty->assign('templates', $configuration->getTemplates());
 
-$map = [
-  'dashboard'                => 'Dashboard',
-  'data'                     => 'Data',
-  'completeness'             => 'Completeness',
-  'issues'                   => 'Issues',
-  'functions'                => 'Functions',
-  'classifications'          => 'Classifications',
-  'authorities'              => 'Authorities',
-  'serials'                  => 'Serials',
-  'tt-completeness'          => 'TtCompleteness',
-  'shelf-ready-completeness' => 'ShelfReadyCompleteness',
-  'shacl'                    => 'Shacl4Bib',
-  'network'                  => 'Network',
-  'terms'                    => 'Terms',
-  'pareto'                   => 'Pareto',
-  'history'                  => 'History',
-  'timeline'                 => 'Timeline',
-  'settings'                 => 'Settings',
-  'about'                    => 'About',
-  'record-issues'            => 'RecordIssues',
-  'histogram'                => 'Histogram',
-  'functional-analysis-histogram' => 'FunctionalAnalysisHistogram',
-  'control-fields'           => 'ControlFields',
-  'download'                 => 'Download',
-  'collocations'             => 'Collocations',
-];
+$tab = getOrDefault('tab', $configuration->getDefaultTab());
+if (!Tab::defined($tab)) $tab = 'issues';
 
-$defaultTab = getDefaultTab($configuration, $map, 'issues');
-$tab = getOrDefault('tab', $defaultTab, array_keys($map));
-$ajax = getOrDefault('ajax', 0, [0, 1]);
 $smarty->assign('tab', $tab);
 $smarty->assign('isCompleteness', in_array($tab, ['completeness', 'serials', 'tt-completeness', 'shelf-ready-completeness', 'functions']));
 $smarty->assign('isValidation', in_array($tab, ['issues', 'shacl']));
@@ -77,15 +50,13 @@ $languages = [
 ];
 
 $logger = $configuration->createLogger('index');
-$class = $map[$tab] ?? $configuration->getDefaultTab();
 
 try {
-  $tab = createTab($class);
+  $tab = Tab::create($tab, $configuration);
 } catch(Throwable $e) {
   var_dump($e);
-  $logger->error("Failed to initialize $class tab",(array)$e);
-  // TODO: show another tab instead?
-  die("Failed to initialize $class tab.");
+  $logger->error("Failed to initialize tab $tab",(array)$e);
+  die("Failed to initialize tab $tab");
 }
 
 try {
@@ -95,21 +66,12 @@ try {
   $smarty->assign('error', 'Failed to read analysis result.');
 }
 
+$ajax = getOrDefault('ajax', 0, [0, 1]);
 if ($ajax == 1) {
   if (!is_null($tab->getAjaxTemplate()) && $tab->getOutputType() != 'none')
     $smarty->display($tab->getAjaxTemplate());
 } elseif ($tab->getOutputType() == 'html')
   $smarty->display($tab->getTemplate());
-
-function createTab($name) {
-  global $configuration;
-
-  if ($name == 'Classifications' || $name == 'Authorities')
-    include_once('classes/AddedEntry.php');
-
-  include_once('classes/' . $name . '.php');
-  return new $name($configuration, $configuration->getId());
-}
 
 function showMarcUrl($content) {
   if (!preg_match('/^http/', $content))
@@ -126,12 +88,3 @@ function getFacetLabel($facet) {
   return str_replace('_', ' ', preg_replace('/_ss$/', '', $facet));
 }
 
-/**
- * @param $configuration
- * @param array $map
- * @return mixed|string
- */
-function getDefaultTab(Utils\Configuration $configuration, array $map, $defaultTab = 'issues') {
-  $tab = $configuration->getDefaultTab();
-  return in_array($tab, array_keys($map)) ? $tab : $defaultTab;
-}

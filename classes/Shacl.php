@@ -1,6 +1,6 @@
 <?php
 
-class Shacl4Bib extends BaseTab {
+class Shacl extends BaseTab {
 
   public static String $paramsFile = 'shacl4bib.params.json';
 

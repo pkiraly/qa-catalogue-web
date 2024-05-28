@@ -4,7 +4,7 @@ use Monolog\Logger;
 use Utils\Configuration;
 use Utils\Solr;
 
-abstract class BaseTab implements Tab {
+abstract class BaseTab extends Tab {
 
   protected Configuration $configuration;
   protected $id;
