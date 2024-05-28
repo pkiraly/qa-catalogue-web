@@ -72,16 +72,6 @@ class Collocations extends BaseTab {
     return urlencode(sprintf('%s:"%s"', $field, $value));
   }
 
-  function str_putcsv(array $input, $delimiter = ',', $enclosure = '"') {
-    $fp = fopen('php://temp', 'r+b');
-
-    fputcsv($fp, $input, $delimiter, $enclosure);
-    rewind($fp);
-    $data = rtrim(stream_get_contents($fp), "\n");
-    fclose($fp);
-    return $data;
-  }
-
   private function asCsv($terms) {
     header("Content-type: text/csv");
     echo $this->formatAsCsv($terms);

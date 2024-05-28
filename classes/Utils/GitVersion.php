@@ -4,7 +4,7 @@ namespace Utils;
 
 class GitVersion {
 
-  public static function extractVersion() {
+  private static function extractVersion() {
     return array_filter([
       "version" => trim(`git tag --points-at HEAD | head -1` ?? ""),
       "branch" => trim(`git rev-parse --abbrev-ref HEAD` ?? ""),
@@ -13,6 +13,9 @@ class GitVersion {
     ]);
   }
 
+  /**
+   * @api
+   */
   public static function saveVersion() {
     $ini = "";
     foreach (self::extractVersion() as $key => $value) {

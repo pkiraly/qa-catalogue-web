@@ -1,15 +1,12 @@
 <?php
 
-
+/**
+ * @api
+ */
 class Link {
   public $text;
   public $url;
 
-  /**
-   * Item constructor.
-   * @param $text
-   * @param $url
-   */
   public function __construct($text, $url) {
     $this->text = $text;
     $this->url = $url;
@@ -26,10 +23,6 @@ class Link {
 
   public static function withRows($text, $base, $value) {
     return self::create($text, $base, ['start=0', 'rows=' . $value]);
-  }
-
-  public static function withFilter($text, $base, $value) {
-    return self::create($text, $base, ['filter[]=' . $value]);
   }
 
   public static function withQuery($text, $base, $value) {

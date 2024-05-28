@@ -174,7 +174,6 @@ class Issues extends BaseTab {
   private function readIssuesAjaxByTag($categoryId, $typeId, $order = 'records DESC', $page = 0, $limit = 100) {
     $groupId = $this->grouped ? $this->groupId : '';
 
-    // $this->recordCount = $db->getByCategoryAndTypeGroupedByPathCount($categoryId, $typeId, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
     if ($this->grouped) {
       $result = $this->issueDB()->getRecordNumberAndVariationsForPathGrouped($typeId, $groupId, $order, $page * $limit, $limit);
     } else {
