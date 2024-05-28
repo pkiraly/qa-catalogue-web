@@ -27,10 +27,12 @@ abstract class BaseTab implements Tab {
   protected bool $grouped = false;
   protected $groupId = false;
   protected string $groupBy;
+  protected array $groups;
   protected $parameterFile;
   protected ?IssuesDB $issueDB = null;
   private Solr $solr;
   protected Logger $log;
+  protected string $action;
 
   /**
    * BaseTab constructor.
@@ -524,10 +526,6 @@ abstract class BaseTab implements Tab {
     return $label;
   }
 
-  /**
-   * Get the list of groups
-   * @return sorted array of groups
-   */
   protected function readGroups(): array {
     $groups = readCsv($this->getFilePath('completeness-groups.csv'));
     usort($groups, function ($a, $b) {
@@ -537,19 +535,17 @@ abstract class BaseTab implements Tab {
     return $groups;
   }
 
-  /**
-   * @return Catalogue
-   */
   public function getCatalogue(): Catalogue {
     return $this->catalogue;
   }
 
-  protected function selectCurrentGroup(): object {
+  protected function selectCurrentGroup(): ?object {
     foreach ($this->groups as $group)
       if ($group->id == $this->groupId) {
         return $group;
         break;
       }
+    return;
   }
 
   protected function getRawGroupQuery() {

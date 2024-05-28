@@ -1,6 +1,5 @@
 <?php
 
-
 class AddedEntry extends BaseTab {
 
   public function prepareData(Smarty &$smarty) {
@@ -57,11 +56,7 @@ class AddedEntry extends BaseTab {
     }
   }
 
-  /**
-   * @param Smarty $smarty
-   * @return object
-   */
-  protected function readElements(Smarty &$smarty) {
+  protected function readElements(Smarty &$smarty): void {
     $t0 = microtime(true);
     $tArrayCombine = 0.0;
     $fileName = $this->grouped ? 'completeness-grouped-marc-elements.csv' : 'marc-elements.csv';
@@ -101,12 +96,7 @@ class AddedEntry extends BaseTab {
     }
   }
 
-  /**
-   * @param Smarty $smarty
-   * @param Smarty $bySubfieldsFile
-   * @return object
-   */
-  protected function readSubfields(Smarty &$smarty, $bySubfieldsFile) {
+  protected function readSubfields(Smarty &$smarty, string $bySubfieldsFile): void {
     if (file_exists($bySubfieldsFile)) {
       error_log('bySubfieldsFile: ' . $bySubfieldsFile);
       $header = [];
@@ -228,6 +218,7 @@ class AddedEntry extends BaseTab {
       $total = 0;
       $matrix = [];
       $widths = [];
+      $lineNr = -1;
       foreach ($entry['list'] as $lineNr => $listItem) {
         $number = intval($listItem->count);
         $total += $number;

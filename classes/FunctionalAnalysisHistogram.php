@@ -1,6 +1,5 @@
 <?php
 
-
 class FunctionalAnalysisHistogram extends BaseTab {
 
   protected $selectedFunction;
@@ -29,6 +28,7 @@ class FunctionalAnalysisHistogram extends BaseTab {
     }
     $lineNumber = 0;
     $header = [];
+    $currentFunction = '';
     $in = fopen($elementsFile, "r");
     $groupedCsv = [];
     while (($line = fgets($in)) != false) {
@@ -36,7 +36,6 @@ class FunctionalAnalysisHistogram extends BaseTab {
       $values = str_getcsv($line);
       if ($lineNumber == 1) {
         $header = $values;
-        $currentFunction = '';
         $function_report = [];
         if ($this->selectedFunction != '')
           $groupedCsv[] = ['count', 'frequency'];

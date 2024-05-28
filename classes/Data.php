@@ -474,13 +474,11 @@ class Data extends Facetable {
 
   /**
    * @param string $idType The type of identifier (errorId, categoryId, typeId)
-   * @param IssuesDB $db The SQL wrapper class
    * @param $id The identifier
    * @param $groupId The group identifyer
    * @param string $coreToUse The Solr core to use
-   * @return array|void
    */
-  private function prepareParametersForIssueQueriesSolr(string $idType, $id, $groupId, string $coreToUse) {
+  private function prepareParametersForIssueQueriesSolr(string $idType, $id, $groupId, string $coreToUse): ?array {
     if ($idType == 'errorId') {
       return $this->getRecordIdByErrorId($coreToUse, $id, $groupId, $this->start, $this->rows);
     } else if ($idType == 'categoryId') {
@@ -495,10 +493,8 @@ class Data extends Facetable {
 
   /**
    * @param string $idType The type of identifier (errorId, categoryId, typeId)
-   * @param IssuesDB $db The SQL wrapper class
    * @param $id The identifier
    * @param $groupId The group identifyer
-   * @return array
    */
   private function prepareParametersForIssueQueriesSqlite(string $idType, $id, $groupId): array {
     if ($idType == 'errorId') {
@@ -519,7 +515,7 @@ class Data extends Facetable {
         $this->numFound = $this->issueDB()->getRecordIdsByShaclCount($idType, $id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
         $result = $this->issueDB()->getRecordIdsByShacl($idType, $id, $groupId, $this->start, $this->rows);
       }
-    }
+    } // FIXME: else? better make idtype an Enum?
     return $this->issueDB()->fetchAll($result, 'id');
   }
 
