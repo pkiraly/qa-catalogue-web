@@ -15,7 +15,7 @@
       "msgfmt locale/en_GB/LC_MESSAGES/messages.po -o locale/en_GB/LC_MESSAGES/messages.mo",
       "msgfmt locale/pt_BR/LC_MESSAGES/messages.po -o locale/pt_BR/LC_MESSAGES/messages.mo"
     ],
-    "test": "./vendor/bin/phpunit tests --display-warnings",
+    "test": "./vendor/bin/phpunit tests",
     "release": [
       "git checkout develop && git pull",
       "@test",
