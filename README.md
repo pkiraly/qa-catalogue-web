@@ -340,7 +340,12 @@ Please notify us if you would like to use it. Happy searching!
 QA Catalogue Web is managed in a public git repository at [pkiraly/qa-catalogue-web](https://github.com/pkiraly/qa-catalogue-web).
 Contributions are welcome!
 
-Run `composer run analyses` for static code analysis.
+To ensure code quality run the following tasks:
+
+- `composer run lint` for PHP linting (detect syntax errors)
+- `composer run analyses` for static code analysis with PHPStan (detect type errors, unused code etc.)
+- `composer run test` for unit tests
+- `composer run checks` to run all of the tasks listed above
 
 ## License
 

@@ -18,6 +18,7 @@
     "lint": "vendor/bin/parallel-lint --exclude vendor .",
     "analyse": "./vendor/bin/phpstan analyse --level 0 common classes *.php",
     "test": "./vendor/bin/phpunit tests",
+    "checks": ["@lint","@analyse","@test"],
     "release": [
       "git checkout develop && git pull",
       "@test",
