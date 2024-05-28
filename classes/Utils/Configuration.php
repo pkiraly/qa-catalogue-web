@@ -128,7 +128,7 @@ class Configuration {
     return $this->dir;
   }
 
-  public function display(string $tab, bool $default): ?bool {
+  public function display(string $tab, bool $default=false): ?bool {
     return $this->display[$tab] ?? $default;
   }
 

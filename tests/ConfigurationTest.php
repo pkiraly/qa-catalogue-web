@@ -17,7 +17,9 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase {
     $this->assertEquals($config->getCatalogue(), 'abc');
     $this->assertEquals($config->display("foo"), true);
     $this->assertEquals($config->display("bar"), false);
+    $this->assertEquals($config->display("bar", true), false);
     $this->assertEquals($config->display("undefined"), false);
+    $this->assertEquals($config->display("undefined", true), true);
   }
 
   /**
