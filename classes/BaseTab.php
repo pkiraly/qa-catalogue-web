@@ -45,8 +45,8 @@ abstract class BaseTab extends Tab {
     $this->catalogueName = $this->configuration->getCatalogue(); // isset($configuration['catalogue']) ? $configuration['catalogue'] : $db;
     $this->catalogue = $this->createCatalogue();
     $this->marcVersion = $this->catalogue->getMarcVersion();
-    $this->displayNetwork = $this->configuration->doDisplayNetwork(); // isset($configuration['display-network']) && (int) $configuration['display-network'] == 1;
-    $this->displayShacl = $this->configuration->doDisplayShacl(); // isset($configuration['display-shacl']) && (int) $configuration['display-shacl'] == 1;
+    $this->displayNetwork = $this->configuration->display("network");
+    $this->displayShacl = $this->configuration->display("shacl");
     $this->versioning = $this->configuration->doVersioning(); // (isset($this->configuration['versions'][$this->db]) && $this->configuration['versions'][$this->db] === true);
 
     $this->count = $this->readCount($this->getFilePath('count.csv'));

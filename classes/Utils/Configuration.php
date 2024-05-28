@@ -12,7 +12,6 @@ class Configuration {
   private string $id;
   private ?string $catalogue;
   private bool $displayNetwork;
-  private bool $displayShacl;
   private bool $versioning;
   private ?string $dir;
   private bool $showAdvancedSearchForm;
@@ -31,6 +30,7 @@ class Configuration {
   private int $logLevel;
   private string $logHandler;
   private bool $extractGitVersion;
+  private array $display = [];
 
   public static function fromIniFile(string $file, array $defaults=[]) {
 
@@ -60,6 +60,14 @@ class Configuration {
   private function __construct(array $configuration) {
     // global
     $this->configuration = $configuration;
+
+    foreach ($configuration as $key => $value) {
+      if (str_starts_with($key, 'display-')) {
+        Configuration::expectBool($key, $value);
+        $this->display[substr($key,8)] = $value;
+      }
+    }
+
     $this->id = $configuration["id"]; // REQUIRED
 
     $this->dir = $this->getValue('dir', 'output');
@@ -68,8 +76,6 @@ class Configuration {
     $this->indexName = $this->getValue('indexName', $this->id);
     $this->dirName = $this->getValue('dirName', $this->id);
     $this->versioning = $this->getValue('versions', false);
-    $this->displayNetwork = $this->getValue('display-network', false);
-    $this->displayShacl = $this->getValue('display-shacl', false);
     $this->templates = $this->getValue('templates', 'config');
     $this->mainSolrEndpoint = $this->getValue('mainSolrEndpoint', 'http://localhost:8983/solr/');
     $this->solrForScoresUrl = $this->getValue('solrForScoresUrl', null);
@@ -89,6 +95,13 @@ class Configuration {
     $this->language = $this->getValue('language', null); // 'en'
   }
 
+  private static function expectBool($key, $value) {
+    $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+    if (!is_bool($value)) {
+      throw new Exception("$key must be boolean (1/0/true/false/on/off/yes/no)");
+    }
+  }
+
   private function getValue($key, $defaultValue) {
     if (isset($this->configuration[$key])) {
       if (isset($this->configuration[$key][$this->id])) {
@@ -99,16 +112,10 @@ class Configuration {
     }
     $value ??= $defaultValue;
 
-    // expected boolean
-    if (is_bool($defaultValue)) {
-      $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-      if (!is_bool($value)) {
-        throw new Exception("$key must be boolean (1/0/true/false/on/off/yes/no)");
-      }
-    }
+    if (is_bool($defaultValue))
+      Configuration::expectBool($key, $value);
     return $value;
   }
-
 
   public function getId(): string {
     return $this->id;
@@ -122,12 +129,8 @@ class Configuration {
     return $this->dir;
   }
 
-  public function doDisplayNetwork(): bool {
-    return $this->displayNetwork;
-  }
-
-  public function doDisplayShacl(): bool {
-    return $this->displayShacl;
+  public function display(string $tab): bool {
+    return $this->display[$tab] ?? false;
   }
 
   public function doVersioning(): bool {

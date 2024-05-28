@@ -12,9 +12,12 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase {
   }
 
   public function testValidConfiguration() {
-    $config = Configuration::fromIniFile("tests/files/example.cnf");
+    $config = Configuration::fromIniFile("tests/files/valid1.cnf");
     $this->assertEquals($config->getDir(), 'new-value');
     $this->assertEquals($config->getCatalogue(), 'abc');
+    $this->assertEquals($config->display("foo"), true);
+    $this->assertEquals($config->display("bar"), false);
+    $this->assertEquals($config->display("undefined"), false);
   }
 
   /**

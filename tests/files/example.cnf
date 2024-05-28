@@ -1,4 +1,0 @@
-id=abc
-
-dir=this-will-be-overridden
-dir[abc]=new-value
