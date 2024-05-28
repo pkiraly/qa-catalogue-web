@@ -142,11 +142,7 @@ class Classifications extends AddedEntry {
     }
   }
 
-    /**
-   * @param Smarty $smarty
-   * @return object
-   */
-  private function readClassificationSubfields(Smarty &$smarty) {
+  private function readClassificationSubfields(Smarty &$smarty): void {
     $bySubfieldsFile = $this->getFilePath('classifications-by-schema-subfields.csv');
     $this->readSubfields($smarty, $bySubfieldsFile);
   }

@@ -8,7 +8,7 @@ class Issues extends BaseTab {
   private $total = 0;
   private $idLimit = 100;
   private $issueLimit = 100;
-  private $action = 'list';
+  protected string $action = 'list';
   private $recordCount;
   private $pages;
   private $categoryId;
@@ -18,7 +18,6 @@ class Issues extends BaseTab {
   private $limit;
   private $listType;
   private $version;
-  public $groups;
   public $currentGroup;
   protected $parameterFile = 'validation.params.json';
 
@@ -625,20 +624,14 @@ class Issues extends BaseTab {
     $smarty->assign('path', $path);
   }
 
-  /**
-   * @param Smarty $smarty
-   * @return void
-   */
   private function processRecordRequest(Smarty $smarty): void {
     $recordId = getOrDefault('recordId', '');
     if ($recordId != '') {
+      // FIXME: this method is not defined in this class!
       $this->getRecordIssues($recordId, $smarty);
     }
   }
 
-  /**
-   * @return void
-   */
   private function processDownloadOrQueryRequest(): void {
     $errorId = getOrDefault('errorId', '');
     $categoryId = getOrDefault('categoryId', '');

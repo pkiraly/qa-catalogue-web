@@ -38,7 +38,7 @@ class ShelfReadyCompleteness extends BaseTab {
         } else {
           if (count($header) != count($values)) {
             error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
-            $elementsFile, $lineNumber, count($header), count($values)));
+            $filepath, $lineNumber, count($header), count($values)));
             error_log($line);
           }
           $entry = (object)array_combine($header, $values);

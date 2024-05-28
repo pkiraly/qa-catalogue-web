@@ -19,7 +19,7 @@ class Data extends Facetable {
   public $groupId = false;
   public string $groupBy;
   public $params;
-  public $action;
+  public string $action;
   private $searchform = 'simple';
   protected $parameterFile = 'marctosolr.params.json';
   private ?array $allGroups;
@@ -97,7 +97,7 @@ class Data extends Facetable {
       $baseParams = array_merge($baseParams, ['field1', 'value1', 'field2', 'value2', 'field3', 'value3']);
     foreach ($baseParams as $property) {
       if (!in_array($property, $excluded))
-        if (is_array($this->{$property}))
+        if (is_array($this->{$property})) // FIXME: fields are not defined in this class
           foreach ($this->{$property} as $value)
             $urlParams[] = $property . '[]=' . urlencode($value);
         else
@@ -482,13 +482,16 @@ class Data extends Facetable {
     if ($idType == 'errorId') {
       return $this->getRecordIdByErrorId($coreToUse, $id, $groupId, $this->start, $this->rows);
     } else if ($idType == 'categoryId') {
+      // FIXME: $db is not defined
       $errorIds = $this->issueDB()->fetchAll($db->getErrorIdsByCategoryId($id, $groupId), 'id');
       $this->log->info("errorIds: " . join(', ', $errorIds));
       return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $errorIds) . ')', $groupId, $this->start, $this->rows);
     } else if ($idType == 'typeId') {
+      // FIXME: $db is not defined
       $errorIds = $this->issueDB()->fetchAll($db->getErrorIdsByTypeId($id, $groupId), 'id');
       return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $errorIds) . ')', $groupId, $this->start, $this->rows);
     }
+    return;
   }
 
   /**

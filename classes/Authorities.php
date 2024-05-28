@@ -284,11 +284,7 @@ class Authorities extends AddedEntry {
     }
   }
 
-    /**
-   * @param Smarty $smarty
-   * @return object
-   */
-  private function readAuthoritiesSubfields(Smarty &$smarty) {
+  private function readAuthoritiesSubfields(Smarty &$smarty): void {
     $bySubfieldsFile = $this->getFilePath('authorities-by-schema-subfields.csv');
     $this->readSubfields($smarty, $bySubfieldsFile);
   }

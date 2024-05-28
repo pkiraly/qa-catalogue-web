@@ -11,7 +11,7 @@ class IssuesDB extends SQLite3 {
     }
   }
 
-  public function getByCategoryTypeAndGroup($categoryId, $typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
+  public function getByCategoryTypeAndGroup($categoryId, $typeId, $groupId, $order, $offset, $limit) {
     $default_order = 'records DESC';
     if (!preg_match('/^(MarcPath|message|instances|records) (ASC|DESC)$/', $order))
       $order = $default_order;
@@ -48,7 +48,7 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function getByCategoryTypePathAndGroup($categoryId, $typeId, $path = null, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
+  public function getByCategoryTypePathAndGroup($categoryId, $typeId, $path, $groupId, $order, $offset, $limit) {
     $default_order = 'records DESC';
     if (!preg_match('/^(MarcPath|message|instances|records) (ASC|DESC)$/', $order))
       $order = $default_order;
@@ -86,7 +86,7 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function getRecordNumberAndVariationsForPathGrouped($typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
+  public function getRecordNumberAndVariationsForPathGrouped($typeId, $groupId, $order, $offset, $limit) {
     $groupCriterium = ($groupId !== '') ? ' AND p.groupId = :groupId' : '';
     $default_order = 'records DESC';
     if (!preg_match('/^(path|variants|instances|records) (ASC|DESC)$/', $order))
@@ -127,7 +127,7 @@ class IssuesDB extends SQLite3 {
   }
 
 
-  public function getByCategoryAndTypeGroupedByPath($categoryId, $typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
+  public function getByCategoryAndTypeGroupedByPath($categoryId, $typeId, $groupId, $order, $offset, $limit) {
     $default_order = 'records DESC';
     if (!preg_match('/^(path|variants|instances|records) (ASC|DESC)$/', $order))
       $order = $default_order;

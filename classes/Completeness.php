@@ -2,7 +2,7 @@
 
 class Completeness extends BaseTab {
 
-  private $action = 'list';
+  protected string $action = 'list';
   private $hasNonCoreTags = FALSE;
   private $hasTotalPackage = FALSE;
   private $packages = [];
@@ -12,7 +12,7 @@ class Completeness extends BaseTab {
   protected $type = 'all';
   protected $sort;
   private $max = 0;
-  public $groups;
+  public array $groups;
   public $currentGroup;
   private $complexControlFields = ['006', '007', '008'];
   private $types007 = [
@@ -167,6 +167,7 @@ class Completeness extends BaseTab {
             ? -1
             : 1);
       });
+      // FIXME: $dataElementCount is not defined in this method
       if (isset($dataElementCounts['total'])) {
         $packages[] = (object)[
           'packageid' => 'total',

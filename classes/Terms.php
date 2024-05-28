@@ -5,8 +5,6 @@ class Terms extends Facetable {
   private $facet;
   protected string $action = 'list';
   public bool $grouped = false;
-  public $groupId = false;
-  public $groups;
   public $currentGroup;
   public $params;
   /**
