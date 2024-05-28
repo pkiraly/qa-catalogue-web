@@ -18,4 +18,4 @@ jobs:
       #- name: "Static Code Analysis"
       #  run: "composer analyse"
       - name: "PHPUnit"
-        run: "./vendor/bin/phpunit --do-not-cache-result tests",
+        run: "./vendor/bin/phpunit --do-not-cache-result tests"
