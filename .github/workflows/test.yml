@@ -15,8 +15,7 @@ jobs:
           php_extensions: yaml gettext
       - name: "Lint PHP"
         run: "./vendor/bin/parallel-lint --exclude vendor ."
-
       #- name: "Static Code Analysis"
       #  run: "composer analyse"
       - name: "PHPUnit"
-        run: "composer test"
+        run: "./vendor/bin/phpunit --do-not-cache-result tests",
