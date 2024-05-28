@@ -491,7 +491,7 @@ class Data extends Facetable {
       $errorIds = $this->issueDB()->fetchAll($db->getErrorIdsByTypeId($id, $groupId), 'id');
       return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $errorIds) . ')', $groupId, $this->start, $this->rows);
     }
-    return;
+    return null;
   }
 
   /**

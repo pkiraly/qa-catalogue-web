@@ -13,6 +13,9 @@ jobs:
         uses: "php-actions/composer@v6"
         with:
           php_extensions: yaml gettext
+      - name: "Lint PHP"
+        run: "./vendor/bin/parallel-lint --exclude vendor ."
+
       #- name: "Static Code Analysis"
       #  run: "composer analyse"
       - name: "PHPUnit"

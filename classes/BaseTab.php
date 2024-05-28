@@ -545,7 +545,7 @@ abstract class BaseTab implements Tab {
         return $group;
         break;
       }
-    return;
+    return null;
   }
 
   protected function getRawGroupQuery() {
