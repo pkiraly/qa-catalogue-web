@@ -6,7 +6,6 @@ class FunctionalAnalysisHistogram extends BaseTab {
 
   public function __construct($configuration, $id) {
     parent::__construct($configuration, $id);
-
     $this->selectedFunction = getOrDefault('function', '');
   }
 
