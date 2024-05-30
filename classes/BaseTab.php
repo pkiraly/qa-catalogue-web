@@ -63,6 +63,7 @@ abstract class BaseTab extends Tab {
     }
     if ($this->catalogue->getSchemaType() == 'UNIMARC' || is_null($this->historicalDataDir)) {
       $this->display["history"] = false;
+      $this->display["timeline"] = false;
     }
     // TODO: disable more tabs when no data is available
   }
