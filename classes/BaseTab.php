@@ -61,7 +61,7 @@ abstract class BaseTab extends Tab {
       $this->display["pareto"] = false;
       $this->display["control-fields"] = false;
     }
-    if ($this->catalogue->getSchemaType() == 'UNIMARC' || is_null($historicalDataDir)) {
+    if ($this->catalogue->getSchemaType() == 'UNIMARC' || is_null($this->historicalDataDir)) {
       $this->display["history"] = false;
     }
     // TODO: disable more tabs when no data is available
