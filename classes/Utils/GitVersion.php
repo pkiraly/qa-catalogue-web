@@ -6,10 +6,10 @@ class GitVersion {
 
   private static function extractVersion() {
     return array_filter([
-      "version" => trim(`git tag --points-at HEAD | head -1` ?? ""),
-      "branch" => trim(`git rev-parse --abbrev-ref HEAD` ?? ""),
-      "clean" => trim(`git diff --quiet && echo true` ?? ""),
-      "commit" => trim(`git rev-parse HEAD` ?? ""),
+      "version" => trim(`git tag --points-at HEAD 2>/dev/null | head -1` ?? ""),
+      "branch" => trim(`git rev-parse --abbrev-ref HEAD 2>/dev/null` ?? ""),
+      "clean" => trim(`git diff --quiet 2>/dev/null && echo true` ?? ""),
+      "commit" => trim(`git rev-parse HEAD 2>/dev/null` ?? ""),
     ]);
   }
 
