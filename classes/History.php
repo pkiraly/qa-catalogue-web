@@ -22,7 +22,7 @@ class History extends BaseTab {
     $files = [];
     $fileName = $this->grouped ? 'completeness-grouped-marc-elements.csv' : 'marc-elements.csv';
     $elementsFile = $this->getFilePath($fileName);
-    error_log('elementsFile: ' . $elementsFile);
+    $this->log->info('elementsFile: ' . $elementsFile);
     if (file_exists($elementsFile)) {
       $raw_files = scandir(sprintf('images/%s', $this->id));
       foreach ($raw_files as $file)
