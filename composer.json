@@ -29,7 +29,7 @@
       "git push --follow-tags",
       "git checkout develop"
     ],
-    "version": [
+    "git-version": [
       "Utils\\GitVersion::saveVersion",
       "cat version.ini"
     ]

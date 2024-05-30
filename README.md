@@ -114,8 +114,6 @@ Additional configuration parameters are listed below. Data type and version numb
 - `id` (string) the machine name of the data directory. By default, it comes from the URL as the path of the application
    (qa-catalogue). With this parameter the administrator can overwrite the path. Note: this parameter was called `db`
    previously. For compatibility reason we will support `db` as well for some time.
-- `extractGitVersion` (bool, v0.8.0): a flag that enables to display the current git commit hash on the bottom of
-   the user interface.  Default is `true`.
 
 The following parameters can be set either for all catalogues (`parameter=value`) or for each individual catalogue (`parameter[id]=...`).
 
@@ -191,7 +189,15 @@ On Apache webserver add these lines to its configuration (`/etc/apache2/sites-av
 </Directory>
 ```
 
-You can access the application at `http://localhost/$APPDIR`.
+If you don't want the application to check version number from local git
+repository, create a (possibly empty) configuration file `version.ini`.
+The file can also be generated with `composer run git-version`.
+
+```bash
+echo "catalogue=$CATALOG" >> configuration.cnf
+```
+
+Finally you can access the application at `http://localhost/$APPDIR`.
 
 ## Customization
 
