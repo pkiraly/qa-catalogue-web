@@ -53,6 +53,11 @@ class Configuration {
       $ini['id'] = $ini['db'];
     }
 
+    // set 'id' from 'dir', if 'id' is not available
+    if (!isset($ini['id']) && isset($ini['dir'])) {
+      $ini['id'] = $ini['dir'];
+    }
+
     // merge in defaults
     return new Configuration(array_merge($defaults, $ini));
   }
