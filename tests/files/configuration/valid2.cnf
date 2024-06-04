@@ -1,0 +1,2 @@
+dir=qa-catalogue
+include=tests/files/configuration/valid2-embedded.cnf

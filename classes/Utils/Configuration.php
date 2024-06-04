@@ -3,6 +3,7 @@
 namespace Utils;
 
 use Monolog\Logger;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\ErrorLogHandler;
 use Exception;
@@ -50,6 +51,11 @@ class Configuration {
     // deprecated parameter, kept for backwards compatibility
     if (!isset($ini['id']) && isset($ini['db'])) {
       $ini['id'] = $ini['db'];
+    }
+
+    // set 'id' from 'dir', if 'id' is not available
+    if (!isset($ini['id']) && isset($ini['dir'])) {
+      $ini['id'] = $ini['dir'];
     }
 
     // merge in defaults
@@ -189,7 +195,10 @@ class Configuration {
     if ($this->logHandler === "file") {
       $logger->pushHandler(new StreamHandler($this->logFile, $this->logLevel));
     } else {
-      $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, $this->logLevel));
+      $handler = new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, $this->logLevel);
+      $formatter = new LineFormatter('%channel%.%level_name%: %message% %context% %extra%');
+      $handler->setFormatter($formatter);
+      $logger->pushHandler($handler);
     }
     return $logger;
   }

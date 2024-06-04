@@ -59,7 +59,7 @@ class Download extends BaseTab {
     $categories['Serial scores'] += $this->getSerialScoreHistograms();
     $categories['T&T completeness'] += $this->getTtCompletenessHistograms();
     $categories['Shelf-Ready completeness'] += $this->getShelfReadyCompletenessHistograms();
-    if ($this->displayShacl) {
+    if ($this->configuration->display("shacl")) {
       $path = $this->getFilePath(Shacl::$paramsFile);
       if (file_exists($path)) {
         $shaclParameters = json_decode(file_get_contents($path));
