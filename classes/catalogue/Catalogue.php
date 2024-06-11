@@ -14,11 +14,14 @@ class Catalogue {
   protected $defaultLang = 'en';
   protected $linkTemplate;
 
-  public function __construct(Utils\Configuration $configuration) {
+  public function __construct(Utils\Configuration $configuration, string $schemaType = NULL) {
     $this->name = $this->name ?? $configuration->getCatalogue() ?? '';
     $this->label = $configuration->getLabel() ?? $this->label;
     $this->url = $configuration->getUrl() ?? $this->url;
-    $this->schemaType = $configuration->getSchema() ?? $this->schemaType;
+    if (!is_null($schemaType))
+      $this->schemaType = $schemaType;
+    else
+      $this->schemaType = $configuration->getSchema() ?? $this->schemaType;
     $this->defaultLang = $configuration->getLanguage() ?? $this->defaultLang;
     $this->linkTemplate = $configuration->getLinkTemplate() ?? $this->linkTemplate;
   }
