@@ -54,7 +54,7 @@ class Configuration {
     }
 
     // set 'id' from 'dir', if 'id' is not available
-    if (!isset($ini['id']) && isset($ini['dir'])) {
+    if (!isset($defaults['id']) && !isset($ini['id']) && isset($ini['dir'])) {
       $ini['id'] = $ini['dir'];
     }
 

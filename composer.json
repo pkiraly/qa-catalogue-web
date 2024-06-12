@@ -13,7 +13,8 @@
     "translate": [
       "msgfmt locale/de_DE/LC_MESSAGES/messages.po -o locale/de_DE/LC_MESSAGES/messages.mo",
       "msgfmt locale/en_GB/LC_MESSAGES/messages.po -o locale/en_GB/LC_MESSAGES/messages.mo",
-      "msgfmt locale/pt_BR/LC_MESSAGES/messages.po -o locale/pt_BR/LC_MESSAGES/messages.mo"
+      "msgfmt locale/pt_BR/LC_MESSAGES/messages.po -o locale/pt_BR/LC_MESSAGES/messages.mo",
+      "msgfmt locale/hu_HU/LC_MESSAGES/messages.po -o locale/hu_HU/LC_MESSAGES/messages.mo"
     ],
     "lint": "vendor/bin/parallel-lint --exclude vendor .",
     "analyse": "./vendor/bin/phpstan analyse --level 0 common classes *.php",

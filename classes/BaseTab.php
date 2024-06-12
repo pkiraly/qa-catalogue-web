@@ -41,6 +41,7 @@ abstract class BaseTab extends Tab {
   public function __construct(Configuration $configuration, string $id) {
     $this->configuration = $configuration;
     $this->id = $id;
+    $this->readAnalysisParameters();
     $this->catalogueName = $this->configuration->getCatalogue(); // isset($configuration['catalogue']) ? $configuration['catalogue'] : $db;
     $this->catalogue = $this->createCatalogue();
     $this->marcVersion = $this->catalogue->getMarcVersion();
@@ -49,7 +50,7 @@ abstract class BaseTab extends Tab {
     $this->count = $this->readCount($this->getFilePath('count.csv'));
     $this->readLastUpdate();
     $this->handleHistoricalData();
-    $this->lang = getOrDefault('lang', $this->catalogue->getDefaultLang(), ['en', 'de', 'pt']);
+    $this->lang = getOrDefault('lang', $this->catalogue->getDefaultLang(), ['en', 'de', 'pt', 'hu']);
     setLanguage($this->lang);
 
     $this->log = $configuration->createLogger(get_class($this));
@@ -82,7 +83,6 @@ abstract class BaseTab extends Tab {
     $smarty->assign('languages', $languages);
     $smarty->assign('generalParams', $this->concatParams($this->getGeneralParams()));
 
-    $this->readAnalysisParameters();
     if ($this->analysisParameters) {
       $smarty->assign('analysisParameters', $this->analysisParameters);
       $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
@@ -111,9 +111,9 @@ abstract class BaseTab extends Tab {
     $classFile = 'catalogue/' . $className . '.php';
     if ($className != "catalogue" && file_exists('classes/' . $classFile)) {
       include_once $classFile; 
-      return new $className($this->configuration);
+      return new $className($this->configuration, $this->analysisParameters->schemaType);
     } else {
-      return new Catalogue($this->configuration);
+      return new Catalogue($this->configuration, $this->analysisParameters->schemaType);
     }
   }
 

@@ -331,7 +331,13 @@ If the locale (e.g. 'de_DE.UTF-8') is not available, you can install it with
 locale-gen de_DE.UTF-8
 ```
 
-Note: translation is in a very early phase.
+The tool supports the following languages:
+- English (en, en_GB.UTF-8, en_GB.utf8)
+- German (de, de_DE.UTF-8, de_DE.utf8)
+- Brazilian Portuguese (pt, pt_BR.UTF-8, pt_BR.utf8)
+- Hungarian (hu, hu_HU.UTF-8, hu_HU.utf8)
+
+Note: translation is in a very early phase, not all the text of the user interface are translatable, and translations are not equally covering the original texts.
 
 ## Maintainers
 

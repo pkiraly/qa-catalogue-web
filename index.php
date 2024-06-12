@@ -46,7 +46,8 @@ $smarty->assign('isTool', in_array($tab, ['terms', 'control-fields', 'collocatio
 $languages = [
   'en' => 'en_GB.UTF-8',
   'de' => 'de_DE.UTF-8',
-  'pt' => 'pt_BR.UTF-8'
+  'pt' => 'pt_BR.UTF-8',
+  'hu' => 'hu_HU.UTF-8'
 ];
 
 $logger = $configuration->createLogger('index');

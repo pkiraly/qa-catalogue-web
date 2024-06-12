@@ -17,7 +17,7 @@
     {/if}
   </span>
   </div>
-  <div class="col-md-3 text-right">
+  <div class="col-md-3 text-right" id="language-selector">
     {foreach from=$languages key=language item=code name=languages}
       {if !$smarty.foreach.languages.first}|{/if}
       {if $lang == $language}
