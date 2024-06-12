@@ -69,6 +69,7 @@ sudo apt install locales gettext php-sqlite3 php-yaml php-curl composer
 sudo locale-gen en_GB.UTF-8
 sudo locale-gen de_DE.UTF-8
 sudo locale-gen pt_BR.UTF-8
+sudo locale-gen hu_HU.UTF-8
 ```
 
 ### Setup
