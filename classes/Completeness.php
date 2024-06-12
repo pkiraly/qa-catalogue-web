@@ -168,6 +168,7 @@ class Completeness extends BaseTab {
             : 1);
       });
       // FIXME: $dataElementCount is not defined in this method
+      // $dataElementCounts = $this->getDataElementCounts();
       if (isset($dataElementCounts['total'])) {
         $packages[] = (object)[
           'packageid' => 'total',
