@@ -335,7 +335,7 @@ msgstr "Add facet"
 msgid "Software"
 msgstr "Szoftver"
 msgid "software_text"
-msgstr "A QA Catalogue egy nyílt forráskódú alkalmazás, amelyet a Király Péter által vezetett Measuring Metadata Quality kutatási projekt részeként fejlesztettek ki. A kód a Backend (Java) és a Frontend (PHP) git tárolókban érhető el. Hozzájárulásokat szívesen fogadunk!"
+msgstr "A QA Catalogue egy nyílt forráskódú alkalmazás, amelyet a Király Péter által vezetett <a href=\"%s\" target=\"_blank\">Measuring Metadata Quality</a> kutatási projekt részeként fejlesztettek ki. A kód a <a href=\"%s\" target=\"_blank\">Backend (Java)</a> és a <a href=\"%s\" target=\"_blank\">Frontend (PHP)</a> git tárolókban érhető el. Hozzájárulásokat szívesen fogadunk!"
 msgid "Acknowledgement"
 msgstr "Köszönetnyilvánítás"
 
