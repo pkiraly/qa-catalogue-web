@@ -506,38 +506,43 @@ class Completeness extends BaseTab {
     if ($record->package == '')
       $record->package = 'other';
 
-    $pica3 = ($definition != null && isset($definition->pica3) ? '=' . $definition->pica3 : '');
+    $pica3 = $definition != null && isset($definition->pica3)
+      ? '=' . $definition->pica3
+      : '';
+    $record->extendedTag = $tag . $pica3;
+    $record->label = $record->tag;
     if ($record->tag == '') {
       // $record->tag = substr($record->path, 0, $position);
-      $record->tag = $tag . $pica3;
+      $record->key = $tag . $pica3;
     } elseif (!$record->isLeader) {
       // $record->tag = substr($record->path, 0, $position) . ' &mdash; ' . $record->tag;
-      $record->tag = $tag . $pica3 . ' &mdash; ' . $record->tag;
+      $record->key = $tag . $pica3 . ' &mdash; ' . $record->tag;
     }
+    $record->url = $definition != null && isset($definition->url) ? $definition->url : '';
 
     $record->packageid = (int)$record->packageid;
     if (!isset($this->records[$record->packageid]))
       $this->records[$record->packageid] = [];
 
-    if (!isset($this->records[$record->packageid][$record->tag])) {
-      if ($record->tag == 'Leader') {
+    if (!isset($this->records[$record->packageid][$record->key])) {
+      if ($record->key == 'Leader') {
         // ensure that leader is the first element
         $value = ['type' => 'leader', 'websafeTag' => $record->websafeTag, 'positions' => []];
         if (!empty($this->records[$record->packageid])) {
-          $this->records[$record->packageid] = array_merge([$record->tag => $value], $this->records[$record->packageid]);
+          $this->records[$record->packageid] = array_merge([$record->key => $value], $this->records[$record->packageid]);
         } else {
-          $this->records[$record->packageid][$record->tag] = $value;
+          $this->records[$record->packageid][$record->key] = $value;
         }
       } else if ($record->isDataField) {
-        $this->records[$record->packageid][$record->tag] = ['type' => 'datafield', 'tag' => null, 'subfields' => []];
+        $this->records[$record->packageid][$record->key] = ['type' => 'datafield', 'tag' => null, 'subfields' => []];
       } else if ($record->isComplexControlField) {
-        $this->records[$record->packageid][$record->tag] = [
+        $this->records[$record->packageid][$record->key] = [
           'type' => 'complexControlField',
           'websafeTag' => $record->websafeTag,
           'types' => []
         ];
       } else {
-        $this->records[$record->packageid][$record->tag] = [
+        $this->records[$record->packageid][$record->key] = [
           'type' => 'simpleControlField',
           'websafeTag' => $record->websafeTag,
           'tag' => null
@@ -546,28 +551,29 @@ class Completeness extends BaseTab {
     }
 
     if ($record->isLeader) {
-      $this->records[$record->packageid][$record->tag]['positions'][] = $record;
+      $this->records[$record->packageid][$record->key]['positions'][] = $record;
     } else if (isset($record->isDataField) && $record->isDataField == true) {
-      if ($record->isField)
-        $this->records[$record->packageid][$record->tag]['tag'] = $record;
-      else
-        $this->records[$record->packageid][$record->tag]['subfields'][] = $record;
+      if ($record->isField) {
+        $this->records[$record->packageid][$record->key]['tag'] = $record;
+      } else {
+        $this->records[$record->packageid][$record->key]['subfields'][] = $record;
+      }
     } else if ($record->isComplexControlField) {
-      if (!isset($this->records[$record->packageid][$record->tag]['types'][$record->complexType]))
-        $this->records[$record->packageid][$record->tag]['types'][$record->complexType] = [
+      if (!isset($this->records[$record->packageid][$record->key]['types'][$record->complexType]))
+        $this->records[$record->packageid][$record->key]['types'][$record->complexType] = [
           'websafeTag' => $record->websafeTag,
           'positions' => []
         ];
-      $this->records[$record->packageid][$record->tag]['types'][$record->complexType]['positions'][] = $record;
+      $this->records[$record->packageid][$record->key]['types'][$record->complexType]['positions'][] = $record;
     } else {
-      $this->records[$record->packageid][$record->tag]['tag'] = $record;
+      $this->records[$record->packageid][$record->key]['tag'] = $record;
     }
 
     unset($record->documenttype);
     unset($record->packageid);
     unset($record->package);
     if (isset($record->isSubfield) && $record->isSubfield == true) {
-      unset($record->tag);
+      unset($record->key);
     }
   }
 }

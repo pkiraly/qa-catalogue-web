@@ -4,9 +4,8 @@ FROM php:8.1-apache
 # install locales, gettext, zip, yaml
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-    locales gettext zlib1g-dev libzip-dev libyaml-dev \ 
- && locale-gen \
-    en_GB.UTF-8 && locale-gen de_DE.UTF-8 && locale-gen pt_BR.UTF-8 \
+    locales gettext zlib1g-dev libzip-dev libyaml-dev \
+ && locale-gen en_GB.UTF-8 && locale-gen de_DE.UTF-8 && locale-gen pt_BR.UTF-8 && locale-gen hu_HU.UTF-8 \
  && apt-get --assume-yes autoremove \
  && rm -rf /var/lib/apt/lists/* \
  && pecl install yaml \
