@@ -1,8 +1,10 @@
 <?php
 
 class IssuesDB extends SQLite3 {
+  protected Logger $log;
 
-  function __construct($dir) {
+  function __construct(string $dir, $log) {
+    $this->log = $log;
     $file = $dir . '/qa_catalogue.sqlite';
     try {
       $this->open($file);
@@ -121,7 +123,7 @@ class IssuesDB extends SQLite3 {
     $stmt->bindValue(':errorId', $errorId, SQLITE3_INTEGER);
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
@@ -142,7 +144,7 @@ class IssuesDB extends SQLite3 {
     $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
-    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    // $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
@@ -170,7 +172,7 @@ class IssuesDB extends SQLite3 {
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
-    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    // $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
@@ -199,7 +201,7 @@ class IssuesDB extends SQLite3 {
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
 
-    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    // $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();
   }
 
@@ -214,7 +216,7 @@ class IssuesDB extends SQLite3 {
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
 
-    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    // $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();
   }
 
@@ -229,7 +231,7 @@ class IssuesDB extends SQLite3 {
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
-    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    // $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
@@ -246,7 +248,7 @@ class IssuesDB extends SQLite3 {
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
@@ -275,7 +277,7 @@ class IssuesDB extends SQLite3 {
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
@@ -293,7 +295,7 @@ class IssuesDB extends SQLite3 {
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
 
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
@@ -304,7 +306,7 @@ class IssuesDB extends SQLite3 {
     $stmt = $this->prepare('SELECT COUNT(name) AS count FROM sqlite_master WHERE type = :table AND name = :tableName');
     $stmt->bindValue(':table', 'table', SQLITE3_TEXT);
     $stmt->bindValue(':tableName', 'marc_elements', SQLITE3_TEXT);
-    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    // $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();
     */
   }
@@ -313,7 +315,7 @@ class IssuesDB extends SQLite3 {
     $stmt = $this->prepare('SELECT COUNT(name) AS count FROM sqlite_master WHERE type = :table AND name = :tableName');
     $stmt->bindValue(':table', 'table', SQLITE3_TEXT);
     $stmt->bindValue(':tableName', $table, SQLITE3_TEXT);
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute()->fetchArray(SQLITE3_ASSOC)['count'] == 1;
   }
 
@@ -321,7 +323,7 @@ class IssuesDB extends SQLite3 {
     $stmt = $this->prepare('SELECT COUNT(name) AS count FROM pragma_table_info(:table) WHERE name = :column');
     $stmt->bindValue(':table', $table, SQLITE3_TEXT);
     $stmt->bindValue(':column', $column, SQLITE3_TEXT);
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     // return $stmt->execute();
     return $stmt->execute()->fetchArray(SQLITE3_ASSOC)['count'] == 1;
   }
@@ -335,7 +337,7 @@ class IssuesDB extends SQLite3 {
     $stmt->bindValue(':documenttype', $documenttype, SQLITE3_TEXT);
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();
   }
 
@@ -349,13 +351,13 @@ class IssuesDB extends SQLite3 {
     $stmt->bindValue(':documenttype', "all", SQLITE3_TEXT);
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();
   }
 
   // get the number of data elements
   public function getDataElementsByPackage($schema, $groupId = '', $documenttype = '') {
-    error_log('groupId type is: ' . gettype($groupId));
+    $this->log->debug('groupId type is: ' . gettype($groupId));
     $where = '';
     if ($groupId !== '' || $documenttype !== '') {
       $criteria = [];
@@ -378,7 +380,7 @@ class IssuesDB extends SQLite3 {
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
     if ($documenttype !== '')
       $stmt->bindValue(':documenttype', $documenttype, SQLITE3_TEXT);
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();
   }
 
@@ -391,5 +393,4 @@ class IssuesDB extends SQLite3 {
     }
     return $values;
   }
-
 }

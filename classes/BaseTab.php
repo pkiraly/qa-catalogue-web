@@ -576,7 +576,7 @@ abstract class BaseTab extends Tab {
 
   protected function issueDB(): IssuesDB {
     if (is_null($this->issueDB)) {
-      $this->issueDB = new IssuesDB($this->getDbDir());
+      $this->issueDB = new IssuesDB($this->getDbDir(), $this->log);
     }
     return $this->issueDB;
   }

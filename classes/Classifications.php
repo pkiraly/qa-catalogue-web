@@ -87,8 +87,8 @@ class Classifications extends AddedEntry {
     if (!file_exists($byRecordsFile)) {
       return;
     }
-    
-    error_log('classification file: ' . $byRecordsFile);
+
+    $this->log->info('classification file: ' . $byRecordsFile);
     $header = [];
     $classificationRecords = [];
     $in = fopen($byRecordsFile, "r");
@@ -106,12 +106,12 @@ class Classifications extends AddedEntry {
       } elseif ($this->catalogue->getSchemaType() == 'UNIMARC') {
         $this->setUnimarcFacets($classificationRecord);
       } else {
-        error_log('unhandled field in classification: ' . $classificationRecord->field);
+        $this->log->warning('unhandled field in classification: ' . $classificationRecord->field);
       }
       if (isset($classificationRecord->facet2) && $classificationRecord->facet2 != '') {
         $classificationRecord->facet2exists = in_array($classificationRecord->facet2, $solrFields);
         if (!$classificationRecord->facet2exists) {
-          error_log($classificationRecord->facet2 . ' is not existing');
+          $this->log->warning($classificationRecord->facet2 . ' is not existing');
         }
       }
       if (preg_match('/(^ |  +| $)/', $classificationRecord->scheme)) {
@@ -319,7 +319,7 @@ class Classifications extends AddedEntry {
       $this->createFacets($classificationRecord, '852a_Location_location');
       $this->ind1Orsubfield2($classificationRecord, '852ind1_852_shelvingScheme_ss', '852__852___ss');
     } else {
-      error_log('unhandled field in classification: ' . $classificationRecord->field);
+      $this->log->warning('unhandled field in classification: ' . $classificationRecord->field);
     }
     return $classificationRecord;
   }
@@ -329,10 +329,9 @@ class Classifications extends AddedEntry {
    * @param array $picaFields
    * @return void
    */
-  protected function createFacetForPica(object $classificationRecord, array $picaFields): void
-  {
+  protected function createFacetForPica(object $classificationRecord, array $picaFields): void {
     if (!in_array($classificationRecord->field, $picaFields)) {
-      error_log('unhandled field in classification: ' . $classificationRecord->field);
+      $this->log->warning('unhandled field in classification: ' . $classificationRecord->field);
       return;
     }
     $classificationRecord->facet = $this->picaToSolr($classificationRecord->field) . '_full_ss';

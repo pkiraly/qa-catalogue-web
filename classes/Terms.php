@@ -203,7 +203,7 @@ class Terms extends Facetable {
     if (file_exists($fileName)) {
       $fileDate = date("Y-m-d H:i:s", filemtime($fileName));
       if ($this->solr()->getSolrModificationDate() > $fileDate) {
-        error_log('Clear cached Solr field list');
+        $this->log->warning('Clear cached Solr field list');
         unlink($fileName);
       }
     }
@@ -213,7 +213,7 @@ class Terms extends Facetable {
         $label = $this->resolveSolrField($field);
         $allFields[] = ['label' => $label, 'value' => $field];
       }
-      error_log("generate " . $fileName);
+      $this->log->warning("generate " . $fileName);
       file_put_contents($fileName, json_encode($allFields));
     } else {
       $allFields = json_decode(file_get_contents($fileName));
@@ -292,6 +292,6 @@ class Terms extends Facetable {
       $smarty->assign('error', $e->getMessage());
     }
 
-    error_log('done');
+    $this->log->warning('done');
   }
 }

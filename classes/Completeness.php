@@ -257,7 +257,7 @@ class Completeness extends BaseTab {
   private function readCompleteness() {
     SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
     if ($this->hasMarcElementTable()) {
-      error_log('hasDBTable');
+      $this->log->warning('hasDBTable');
       $this->types = $this->getDocumentTypes($this->groupId);
       $start = microtime(true);
       $result = $this->issueDB->getMarcElements($this->type, $this->groupId);
@@ -276,13 +276,13 @@ class Completeness extends BaseTab {
       $tsort = microtime(true) - $start;
       $this->types = array_merge(['all'], array_diff($this->types, ['all']));
       $tmerge = microtime(true) - $start;
-      error_log(sprintf('readCompleteness (DB) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
+      $this->log->warning(sprintf('readCompleteness (DB) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
 
     } else {
       $fileName = $this->grouped ? 'completeness-grouped-marc-elements.csv' : 'marc-elements.csv';
       $elementsFile = $this->getFilePath($fileName);
       if (file_exists($elementsFile)) {
-        error_log('completeness file: ' . $elementsFile);
+        $this->log->warning('completeness file: ' . $elementsFile);
         $start = microtime(true);
         // $keys = ['element','number-of-record',number-of-instances,min,max,mean,stddev,histogram]; // "sum",
         $lineNumber = 0;
@@ -298,9 +298,9 @@ class Completeness extends BaseTab {
               $header = $values;
             } else {
               if (count($header) != count($values)) {
-                error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
+                $this->log->warning(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
                   $elementsFile, $lineNumber, count($header), count($values)));
-                error_log($line);
+                $this->log->warning($line);
               }
               $record = (object)array_combine($header, $values);
 
@@ -328,10 +328,10 @@ class Completeness extends BaseTab {
         $tsort = microtime(true) - $start;
         $this->types = array_merge(['all'], array_diff($this->types, ['all']));
         $tmerge = microtime(true) - $start;
-        error_log(sprintf('readCompleteness (file) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
+        $this->log->warning(sprintf('readCompleteness (file) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
       } else {
         $msg = sprintf("file %s is not existing", $elementsFile);
-        error_log($msg);
+        $this->log->warning($msg);
       }
     }
   }

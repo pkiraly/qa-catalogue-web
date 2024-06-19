@@ -42,7 +42,7 @@ class FunctionalAnalysisHistogram extends BaseTab {
           $groupedCsv[] = ['frbrfunction', 'score', 'count'];
       } else {
         if (count($header) != count($values)) {
-          error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
+          $this->log->warning('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
         }
         $record = (object)array_combine($header, $values);
         if ($this->selectedFunction != '' && $this->selectedFunction != $record->frbrfunction)

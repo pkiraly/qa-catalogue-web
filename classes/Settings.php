@@ -140,7 +140,7 @@ class Settings extends BaseTab {
     } elseif ($number >= 900) {
       $category = '9XX Locally defined fields';
     } else {
-      error_log(sprintf("%s -> %s", $fieldName, $number));
+      $this->log->warning(sprintf("%s -> %s", $fieldName, $number));
       $category = 'unknown';
     }
     return $category;
