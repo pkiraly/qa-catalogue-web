@@ -39,7 +39,9 @@ abstract class BaseTab extends Tab {
    * @param $id
    */
   public function __construct(Configuration $configuration, string $id) {
+    $this->log = $configuration->createLogger(get_class($this));
     $this->configuration = $configuration;
+
     $this->id = $id;
     $this->readAnalysisParameters();
     $this->catalogueName = $this->configuration->getCatalogue(); // isset($configuration['catalogue']) ? $configuration['catalogue'] : $db;
@@ -52,8 +54,6 @@ abstract class BaseTab extends Tab {
     $this->handleHistoricalData();
     $this->lang = getOrDefault('lang', $this->catalogue->getDefaultLang(), ['en', 'de', 'pt', 'hu']);
     setLanguage($this->lang);
-
-    $this->log = $configuration->createLogger(get_class($this));
 
     // which tabs to show
     foreach (array_keys(Tab::names) as $tab)
