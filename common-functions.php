@@ -41,6 +41,7 @@ function createSmarty($templateDir) {
 }
 
 function readCsv($csvFile, $id = '') {
+  global $general_log;
   $records = [];
   if (file_exists($csvFile)) {
     $lineNumber = 0;
@@ -55,7 +56,7 @@ function readCsv($csvFile, $id = '') {
           $header = $values;
         } else {
           if (count($header) != count($values)) {
-            error_log(sprintf('error in %s line #%d: %d vs %d', $csvFile, $lineNumber, count($header), count($values)));
+            $general_log->error(sprintf('error in %s line #%d: %d vs %d', $csvFile, $lineNumber, count($header), count($values)));
           }
           $record = (object)array_combine($header, $values);
           if ($id != '' && isset($record->{$id})) {
@@ -67,7 +68,7 @@ function readCsv($csvFile, $id = '') {
       }
     }
   } else {
-    error_log('file does not exist! ' . $csvFile);
+    $general_log->error('file does not exist! ' . $csvFile);
   }
   return $records;
 }

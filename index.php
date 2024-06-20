@@ -28,6 +28,7 @@ try {
 
 // Then initialize environment based on configuration
 set_time_limit(0);
+$general_log = $configuration->createLogger('qa-catalogue');
 
 require_once 'common-functions.php';
 

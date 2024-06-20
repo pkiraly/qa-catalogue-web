@@ -25,6 +25,7 @@ class ShelfReadyCompleteness extends BaseTab {
   }
 
   public static function getHistogram($filepath) {
+    global $general_log;
     $data = [];
     $header = [];
     $handle = fopen($filepath, "r");
@@ -37,11 +38,12 @@ class ShelfReadyCompleteness extends BaseTab {
           $header = $values;
         } else {
           if (count($header) != count($values)) {
-            error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
-            $filepath, $lineNumber, count($header), count($values)));
-            error_log($line);
+            $general_log->error(sprintf(
+              'different number of columns in %s - line #%d: expected: %d vs actual: %d',
+              $filepath, $lineNumber, count($header), count($values)));
+            $general_log->error($line);
           }
-          $entry = (object)array_combine($header, $values);
+          $entry = (object) array_combine($header, $values);
           
           $data[$entry->count] = $entry->frequency;
         }

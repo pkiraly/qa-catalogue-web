@@ -1,7 +1,7 @@
 <?php
 
 class IssuesDB extends SQLite3 {
-  protected Logger $log;
+  protected Monolog\Logger $log;
 
   function __construct(string $dir, $log) {
     $this->log = $log;

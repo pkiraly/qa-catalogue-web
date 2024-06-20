@@ -27,6 +27,7 @@ class Dashboard extends BaseTab {
   }
 
   public static function readCompleteness($type, $elementsFile, $packageFile, $groupId = null) {
+    global $general_log;
     $records = [];
     $idDictionary = [];
 
@@ -41,9 +42,9 @@ class Dashboard extends BaseTab {
           $header = $values;
         } else {
           if (count($header) != count($values)) {
-            error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
+            $general_log->error(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
               $elementsFile, $lineNumber, count($header), count($values)));
-            error_log($line);
+            $general_log->error($line);
           }
           $record = array_combine($header, $values);
 
@@ -64,7 +65,7 @@ class Dashboard extends BaseTab {
       fclose($handle);
     } else {
       $msg = sprintf("file %s is not existing", $packageFile);
-      error_log($msg);
+      $general_log->error($msg);
     }
 
     $handle = fopen($elementsFile, "r");
@@ -78,9 +79,9 @@ class Dashboard extends BaseTab {
           $header = $values;
         } else {
           if (count($header) != count($values)) {
-            error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
+            $general_log->error(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
               $elementsFile, $lineNumber, count($header), count($values)));
-            error_log($line);
+            $general_log->error($line);
           }
           $record = array_combine($header, $values);
 
@@ -107,7 +108,7 @@ class Dashboard extends BaseTab {
       fclose($handle);
     } else {
       $msg = sprintf("file %s is not existing", $elementsFile);
-      error_log($msg);
+      $general_log->error($msg);
     }
 
     return $records;

@@ -113,8 +113,9 @@ class Completeness extends BaseTab {
   }
 
   public static function readPackages($type, $filePath, $group = null) {
+    global $general_log;
     $packages = [];
-    error_log('elementsFile: ' . $filePath);
+    $general_log->info('elementsFile: ' . $filePath);
 
     if (file_exists($filePath)) {
       $start = microtime(true);
@@ -132,8 +133,8 @@ class Completeness extends BaseTab {
             $header = $values;
           } else {
             if (count($header) != count($values)) {
-              error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
-              error_log($line);
+              $general_log->info('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
+              $general_log->info($line);
             }
             $record = (object)array_combine($header, $values);
 
@@ -179,11 +180,11 @@ class Completeness extends BaseTab {
         ];
       }
       $tusort = microtime(true) - $start;
-      error_log(sprintf('readPackages) read file: %.4f, foreach: %.4f, usort: %.4f', $t1, $tforeach, $tusort));
+      $general_log->info(sprintf('readPackages) read file: %.4f, foreach: %.4f, usort: %.4f', $t1, $tforeach, $tusort));
 
     } else {
       $msg = sprintf("file %s is not existing", $filePath);
-      error_log($msg);
+      $general_log->error($msg);
     }
 
     return $packages;
@@ -517,6 +518,8 @@ class Completeness extends BaseTab {
     } elseif (!$record->isLeader) {
       // $record->tag = substr($record->path, 0, $position) . ' &mdash; ' . $record->tag;
       $record->key = $tag . $pica3 . ' &mdash; ' . $record->tag;
+    } else {
+      $record->key = $record->tag;
     }
     $record->url = $definition != null && isset($definition->url) ? $definition->url : '';
 

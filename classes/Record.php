@@ -390,6 +390,7 @@ class Record {
   }
 
   public function resolvePicaFields($schemaType = 'PICA'): array {
+    global $general_log;
     self::initializeSchema($schemaType);
 
     $rows = [];
@@ -397,7 +398,7 @@ class Record {
       $definition = self::$schema->lookup($tag);
       $tag_defined = $definition != false;
       if ($tag_defined && !isset($definition->label))
-        error_log(' no tag label for ' . $tag);
+        $general_log->error(' no tag label for ' . $tag);
       $tagLabel = $tag_defined ? $definition->label : '';
       if (!is_null($value) && is_array($value) && !empty($value)) {
         $tagToDisplay = $this->picaTagLink($tag);
