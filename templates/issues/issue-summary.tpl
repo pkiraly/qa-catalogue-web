@@ -64,7 +64,7 @@
     <tbody>
     {foreach from=$categories key=index item=category name=categories}
       <tr class="category-header {$category->category}{if !$smarty.foreach.categories.first} padded{/if}">
-        <td colspan="3" class="category">
+        <td colspan="2" class="category">
           {_t('<span class="category">%s</span> level issues', _($category->category))}
         </td>
         <td class="count">{$category->instances|number_format}</td>
@@ -79,7 +79,7 @@
       {foreach from=$category->types item=typeId name=types}
         {assign var="type" value=$types[$typeId]}
         <tr class="type-header {$type->type} h-{$category->id}-{$type->id}">
-          <td colspan="3" class="type">
+          <td colspan="2" class="type">
             <span class="type">{_($type->type)}</span> ({_t('%d variants', $type->variantCount)})
             <a href="javascript:openType('{$category->id}-{$type->id}')">[+]</a>
           </td>

@@ -673,7 +673,7 @@ class Issues extends BaseTab {
       $this->grouped,
       ($this->grouped ? $this->currentGroup : null)));
     $smarty->assign('total', $this->count);
-    $smarty->assign('fieldNames', ['path', 'message', 'url', 'instances', 'records']);
+    $smarty->assign('fieldNames', ['path', 'message', 'instances', 'records']);
     $smarty->assign('listType', 'full-list');
     $smarty->assign('path', null);
     $smarty->assign('order', null);
