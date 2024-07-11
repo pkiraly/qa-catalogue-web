@@ -19,6 +19,8 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 USER www-data
 WORKDIR /var/www/html
 
+# TODO: update version.ini
+
 # TODO: chown www-data
 COPY . .
 
