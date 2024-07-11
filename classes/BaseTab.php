@@ -109,11 +109,12 @@ abstract class BaseTab extends Tab {
   public function createCatalogue() {
     $className = strtoupper(substr($this->catalogueName, 0, 1)) . substr($this->catalogueName, 1);
     $classFile = 'catalogue/' . $className . '.php';
+    $schemaType = $this->analysisParameters ? $this->analysisParameters->schemaType : "MARC21";
     if ($className != "catalogue" && file_exists('classes/' . $classFile)) {
       include_once $classFile; 
-      return new $className($this->configuration, $this->analysisParameters->schemaType);
+      return new $className($this->configuration, $schemaType);
     } else {
-      return new Catalogue($this->configuration, $this->analysisParameters->schemaType);
+      return new Catalogue($this->configuration, $schemaType);
     }
   }
 
@@ -488,14 +489,14 @@ abstract class BaseTab extends Tab {
   }
 
   protected function readAnalysisParameters() {
-    if (!is_null($this->parameterFile)) {
+    if ($this->parameterFile) {
       $path = $this->getFilePath($this->parameterFile);
       if (file_exists($path)) {
         $this->analysisParameters = json_decode(file_get_contents($path));
         $this->analysisParameters->analysisTimestamp = date("Y-m-d H:i:s", filemtime($path));
       } else {
         $this->log->error(sprintf('parameterFile %s does not exist', $path));
-      }
+     }
     }
   }
 
@@ -503,7 +504,9 @@ abstract class BaseTab extends Tab {
     $path = $this->getFilePath($paramFile);
     if (file_exists($path)) {
       $this->indexingParameters = json_decode(file_get_contents($path));
-      $this->analysisParameters->analysisTimestamp = date("Y-m-d H:i:s", filemtime($path));
+      if ($this->analysisParameters) {
+        $this->analysisParameters->analysisTimestamp = date("Y-m-d H:i:s", filemtime($path));
+      }
     }
   }
 
