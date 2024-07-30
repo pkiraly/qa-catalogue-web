@@ -2,8 +2,14 @@
   {assign var="record" value=$dataField['tag']}
   <tr class="field-level">
     <td colspan="2" class="field-level tag" id="completeness-{$record->websafeTag}">
-      <a href="#" class="trigger" data-id="completeness-{$record->websafeTag}" title="Show subfields"><i class="fa fa-folder-closed"></i></a>
-      {$tagName}
+      <a href="#" class="trigger" data-id="completeness-{$record->websafeTag}"
+         title="Show subfields"><i class="fa fa-folder-closed"></i></a>
+      {if !empty($record->url)}
+         <a href="{$record->url}" title="{_t('Go to the documentation of the field!')}" target="_blank">{$record->extendedTag}</a>
+         {if !empty($record->label)} &mdash; {$record->label}{/if}
+      {else}
+        {$tagName}
+      {/if}
     </td>
     {include 'completeness/completeness-numbers.tpl'}
   </tr>
@@ -11,7 +17,8 @@
     {assign var="record" value=$subfield}
     <tr class="subfield-level completeness-{$record->websafeTag}">
       <td class="path" id="completeness-{$record->path}">
-        {if $record->isLeader || $record->isComplexControlField || !$record->isField || strpos($record->path, '$') !== false}
+        {if $record->isLeader || $record->isComplexControlField || !$record->isField
+            || strpos($record->path, '$') !== false}
           {if isset($record->solr) && !empty($record->solr)}
             <a href="{$controller->queryLink($record)}">
               {if $record->isComplexControlField || $record->isLeader}

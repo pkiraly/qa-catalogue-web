@@ -1,11 +1,30 @@
-version: '3'
+# First create image, based on `Dockerfile`:
+#   docker build -t qa-catalogue-web .
+#
+# Then start container from this image
+#   WEBPORT=83 docker compose up -d
+#
+# In configuration.cnf add how to connect to Solr (this is work in progress):
+#   mainSolrEndpoint=http://qa-catalogue-solr-host:8983/solr/
+
 services:
   app:
-    build:
-      context: "."
-    ports:
-      # TODO: solr-port
-      - "${WEBPORT:-80}:80"
+    image: ${IMAGE:-qa-catalogue-web}
     volumes:
-      - "${CONFIG:-./config}:/var/www/html/config"
-      - "${BASE_OUTPUT_DIR:-./metadata-qa}:/var/www/html/metadata-qa"
+      - ./${BASE_OUTPUT_DIR:-metadata-qa}:/var/www/html/metadata-qa
+      - ./${CONFIG:-config}:/var/www/html/config
+    ports:
+      - ${WEBPORT:-80}:80
+    container_name: ${CONTAINER:-qa-catalogue-web}
+
+    # FIXME: this is only for testing. Better use Docker networks!
+    # networks:
+    # - qa-catalogue-network
+    # qa-catalogue (backend) and Solr must be on the same network (but may also be non-Docker!)
+    extra_hosts:
+    - qa-catalogue-solr-host:host-gateway
+
+#networks:
+#  qa-catalogue-network:
+#    name: qa-catalogue-network
+#    external: true

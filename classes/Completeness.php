@@ -113,8 +113,9 @@ class Completeness extends BaseTab {
   }
 
   public static function readPackages($type, $filePath, $group = null) {
+    global $general_log;
     $packages = [];
-    error_log('elementsFile: ' . $filePath);
+    $general_log->info('elementsFile: ' . $filePath);
 
     if (file_exists($filePath)) {
       $start = microtime(true);
@@ -132,8 +133,8 @@ class Completeness extends BaseTab {
             $header = $values;
           } else {
             if (count($header) != count($values)) {
-              error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
-              error_log($line);
+              $general_log->info('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
+              $general_log->info($line);
             }
             $record = (object)array_combine($header, $values);
 
@@ -179,11 +180,11 @@ class Completeness extends BaseTab {
         ];
       }
       $tusort = microtime(true) - $start;
-      error_log(sprintf('readPackages) read file: %.4f, foreach: %.4f, usort: %.4f', $t1, $tforeach, $tusort));
+      $general_log->info(sprintf('readPackages) read file: %.4f, foreach: %.4f, usort: %.4f', $t1, $tforeach, $tusort));
 
     } else {
       $msg = sprintf("file %s is not existing", $filePath);
-      error_log($msg);
+      $general_log->error($msg);
     }
 
     return $packages;
@@ -257,7 +258,7 @@ class Completeness extends BaseTab {
   private function readCompleteness() {
     SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
     if ($this->hasMarcElementTable()) {
-      error_log('hasDBTable');
+      $this->log->warning('hasDBTable');
       $this->types = $this->getDocumentTypes($this->groupId);
       $start = microtime(true);
       $result = $this->issueDB->getMarcElements($this->type, $this->groupId);
@@ -276,13 +277,13 @@ class Completeness extends BaseTab {
       $tsort = microtime(true) - $start;
       $this->types = array_merge(['all'], array_diff($this->types, ['all']));
       $tmerge = microtime(true) - $start;
-      error_log(sprintf('readCompleteness (DB) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
+      $this->log->warning(sprintf('readCompleteness (DB) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
 
     } else {
       $fileName = $this->grouped ? 'completeness-grouped-marc-elements.csv' : 'marc-elements.csv';
       $elementsFile = $this->getFilePath($fileName);
       if (file_exists($elementsFile)) {
-        error_log('completeness file: ' . $elementsFile);
+        $this->log->warning('completeness file: ' . $elementsFile);
         $start = microtime(true);
         // $keys = ['element','number-of-record',number-of-instances,min,max,mean,stddev,histogram]; // "sum",
         $lineNumber = 0;
@@ -298,9 +299,9 @@ class Completeness extends BaseTab {
               $header = $values;
             } else {
               if (count($header) != count($values)) {
-                error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
+                $this->log->warning(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
                   $elementsFile, $lineNumber, count($header), count($values)));
-                error_log($line);
+                $this->log->warning($line);
               }
               $record = (object)array_combine($header, $values);
 
@@ -328,10 +329,10 @@ class Completeness extends BaseTab {
         $tsort = microtime(true) - $start;
         $this->types = array_merge(['all'], array_diff($this->types, ['all']));
         $tmerge = microtime(true) - $start;
-        error_log(sprintf('readCompleteness (file) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
+        $this->log->warning(sprintf('readCompleteness (file) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
       } else {
         $msg = sprintf("file %s is not existing", $elementsFile);
-        error_log($msg);
+        $this->log->warning($msg);
       }
     }
   }
@@ -506,38 +507,45 @@ class Completeness extends BaseTab {
     if ($record->package == '')
       $record->package = 'other';
 
-    $pica3 = ($definition != null && isset($definition->pica3) ? '=' . $definition->pica3 : '');
+    $pica3 = $definition != null && isset($definition->pica3)
+      ? '=' . $definition->pica3
+      : '';
+    $record->extendedTag = $tag . $pica3;
+    $record->label = $record->tag;
     if ($record->tag == '') {
       // $record->tag = substr($record->path, 0, $position);
-      $record->tag = $tag . $pica3;
+      $record->key = $tag . $pica3;
     } elseif (!$record->isLeader) {
       // $record->tag = substr($record->path, 0, $position) . ' &mdash; ' . $record->tag;
-      $record->tag = $tag . $pica3 . ' &mdash; ' . $record->tag;
+      $record->key = $tag . $pica3 . ' &mdash; ' . $record->tag;
+    } else {
+      $record->key = $record->tag;
     }
+    $record->url = $definition != null && isset($definition->url) ? $definition->url : '';
 
     $record->packageid = (int)$record->packageid;
     if (!isset($this->records[$record->packageid]))
       $this->records[$record->packageid] = [];
 
-    if (!isset($this->records[$record->packageid][$record->tag])) {
-      if ($record->tag == 'Leader') {
+    if (!isset($this->records[$record->packageid][$record->key])) {
+      if ($record->key == 'Leader') {
         // ensure that leader is the first element
         $value = ['type' => 'leader', 'websafeTag' => $record->websafeTag, 'positions' => []];
         if (!empty($this->records[$record->packageid])) {
-          $this->records[$record->packageid] = array_merge([$record->tag => $value], $this->records[$record->packageid]);
+          $this->records[$record->packageid] = array_merge([$record->key => $value], $this->records[$record->packageid]);
         } else {
-          $this->records[$record->packageid][$record->tag] = $value;
+          $this->records[$record->packageid][$record->key] = $value;
         }
       } else if ($record->isDataField) {
-        $this->records[$record->packageid][$record->tag] = ['type' => 'datafield', 'tag' => null, 'subfields' => []];
+        $this->records[$record->packageid][$record->key] = ['type' => 'datafield', 'tag' => null, 'subfields' => []];
       } else if ($record->isComplexControlField) {
-        $this->records[$record->packageid][$record->tag] = [
+        $this->records[$record->packageid][$record->key] = [
           'type' => 'complexControlField',
           'websafeTag' => $record->websafeTag,
           'types' => []
         ];
       } else {
-        $this->records[$record->packageid][$record->tag] = [
+        $this->records[$record->packageid][$record->key] = [
           'type' => 'simpleControlField',
           'websafeTag' => $record->websafeTag,
           'tag' => null
@@ -546,28 +554,29 @@ class Completeness extends BaseTab {
     }
 
     if ($record->isLeader) {
-      $this->records[$record->packageid][$record->tag]['positions'][] = $record;
+      $this->records[$record->packageid][$record->key]['positions'][] = $record;
     } else if (isset($record->isDataField) && $record->isDataField == true) {
-      if ($record->isField)
-        $this->records[$record->packageid][$record->tag]['tag'] = $record;
-      else
-        $this->records[$record->packageid][$record->tag]['subfields'][] = $record;
+      if ($record->isField) {
+        $this->records[$record->packageid][$record->key]['tag'] = $record;
+      } else {
+        $this->records[$record->packageid][$record->key]['subfields'][] = $record;
+      }
     } else if ($record->isComplexControlField) {
-      if (!isset($this->records[$record->packageid][$record->tag]['types'][$record->complexType]))
-        $this->records[$record->packageid][$record->tag]['types'][$record->complexType] = [
+      if (!isset($this->records[$record->packageid][$record->key]['types'][$record->complexType]))
+        $this->records[$record->packageid][$record->key]['types'][$record->complexType] = [
           'websafeTag' => $record->websafeTag,
           'positions' => []
         ];
-      $this->records[$record->packageid][$record->tag]['types'][$record->complexType]['positions'][] = $record;
+      $this->records[$record->packageid][$record->key]['types'][$record->complexType]['positions'][] = $record;
     } else {
-      $this->records[$record->packageid][$record->tag]['tag'] = $record;
+      $this->records[$record->packageid][$record->key]['tag'] = $record;
     }
 
     unset($record->documenttype);
     unset($record->packageid);
     unset($record->package);
     if (isset($record->isSubfield) && $record->isSubfield == true) {
-      unset($record->tag);
+      unset($record->key);
     }
   }
 }

@@ -128,7 +128,7 @@ class Authorities extends AddedEntry {
     }
 
     if (!file_exists($byRecordsFile)) {
-      error_log("By-records file ($byRecordsFile) doesn't exist!");
+      $this->log->warning("By-records file ($byRecordsFile) doesn't exist!");
       return;
     }
     $header = [];
@@ -150,7 +150,7 @@ class Authorities extends AddedEntry {
       } elseif ($this->catalogue->getSchemaType() == 'UNIMARC') {
         $this->setUnimarcFacets($classificationRecord);
       } else {
-        error_log('unhandled field in classification: ' . $classificationRecord->field);
+        $this->log->warning('unhandled field in classification: ' . $classificationRecord->field);
       }
       if (isset($classificationRecord->facet2) && $classificationRecord->facet2 != '') {
         $classificationRecord->facet2exists = in_array($classificationRecord->facet2, $solrFields);

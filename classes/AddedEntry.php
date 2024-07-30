@@ -12,7 +12,7 @@ class AddedEntry extends BaseTab {
   protected function ind1Orsubfield2(&$record, $ind1, $subfield2) {
     $debug = FALSE; // ($record->field == '052');
     if ($debug)
-      error_log('location: ' . $record->location);
+      $this->log->debug('location: ' . $record->location);
     // Query in form of "052ind1_GeographicClassification_codeSource_ss
     // Or starting with "0522_GeographicClassification_source_ss:scheme"
 
@@ -27,7 +27,7 @@ class AddedEntry extends BaseTab {
       }
     }
     if ($debug)
-      error_log('q: ' . $record->q);
+      $this->log->debug('q: ' . $record->q);
   }
 
   protected function ind2Orsubfield2(&$record, $ind2, $subfield2) {
@@ -65,13 +65,13 @@ class AddedEntry extends BaseTab {
     if (file_exists($elementsFile)) {
       $elements = [];
       if ($useDB && $this->hasMarcElementTable()) {
-        error_log('read data elements from DB');
+        $this->log->info('read data elements from DB');
         $result = $this->issueDB->getMarcElements('all', ($this->grouped ? $this->groupId : ''));
         while ($record = $result->fetchArray(SQLITE3_ASSOC)) {
           $elements[$record['path']] = $record['subfield'];
         }
       } else {
-        error_log('read data elements from: ' . $elementsFile);
+        $this->log->info('read data elements from: ' . $elementsFile);
         $header = [];
         $in = fopen($elementsFile, "r");
         while (($line = fgets($in)) != false) {
@@ -98,7 +98,7 @@ class AddedEntry extends BaseTab {
 
   protected function readSubfields(Smarty &$smarty, string $bySubfieldsFile): void {
     if (file_exists($bySubfieldsFile)) {
-      error_log('bySubfieldsFile: ' . $bySubfieldsFile);
+      $this->log->info('bySubfieldsFile: ' . $bySubfieldsFile);
       $header = [];
       $subfields = [];
       $subfieldsById = [];
@@ -109,12 +109,12 @@ class AddedEntry extends BaseTab {
           $header = $values;
         } else {
           if (count($header) != count($values)) {
-            error_log("wrong line: " . $line);
+            $this->log->info("wrong line: " . $line);
             continue;
           }
           $record = (object)array_combine($header, $values);
           if (!isset($record->subfields)) {
-            error_log('no subfields: ' . $line . ' (' . $bySubfieldsFile . ')');
+            $this->log->info('no subfields: ' . $line . ' (' . $bySubfieldsFile . ')');
           }
           $record->subfields = explode(';', $record->subfields);
           $items = [];

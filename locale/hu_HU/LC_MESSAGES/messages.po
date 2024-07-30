@@ -53,7 +53,7 @@ msgstr "Letöltés"
 msgid "Settings"
 msgstr "Beállítások"
 msgid "Facets"
-msgstr "Facetták"
+msgstr "Szűrők"
 msgid "About"
 msgstr "Névjegy"
 

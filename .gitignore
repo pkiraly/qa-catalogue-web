@@ -3,7 +3,7 @@ configuration.cnf
 images/
 libs/
 cache/
-config/
+config
 vendor/
 _smarty/
 logs/

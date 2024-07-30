@@ -93,7 +93,7 @@ class Issues extends BaseTab {
             $header[$i] = 'path';
           } else {
             if (count($header) != count($values)) {
-              error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
+              $this->log->warning(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
                 $elementsFile, $lineNumber, count($header), count($values)));
             }
             $record = (object)array_combine($header, $values);
@@ -133,7 +133,7 @@ class Issues extends BaseTab {
       }
     } else {
       $msg = sprintf("file %s is not existing", $elementsFile);
-      error_log($msg);
+      $this->log->warning($msg);
     }
   }
 
@@ -224,7 +224,7 @@ class Issues extends BaseTab {
             $header[1] = 'path';
           } else {
             if (count($header) != count($values)) {
-              error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
+              $this->log->warning('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
             }
             $record = (object)array_combine($header, $values);
             if (!($record->categoryId == $categoryId && $record->typeId == $typeId))
@@ -243,7 +243,7 @@ class Issues extends BaseTab {
       }
     } else {
       $msg = sprintf("file %s is not existing", $elementsFile);
-      error_log($msg);
+      $this->log->warning($msg);
     }
   }
 
@@ -349,7 +349,7 @@ class Issues extends BaseTab {
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: ' . $attachment);
 
-    error_log('hasValidationIndex: ' . (int) $this->solr()->hasValidationIndex());
+    $this->log->warning('hasValidationIndex: ' . (int) $this->solr()->hasValidationIndex());
     if ($errorId != '') {
       if ($this->sqliteExists()) {
         $this->printId($this->getIdsFromDBResult($errorId, 'errorId', 'download'));
@@ -453,7 +453,7 @@ class Issues extends BaseTab {
       fclose($in);
     } else {
       $msg = sprintf("file %s is not existing", $elementsFile);
-      error_log($msg);
+      $this->log->warning($msg);
     }
     return $recordIds;
   }
@@ -673,7 +673,7 @@ class Issues extends BaseTab {
       $this->grouped,
       ($this->grouped ? $this->currentGroup : null)));
     $smarty->assign('total', $this->count);
-    $smarty->assign('fieldNames', ['path', 'message', 'url', 'instances', 'records']);
+    $smarty->assign('fieldNames', ['path', 'message', 'instances', 'records']);
     $smarty->assign('listType', 'full-list');
     $smarty->assign('path', null);
     $smarty->assign('order', null);

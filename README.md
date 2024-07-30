@@ -69,6 +69,7 @@ sudo apt install locales gettext php-sqlite3 php-yaml php-curl composer
 sudo locale-gen en_GB.UTF-8
 sudo locale-gen de_DE.UTF-8
 sudo locale-gen pt_BR.UTF-8
+sudo locale-gen hu_HU.UTF-8
 ```
 
 ### Setup
@@ -143,7 +144,7 @@ The following parameters can be set either for all catalogues (`parameter=value`
    In multi-tenant mode you can specify it for a particular catalogue with `mainSolrEndpoint[<id>]`. (Its previous
    name was `solrEndpoint4ValidationResults`.)
 - `showAdvancedSearchForm` (bool, v.0.8.0) show or hide advanced search form. Default: `false`
-- `logHandler` (string) where to log to. Allowed values are `file`, and `error_log` (default).
+- `logHandler` (string) where to log to. Allowed values are `file` (log to a file specified by the `logFile` parameters=, and `error_log` (default, log to the webserver's error log - for Apache it is `/var/log/apache2/error.log`)).
 - `logFile` (string, v0.8.0) a path of the log file if `logHandler` is set to `file`. Make sure the file
    is writeable by the webserver. Default: `logs/qa-catalogue.log`.
 - `logLevel` (string, v0.8.0) the minimal logging level. Possible values are: `DEBUG`, `INFO`, `NOTICE`,

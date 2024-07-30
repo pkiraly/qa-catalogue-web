@@ -18,7 +18,6 @@
          href="{$controller->sortIssuesLink($categoryId, $typeId, $path, 'message DESC')}">
         <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i></a>
     </td>
-    <td class="url"></td>
     <td class="count instances">
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
          href="{$controller->sortIssuesLink($categoryId, $typeId, $path, 'instances ASC')}">
@@ -42,14 +41,17 @@
 {/if}
 {foreach from=$records item="rowData" name="foo"}
   <tr class="t t-{$categoryId}-{$typeId} x-{$categoryId}-{$typeId} {if $smarty.foreach.foo.index % 2 == 1}odd{/if}">
-    <td class="path">{if isset($rowData->withPica3)}{$rowData->withPica3}{else}{$rowData->path}{/if}</td>
+    <td class="path">
+      {if empty($rowData->url)}
+        {if isset($rowData->withPica3)}{$rowData->withPica3}{else}{$rowData->path}{/if}
+      {else}
+        <a href="{showMarcUrl($rowData->url)}" target="_blank">
+          {if isset($rowData->withPica3)}{$rowData->withPica3}{else}{$rowData->path}{/if}
+        </a>
+      {/if}
+    </td>
     <td class="message">
       {include "../message.tpl" message=$rowData->message}
-    </td>
-    <td class="url">
-      {if !empty($rowData->url)}
-        <a href="{showMarcUrl($rowData->url)}" target="_blank"><i class="fa fa-info" aria-hidden="true"></i></a>
-      {/if}
     </td>
     <td class="count instances">{$rowData->instances|number_format}</td>
     <td class="count records">{$rowData->records|number_format}</td>
