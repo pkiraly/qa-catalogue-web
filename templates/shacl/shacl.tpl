@@ -15,15 +15,15 @@
         <thead>
           <tr>
             <th colspan="3"></th>
-            <th colspan="3" class="text-center" style="padding: 0 10px 0 50px;">number of records</th>
+            <th colspan="6" class="text-center" style="padding: 0 10px 0 50px;">number of records</th>
           </tr>
           <tr>
             <th class="text-center" style="padding-right: 10px;">path</th>
             <th class="text-center" style="padding-right: 5px;">criteria</th>
             <th></th>
-            <th class="text-center" style="padding: 0 10px 0 50px;">failed</th>
-            <th class="text-center" style="padding: 0 10px 0 10px;">passed</th>
-            <th class="text-center" style="padding: 0 10px 0 10px;">NA</th>
+            <th class="text-center" style="padding: 0 10px 0 50px;" colspan="2">failed</th>
+            <th class="text-center" style="padding: 0 10px 0 10px;" colspan="2">passed</th>
+            <th class="text-center" style="padding: 0 10px 0 10px;" colspan="2">NA</th>
           </tr>
         </thead>
         <tbody>
@@ -48,9 +48,45 @@
                 <div style="float: left; background-color: #37ba00; width:{floor($row->{'1'} * 300 / $count)}px;">&nbsp;</div>
                 <div style="float: left; background-color: #cccccc; width:{floor($row->{'NA'} * 300 / $count)}px;">&nbsp;</div>
               </td>
-              <td class="text-right">{if $row->{'0'} == 0}0{else}<a href="?tab=data&type=custom-rule&query={$id}:0">{number_format($row->{'0'})}</a>{/if}</td>
-              <td class="text-right">{if $row->{'1'} == 0}0{else}<a href="?tab=data&type=custom-rule&query={$id}:1">{number_format($row->{'1'})}</a>{/if}</td>
-              <td class="text-right">{if $row->{'NA'} == 0}0{else}<a href="?tab=data&type=custom-rule&query={$id}:NA">{number_format($row->{'NA'})}</a>{/if}</td>
+              <td class="text-right" style="min-width: 100px;">
+                {if $row->{'0'} == 0}
+                  0
+                {else}
+                  {number_format($row->{'0'})}
+                {/if}
+              </td>
+              <td style="min-width: 60px;">
+                {if $row->{'0'} > 0}
+                  <a href="{$controller->queryUrl($id, 0)}" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
+                  <a href="{$controller->downloadUrl($id, 0)}" class="list"><i class="fa fa-download" aria-hidden="true"></i></a>
+                {/if}
+              </td>
+              <td class="text-right">
+                {if $row->{'1'} == 0}
+                  0
+                {else}
+                  {number_format($row->{'1'})}
+                {/if}
+              </td>
+              <td style="min-width: 60px;">
+                {if $row->{'1'} > 0}
+                  <a href="{$controller->queryUrl($id, 1)}" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
+                  <a href="{$controller->downloadUrl($id, 1)}" class="list"><i class="fa fa-download" aria-hidden="true"></i></a>
+                {/if}
+              </td>
+              <td class="text-right">
+                {if $row->{'NA'} == 0}
+                  0
+                {else}
+                  {number_format($row->{'NA'})}</a>
+                {/if}
+              </td>
+              <td style="min-width: 60px;">
+                {if $row->{'NA'} > 0}
+                  <a href="{$controller->queryUrl($id, 'NA')}" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
+                  <a href="{$controller->downloadUrl($id, 'NA')}" class="list"><i class="fa fa-download" aria-hidden="true"></i></a>
+                {/if}
+              </td>
             </tr>
           {/foreach}
         </tbody>

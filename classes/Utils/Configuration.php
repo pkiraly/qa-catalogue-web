@@ -65,14 +65,6 @@ class Configuration {
   private function __construct(array $configuration) {
     // global
     $this->configuration = $configuration;
-
-    foreach ($configuration as $key => $value) {
-      if (str_starts_with($key, 'display-')) {
-        Configuration::expectBool($key, $value);
-        $this->display[substr($key,8)] = $value;
-      }
-    }
-
     $this->id = $configuration["id"]; // REQUIRED
 
     $this->dir = $this->getValue('dir', 'output');
@@ -98,12 +90,23 @@ class Configuration {
     $this->schema = $this->getValue('schema', null); // 'MARC21'
     $this->linkTemplate = $this->getValue('linkTemplate', null);
     $this->language = $this->getValue('language', null); // 'en'
+
+    foreach ($configuration as $key => $value) {
+      if (str_starts_with($key, 'display-')) {
+        $displayKey = substr($key,8);
+        if (is_array($value) && isset($value[$this->id])) {
+          $value = $value[$this->id];
+        }
+        Configuration::expectBool($key, $value);
+        $this->display[$displayKey] = $value;
+      }
+    }
   }
 
   private static function expectBool($key, $value) {
     $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     if (!is_bool($value)) {
-      throw new Exception("$key must be boolean (1/0/true/false/on/off/yes/no)");
+      throw new Exception("$key must be boolean (1/0/true/false/on/off/yes/no). It is '$value' instead");
     }
   }
 
