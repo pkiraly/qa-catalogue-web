@@ -73,6 +73,14 @@ function readCsv($csvFile, $id = '') {
   return $records;
 }
 
+if (!function_exists('array_is_list')) {
+  function array_is_list(array $arr) {
+    if ($arr === [])
+      return true;
+    return array_keys($arr) === range(0, count($arr) - 1);
+  }
+}
+
 function setLanguage($language) {
   global $languages;
   $lang = isset($languages[$language]) ? $languages[$language] : $languages['en'];
@@ -80,14 +88,6 @@ function setLanguage($language) {
   setlocale(LC_ALL, $lang);
   bindtextdomain('messages', './locale');
   textdomain('messages');
-}
-
-if (!function_exists('array_is_list')) {
-  function array_is_list(array $arr) {
-    if ($arr === [])
-      return true;
-    return array_keys($arr) === range(0, count($arr) - 1);
-  }
 }
 
 /**
@@ -98,7 +98,7 @@ function _t() {
   $args = func_get_args();
   $args[0] = _($args[0]);
 
-  if(func_num_args() <= 1)
+  if (func_num_args() <= 1)
     return $args[0];
 
   return call_user_func_array('sprintf', $args);

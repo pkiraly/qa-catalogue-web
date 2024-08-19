@@ -243,7 +243,7 @@ class IssuesDB extends SQLite3 {
     $stmt = $this->prepare(
       'SELECT COUNT(distinct(id)) AS count
        FROM shacl
-       WHERE "' . $criterium . '" = :typeId');
+       WHERE "' . $criterium . '" = :typeId' . $groupCriterium);
     $stmt->bindValue(':typeId', $typeId, SQLITE3_TEXT);
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
