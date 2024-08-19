@@ -60,18 +60,13 @@ class Download extends BaseTab {
     $categories['T&T completeness'] += $this->getTtCompletenessHistograms();
     $categories['Shelf-Ready completeness'] += $this->getShelfReadyCompletenessHistograms();
     if ($this->configuration->display("shacl")) {
-      $path = $this->getFilePath(Shacl::$paramsFile);
-      if (file_exists($path)) {
-        $shaclParameters = json_decode(file_get_contents($path));
-        $schemaFile = $shaclParameters->shaclConfigurationFile;
-        $schemaFile = substr($schemaFile, strrpos($schemaFile, '/') + 1);
-        $categories['Custom validation'] = [$schemaFile];
-      }
+      $categories['Custom validation'] = $this->extractShaclFiles();
     }
 
     foreach ($categories as $cat => $files) {
       $categories[$cat] = $this->getFileSize($files);
     }
+
     return $categories;
   }
 
@@ -125,4 +120,22 @@ class Download extends BaseTab {
     return $files;
   }
 
+  /**
+   * @param array $categories
+   * @return array
+   */
+  private function extractShaclFiles(): array {
+    $files = [];
+    $shacl = Tab::create('shacl', $this->configuration);
+    $shacl->getParameterFile();
+    $path = $this->getFilePath($shacl->getParameterFile());
+    if (file_exists($path)) {
+      $shaclParameters = json_decode(file_get_contents($path));
+      $schemaFile = $shaclParameters->shaclConfigurationFile;
+      $schemaFile = substr($schemaFile, strrpos($schemaFile, '/') + 1);
+      $outputFile = $shaclParameters->shaclOutputFile;
+      $files = [$schemaFile, $outputFile];
+    }
+    return $files;
+  }
 }
