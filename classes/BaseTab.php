@@ -587,4 +587,18 @@ abstract class BaseTab extends Tab {
   protected function hasMarcElementTable(): bool {
     return $this->issueDB()->hasMarcElementTable();
   }
+
+  /**
+   * @return the analysis parameters
+   */
+  public function getAnalysisParameters(): array {
+    return $this->analysisParameters;
+  }
+
+  /**
+   * @return string The parameter file's name
+   */
+  public function getParameterFile(): string {
+    return $this->parameterFile;
+  }
 }
