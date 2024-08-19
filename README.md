@@ -127,7 +127,7 @@ The following parameters can be set either for all catalogues (`parameter=value`
    `classifications`, `authorities`, `serials`, `tt-completeness`, `shelf-ready-completeness`, `shacl`, `network`,
    `terms`, `pareto`, `history`, `timeline`, `settings`, `about`, `record-issues`, `histogram`,
    `functional-analysis-histogram`, `control-fields`, `download`, `collocations`.
-- `display-...` (bool) show or hide selected tabs, for instance `show-issues`, `show-shacl`.
+- `display-...` (bool) show or hide selected tabs, for instance `display-issues`, `display-shacl`.
    By default all tabs are shown if approriate data is available. Only `shacl` and `network` are disabled by default.
 - `indexName` (string) name of the Solr index of a particular catalogue, if it is different from
    the name of the catalogue or the URL path.
