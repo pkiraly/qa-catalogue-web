@@ -94,8 +94,11 @@ class Configuration {
     foreach ($configuration as $key => $value) {
       if (str_starts_with($key, 'display-')) {
         $displayKey = substr($key,8);
-        if (is_array($value) && isset($value[$this->id])) {
-          $value = $value[$this->id];
+        if (is_array($value)) {
+          if (isset($value[$this->id]))
+            $value = $value[$this->id];
+          else
+            continue;
         }
         Configuration::expectBool($key, $value);
         $this->display[$displayKey] = $value;
