@@ -30,3 +30,8 @@ RUN composer install --prefer-dist --no-dev \
 RUN mkdir config metadata-qa \
  && echo dir=metadata-qa > configuration.cnf \
  && echo include=config/configuration.cnf >> configuration.cnf \
+ && rm -rf /var/lib/apt/lists/*
+
+COPY docker/supervisord.conf /etc/
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
