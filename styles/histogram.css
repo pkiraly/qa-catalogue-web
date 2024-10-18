@@ -10,7 +10,6 @@ table#criteria-list td.id {
 .axis text {
   font: 10px sans-serif;
 }
-
 .axis path,
 .axis line {
   fill: none;
@@ -21,3 +20,5 @@ table#criteria-list td.id {
 .x.axis path {
   display: none;
 }
+
+/*# sourceMappingURL=histogram.css.map */

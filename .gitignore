@@ -14,3 +14,4 @@ metadata-qa/
 
 # eidtor files
 .idea/
+styles/*.*.map
