@@ -22,7 +22,7 @@
       </p>
       <script src="js/histogram.js" type="text/javascript"></script>
       <script>
-          var db = '{$db}';
+          var db = '{$id}';
           var count = {$count};
           var histogramDataUrl = '?tab=functional-analysis-histogram&function={$function}';
           {literal}
@@ -144,6 +144,7 @@
 
     </div>
   </div>
+  {include 'common/parameters.tpl'}
 </div>
 <script>{literal}
 function loadFunctions() {

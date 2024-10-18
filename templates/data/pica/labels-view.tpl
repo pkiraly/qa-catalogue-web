@@ -11,7 +11,15 @@
                 <td colspan="{$cell->span}" class="tag-title">{$cell->text}</td>
               {/if}
             {else}
-              <td>{$cell}</td>
+              <td>
+                {if is_string($cell)}
+                  {$cell}
+                {elseif is_array($cell)}
+                  {foreach from=$cell item=c}
+                    {$c}<br/>
+                  {/foreach}
+                {/if}
+              </td>
             {/if}
           {/foreach}
         </tr>

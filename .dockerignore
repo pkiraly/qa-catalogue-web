@@ -1,0 +1,25 @@
+# site files
+configuration.cnf
+images/
+libs/
+cache/
+config/
+vendor/
+_smarty/
+logs/
+
+# data files
+metadata-qa/
+
+# editor files
+.idea/
+
+# development files
+.git
+.github
+.gitignore
+docker-compose.yml
+Dockerfile
+.dockerignore
+tests
+*.md

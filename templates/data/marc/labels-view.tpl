@@ -15,7 +15,7 @@
               {if is_object($cell)}
                 <td><a href="{$cell->url}" target="_blank">{$cell->text}</a></td>
               {else}
-                <td>{$cell}</td>
+                <td>{if is_array($cell)}{foreach $cell as $c}{$c}<br/>{/foreach}{else}{$cell}{/if}</td>
               {/if}
             {/foreach}
           </tr>

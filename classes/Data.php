@@ -1,10 +1,5 @@
 <?php
 
-include_once 'Link.php';
-include_once 'Record.php';
-include_once 'Facet.php';
-include_once 'Facetable.php';
-
 class Data extends Facetable {
 
   private $facet;
@@ -20,16 +15,17 @@ class Data extends Facetable {
   private $typeCache006 = [];
   private $type = 'solr';
   private $numFound = null;
-  public $grouped = false;
+  public bool $grouped = false;
   public $groupId = false;
-  public $groupBy = false;
+  public string $groupBy;
   public $params;
-  public $action;
+  public string $action;
+  private $searchform = 'simple';
+  protected $parameterFile = 'marctosolr.params.json';
+  private ?array $allGroups;
 
-  public function __construct($configuration, $db) {
-    parent::__construct($configuration, $db);
-    parent::readAnalysisParameters('validation.params.json');
-    parent::readIndexingParameters('marctosolr.params.json');
+  public function __construct($configuration, $id) {
+    parent::__construct($configuration, $id);
     $this->facet = getOrDefault('facet', '');
     $this->query = getOrDefault('query', '*:*');
     $this->filters = getOrDefault('filters', []);
@@ -37,10 +33,16 @@ class Data extends Facetable {
     $this->rows = (int) getOrDefault('rows', 10, $this->itemsPerPageSelectors);
     $this->type = getOrDefault('type', 'solr', ['solr', 'issues', 'custom-rule']);
     $this->action = getOrDefault('action', 'search', ['search', 'download']);
-    $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
-    if ($this->grouped)
-      $this->groupBy = $this->analysisParameters->groupBy;
     $this->groupId = getOrDefault('groupId', 0);
+    $this->searchform = getOrDefault('searchform', 'simple', ['simple', 'advanced']);
+    if ($this->searchform == 'advanced') {
+      for ($i = 1; $i <= 3; $i++) {
+        $field = 'field' . $i;
+        $value = 'value' . $i;
+        $this->{$field} = getOrDefault($field, '');
+        $this->{$value} = getOrDefault($value, '');
+      }
+    }
 
     $this->params = [
       'facet' => $this->facet,
@@ -49,6 +51,7 @@ class Data extends Facetable {
       'scheme' => $this->scheme,
       'lang' => $this->lang,
       'type' => $this->type,
+      'searchform' => $this->searchform,
     ];
 
     $this->parameters = [
@@ -62,11 +65,19 @@ class Data extends Facetable {
   }
 
   public function prepareData(Smarty &$smarty) {
-    if ($this->action == 'download') {
-      $this->downloadAction();
-    } else {
-      parent::prepareData($smarty);
-      $this->searchAction($smarty);
+    try {
+      if ($this->action == 'download') {
+        $this->downloadAction();
+      } else {
+        parent::prepareData($smarty);
+        $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
+        if ($this->grouped)
+          $this->groupBy = $this->analysisParameters->groupBy;
+        $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
+        $this->searchAction($smarty);
+     }
+    } catch(Exception $e) {
+      $smarty->assign('error', $e->getMessage());
     }
   }
 
@@ -74,24 +85,31 @@ class Data extends Facetable {
     return 'data/data.tpl';
   }
 
-  private function getBasicUrl(array $excluded = []) {
+  /**
+   * Get the page parameters
+   * @param array $excluded The keys to exclude
+   * @return string[]
+   */
+  private function getBasicUrl(array $excluded = []): array {
     $urlParams = ['tab=data'];
-    $baseParams = ['query', 'facet', 'filters', 'start', 'rows', 'type', 'groupId'];
-    foreach ($baseParams as $p) {
-      if (!in_array($p, $excluded))
-        if (is_array($this->$p))
-          foreach ($this->$p as $value)
-            $urlParams[] = $p . '[]=' . urlencode($value);
+    $baseParams = ['query', 'facet', 'filters', 'start', 'rows', 'type', 'groupId', 'searchform'];
+    if ($this->searchform == 'advanced')
+      $baseParams = array_merge($baseParams, ['field1', 'value1', 'field2', 'value2', 'field3', 'value3']);
+    foreach ($baseParams as $property) {
+      if (!in_array($property, $excluded))
+        if (is_array($this->{$property})) // FIXME: fields are not defined in this class
+          foreach ($this->{$property} as $value)
+            $urlParams[] = $property . '[]=' . urlencode($value);
         else
-          $urlParams[] = $p . '=' . urlencode($this->$p);
+          $urlParams[] = $property . '=' . urlencode($this->{$property});
     }
     return $urlParams;
   }
 
-  private function buildParameters() {
+  private function buildParameters(Smarty $smarty): array {
     $solrParams = [
       'rows=' . $this->rows,
-      'core=' . $this->db,
+      'core=' . $this->id,
     ];
 
     if ($this->type == 'issues') {
@@ -114,7 +132,22 @@ class Data extends Facetable {
         $solrParams[] = 'q=' . urlencode($query);
       }
     } else {
-      $solrParams[] = 'q=' . $this->query;
+      if ($this->searchform == 'simple') {
+        $solrParams[] = 'q=' . $this->query;
+      } else if ($this->searchform == 'advanced') {
+        $fields = [];
+        for ($i = 1; $i <= 3; $i++) {
+          $field = getOrDefault('field' . $i, '');
+          $value = getOrDefault('value' . $i, '');
+          $smarty->assign('field' . $i, $field);
+          $smarty->assign('value' . $i, $value);
+          $smarty->assign('label' . $i, $this->resolveSolrField($field));
+          if ($field != '' && $value != '') {
+            $fields[] = sprintf('%s:(%s)', $field, $value);
+          }
+        }
+        $solrParams[] = 'q=' . join(' AND ', $fields);
+      }
       $solrParams[] = 'start=' . $this->start;
     }
 
@@ -130,8 +163,10 @@ class Data extends Facetable {
 
   private function buildFacetParameters() {
     $facetParameters = [];
-    foreach ($this->getSelectedFacets() as $facet)
-      $facetParameters[] = 'facet.field=' . $facet;
+    $selectedFacets = $this->getSelectedFacets();
+    if (!is_null($selectedFacets))
+      foreach ($selectedFacets as $facet)
+        $facetParameters[] = 'facet.field=' . $facet;
 
     if (count($facetParameters) > 0)
       $facetParameters[] = 'facet.mincount=1';
@@ -139,7 +174,7 @@ class Data extends Facetable {
     return $facetParameters;
   }
 
-  private function getItemPerPage() {
+  private function getItemPerPage(): array {
     $items = [];
     $baseParams = $this->getBasicUrl(['start', 'rows']);
     foreach ($this->itemsPerPageSelectors as $rows) {
@@ -151,7 +186,7 @@ class Data extends Facetable {
     return $items;
   }
 
-  private function createPrevNextLinks($numFound) {
+  private function createPrevNextLinks($numFound): array {
     $items = [];
     if ($numFound > 0) {
       $baseParams = $this->getBasicUrl(['start']);
@@ -235,7 +270,7 @@ class Data extends Facetable {
         }
         ksort($positions);
       } else {
-        error_log('invalid type: ' . $type);
+        $this->log->error('invalid type: ' . $type);
       }
       $this->typeCache008[$type] = $positions;
     }
@@ -251,7 +286,7 @@ class Data extends Facetable {
           $positions["" . $id] = $data;
         }
       } else {
-        error_log('invalid type: ' . $category);
+        $this->log->error('invalid type: ' . $category);
       }
       $this->typeCache007[$category] = $positions;
     }
@@ -270,7 +305,7 @@ class Data extends Facetable {
           $positions["" . $id] = $data;
         }
       } else {
-        error_log('invalid type: ' . $category);
+        $this->log->error('invalid type: ' . $category);
       }
       $this->typeCache006[$category] = $positions;
     }
@@ -278,7 +313,7 @@ class Data extends Facetable {
   }
 
   public function getRecord($doc) {
-    $record = new Record($doc, $this->configuration, $this->db, $this->catalogue);
+    $record = new Record($doc, $this->configuration, $this->catalogue, $this->log);
     $record->setBasicQueryParameters($this->getBasicUrl(['query', 'filters']));
     $record->setBasicFilterParameters($this->getBasicUrl([]));
     return $record;
@@ -293,18 +328,14 @@ class Data extends Facetable {
    * @return array
    */
   private function prepareParametersForIssueQueries($idType, $id): array {
-    include_once 'IssuesDB.php';
-    $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
-    $db = new IssuesDB($dir);
-
     $groupId = $this->grouped ? $this->groupId : '';
     $coreToUse = $this->type == 'custom-rule'
                ? ''
-               : ($this->isGroupAndErrorIdIndexed() ? $this->getIndexName() : $this->findCoreToUse());
+               : ($this->isGroupAndErrorIdIndexed() ? $this->configuration->getIndexName() : $this->findCoreToUse());
     if ($coreToUse != '') {
-      $recordIds = $this->prepareParametersForIssueQueriesSolr($idType, $db, $id, $groupId, $coreToUse);
+      $recordIds = $this->prepareParametersForIssueQueriesSolr($idType, $id, $groupId, $coreToUse);
     } else {
-      $recordIds = $this->prepareParametersForIssueQueriesSqlite($idType, $db, $id, $groupId);
+      $recordIds = $this->prepareParametersForIssueQueriesSqlite($idType, $id, $groupId);
     }
     return $recordIds;
   }
@@ -322,35 +353,45 @@ class Data extends Facetable {
     return '?' . join('&', $params);
   }
 
-  /**
-   * @param Smarty $smarty
-   * @return void
-   */
   private function searchAction(Smarty $smarty): void {
+    $smarty->assign('showAdvancedSearchForm', $this->configuration->doShowAdvancedSearchForm());
     $smarty->assign('query', $this->query);
     $smarty->assign('start', $this->start);
     $smarty->assign('rows', $this->rows);
     $smarty->assign('facetLimit', $this->facetLimit);
     $smarty->assign('filters', $this->createFilters());
     $smarty->assign('offset', $this->offset);
-    if ($this->grouped)
+    $smarty->assign('grouped', $this->grouped);
+    if ($this->grouped) {
       $smarty->assign('groupId', $this->groupId);
-
-    $solrParams = $this->buildParameters();
-    $smarty->assign('solrUrl', join('&', $solrParams));
-    $response = $this->getSolrResponse($solrParams);
-    if (is_null($this->numFound)) {
-      $this->numFound = $response->numFound;
+      $smarty->assign('groupBy', $this->parseGroupBy($this->groupBy));
     }
-    $smarty->assign('numFound', $this->numFound);
-    $smarty->assign('docs', $response->docs);
-    $smarty->assign('facets', $response->facets);
     $smarty->assign('itemsPerPage', $this->getItemPerPage());
-    $smarty->assign('prevNextLinks', $this->createPrevNextLinks($this->numFound));
     $smarty->assign('basicFacetParams', $this->getBasicUrl());
     $smarty->assign('ajaxFacet', $this->ajaxFacet);
 
     $smarty->assign('schemaType', $this->catalogue->getSchemaType());
+    $smarty->assign('searchform', $this->searchform);
+
+    if ($this->configuration->doShowAdvancedSearchForm() && $this->searchform != 'advanced') {
+      for ($i = 1; $i <= 3; $i++) {
+        $smarty->assign('field' . $i, '');
+        $smarty->assign('value' . $i, '');
+        $smarty->assign('label' . $i, '');
+      }
+    }
+
+    // The following may throw an exception when solr is not reachable
+    $solrParams = $this->buildParameters($smarty);
+    $smarty->assign('solrUrl', join('&', $solrParams));
+    $response = $this->solr()->getSolrResponse($solrParams);
+    if (is_null($this->numFound)) {
+      $this->numFound = $response->numFound;
+    }
+    $smarty->assign('numFound', $this->numFound);
+    $smarty->assign('prevNextLinks', $this->createPrevNextLinks($this->numFound));
+    $smarty->assign('docs', $response->docs);
+    $smarty->assign('facets', $response->facets);
   }
 
   /**
@@ -366,7 +407,7 @@ class Data extends Facetable {
     $rows = 1000;
     do {
       $solrParams = $this->buildParametersForDownload($start, $rows);
-      $response = $this->getSolrResponse($solrParams);
+      $response = $this->solr()->getSolrResponse($solrParams);
       foreach ($response->docs as $doc) {
         echo $doc->id, "\n";
         $total++;
@@ -379,7 +420,7 @@ class Data extends Facetable {
     $solrParams = [
       'start=' . $start,
       'rows=' . $rows,
-      'core=' . $this->db,
+      'core=' . $this->id,
       'fl=id',
     ];
 
@@ -405,30 +446,25 @@ class Data extends Facetable {
     return $solrParams;
   }
 
-  private function getRecordIdByErrorId($core, $errorId, $groupId = null, $start = 0, $rows = 10) {
+  private function getRecordIdByErrorId($core, $errorId, $groupId = null, $start = 0, $rows = 10): array {
     $query = 'errorId_is:' . $errorId;
     if (!is_null($groupId))
       $query .= ' AND groupId_is:' . $groupId;
 
-    $url = sprintf('http://localhost:8983/solr/%s/select?q=%s&fl=id&start=%d&rows=%d',
-                    $core, urlencode($query), $start, $rows);
-    $response = json_decode(file_get_contents($url));
-    $this->numFound = $response->response->numFound;
+    $response = $this->solr()->getSolrResponse(['q' => $query, 'fl' => 'id', 'start' => $start, 'rows' => $rows]);
+    $this->numFound = $response->numFound;
     $recordIds = [];
-    foreach ($response->response->docs as $doc) {
+    foreach ($response->docs as $doc) {
       $recordIds[] = $doc->id;
     }
     return $recordIds;
   }
 
-  /**
-   * @return false|string
-   */
   private function findCoreToUse(): string {
     $coreToUse = '';
-    $cores = ['validation', $this->getIndexName() . '_validation'];
+    $cores = ['validation', $this->configuration->getIndexName() . '_validation'];
     foreach ($cores as $core) {
-      if ($this->isCoreAvailable($core)) {
+      if ($this->solr()->isCoreAvailable($core)) {
         $coreToUse = $core;
         break;
       }
@@ -438,59 +474,58 @@ class Data extends Facetable {
 
   /**
    * @param string $idType The type of identifier (errorId, categoryId, typeId)
-   * @param IssuesDB $db The SQL wrapper class
    * @param $id The identifier
    * @param $groupId The group identifyer
    * @param string $coreToUse The Solr core to use
-   * @return array|void
    */
-  private function prepareParametersForIssueQueriesSolr(string $idType, IssuesDB $db, $id, $groupId, string $coreToUse) {
+  private function prepareParametersForIssueQueriesSolr(string $idType, $id, $groupId, string $coreToUse): ?array {
     if ($idType == 'errorId') {
       return $this->getRecordIdByErrorId($coreToUse, $id, $groupId, $this->start, $this->rows);
     } else if ($idType == 'categoryId') {
-      $errorIds = $db->fetchAll($db->getErrorIdsByCategoryId($id, $groupId), 'id');
-      error_log("errorIds: " . join(', ', $errorIds));
+      // FIXME: $db is not defined
+      $errorIds = $this->issueDB()->fetchAll($db->getErrorIdsByCategoryId($id, $groupId), 'id');
+      $this->log->info("errorIds: " . join(', ', $errorIds));
       return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $errorIds) . ')', $groupId, $this->start, $this->rows);
     } else if ($idType == 'typeId') {
-      $errorIds = $db->fetchAll($db->getErrorIdsByTypeId($id, $groupId), 'id');
+      // FIXME: $db is not defined
+      $errorIds = $this->issueDB()->fetchAll($db->getErrorIdsByTypeId($id, $groupId), 'id');
       return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $errorIds) . ')', $groupId, $this->start, $this->rows);
     }
+    return null;
   }
 
   /**
    * @param string $idType The type of identifier (errorId, categoryId, typeId)
-   * @param IssuesDB $db The SQL wrapper class
    * @param $id The identifier
    * @param $groupId The group identifyer
-   * @return array
    */
-  private function prepareParametersForIssueQueriesSqlite(string $idType, IssuesDB $db, $id, $groupId): array {
+  private function prepareParametersForIssueQueriesSqlite(string $idType, $id, $groupId): array {
     if ($idType == 'errorId') {
       $start = microtime(true);
-      $this->numFound = $db->getRecordIdsByErrorIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+      $this->numFound = $this->issueDB()->getRecordIdsByErrorIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
       $t_count = microtime(true) - $start;
-      $result = $db->getRecordIdsByErrorId($id, $groupId, $this->start, $this->rows);
+      $result = $this->issueDB()->getRecordIdsByErrorId($id, $groupId, $this->start, $this->rows);
       $t_retrieve = microtime(true) - $start;
-      error_log(sprintf("count: %.2f, retrieve: %.2f", $t_count, $t_retrieve));
+      $this->log->warning(sprintf("count: %.2f, retrieve: %.2f", $t_count, $t_retrieve));
     } else if ($idType == 'categoryId') {
-      $this->numFound = $db->getRecordIdsByCategoryIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
-      $result = $db->getRecordIdsByCategoryId($id, $groupId, $this->start, $this->rows);
+      $this->numFound = $this->issueDB()->getRecordIdsByCategoryIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+      $result = $this->issueDB()->getRecordIdsByCategoryId($id, $groupId, $this->start, $this->rows);
     } else if ($idType == 'typeId') {
-      $this->numFound = $db->getRecordIdsByTypeIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
-      $result = $db->getRecordIdsByTypeId($id, $groupId, $this->start, $this->rows);
+      $this->numFound = $this->issueDB()->getRecordIdsByTypeIdCount($id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+      $result = $this->issueDB()->getRecordIdsByTypeId($id, $groupId, $this->start, $this->rows);
     } else if ($this->type == 'custom-rule') {
-      if ($db->hasColumnInTable($idType, 'shacl')) {
-        $this->numFound = $db->getRecordIdsByShaclCount($idType, $id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
-        $result = $db->getRecordIdsByShacl($idType, $id, $groupId, $this->start, $this->rows);
+      if ($this->issueDB()->hasColumnInTable($idType, 'shacl')) {
+        $this->numFound = $this->issueDB()->getRecordIdsByShaclCount($idType, $id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+        $result = $this->issueDB()->getRecordIdsByShacl($idType, $id, $groupId, $this->start, $this->rows);
       }
-    }
-    return $db->fetchAll($result, 'id');
+    } // FIXME: else? better make idtype an Enum?
+    return $this->issueDB()->fetchAll($result, 'id');
   }
 
   private function isGroupAndErrorIdIndexed() {
     return !is_null($this->indexingParameters)
            && isset($this->indexingParameters->validationUrl)
-           && in_array('errorId_is', $this->getSolrFields());
+           && in_array('errorId_is', $this->solr()->getSolrFields());
   }
 
   /**
@@ -503,14 +538,11 @@ class Data extends Facetable {
     if ($idType == 'errorId') {
       $errorId = $id;
     } else {
-      include_once 'IssuesDB.php';
-      $dir = sprintf('%s/%s', $this->configuration['dir'], $this->getDirName());
-      $db = new IssuesDB($dir);
       if ($idType == 'categoryId') {
-        $errorIds = $db->fetchAll($db->getErrorIdsByCategoryId($id, $this->groupId), 'id');
+        $errorIds = $this->issueDB()->fetchAll($this->issueDB()->getErrorIdsByCategoryId($id, $this->groupId), 'id');
         $errorId = '(' . join(' OR ', $errorIds) . ')';
       } else if ($idType == 'typeId') {
-        $errorIds = $db->fetchAll($db->getErrorIdsByTypeId($id, $this->groupId), 'id');
+        $errorIds = $this->issueDB()->fetchAll($this->issueDB()->getErrorIdsByTypeId($id, $this->groupId), 'id');
         $errorId = '(' . join(' OR ', $errorIds) . ')';
       }
     }
@@ -518,5 +550,23 @@ class Data extends Facetable {
     if ($this->grouped)
       $query .= ' AND groupId_is:' . $this->groupId;
     return $query;
+  }
+
+  private function parseGroupBy($groupBy) {
+    $parts = explode('$', $groupBy);
+    return (object)[
+      'full' => $groupBy,
+      'tag' => $parts[0],
+      'subfield' => $parts[1]
+    ];
+  }
+
+  public function getLibraryById($id) {
+    if (!isset($this->allGroups)) {
+      $this->allGroups = [];
+      foreach ($this->readGroups() as $group)
+        $this->allGroups[$group->id] = $group->group;
+    }
+    return $this->allGroups[$id] ?? $id;
   }
 }

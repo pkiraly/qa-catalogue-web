@@ -1,9 +1,10 @@
 <?php
 
 class IssuesDB extends SQLite3 {
-  private $db;
+  protected Monolog\Logger $log;
 
-  function __construct($dir) {
+  function __construct(string $dir, $log) {
+    $this->log = $log;
     $file = $dir . '/qa_catalogue.sqlite';
     try {
       $this->open($file);
@@ -12,26 +13,7 @@ class IssuesDB extends SQLite3 {
     }
   }
 
-  public function getByCategoryAndType($categoryId, $typeId, $order = 'records DESC', $offset = 0, $limit) {
-    $default_order = 'records DESC';
-    if (!preg_match('/^(MarcPath|message|instances|records) (ASC|DESC)$/', $order))
-      $order = $default_order;
-    $stmt = $this->prepare('SELECT *
-       FROM issue_summary
-       WHERE categoryId = :categoryId AND typeId = :typeId
-       ORDER BY ' . $order . ' 
-       LIMIT :limit
-       OFFSET :offset
-    ');
-    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
-    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
-    $stmt->bindValue(':offset', $offset, SQLITE3_INTEGER);
-    $stmt->bindValue(':limit', $limit, SQLITE3_INTEGER);
-
-    return $stmt->execute();
-  }
-
-  public function getByCategoryTypeAndGroup($categoryId, $typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
+  public function getByCategoryTypeAndGroup($categoryId, $typeId, $groupId, $order, $offset, $limit) {
     $default_order = 'records DESC';
     if (!preg_match('/^(MarcPath|message|instances|records) (ASC|DESC)$/', $order))
       $order = $default_order;
@@ -68,7 +50,7 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function getByCategoryTypePathAndGroup($categoryId, $typeId, $path = null, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
+  public function getByCategoryTypePathAndGroup($categoryId, $typeId, $path, $groupId, $order, $offset, $limit) {
     $default_order = 'records DESC';
     if (!preg_match('/^(MarcPath|message|instances|records) (ASC|DESC)$/', $order))
       $order = $default_order;
@@ -106,84 +88,7 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
-  public function getByCategoryAndTypeGroupedByPath($categoryId, $typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
-    $default_order = 'records DESC';
-    if (!preg_match('/^(path|variants|instances|records) (ASC|DESC)$/', $order))
-      $order = $default_order;
-    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
-    $stmt = $this->prepare(
-      'SELECT path, variants, instances, records
-      FROM issue_groups AS s
-      WHERE categoryId = :categoryId AND typeId = :typeId' . $groupCriterium . '
-      ORDER BY ' . $order
-    );
-    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
-    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
-    if ($groupId !== '')
-      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
-    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
-
-    return $stmt->execute();
-  }
-
-  public function getByCategoryAndTypeGroupedByPathCount($categoryId, $typeId, $groupId = '') {
-    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
-    $stmt = $this->prepare(
-      'SELECT COUNT(*) AS count
-      FROM issue_groups AS s
-      WHERE categoryId = :categoryId AND typeId = :typeId' . $groupCriterium
-    );
-    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
-    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
-    if ($groupId !== '')
-      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
-
-    return $stmt->execute();
-  }
-
-  public function getRecordNumberByTypeGrouped($typeId, $groupId = '') {
-    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
-    $stmt = $this->prepare(
-      'SELECT record_nr AS count
-      FROM issue_grouped_types AS s
-      WHERE typeId = :typeId' . $groupCriterium
-    );
-    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
-    if ($groupId !== '')
-      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
-
-    return $stmt->execute();
-  }
-
-  public function getRecordNumberByCategoryGrouped($categoryId, $groupId = '') {
-    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
-    $stmt = $this->prepare(
-      'SELECT record_nr AS count
-      FROM issue_grouped_types AS s
-      WHERE categoryId = :categoryId' . $groupCriterium
-    );
-    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
-    if ($groupId !== '')
-      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
-
-    return $stmt->execute();
-  }
-
-  public function getRecordNumberByPathGrouped($typeId, $groupId = '') {
-    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
-    $stmt = $this->prepare(
-      'SELECT record_nr AS count
-      FROM issue_grouped_types AS s
-      WHERE categoryId = :categoryId' . $groupCriterium
-    );
-    $stmt->bindValue(':categoryId', $typeId, SQLITE3_INTEGER);
-    if ($groupId !== '')
-      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
-
-    return $stmt->execute();
-  }
-
-  public function getRecordNumberAndVariationsForPathGrouped($typeId, $groupId = '', $order = 'records DESC', $offset = 0, $limit) {
+  public function getRecordNumberAndVariationsForPathGrouped($typeId, $groupId, $order, $offset, $limit) {
     $groupCriterium = ($groupId !== '') ? ' AND p.groupId = :groupId' : '';
     $default_order = 'records DESC';
     if (!preg_match('/^(path|variants|instances|records) (ASC|DESC)$/', $order))
@@ -218,7 +123,28 @@ class IssuesDB extends SQLite3 {
     $stmt->bindValue(':errorId', $errorId, SQLITE3_INTEGER);
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+
+    return $stmt->execute();
+  }
+
+
+  public function getByCategoryAndTypeGroupedByPath($categoryId, $typeId, $groupId, $order, $offset, $limit) {
+    $default_order = 'records DESC';
+    if (!preg_match('/^(path|variants|instances|records) (ASC|DESC)$/', $order))
+      $order = $default_order;
+    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
+    $stmt = $this->prepare(
+      'SELECT path, variants, instances, records
+      FROM issue_groups AS s
+      WHERE categoryId = :categoryId AND typeId = :typeId' . $groupCriterium . '
+      ORDER BY ' . $order
+    );
+    $stmt->bindValue(':categoryId', $categoryId, SQLITE3_INTEGER);
+    $stmt->bindValue(':typeId', $typeId, SQLITE3_INTEGER);
+    if ($groupId !== '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
+    // $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
@@ -246,7 +172,7 @@ class IssuesDB extends SQLite3 {
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
-    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    // $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
@@ -275,7 +201,7 @@ class IssuesDB extends SQLite3 {
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
 
-    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    // $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();
   }
 
@@ -290,7 +216,7 @@ class IssuesDB extends SQLite3 {
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
 
-    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    // $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();
   }
 
@@ -305,7 +231,7 @@ class IssuesDB extends SQLite3 {
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
-    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    // $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
@@ -317,12 +243,12 @@ class IssuesDB extends SQLite3 {
     $stmt = $this->prepare(
       'SELECT COUNT(distinct(id)) AS count
        FROM shacl
-       WHERE "' . $criterium . '" = :typeId');
+       WHERE "' . $criterium . '" = :typeId' . $groupCriterium);
     $stmt->bindValue(':typeId', $typeId, SQLITE3_TEXT);
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
@@ -351,7 +277,7 @@ class IssuesDB extends SQLite3 {
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
 
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
@@ -369,7 +295,7 @@ class IssuesDB extends SQLite3 {
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
 
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
 
     return $stmt->execute();
   }
@@ -380,7 +306,7 @@ class IssuesDB extends SQLite3 {
     $stmt = $this->prepare('SELECT COUNT(name) AS count FROM sqlite_master WHERE type = :table AND name = :tableName');
     $stmt->bindValue(':table', 'table', SQLITE3_TEXT);
     $stmt->bindValue(':tableName', 'marc_elements', SQLITE3_TEXT);
-    // error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    // $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();
     */
   }
@@ -389,7 +315,7 @@ class IssuesDB extends SQLite3 {
     $stmt = $this->prepare('SELECT COUNT(name) AS count FROM sqlite_master WHERE type = :table AND name = :tableName');
     $stmt->bindValue(':table', 'table', SQLITE3_TEXT);
     $stmt->bindValue(':tableName', $table, SQLITE3_TEXT);
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute()->fetchArray(SQLITE3_ASSOC)['count'] == 1;
   }
 
@@ -397,7 +323,7 @@ class IssuesDB extends SQLite3 {
     $stmt = $this->prepare('SELECT COUNT(name) AS count FROM pragma_table_info(:table) WHERE name = :column');
     $stmt->bindValue(':table', $table, SQLITE3_TEXT);
     $stmt->bindValue(':column', $column, SQLITE3_TEXT);
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     // return $stmt->execute();
     return $stmt->execute()->fetchArray(SQLITE3_ASSOC)['count'] == 1;
   }
@@ -411,7 +337,7 @@ class IssuesDB extends SQLite3 {
     $stmt->bindValue(':documenttype', $documenttype, SQLITE3_TEXT);
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();
   }
 
@@ -425,10 +351,38 @@ class IssuesDB extends SQLite3 {
     $stmt->bindValue(':documenttype', "all", SQLITE3_TEXT);
     if ($groupId !== '')
       $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
-    error_log(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
     return $stmt->execute();
   }
 
+  // get the number of data elements
+  public function getDataElementsByPackage($schema, $groupId = '', $documenttype = '') {
+    $this->log->debug('groupId type is: ' . gettype($groupId));
+    $where = '';
+    if ($groupId !== '' || $documenttype !== '') {
+      $criteria = [];
+      if ($groupId !== '')
+        $criteria[] = 'groupId = :groupId';
+      if ($documenttype !== '')
+        $criteria[] = 'documenttype = :documenttype';
+      if (!empty($criteria))
+        $where = ' WHERE ' . join(' AND ', $criteria);
+    }
+    $isAField = $schema == 'PICA' ? 'NOT(LIKE(\'%$%\', path))' : 'LENGTH(path) = 3';
+    $stmt = $this->prepare(
+      'SELECT packageid,
+                    COUNT(DISTINCT path) AS count,
+                    ' . $isAField . ' AS isField
+      FROM marc_elements ' . $where . ' 
+      GROUP BY packageId, ' . $isAField
+    );
+    if ($groupId !== '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_INTEGER);
+    if ($documenttype !== '')
+      $stmt->bindValue(':documenttype', $documenttype, SQLITE3_TEXT);
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+    return $stmt->execute();
+  }
 
   // select * from issue_details JOIN id_groupid USING (id) WHERE errorId = 1 AND groupId = 77 LIMIT 30;
 
@@ -439,5 +393,4 @@ class IssuesDB extends SQLite3 {
     }
     return $values;
   }
-
 }

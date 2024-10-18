@@ -7,13 +7,13 @@
       {if isset($field->subfields->a)}
         {if property_exists($field->subfields, '9')}
           <a href="?tab=data&query=045Q9_ss:{$field->subfields->{'9'}}">{strip}
-            <span class="045Q$a">{$field->subfields->a}</span>
+            <span class="045Q$a">{include 'data/subfield.tpl' value=$field->subfields->a}</span>
           {/strip}</a>
         {else}
-          <span class="045Q$a">{$field->subfields->a}</span>
+          <span class="045Q$a">{include 'data/subfield.tpl' value=$field->subfields->a}</span>
         {/if}
       {/if}
-      {if isset($field->subfields->j)}<span class="045Q$a">{$field->subfields->j}</span>{/if}
+      {if isset($field->subfields->j)}<span class="045Q$a">{include 'data/subfield.tpl' value=$field->subfields->j}</span>{/if}
       {if !$smarty.foreach.fields.last}<br/>{/if}
     {/foreach}
   </td>

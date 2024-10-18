@@ -5,10 +5,10 @@
   {foreach from=$fieldInstances item=field}
     <span class="362">
       {if isset($field->subfields->a)}
-        <span class="dates">{$field->subfields->a}</span>
+        <span class="dates">{include 'data/subfield.tpl' value=$field->subfields->a}</span>
       {/if}
       {if isset($field->subfields->z)}
-        <span class="source">{$field->subfields->z}</span>
+        <span class="source">{include 'data/subfield.tpl' value=$field->subfields->z}</span>
       {/if}
     </span>
     <br/>

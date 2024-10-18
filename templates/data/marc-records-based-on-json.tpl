@@ -6,6 +6,7 @@
     <h2>
       <i class="fa fa-{$record->type2icon($type)}" title="type: {$type}"></i>
       <strong>{$id}</strong>
+      <a href="?tab=data&query=id%3A{$id}{$generalParams}" title="{_("Link to this record")}"><i class="fa fa-link" aria-hidden="true"></i></a>
       {include "../common/opac-link.tpl" url=$record->opacLink($doc->id)}
     </h2>
 

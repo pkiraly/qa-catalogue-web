@@ -13,11 +13,10 @@ class Settings extends BaseTab {
       $selectedFacets = getPostedOrDefault('facet', '');
       $action = getPostedOrDefault('action', 'add', ['add', 'remove']);
       if ($action == 'add') {
-        $success = $this->addSelectedFacets($selectedFacets);
+        $smarty->assign('success', $this->addSelectedFacets($selectedFacets));
       } else if ($action == 'remove') {
-        $success = $this->removeSelectedFacets($selectedFacets);
+        $smarty->assign('success', $this->removeSelectedFacets($selectedFacets));
       }
-      $smarty->assign('success', $success);
       $params = array_merge(['tab=settings'], $this->getGeneralParams());
       $url = '?' . join('&', $params);
       header('Location: ' . $url);
@@ -43,7 +42,7 @@ class Settings extends BaseTab {
   private function getFields() {
     $fields = [];
     $selectedFacets = $this->getSelectedFacets();
-    $fieldNames = $this->getSolrFields();
+    $fieldNames = $this->solr()->getSolrFields();
     sort($fieldNames);
 
     foreach ($fieldNames as $fieldName) {
@@ -70,7 +69,7 @@ class Settings extends BaseTab {
 
   private function saveSelectedFacets($selectedFacets) {
     $file = $this->getFacetFile();
-    $fieldNames = $this->getSolrFields();
+    $fieldNames = $this->solr()->getSolrFields();
     if (is_string($selectedFacets))
       $selectedFacets = [$selectedFacets];
     $checkedFacets = [];
@@ -84,7 +83,7 @@ class Settings extends BaseTab {
 
   private function addSelectedFacets($selectedFacets) {
     $file = $this->getFacetFile();
-    $fieldNames = $this->getSolrFields();
+    $fieldNames = $this->solr()->getSolrFields();
     if (is_string($selectedFacets))
       $selectedFacets = [$selectedFacets];
     $checkedFacets = file_exists($file) ? json_decode(file_get_contents($file)) : [];
@@ -141,7 +140,7 @@ class Settings extends BaseTab {
     } elseif ($number >= 900) {
       $category = '9XX Locally defined fields';
     } else {
-      error_log(sprintf("%s -> %s", $fieldName, $number));
+      $this->log->warning(sprintf("%s -> %s", $fieldName, $number));
       $category = 'unknown';
     }
     return $category;

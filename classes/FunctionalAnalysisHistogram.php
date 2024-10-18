@@ -1,13 +1,11 @@
 <?php
 
-
 class FunctionalAnalysisHistogram extends BaseTab {
 
   protected $selectedFunction;
 
-  public function __construct($configuration, $db) {
-    parent::__construct($configuration, $db);
-
+  public function __construct($configuration, $id) {
+    parent::__construct($configuration, $id);
     $this->selectedFunction = getOrDefault('function', '');
   }
 
@@ -24,53 +22,53 @@ class FunctionalAnalysisHistogram extends BaseTab {
 
   private function read($filename) {
     $elementsFile = $this->getFilePath($filename . '.csv');
-    if (file_exists($elementsFile)) {
-      $lineNumber = 0;
-      $header = [];
-      $in = fopen($elementsFile, "r");
-      $groupedCsv = [];
-      while (($line = fgets($in)) != false) {
-        $lineNumber++;
-        $values = str_getcsv($line);
-        if ($lineNumber == 1) {
-          $header = $values;
-          $currentFunction = '';
+    if (!file_exists($elementsFile)) {
+      return;
+    }
+    $lineNumber = 0;
+    $header = [];
+    $currentFunction = '';
+    $in = fopen($elementsFile, "r");
+    $groupedCsv = [];
+    while (($line = fgets($in)) != false) {
+      $lineNumber++;
+      $values = str_getcsv($line);
+      if ($lineNumber == 1) {
+        $header = $values;
+        $function_report = [];
+        if ($this->selectedFunction != '')
+          $groupedCsv[] = ['count', 'frequency'];
+        else
+          $groupedCsv[] = ['frbrfunction', 'score', 'count'];
+      } else {
+        if (count($header) != count($values)) {
+          $this->log->warning('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
+        }
+        $record = (object)array_combine($header, $values);
+        if ($this->selectedFunction != '' && $this->selectedFunction != $record->frbrfunction)
+          continue;
+
+        if ($record->frbrfunction != $currentFunction) {
+          if ($currentFunction != '') {
+            $this->addFunctionReport($currentFunction, $function_report, $groupedCsv);
+          }
           $function_report = [];
-          if ($this->selectedFunction != '')
-            $groupedCsv[] = ['count', 'frequency'];
-          else
-            $groupedCsv[] = ['frbrfunction', 'score', 'count'];
+          $currentFunction = $record->frbrfunction;
+        }
+
+        $rounded = $record->functioncount;
+        if (!isset($function_report[$rounded])) {
+          $function_report[$rounded] = $record->count;
         } else {
-          if (count($header) != count($values)) {
-            error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
-          }
-          $record = (object)array_combine($header, $values);
-          if ($this->selectedFunction != '' && $this->selectedFunction != $record->frbrfunction)
-            continue;
-
-          if ($record->frbrfunction != $currentFunction) {
-            if ($currentFunction != '') {
-              $this->addFunctionReport($currentFunction, $function_report, $groupedCsv);
-            }
-            $function_report = [];
-            $currentFunction = $record->frbrfunction;
-          }
-
-          $rounded = round($record->score * 100);
-          $rounded = $record->functioncount;
-          if (!isset($function_report[$rounded])) {
-            $function_report[$rounded] = $record->count;
-          } else {
-            $function_report[$rounded] += $record->count;
-          }
+          $function_report[$rounded] += $record->count;
         }
       }
-      $this->addFunctionReport($currentFunction, $function_report, $groupedCsv);
-      fclose($in);
-
-      header("Content-type: text/csv");
-      echo $this->formatAsCsv($groupedCsv);
     }
+    $this->addFunctionReport($currentFunction, $function_report, $groupedCsv);
+    fclose($in);
+
+    header("Content-type: text/csv");
+    echo $this->formatAsCsv($groupedCsv);
   }
 
   private function addFunctionReport($current_function, $function_report, &$grouped_csv) {

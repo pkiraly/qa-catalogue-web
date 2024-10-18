@@ -12,7 +12,7 @@
             <svg class="histogram-chart" width="800" height="{($count * 30) + 90}"></svg>
             <script src="js/barchart.js" type="text/javascript"></script>
             <script>
-                var db = '{$db}';
+                var db = '{$id}';
                 var count = {$count};
                 var histogramDataUrl = '?tab=control-fields&action=histogram&field={$selectedField}&type={$selectedType}&position={$selectedPosition}';
                 var solrField = '{$solrField}';

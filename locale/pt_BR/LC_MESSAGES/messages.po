@@ -20,6 +20,8 @@ msgid "last data update"
 msgstr "última atualização de dados"
 msgid "number of records"
 msgstr "número de registros"
+msgid "timestamp of analysis"
+msgstr "Registro de data e hora da análise"
 
 # navigation
 msgid "Data"

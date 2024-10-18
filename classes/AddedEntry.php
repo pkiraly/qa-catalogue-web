@@ -1,11 +1,10 @@
 <?php
 
-
 class AddedEntry extends BaseTab {
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
-    parent::readAnalysisParameters('completeness.params.json');
+
     $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
     $this->groupId = getOrDefault('groupId', 0);
   }
@@ -13,11 +12,14 @@ class AddedEntry extends BaseTab {
   protected function ind1Orsubfield2(&$record, $ind1, $subfield2) {
     $debug = FALSE; // ($record->field == '052');
     if ($debug)
-      error_log('location: ' . $record->location);
+      $this->log->debug('location: ' . $record->location);
+    // Query in form of "052ind1_GeographicClassification_codeSource_ss
+    // Or starting with "0522_GeographicClassification_source_ss:scheme"
 
+    // %%22 is actually %22 in the URL encoding, which is a double quote (")
     if ($record->location == 'ind1') {
       $record->q = sprintf('%s:%%22%s%%22', $ind1, $record->scheme);
-    } else if ($record->location == '$2') {
+    } elseif ($record->location == '$2') {
       if ($record->scheme == 'undetectable') {
         $record->q = sprintf('%s:%%22Source specified in subfield \$2%%22 NOT %s:*', $ind1, $subfield2);
       } else {
@@ -25,7 +27,7 @@ class AddedEntry extends BaseTab {
       }
     }
     if ($debug)
-      error_log('q: ' . $record->q);
+      $this->log->debug('q: ' . $record->q);
   }
 
   protected function ind2Orsubfield2(&$record, $ind2, $subfield2) {
@@ -54,32 +56,37 @@ class AddedEntry extends BaseTab {
     }
   }
 
-  /**
-   * @param $dir
-   * @param $db
-   * @param Smarty $smarty
-   * @return object
-   */
-  protected function readElements(Smarty &$smarty) {
-    error_log('readElements');
+  protected function readElements(Smarty &$smarty): void {
+    $t0 = microtime(true);
+    $tArrayCombine = 0.0;
     $fileName = $this->grouped ? 'completeness-grouped-marc-elements.csv' : 'marc-elements.csv';
     $elementsFile = $this->getFilePath($fileName);
-    error_log('$elementsFile: ' . $elementsFile);
+    $useDB = true;
     if (file_exists($elementsFile)) {
-      error_log('file exists');
-      $header = [];
       $elements = [];
-      $in = fopen($elementsFile, "r");
-      while (($line = fgets($in)) != false) {
-        $values = str_getcsv($line);
-        if (empty($header)) {
-          $header = $values;
-        } else {
-          $record = (object)array_combine($header, $values);
-          if ($this->grouped && $record->groupId != $this->groupId)
-            continue;
+      if ($useDB && $this->hasMarcElementTable()) {
+        $this->log->info('read data elements from DB');
+        $result = $this->issueDB->getMarcElements('all', ($this->grouped ? $this->groupId : ''));
+        while ($record = $result->fetchArray(SQLITE3_ASSOC)) {
+          $elements[$record['path']] = $record['subfield'];
+        }
+      } else {
+        $this->log->info('read data elements from: ' . $elementsFile);
+        $header = [];
+        $in = fopen($elementsFile, "r");
+        while (($line = fgets($in)) != false) {
+          $values = str_getcsv($line);
+          if (empty($header)) {
+            $header = $values;
+          } else {
+            $tArrayCombine0 = microtime(true);
+            $record = (object)array_combine($header, $values);
+            $tArrayCombine += microtime(true) - $tArrayCombine0;
+            if ($this->grouped && $record->groupId != $this->groupId)
+              continue;
 
-          $elements[$record->path] = $record->subfield;
+            $elements[$record->path] = $record->subfield;
+          }
         }
       }
       $smarty->assign('hasElements', TRUE);
@@ -89,14 +96,9 @@ class AddedEntry extends BaseTab {
     }
   }
 
-  /**
-   * @param $dir
-   * @param $db
-   * @param Smarty $smarty
-   * @return object
-   */
-  protected function readSubfields(Smarty &$smarty, $bySubfieldsFile) {
+  protected function readSubfields(Smarty &$smarty, string $bySubfieldsFile): void {
     if (file_exists($bySubfieldsFile)) {
+      $this->log->info('bySubfieldsFile: ' . $bySubfieldsFile);
       $header = [];
       $subfields = [];
       $subfieldsById = [];
@@ -106,9 +108,13 @@ class AddedEntry extends BaseTab {
         if (empty($header)) {
           $header = $values;
         } else {
+          if (count($header) != count($values)) {
+            $this->log->info("wrong line: " . $line);
+            continue;
+          }
           $record = (object)array_combine($header, $values);
           if (!isset($record->subfields)) {
-            error_log('no subfields: ' . $line . ' (' . $bySubfieldsFile . ')');
+            $this->log->info('no subfields: ' . $line . ' (' . $bySubfieldsFile . ')');
           }
           $record->subfields = explode(';', $record->subfields);
           $items = [];
@@ -168,20 +174,30 @@ class AddedEntry extends BaseTab {
   }
 
   /**
-   * @param $record
-   * @param $base
+   * This method is used to create facets for a given field. The method sets the facet and facet2 properties of the
+   * classificationRecord object.
+   * @param object $classificationRecord Represents a bibliographic field, result of the classification process
+   *                                     (not to mistake for a bibliographic record).
+   * @param string $base The base name for the facet.
    */
-  protected function createFacets(&$record, $base) {
-    $record->facet = $base . '_ss';
+  protected function createFacets(object &$classificationRecord, string $base) {
+    $classificationRecord->facet = $base . '_ss';
 
-    if (isset($record->abbreviation4solr)
-        && $record->abbreviation4solr != ''
-        && in_array($record->abbreviation4solr, $this->getSolrFields())) {
-      $record->facet2 = $base . '_' . $record->abbreviation4solr . '_ss';
-    } elseif (isset($record->abbreviation)
-        && $record->abbreviation != ''
-        && in_array($record->abbreviation, $this->getSolrFields())) {
-      $record->facet2 = $base . '_' . $record->abbreviation . '_ss';
+    // The main difference between abbreviation and abbreviation4solr is that the latter gets stripped of
+    // special characters or whitespaces.
+    // This part with abbreviations is supposed to target the indexFieldsWithSchemas part of the Solr indexing in
+    // the qa-catalogue tool.
+    if (isset($classificationRecord->abbreviation4solr)
+        && $classificationRecord->abbreviation4solr != ''
+        && in_array($classificationRecord->abbreviation4solr, $this->solr()->getSolrFields())) {
+      $classificationRecord->facet2 = $base . '_' . $classificationRecord->abbreviation4solr . '_ss';
+      return;
+    }
+
+    if (isset($classificationRecord->abbreviation)
+        && $classificationRecord->abbreviation != ''
+        && in_array($classificationRecord->abbreviation, $this->solr()->getSolrFields())) {
+      $classificationRecord->facet2 = $base . '_' . $classificationRecord->abbreviation . '_ss';
     }
   }
 
@@ -202,6 +218,7 @@ class AddedEntry extends BaseTab {
       $total = 0;
       $matrix = [];
       $widths = [];
+      $lineNr = -1;
       foreach ($entry['list'] as $lineNr => $listItem) {
         $number = intval($listItem->count);
         $total += $number;
@@ -237,7 +254,7 @@ class AddedEntry extends BaseTab {
     return $matrices;
   }
 
-  public function termLink($facet, $query, $scheme) {
+  public function termLink($facet, $query, $scheme): string {
     static $baseParams;
     if (!isset($baseParams)) {
       $baseParams = [
@@ -260,7 +277,7 @@ class AddedEntry extends BaseTab {
     return '?' . join('&', $params);
   }
 
-  public function queryLink($id) {
+  public function queryLink($id): string {
     static $baseParams;
     if (!isset($baseParams)) {
       $baseParams = [

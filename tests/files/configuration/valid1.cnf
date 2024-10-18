@@ -1,0 +1,7 @@
+id=abc
+
+dir=this-will-be-ignored
+dir[abc]=new-value
+
+display-foo=true
+display-bar=false

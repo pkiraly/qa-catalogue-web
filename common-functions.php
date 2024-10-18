@@ -24,12 +24,6 @@ function getPostedOrDefault($key, $default_value = NULL, $allowed_values = []) {
   return $value;
 }
 
-function getPath() {
-  $parsed_url = parse_url($_SERVER['REQUEST_URI']);
-  $path = preg_replace(',\/,', '', $parsed_url['path']);
-  return $path;
-}
-
 function createSmarty($templateDir) {
   define('APPLICATION_DIR', __DIR__);
   define('_SMARTY', APPLICATION_DIR . '/_smarty/');
@@ -47,6 +41,7 @@ function createSmarty($templateDir) {
 }
 
 function readCsv($csvFile, $id = '') {
+  global $general_log;
   $records = [];
   if (file_exists($csvFile)) {
     $lineNumber = 0;
@@ -61,7 +56,7 @@ function readCsv($csvFile, $id = '') {
           $header = $values;
         } else {
           if (count($header) != count($values)) {
-            error_log(sprintf('error in %s line #%d: %d vs %d', $csvFile, $lineNumber, count($header), count($values)));
+            $general_log->error(sprintf('error in %s line #%d: %d vs %d', $csvFile, $lineNumber, count($header), count($values)));
           }
           $record = (object)array_combine($header, $values);
           if ($id != '' && isset($record->{$id})) {
@@ -73,9 +68,17 @@ function readCsv($csvFile, $id = '') {
       }
     }
   } else {
-    error_log('file does not exist! ' . $csvFile);
+    $general_log->error('file does not exist! ' . $csvFile);
   }
   return $records;
+}
+
+if (!function_exists('array_is_list')) {
+  function array_is_list(array $arr) {
+    if ($arr === [])
+      return true;
+    return array_keys($arr) === range(0, count($arr) - 1);
+  }
 }
 
 function setLanguage($language) {
@@ -87,14 +90,6 @@ function setLanguage($language) {
   textdomain('messages');
 }
 
-if (!function_exists('array_is_list')) {
-  function array_is_list(array $arr) {
-    if ($arr === [])
-      return true;
-    return array_keys($arr) === range(0, count($arr) - 1);
-  }
-}
-
 /**
  * Translate string with variables
  * @return mixed|string The first argument should be the msgid, the rest should be the variables to inject
@@ -103,7 +98,7 @@ function _t() {
   $args = func_get_args();
   $args[0] = _($args[0]);
 
-  if(func_num_args() <= 1)
+  if (func_num_args() <= 1)
     return $args[0];
 
   return call_user_func_array('sprintf', $args);

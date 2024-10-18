@@ -328,7 +328,7 @@ Each record get a score based on a number of criteria. Each criteria result in a
 <script src="js/histogram.js" type="text/javascript"></script>
 <script>
 // $()
-var db = '{$db}';
+var db = '{$id}';
 var count = {$count};
 var units = 'score';
 var fields = {json_encode($fields)};

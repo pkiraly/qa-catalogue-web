@@ -31,7 +31,7 @@ class Network extends BaseTab {
 
   private function addImage($tag, $suffix) {
     $record = (object)[];
-    $record->url = sprintf('images/%s/network-scores-%s-%s.png', $this->db, $tag, $suffix);
+    $record->url = sprintf('images/%s/network-scores-%s-%s.png', $this->id, $tag, $suffix);
     $record->exists = file_exists($record->url);
 
     return $record;

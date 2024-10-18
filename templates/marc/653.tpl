@@ -6,7 +6,7 @@
     {foreach from=$fieldInstances item=field}
       <span class="653">
         {if isset($field->subfields->a)}
-          <a href="{$record->filter('653a_UncontrolledIndexTerm_ss', $field->subfields->a)}" class="record-link">{$field->subfields->a}</a>
+          <a href="{$record->filter('653a_UncontrolledIndexTerm_ss', $field->subfields->a)}" class="record-link">{include 'data/subfield.tpl' value=$field->subfields->a}</a>
         {/if}
       </span>
       <br/>

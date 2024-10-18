@@ -1,61 +1,44 @@
 <?php
-set_time_limit(0);
 
-// catch incomplete installation
-if (!file_exists('vendor/autoload.php')) {
-  die("Installation incomplete: <code>composer install</code> must be run first!");
-} elseif (!is_writable('_smarty') || !is_writable('cache')) {
-  die("Installation incomplete: <code>_smarty</code> and <code>cache</code> must be writeable!");
-}
+use Utils\Configuration;
+// First check installation and initalize configuration
 
-require 'vendor/autoload.php';
-
-require_once 'common-functions.php';
-$marcBaseUrl = 'https://www.loc.gov/marc/bibliographic/';
-$configuration = parse_ini_file("configuration.cnf", false, INI_SCANNER_TYPED);
-$smarty = createSmarty('templates');
-
-if (isset($configuration['db']) && $configuration['db'] != '')
-  $db = $configuration['db'];
-else
-  $db = getPath();
-
-if (isset($configuration['templates'])) {
-  // realpath ensures there is no `/` at the end of the path
-  $smarty->assign('templates', realpath($configuration['templates']) ?: 'config');
-} else {
-  $smarty->assign('templates', 'config');
-}
-
-$map = [
-  'data'                     => 'Data',
-  'completeness'             => 'Completeness',
-  'issues'                   => 'Issues',
-  'functions'                => 'Functions',
-  'classifications'          => 'Classifications',
-  'authorities'              => 'Authorities',
-  'serials'                  => 'Serials',
-  'tt-completeness'          => 'TtCompleteness',
-  'shelf-ready-completeness' => 'ShelfReadyCompleteness',
-  'shacl'                    => 'Shacl4Bib',
-  'network'                  => 'Network',
-  'terms'                    => 'Terms',
-  'pareto'                   => 'Pareto',
-  'history'                  => 'History',
-  'timeline'                 => 'Timeline',
-  'settings'                 => 'Settings',
-  'about'                    => 'About',
-  'record-issues'            => 'RecordIssues',
-  'histogram'                => 'Histogram',
-  'functional-analysis-histogram' => 'FunctionalAnalysisHistogram',
-  'control-fields'           => 'ControlFields',
-  'download'                 => 'Download',
-  'collocations'             => 'Collocations',
+$configFile = "configuration.cnf";
+$configDefaults = [
+  "id" => preg_replace(',\/,', '', parse_url($_SERVER['REQUEST_URI'])['path'])
 ];
 
-$defaultTab = getDefaultTab($configuration, $map, 'completeness');
-$tab = getOrDefault('tab', $defaultTab);
-$ajax = getOrDefault('ajax', 0, [0, 1]);
+try {
+  require 'vendor/autoload.php';
+} catch(Throwable $e) {
+  die("Installation incomplete: <code>composer install</code> must be run first!");
+} 
+
+if (!is_writable('_smarty') || !is_writable('cache')) {
+  die("Installation incomplete: <code>_smarty</code> and <code>cache</code> must be writeable!");
+} elseif(!file_exists($configFile)) {
+  die("Installation incomplete: missing $configFile");
+}
+
+try {
+  $configuration = Configuration::fromIniFile($configFile, $configDefaults);
+} catch(Throwable $e) {
+  die("Invalid configuration: " . $e->getMessage());
+}
+
+// Then initialize environment based on configuration
+set_time_limit(0);
+$general_log = $configuration->createLogger('qa-catalogue');
+
+require_once 'common-functions.php';
+
+$smarty = createSmarty('templates');
+$smarty->assign('clientVersion', Utils\GitVersion::getVersion());
+$smarty->assign('templates', $configuration->getTemplates());
+
+$tab = getOrDefault('tab', $configuration->getDefaultTab());
+if (!Tab::defined($tab)) $tab = 'issues';
+
 $smarty->assign('tab', $tab);
 $smarty->assign('isCompleteness', in_array($tab, ['completeness', 'serials', 'tt-completeness', 'shelf-ready-completeness', 'functions']));
 $smarty->assign('isValidation', in_array($tab, ['issues', 'shacl']));
@@ -64,37 +47,37 @@ $smarty->assign('isTool', in_array($tab, ['terms', 'control-fields', 'collocatio
 $languages = [
   'en' => 'en_GB.UTF-8',
   'de' => 'de_DE.UTF-8',
-  'pt' => 'pt_BR.UTF-8'
+  'pt' => 'pt_BR.UTF-8',
+  'hu' => 'hu_HU.UTF-8'
 ];
 
-include_once('classes/Tab.php');
-include_once('classes/BaseTab.php');
+$logger = $configuration->createLogger('index');
 
-$class = isset($map[$tab]) ? $map[$tab] : 'Completeness';
-$tab = createTab($class);
-$tab->prepareData($smarty);
+try {
+  $tab = Tab::create($tab, $configuration);
+} catch(Throwable $e) {
+  var_dump($e);
+  $logger->error("Failed to initialize tab $tab",(array)$e);
+  die("Failed to initialize tab $tab");
+}
 
+try {
+  $tab->prepareData($smarty);
+} catch(Throwable $e) {
+  $logger->error('Failed to read analysis result', (array)$e);
+  $smarty->assign('error', 'Failed to read analysis result.');
+}
+
+$ajax = getOrDefault('ajax', 0, [0, 1]);
 if ($ajax == 1) {
   if (!is_null($tab->getAjaxTemplate()) && $tab->getOutputType() != 'none')
     $smarty->display($tab->getAjaxTemplate());
 } elseif ($tab->getOutputType() == 'html')
   $smarty->display($tab->getTemplate());
 
-function createTab($name) {
-  global $configuration, $db;
-
-  if ($name == 'Classifications' || $name == 'Authorities')
-    include_once('classes/AddedEntry.php');
-
-  include_once('classes/' . $name . '.php');
-  return new $name($configuration, $db);
-}
-
 function showMarcUrl($content) {
-  global $marcBaseUrl;
-
   if (!preg_match('/^http/', $content))
-    $content = $marcBaseUrl . $content;
+    $content = 'https://www.loc.gov/marc/bibliographic/' . $content;
 
   return $content;
 }
@@ -107,14 +90,3 @@ function getFacetLabel($facet) {
   return str_replace('_', ' ', preg_replace('/_ss$/', '', $facet));
 }
 
-/**
- * @param $configuration
- * @param array $map
- * @return mixed|string
- */
-function getDefaultTab($configuration, array $map, $defaultTab = 'completeness') {
-  $key = 'default-tab';
-  return (isset($configuration[$key]) && $configuration[$key] != '' && in_array($configuration[$key], array_keys($map)))
-    ? $configuration['default-tab']
-    : $defaultTab;
-}

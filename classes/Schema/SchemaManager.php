@@ -1,23 +1,26 @@
 <?php
 
-include_once 'Range.php';
-include_once __DIR__ . '/../catalogue/Catalogue.php';
+namespace Schema;
 
-class PicaSchemaManager {
+abstract class SchemaManager {
+  protected $fields;
+  protected $tagIndex = [];
+  protected $schemaFile;
+  protected bool $supportRange;
 
-  private $fields;
-  private $tagIndex = [];
-
-  public function __construct() {
-    global $tab;
-    $catalogue = $tab->getCatalogue();
-    $schemaType = $catalogue->getSchemaType();
-
-    // $schemaFile = 'schemas/avram-k10plus.json';
-    $schemaFile = 'schemas/avram-k10plus-title.json';
-    $this->fields = json_decode(file_get_contents($schemaFile))->fields;
+  /**
+   * @return void
+   */
+  protected function extractFields(): void {
+    $this->fields = json_decode(file_get_contents($this->schemaFile))->fields;
     foreach ($this->fields as $id => $field) {
-      $this->createRange($field);
+      if ($this->supportRange) {
+        $this->createRange($field);
+      }
+
+      if (!isset($field->tag)) {
+        continue;
+      }
 
       if (!isset($this->tagIndex[$field->tag])) {
         $this->tagIndex[$field->tag] = [];
@@ -30,14 +33,14 @@ class PicaSchemaManager {
     if (isset($this->fields->{$searchTerm}))
       return $this->fields->{$searchTerm};
 
-    if ($this->hasOccurrence($searchTerm)) {
+    if ($this->supportRange && $this->hasOccurrence($searchTerm)) {
       $parts = explode('/', $searchTerm);
       $tag = $parts[0];
-      $occurence = $parts[1];
+      $occurrence = $parts[1];
       if (isset($this->tagIndex[$tag])) {
         foreach ($this->tagIndex[$tag] as $id) {
           $candidate = $this->fields->{$id};
-          if (isset($candidate->range) && $candidate->range->inRange($occurence))
+          if (isset($candidate->range) && $candidate->range->inRange($occurrence))
             return $candidate;
         }
       }
@@ -46,26 +49,27 @@ class PicaSchemaManager {
         $id = $this->tagIndex[$searchTerm][0];
         return $this->fields->{$id};
       } else {
-        return $this->lookup($searchTerm . '/00');
+        if ($this->supportRange)
+          return $this->lookup($searchTerm . '/00');
       }
     }
     return false;
-  }
-
-  private function createRange($field): void {
-    if (isset($field->occurrence))
-      $field->range = new Range($field->occurrence);
-    elseif (isset($field->counter))
-      $field->range = new Range($field->counter);
-    else
-      $field->range = null;
   }
 
   /**
    * @param $searchTerm
    * @return false|string
    */
-  private function hasOccurrence($searchTerm) {
+  protected function hasOccurrence($searchTerm) {
     return strstr($searchTerm, '/');
+  }
+
+  protected function createRange($field): void {
+    if (isset($field->occurrence))
+      $field->range = new Range($field->occurrence);
+    elseif (isset($field->counter))
+      $field->range = new Range($field->counter);
+    else
+      $field->range = null;
   }
 }

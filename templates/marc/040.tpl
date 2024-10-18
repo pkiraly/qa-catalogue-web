@@ -7,15 +7,15 @@
       {foreach from=$field->subfields key=code item=value name=subfields}
         {assign 'comma' value=(($smarty.foreach.subfields.last) ? '' : ',')}
         {if $code=='a'}
-          <em>original cataloging agency:</em> <a href="{$record->filter('040a_AdminMetadata_catalogingAgency_ss', $value)}" class="cataloging">{$value}</a>{$comma}
+          <em>original cataloging agency:</em> <a href="{$record->filter('040a_AdminMetadata_catalogingAgency_ss', $value)}" class="cataloging">{include 'data/subfield.tpl' value=$value}</a>{$comma}
         {elseif $code == 'b'}
-          <em>language of cataloging:</em> <span class="language">{$value}</span>{$comma}
+          <em>language of cataloging:</em> <span class="language">{include 'data/subfield.tpl' value=$value}</span>{$comma}
         {elseif $code == 'c'}
-          <em>transcribing agency:</em> <span class="transcribing">{$value}</span>{$comma}
+          <em>transcribing agency:</em> <span class="transcribing">{include 'data/subfield.tpl' value=$value}</span>{$comma}
         {elseif $code == 'd'}
-          <em>modifying agency:</em> <span class="modifying">{$value}</span>{$comma}
+          <em>modifying agency:</em> <span class="modifying">{include 'data/subfield.tpl' value=$value}</span>{$comma}
         {elseif $code == 'e'}
-          <em>description conventions:</em> <span class="conventions">{$value}</span>{$comma}
+          <em>description conventions:</em> <span class="conventions">{include 'data/subfield.tpl' value=$value}</span>{$comma}
         {/if}
       {/foreach}
     </span>

@@ -1,0 +1,21 @@
+name: Test
+on:
+  pull_request:
+  push:
+
+jobs:
+  test:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Checkout code"
+        uses: "actions/checkout@v4"
+      - name: "Install dependencies from composer.json"
+        uses: "php-actions/composer@v6"
+        with:
+          php_extensions: yaml gettext
+      - name: "Lint PHP"
+        run: "./vendor/bin/parallel-lint --exclude vendor ."
+      #- name: "Static Code Analysis"
+      #  run: "composer analyse"
+      - name: "PHPUnit"
+        run: "./vendor/bin/phpunit --do-not-cache-result tests"

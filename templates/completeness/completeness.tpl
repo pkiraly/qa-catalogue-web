@@ -10,6 +10,7 @@
         {_('completeness_definition')}
       </p>
 
+      <h3>{_('Filter')}</h3>
       {include 'common/group-selector.tpl'}
 
       <div id="document-type-selector">
@@ -27,6 +28,7 @@
         {_('number of records')}: <strong>{$max|number_format}</strong>
       </div>
 
+
       <h3>{_('Field groups')}</h3>
       <div id="completeness-group-table">
         {include 'completeness/completeness-packages.tpl'}
@@ -39,5 +41,6 @@
       </div>
     </div>
   </div>
+  {include 'common/parameters.tpl'}
 </div>
 {include 'common/html-footer.tpl'}

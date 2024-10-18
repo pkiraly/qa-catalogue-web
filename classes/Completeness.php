@@ -1,11 +1,10 @@
 <?php
 
-include_once 'SchemaUtil.php';
-
 class Completeness extends BaseTab {
 
-  private $action = 'list';
+  protected string $action = 'list';
   private $hasNonCoreTags = FALSE;
+  private $hasTotalPackage = FALSE;
   private $packages = [];
   private $packageIndex = [];
   private $records = [];
@@ -13,9 +12,8 @@ class Completeness extends BaseTab {
   protected $type = 'all';
   protected $sort;
   private $max = 0;
-  public $groups;
+  public array $groups;
   public $currentGroup;
-  private ?IssuesDB $issueDB = null;
   private $complexControlFields = ['006', '007', '008'];
   private $types007 = [
     "common" => "Common",
@@ -45,11 +43,10 @@ class Completeness extends BaseTab {
     "computer" => "Computer Files",
     "mixed" => "Mixed Materials"
   ];
-
+  protected $parameterFile = 'completeness.params.json';
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
-    parent::readAnalysisParameters('completeness.params.json');
     $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
     $smarty->assign('grouped', $this->grouped);
     if ($this->grouped)
@@ -76,7 +73,7 @@ class Completeness extends BaseTab {
         $smarty->assign('currentGroup', $this->currentGroup);
         // $smarty->assign('tabSpecificParameters', $this->getTabSpecificParameters());
       }
-      $this->readPackages();
+      $this->loadPackages();
       $this->readCompleteness();
       $smarty->assign('packages', $this->packages);
       $smarty->assign('packageIndex', $this->packageIndex);
@@ -89,10 +86,10 @@ class Completeness extends BaseTab {
       $smarty->assign('selectedType', $this->type);
       $smarty->assign('max', $this->max);
       $smarty->assign('hasNonCoreTags', $this->hasNonCoreTags);
+      $smarty->assign('hasTotalPackage', $this->hasTotalPackage);
       $smarty->assign('sort', $this->sort);
       $smarty->assign('groupFilter', $this->getGroupFilter());
       $smarty->assign('groupQuery', $this->getGroupQuery());
-
     } else if ($this->action == 'ajaxGroups') {
       $term = getOrDefault('term', '');
       if ($term == '' || $term == ' ')
@@ -115,18 +112,19 @@ class Completeness extends BaseTab {
     return null;
   }
 
-  private function readPackages() {
-    $fileName = $this->grouped ? 'completeness-grouped-packages.csv' : 'packages.csv';
-    $elementsFile = $this->getFilePath($fileName);
+  public static function readPackages($type, $filePath, $group = null) {
+    global $general_log;
+    $packages = [];
+    $general_log->info('elementsFile: ' . $filePath);
 
-    if (file_exists($elementsFile)) {
+    if (file_exists($filePath)) {
       $start = microtime(true);
       // name,label,count
       $lineNumber = 0;
       $header = [];
 
       // $fieldDefinitions = json_decode(file_get_contents('schemas/marc-schema-with-solr-and-extensions.json'));
-      $handle = fopen($elementsFile, "r");
+      $handle = fopen($filePath, "r");
       if ($handle) {
         while (($line = fgets($handle)) !== false) {
           $lineNumber++;
@@ -135,81 +133,132 @@ class Completeness extends BaseTab {
             $header = $values;
           } else {
             if (count($header) != count($values)) {
-              error_log('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
-              error_log($line);
+              $general_log->info('line #' . $lineNumber . ': ' . count($header) . ' vs ' . count($values));
+              $general_log->info($line);
             }
             $record = (object)array_combine($header, $values);
 
-            if (isset($record->documenttype) && $record->documenttype != $this->type)
+            if (isset($record->documenttype) && $record->documenttype != $type)
               continue;
 
-            if ($this->grouped && $record->group != $this->groupId)
+            if (!is_null($group) && $record->group != $group->id)
               continue;
 
             $record->packageid = (int)$record->packageid;
-            $this->packageIndex[$record->packageid] = $record->iscoretag == 'true'
-              ? $record->name . ': ' . $record->label
-              : $record->label;
 
-            $this->max = max($this->max, $record->count);
-            // $record->percent = $record->count * 100 / $this->count;
             if ($record->label == '') {
               $record->iscoretag = false;
             }
             if (isset($record->iscoretag) && $record->iscoretag === "true") {
               $record->iscoretag = true;
             } else {
-              $this->hasNonCoreTags = TRUE;
               $record->iscoretag = false;
             }
-            $this->packages[] = $record;
+            $packages[] = $record;
           }
         }
       }
       $t1 = microtime(true) - $start;
 
-      foreach ($this->packages as $package)
-        $package->percent = $package->count * 100 / $this->max;
-
       $tforeach = microtime(true) - $start;
-      usort($this->packages, function($a, $b){
+      usort($packages, function($a, $b){
         return ($a->packageid == $b->packageid)
           ? 0
           : (($a->packageid < $b->packageid)
             ? -1
             : 1);
       });
+      // FIXME: $dataElementCount is not defined in this method
+      // $dataElementCounts = $this->getDataElementCounts();
+      if (isset($dataElementCounts['total'])) {
+        $packages[] = (object)[
+          'packageid' => 'total',
+          'iscoretag' => false,
+          'label' => 'total',
+          'fieldCount' => $dataElementCounts['total']['fieldCount'],
+          'subfieldCount' => $dataElementCounts['total']['subfieldCount'],
+        ];
+      }
       $tusort = microtime(true) - $start;
-      error_log(sprintf('readPackages) read file: %.4f, foreach: %.4f, usort: %.4f', $t1, $tforeach, $tusort));
+      $general_log->info(sprintf('readPackages) read file: %.4f, foreach: %.4f, usort: %.4f', $t1, $tforeach, $tusort));
+
     } else {
-      $msg = sprintf("file %s is not existing", $elementsFile);
-      error_log($msg);
+      $msg = sprintf("file %s is not existing", $filePath);
+      $general_log->error($msg);
+    }
+
+    return $packages;
+  }
+
+  private function loadPackages() {
+    $fileName = $this->grouped ? 'completeness-grouped-packages.csv' : 'packages.csv';
+    $elementsFile = $this->getFilePath($fileName);
+    $dataElementCounts = $this->getDataElementCounts();
+
+    $this->packages = Completeness::readPackages($this->type, $elementsFile, $this->grouped ? $this->currentGroup : null);
+
+    foreach ($this->packages as $record) {
+      $this->packageIndex[$record->packageid] = $record->iscoretag == 'true'
+        ? $record->name . ': ' . $record->label
+        : $record->label;
+
+        $this->max = max($this->max, $record->count);
+        if ($this->max != 0)
+          $record->percent = $record->count * 100 / $this->max;
+
+      if (!$record->iscoretag) {
+        $this->hasNonCoreTags = TRUE;
+      }
+
+      if (isset($dataElementCounts[$record->packageid])) {
+        $record->fieldCount = $dataElementCounts[$record->packageid]['fieldCount'];
+        $record->subfieldCount = $dataElementCounts[$record->packageid]['subfieldCount'];
+      }
+    }
+
+    foreach ($this->packages as $package)
+      $package->percent = $package->count * 100 / $this->max;
+
+    if (isset($dataElementCounts['total'])) {
+      $this->packages[] = (object)[
+        'packageid' => 'total',
+        'iscoretag' => false,
+        'label' => 'total',
+        'fieldCount' => $dataElementCounts['total']['fieldCount'],
+        'subfieldCount' => $dataElementCounts['total']['subfieldCount'],
+      ];
     }
   }
 
-  private function hasMarcElementTable() {
-    $this->initializeDB();
-    return $this->issueDB->hasMarcElementTable();
-    // return $this->issueDB->hasMarcElementTable()->fetchArray(SQLITE3_ASSOC)['count'] == 1;
+  private function getDataElementCounts(): array {
+    $dataElements = [];
+    if ($this->hasMarcElementTable()) {
+      $this->hasTotalPackage = true;
+      $schema = $this->catalogue->getSchemaType();
+      $result = $this->issueDB->getDataElementsByPackage($schema, $this->groupId, $this->type);
+      $dataElements = ['total' => []];
+      while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        $id = (int) $row['packageid'];
+        $type = $row['isField'] ? 'fieldCount' : 'subfieldCount';
+        if (!isset($dataElements[$id]))
+          $dataElements[$id] = [];
+        $dataElements[$id][$type] = $row['count'];
+        if (!isset($dataElements['total'][$type]))
+          $dataElements['total'][$type] = 0;
+        $dataElements['total'][$type] += $row['count'];
+      }
+    }
+    return $dataElements;
   }
 
   private function getDocumentTypes($groupId = '') {
-    $this->initializeDB();
-    return $this->issueDB->fetchAll($this->issueDB->getDocumentTypes($groupId), 'documenttype');
-  }
-
-  private function initializeDB() {
-    if (is_null($this->issueDB)) {
-      include_once 'IssuesDB.php';
-      $this->issueDB = new IssuesDB($this->getDbDir());
-    }
+    return $this->issueDB()->fetchAll($this->issueDB->getDocumentTypes($groupId), 'documenttype');
   }
 
   private function readCompleteness() {
     SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
-    $hasDBTable = $this->hasMarcElementTable();
-    if ($hasDBTable) {
-      error_log('hasDBTable');
+    if ($this->hasMarcElementTable()) {
+      $this->log->warning('hasDBTable');
       $this->types = $this->getDocumentTypes($this->groupId);
       $start = microtime(true);
       $result = $this->issueDB->getMarcElements($this->type, $this->groupId);
@@ -220,20 +269,21 @@ class Completeness extends BaseTab {
       foreach (array_keys($this->records) as $packageId) {
         if ($packageId != 0) {
           foreach ($this->records[$packageId] as $tag => $field) {
-            usort($this->records[$packageId][$tag]['subfields'], function($a, $b) {return $a->subfieldSort <=> $b->subfieldSort;});
+            if (isset($this->records[$packageId][$tag]['subfields']) && !is_null($this->records[$packageId][$tag]['subfields']))
+              usort($this->records[$packageId][$tag]['subfields'], function($a, $b) {return $a->subfieldSort <=> $b->subfieldSort;});
           }
         }
       }
       $tsort = microtime(true) - $start;
       $this->types = array_merge(['all'], array_diff($this->types, ['all']));
       $tmerge = microtime(true) - $start;
-      error_log(sprintf('readCompleteness (DB) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
+      $this->log->warning(sprintf('readCompleteness (DB) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
 
     } else {
       $fileName = $this->grouped ? 'completeness-grouped-marc-elements.csv' : 'marc-elements.csv';
       $elementsFile = $this->getFilePath($fileName);
       if (file_exists($elementsFile)) {
-        error_log('completeness file: ' . $elementsFile);
+        $this->log->warning('completeness file: ' . $elementsFile);
         $start = microtime(true);
         // $keys = ['element','number-of-record',number-of-instances,min,max,mean,stddev,histogram]; // "sum",
         $lineNumber = 0;
@@ -249,9 +299,9 @@ class Completeness extends BaseTab {
               $header = $values;
             } else {
               if (count($header) != count($values)) {
-                error_log(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
+                $this->log->warning(sprintf('different number of columns in %s - line #%d: expected: %d vs actual: %d',
                   $elementsFile, $lineNumber, count($header), count($values)));
-                error_log($line);
+                $this->log->warning($line);
               }
               $record = (object)array_combine($header, $values);
 
@@ -279,10 +329,10 @@ class Completeness extends BaseTab {
         $tsort = microtime(true) - $start;
         $this->types = array_merge(['all'], array_diff($this->types, ['all']));
         $tmerge = microtime(true) - $start;
-        error_log(sprintf('readCompleteness (file) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
+        $this->log->warning(sprintf('readCompleteness (file) read: %.4f, sort: %.4f, merge: %.4f', $tread, $tsort, $tmerge));
       } else {
         $msg = sprintf("file %s is not existing", $elementsFile);
-        error_log($msg);
+        $this->log->warning($msg);
       }
     }
   }
@@ -400,7 +450,7 @@ class Completeness extends BaseTab {
       }
     }
     $record->histogram = $histogram;
-    $record->solr = $this->getSolrField($record->path);
+    $record->solr = $this->getSolrField($record->path, '', true);
 
     $record->isField = false;
     $record->isComplexControlField = false;
@@ -457,38 +507,45 @@ class Completeness extends BaseTab {
     if ($record->package == '')
       $record->package = 'other';
 
-    $pica3 = ($definition != null && isset($definition->pica3) ? '=' . $definition->pica3 : '');
+    $pica3 = $definition != null && isset($definition->pica3)
+      ? '=' . $definition->pica3
+      : '';
+    $record->extendedTag = $tag . $pica3;
+    $record->label = $record->tag;
     if ($record->tag == '') {
       // $record->tag = substr($record->path, 0, $position);
-      $record->tag = $tag . $pica3;
+      $record->key = $tag . $pica3;
     } elseif (!$record->isLeader) {
       // $record->tag = substr($record->path, 0, $position) . ' &mdash; ' . $record->tag;
-      $record->tag = $tag . $pica3 . ' &mdash; ' . $record->tag;
+      $record->key = $tag . $pica3 . ' &mdash; ' . $record->tag;
+    } else {
+      $record->key = $record->tag;
     }
+    $record->url = $definition != null && isset($definition->url) ? $definition->url : '';
 
     $record->packageid = (int)$record->packageid;
     if (!isset($this->records[$record->packageid]))
       $this->records[$record->packageid] = [];
 
-    if (!isset($this->records[$record->packageid][$record->tag])) {
-      if ($record->tag == 'Leader') {
+    if (!isset($this->records[$record->packageid][$record->key])) {
+      if ($record->key == 'Leader') {
         // ensure that leader is the first element
         $value = ['type' => 'leader', 'websafeTag' => $record->websafeTag, 'positions' => []];
         if (!empty($this->records[$record->packageid])) {
-          $this->records[$record->packageid] = array_merge([$record->tag => $value], $this->records[$record->packageid]);
+          $this->records[$record->packageid] = array_merge([$record->key => $value], $this->records[$record->packageid]);
         } else {
-          $this->records[$record->packageid][$record->tag] = $value;
+          $this->records[$record->packageid][$record->key] = $value;
         }
       } else if ($record->isDataField) {
-        $this->records[$record->packageid][$record->tag] = ['type' => 'datafield', 'tag' => null, 'subfields' => []];
+        $this->records[$record->packageid][$record->key] = ['type' => 'datafield', 'tag' => null, 'subfields' => []];
       } else if ($record->isComplexControlField) {
-        $this->records[$record->packageid][$record->tag] = [
+        $this->records[$record->packageid][$record->key] = [
           'type' => 'complexControlField',
           'websafeTag' => $record->websafeTag,
           'types' => []
         ];
       } else {
-        $this->records[$record->packageid][$record->tag] = [
+        $this->records[$record->packageid][$record->key] = [
           'type' => 'simpleControlField',
           'websafeTag' => $record->websafeTag,
           'tag' => null
@@ -497,28 +554,29 @@ class Completeness extends BaseTab {
     }
 
     if ($record->isLeader) {
-      $this->records[$record->packageid][$record->tag]['positions'][] = $record;
+      $this->records[$record->packageid][$record->key]['positions'][] = $record;
     } else if (isset($record->isDataField) && $record->isDataField == true) {
-      if ($record->isField)
-        $this->records[$record->packageid][$record->tag]['tag'] = $record;
-      else
-        $this->records[$record->packageid][$record->tag]['subfields'][] = $record;
+      if ($record->isField) {
+        $this->records[$record->packageid][$record->key]['tag'] = $record;
+      } else {
+        $this->records[$record->packageid][$record->key]['subfields'][] = $record;
+      }
     } else if ($record->isComplexControlField) {
-      if (!isset($this->records[$record->packageid][$record->tag]['types'][$record->complexType]))
-        $this->records[$record->packageid][$record->tag]['types'][$record->complexType] = [
+      if (!isset($this->records[$record->packageid][$record->key]['types'][$record->complexType]))
+        $this->records[$record->packageid][$record->key]['types'][$record->complexType] = [
           'websafeTag' => $record->websafeTag,
           'positions' => []
         ];
-      $this->records[$record->packageid][$record->tag]['types'][$record->complexType]['positions'][] = $record;
+      $this->records[$record->packageid][$record->key]['types'][$record->complexType]['positions'][] = $record;
     } else {
-      $this->records[$record->packageid][$record->tag]['tag'] = $record;
+      $this->records[$record->packageid][$record->key]['tag'] = $record;
     }
 
     unset($record->documenttype);
     unset($record->packageid);
     unset($record->package);
     if (isset($record->isSubfield) && $record->isSubfield == true) {
-      unset($record->tag);
+      unset($record->key);
     }
   }
 }

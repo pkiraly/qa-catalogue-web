@@ -8,6 +8,7 @@ class Onb extends Catalogue {
   protected $url = 'https://search.onb.ac.at/primo-explore/search?vid=ONB&lang=de_DE';
 
   function getOpacLink($id, $record) {
+    global $general_log;
     foreach ($record->getFields('035') as $tag35) {
       if (isset($tag35->subfields->a)) {
         $tag35a = $tag35->subfields->a;
@@ -18,7 +19,7 @@ class Onb extends Catalogue {
           $id = $tag35a;
         }
       } else {
-        error_log('no 035$a in ' . json_encode($tag35));
+        $general_log->error('no 035$a in ' . json_encode($tag35));
       }
     }
     return 'http://data.onb.ac.at/rec/' . trim($id);

@@ -1,5 +1,7 @@
 <?php
 
+namespace Schema;
+
 class Range {
 
   private $raw;

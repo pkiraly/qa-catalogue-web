@@ -1,0 +1,6 @@
+parameters:
+    unused_public:
+    # change to true to find more unused elements
+        methods: false
+        properties: false
+        constants: true
