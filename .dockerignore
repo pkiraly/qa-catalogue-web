@@ -21,5 +21,7 @@ metadata-qa/
 docker-compose.yml
 Dockerfile
 .dockerignore
+docker/
 tests
 *.md
+

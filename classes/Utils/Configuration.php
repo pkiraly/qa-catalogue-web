@@ -53,6 +53,10 @@ class Configuration {
       $ini['id'] = $ini['db'];
     }
 
+    if (!isset($ini['id']) && isset($ini['catalogue'])) {
+      $ini['id'] = $ini['catalogue'];
+    }
+
     // set 'id' from 'dir', if 'id' is not available
     if (!isset($defaults['id']) && !isset($ini['id']) && isset($ini['dir'])) {
       $ini['id'] = $ini['dir'];
@@ -74,7 +78,7 @@ class Configuration {
     $this->dirName = $this->getValue('dirName', $this->id);
     $this->versioning = $this->getValue('versions', false);
     $this->templates = $this->getValue('templates', 'config');
-    $this->mainSolrEndpoint = $this->getValue('mainSolrEndpoint', 'http://localhost:8983/solr/');
+    $this->mainSolrEndpoint = $this->getValue('mainSolrEndpoint', $this->getDefaultMainSolrEndpoint());
     $this->solrForScoresUrl = $this->getValue('solrForScoresUrl', null);
     $this->showAdvancedSearchForm = $this->getValue('showAdvancedSearchForm', false);
     $this->extractGitVersion = $this->getValue('extractGitVersion', true);
@@ -211,5 +215,12 @@ class Configuration {
 
   public function doExtractGitVersion(): bool {
     return $this->extractGitVersion;
+  }
+
+  private function getDefaultMainSolrEndpoint(): string {
+    $protocol = $_ENV["SOLR_PROTOCOL"] ?? "http";
+    $host = $_ENV["SOLR_HOST"] ?? "localhost";
+    $port = $_ENV["SOLR_PORT"] ?? "8983";
+    return $protocol . "://" . $host . ":" . $port . '/solr/';
   }
 }

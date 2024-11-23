@@ -15,7 +15,11 @@
 
       <div id="pareto-content">
         {foreach from=$files key=index item=file}
-          <p><img src="images/{$id}/{$file}" width="1000"/></p>
+          {if $controller->isDockerized()}
+            <p><img src="{$file}" width="1000"/></p>
+          {else}
+            <p><img src="images/{$id}/{$file}" width="1000"/></p>
+          {/if}
         {/foreach}
       </div>
     </div>

@@ -84,8 +84,11 @@ if (!function_exists('array_is_list')) {
 function setLanguage($language) {
   global $languages;
   $lang = isset($languages[$language]) ? $languages[$language] : $languages['en'];
-  // putenv('LANG=' . $lang);
+  putenv('LANG=' . $lang);
+  putenv('LANGUAGE=' . $lang);
   setlocale(LC_ALL, $lang);
+  // setlocale(LANGUAGE, $lang);
+  error_log('realpath: ' . realpath('./locale'));
   bindtextdomain('messages', './locale');
   textdomain('messages');
 }
