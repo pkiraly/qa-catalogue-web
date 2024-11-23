@@ -69,6 +69,7 @@ class Data extends Facetable {
       if ($this->action == 'download') {
         $this->downloadAction();
       } else {
+        $this->log->info('call parent::prepareData');
         parent::prepareData($smarty);
         $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
         if ($this->grouped)
@@ -230,25 +231,38 @@ class Data extends Facetable {
     $changeQueryUrlParams = $this->getBasicUrl(['query', 'facet', 'filters', 'start']);
     $filterLinks = [];
     foreach ($this->filters as $filter) {
-      $solrField = preg_replace('/^([^:]+):(\*|"(.*)")$/', "$1", $filter);
+      $is_negated = preg_match('/^NOT /', $filter);
+      $solrField = preg_replace('/^(?:NOT )?([^:]+):(\*|"(.*)")$/', "$1", $filter);
       $label = preg_replace('/^[^:]+:(\*|"(.*)")/', "$1", $filter);
       $marcCode = $this->solrToMarcCode($solrField);
+      $negateFilter = $is_negated
+        ? preg_replace('/^NOT /', '', $filter)
+        : 'NOT ' . $filter;
+      $negation = $is_negated ? 'not' : '';
 
       $otherFilters = array_diff($this->filters, [$filter]);
       if (empty($otherFilters)) {
-        $link = new Link($label, join('&', $basicUrl));
+        $removeLink = new Link($label, join('&', $basicUrl));
+        $basicUrl[] = 'filters[]=' . urlencode($negateFilter);
+        $negateLink = new Link($label, join('&', $basicUrl));
         $termQuery = $this->query;
       } else {
         $filters = [];
-        foreach ($otherFilters as $other)
+        $filtersWithNegate = ['filters[]=' . urlencode($negateFilter)];
+        foreach ($otherFilters as $other) {
           $filters[] = 'filters[]=' . urlencode($other);
-        $link = Link::create($label, $basicUrl, $filters);
+          $filtersWithNegate[] = 'filters[]=' . urlencode($other);
+        }
+        $removeLink = Link::create($label, $basicUrl, $filters);
+        $negateLink = Link::create($label, $basicUrl, $filtersWithNegate);
         $termQuery = $this->query . ' AND ' . join(' AND ', $otherFilters);
       }
       $filterLinks[] = (object)[
         'changeQuery' => Link::withQuery('', $changeQueryUrlParams, $filter),
-        'removeLink' => $link,
+        'removeLink' => $removeLink,
+        'negateLink' => $negateLink,
         'marcCode' => $marcCode,
+        'negation' => $negation,
         'termsLink' => sprintf('tab=terms&facet=%s&query=%s', $solrField, urlencode($termQuery))
       ];
     }
