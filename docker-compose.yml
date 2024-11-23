@@ -10,6 +10,9 @@
 services:
   app:
     image: ${IMAGE:-qa-catalogue-web}
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
       - ./${BASE_OUTPUT_DIR:-metadata-qa}:/var/www/html/metadata-qa
       - ./${CONFIG:-config}:/var/www/html/config

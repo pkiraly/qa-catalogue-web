@@ -17,10 +17,16 @@ class Pareto extends BaseTab {
     $files = [];
     $byRecordsFile = $this->getFilePath('marc-elements.csv');
     if (file_exists($byRecordsFile)) {
-      $raw_files = scandir(sprintf('images/%s', $this->id));
-      foreach ($raw_files as $file)
-        if (preg_match('/^frequency-.*\.png$/', $file))
-          $files[] = $file;
+      $imageDir = $this->isDockerized() ? $this->getFilePath('img') : sprintf('images/%s', $this->id);
+      if (file_exists($imageDir) && is_dir($imageDir)) {
+        $raw_files = scandir($imageDir);
+        foreach ($raw_files as $file) {
+          if (preg_match('/^frequency-.*\.png$/', $file))
+            $files[] = $this->isDockerized() ? $imageDir . '/' . $file : $file;
+        }
+      } else {
+        $this->log('no image dir found: ' . $imageDir);
+      }
     }
     return $files;
   }

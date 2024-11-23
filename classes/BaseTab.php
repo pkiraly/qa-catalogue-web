@@ -32,6 +32,7 @@ abstract class BaseTab extends Tab {
   private Solr $solr;
   protected Logger $log;
   protected string $action;
+  protected bool $isDockerized = false;
 
   /**
    * BaseTab constructor.
@@ -66,6 +67,7 @@ abstract class BaseTab extends Tab {
       $this->display["history"] = false;
       $this->display["timeline"] = false;
     }
+    $this->isDockerized = $_ENV['IS_DOCKERIZED'] ?? false;
     // TODO: disable more tabs when no data is available
   }
 
@@ -496,7 +498,9 @@ abstract class BaseTab extends Tab {
         $this->analysisParameters->analysisTimestamp = date("Y-m-d H:i:s", filemtime($path));
       } else {
         $this->log->error(sprintf('parameterFile %s does not exist', $path));
-     }
+      }
+    } else {
+      $this->log->error('there is no parameterFile');
     }
   }
 
@@ -600,5 +604,9 @@ abstract class BaseTab extends Tab {
    */
   public function getParameterFile(): string {
     return $this->parameterFile;
+  }
+
+  public function isDockerized(): bool {
+    return $this->isDockerized;
   }
 }

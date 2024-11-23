@@ -1,8 +1,10 @@
-# Release 0.8.0 (2023-xx-xx)
+# Release 0.8.0 (2024-xx-xx)
 
 #126 display the number of data elements at the completeness tab. The "Field groups" table has two new
 columns: 1) fields, 2) positions/indicators/subfields - for the number of distinct data elements used
 in the records, and a new row: "total" that display the number of total data elements.
+
+#222 Negate filters 
 
 # Release 0.7.0 (2023-07-18)
 
