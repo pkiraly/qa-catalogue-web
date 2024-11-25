@@ -96,7 +96,8 @@ class Configuration {
     $this->language = $this->getValue('language', null); // 'en'
 
     foreach ($configuration as $key => $value) {
-      if (str_starts_with($key, 'display-')) {
+      if (preg_match('/^display-/', $key)) {
+      // if (str_starts_with($key, 'display-')) { # str_starts_with is not available in PHP 7.x
         $displayKey = substr($key,8);
         if (is_array($value)) {
           if (isset($value[$this->id]))
