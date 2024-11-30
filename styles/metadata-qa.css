@@ -35,8 +35,7 @@ h1 a.header-link {
 
 h3,
 h4,
-h5
-{
+h5 {
   color: var(--highlight-color);
 }
 
@@ -71,35 +70,26 @@ h5
 .record {
   margin-bottom: 50px;
 }
-
 .record h2 {
   margin-bottom: 0;
   font-weight: 200;
   font-size: 130%;
 }
-
 .record h2 a .fa {
   color: var(--highlight-color);
 }
-
 .record h2 a .fa-info-circle {
   margin-left: 20px;
 }
-
 .record .label {
   color: #cccccc;
 }
-
 .record .similarity {
   text-align: right;
   color: var(--dim-color);
 }
-
 .record .details {
   margin-top: 10px;
-  /*
-  margin-left: 25px;
-   */
 }
 
 ul {
@@ -133,12 +123,11 @@ h4 {
   margin-bottom: 2px;
 }
 
-#completeness-group-table td {
-  padding: 0 5px 0 5px;
-}
-
 #completeness-group-table {
   margin-bottom: 10px;
+}
+#completeness-group-table td {
+  padding: 0 5px 0 5px;
 }
 
 #completeness-field-table table td {
@@ -146,36 +135,59 @@ h4 {
   text-align: right;
   vertical-align: top;
 }
-
 #completeness-field-table table tr.padded td {
   padding-top: 25px;
 }
-
 #completeness-field-table table td.path,
 #completeness-field-table table td.subfield {
   text-align: left;
 }
-
 #completeness-field-table table td.subfield {
   width: 300px;
   text-overflow: ellipsis;
   font-size: 80%;
 }
-
 #completeness-field-table table td.histogram {
   width: 400px;
 }
-
 #completeness-field-table table td.number-of-record {
   width: 70px;
+}
+#completeness-field-table table td.package {
+  text-align: left;
+  font-weight: bold;
+  border-bottom: 1px solid black;
+}
+#completeness-field-table table td.tag {
+  text-align: left;
+  color: var(--highlight-color);
+}
+#completeness-field-table table tr th,
+#completeness-field-table table tr td {
+  padding: 1px;
+}
+#completeness-field-table table tr.first th.with-border {
+  text-align: center;
+  border-bottom: 1px solid #cccccc;
+}
+#completeness-field-table table tr.second th {
+  text-align: center;
+}
+#completeness-field-table table tr.second th.left {
+  text-align: left;
+}
+#completeness-field-table table tr.second th.bordered-left {
+  border-left: 1px solid #cccccc;
+}
+#completeness-field-table table tr.second th.bordered-right {
+  border-right: 1px solid #cccccc;
 }
 
 #completeness-group-table table td.chart,
 #completeness-field-table table td.chart,
 table#authorities-by-field td.chart,
 table#classification-by-field td.chart,
-table#classification-by-field td.chart
-{
+table#classification-by-field td.chart {
   width: 200px;
 }
 
@@ -183,8 +195,7 @@ table#classification-by-field td.chart
 #completeness-field-table table td.chart div,
 table#classification-by-field td.chart div,
 table#authorities-by-field td.chart div,
-table#issues-table td.chart div
-{
+table#issues-table td.chart div {
   background-color: var(--highlight-color);
   height: 15px;
   border-right: 1px solid maroon;
@@ -194,130 +205,78 @@ table#issues-table td.chart div
 
 table#authorities-by-field td.chart div,
 table#classification-by-field td.chart div,
-table#issues-table td.chart div
-{
+table#issues-table td.chart div {
   margin: 0 5px 0 5px;
-}
-
-#completeness-field-table table td.package {
-  text-align: left;
-  font-weight: bold;
-  border-bottom: 1px solid black;
-}
-
-#completeness-field-table table td.tag {
-  text-align: left;
-  color: var(--highlight-color);
-}
-
-#completeness-field-table table tr th,
-#completeness-field-table table tr td {
-  padding: 1px;
-}
-
-#completeness-field-table table tr.first th.with-border {
-  text-align: center;
-  border-bottom: 1px solid #cccccc;
-}
-
-#completeness-field-table table tr.second th {
-  text-align: center;
-}
-
-#completeness-field-table table tr.second th.left {
-  text-align: left;
-}
-
-#completeness-field-table table tr.second th.bordered-left {
-  border-left: 1px solid #cccccc;
-}
-
-#completeness-field-table table tr.second th.bordered-right {
-  border-right: 1px solid #cccccc;
-}
-
-table#issues-table tr td.type {
-  text-align: left;
-}
-
-table#issues-table thead tr th.count {
-  text-align: right;
-}
-
-table#issues-table tr td.type span.type {
-  color: var(--highlight-color);
-  font-weight: bold;
-}
-
-table#issues-table tr td.category span.category {
-  font-weight: bold;
-}
-
-table#issues-table tr.category-header td {
-  padding-top: 5px;
-  border-bottom: 1px solid black;
-}
-
-table#issues-table td.chart {
-  width: 200px;
-}
-
-table#issues-table td.actions {
-  width: 48px;
-  padding-left: 5px;
-}
-
-table#issues-table td.percent {
-  width: 30px;
 }
 
 table#issues-table {
   width: 100%;
 }
-
+table#issues-table tr td.type {
+  text-align: left;
+}
+table#issues-table tr td.type span.type {
+  color: var(--highlight-color);
+  font-weight: bold;
+}
+table#issues-table tr td.category span.category {
+  font-weight: bold;
+}
+table#issues-table tr td.chart {
+  width: 200px;
+}
+table#issues-table tr td.actions {
+  width: 48px;
+  padding-left: 5px;
+}
+table#issues-table tr td.percent {
+  width: 30px;
+}
 table#issues-table tr td.path {
   width: 140px;
 }
-
 table#issues-table tr td.count {
   text-align: right;
   width: 100px;
 }
-
 table#issues-table tr td.url {
   width: 20px;
 }
-
+table#issues-table thead tr th.count {
+  text-align: right;
+}
+table#issues-table tr.category-header td {
+  padding-top: 5px;
+  border-bottom: 1px solid black;
+}
 table#issues-table tr.t {
   display: none;
 }
-
 table#issues-table tr.padded td {
   padding-top: 25px;
 }
 
 .marc-details table {
-  /* font-family: Courier; */
   vertical-align: top;
 }
 
 .record-tab {
   font-size: 90%;
 }
-
 .record-tab table tr td,
-.record-tab table tr th,
-.record-tab p
-{
+.record-tab table tr th {
   vertical-align: top;
   padding: 0 5px 0 5px;
 }
-
-.record-tab th, .record-tab td {
+.record-tab p {
+  vertical-align: top;
+  padding: 0 5px 0 5px;
+}
+.record-tab th,
+.record-tab td {
   padding-left: 5px;
   padding-right: 5px;
 }
-
 .record-tab h4 {
   color: #333333;
   font-size: 100%;
@@ -327,10 +286,6 @@ table#issues-table tr.padded td {
 .control-field-explanation table {
   margin-top: 10px;
 }
-/*
-div#myTabContent.tab-content div#issues.tab-pane.active div#issues-table-placeholder
-table#issues-table thead tr th
- */
 
 div#classifications-content table tbody tr td {
   vertical-align: top;
@@ -352,23 +307,10 @@ td.authority-subfields {
   border-bottom: 1px solid var(--highlight-color);
   border-top: 2px dotted var(--highlight-color);
 }
-
 td.classification-subfields table,
 td.authority-subfields table {
   margin-top: 10px;
 }
-
-td.classification-subfields ul,
-td.authority-subfields ul {
-  margin-bottom: 0;
-}
-
-td.classification-subfields table,
-td.authority-subfields table {
-  /* width: 100%; */
-  /* min-width: 100%; */
-}
-
 td.classification-subfields table th.count,
 td.authority-subfields table th.count {
   width: 100px;
@@ -376,45 +318,42 @@ td.authority-subfields table th.count {
   max-width: 100px;
   text-align: right;
 }
-
 td.classification-subfields table.subfields td.subfields,
 td.authority-subfields table.subfields td.subfields {
   min-width: 300px;
 }
-
 td.classification-subfields table td.count,
 td.authority-subfields table td.count {
   text-align: right;
+}
+td.classification-subfields ul,
+td.authority-subfields ul {
+  margin-bottom: 0;
+}
+td.classification-subfields ul li span,
+td.authority-subfields ul li span {
+  color: var(--dim-color);
+}
+td.classification-subfields p,
+td.authority-subfields p {
+  margin: 10px;
+}
+td.classification-subfields li,
+td.authority-subfields li {
+  margin-left: 20px;
+  list-style-type: square;
 }
 
 div#classifications-content th.scheme {
   text-align: center;
 }
-
 div#classifications-content th.instances {
   width: 100px;
   text-align: right;
 }
-
 div#classifications-content th.records {
   width: 100px;
   text-align: right;
-}
-
-td.classification-subfields p,
-td.authority-subfields p {
-  margin: 10px;
-}
-
-td.classification-subfields ul li,
-td.authority-subfields ul li {
-  margin-left: 20px;
-  list-style-type: square;
-}
-
-td.classification-subfields ul li span,
-td.authority-subfields ul li span {
-  color: var(--dim-color);
 }
 
 div#about-tab ul li {
@@ -428,7 +367,6 @@ fieldset {
   margin: 0 0 5px 0;
   padding: 0 0 5px 5px;
 }
-
 fieldset legend {
   font-size: 100%;
   color: var(--highlight-color);
@@ -450,7 +388,6 @@ div.record p {
   margin: 0;
   padding: 0;
 }
-
 div.record ul {
   margin-bottom: 0;
 }
@@ -472,7 +409,7 @@ div.tooltip {
   height: 32px;
   padding: 2px;
   font: 10px sans-serif;
-  background: rgba(0,0,0,.8);
+  background: rgba(0, 0, 0, 0.8);
   border: 2px solid black;
   pointer-events: none;
   background-color: black;
@@ -482,23 +419,22 @@ div.tooltip {
 .tick text {
   cursor: default;
 }
+
 table tr td {
   vertical-align: top;
 }
 
-#issues-table tr.t td {border-bottom: 1px solid #eee}
-
-/* #issues-table tr.t.odd {background: #eee} */
+#issues-table tr.t td {
+  border-bottom: 1px solid #eee;
+}
 
 #functions p.title {
   margin-bottom: 0;
 }
-
 #functions p.explanation {
   font-size: 80%;
   line-height: 1;
 }
-
 #functions .bar-chart {
   /*
   height: 200px;
@@ -523,13 +459,12 @@ div#completeness-field-table table tr td.number-of-instances {
 }
 
 .nav-link1 {
-  padding: .25rem .5rem;
+  padding: 0.25rem 0.5rem;
   display: block;
   /* border: 1px solid transparent; */
-  border-top-left-radius: .75rem;
+  border-top-left-radius: 0.75rem;
   /* border-top-right-radius: .75rem; */
 }
-
 .nav-link1.active {
   /* background-color: #eeeeee; */
   color: var(--highlight-color);
@@ -544,10 +479,9 @@ div#completeness-field-table table tr td.number-of-instances {
   font-size: 90%;
 }
 
-ul#myTab{
+ul#myTab {
   list-style: none;
 }
-
 ul#myTab li {
   display: inline;
 }
@@ -559,18 +493,17 @@ div.search-block {
 form#search {
   padding-top: 5px;
 }
-
-input#query, input#facetInput, input#facetInput1, input#facetInput2 {
-  padding: 5px 5px 5px 10px;
-  border-radius: 10px;
-  border-color: var(--highlight-color);
-}
-
 form#search button {
   border: 1px solid var(--dim-color);
   padding-top: 5px;
   padding-bottom: 5px;
   border-radius: 10px;
+}
+
+input#query, input#facetInput, input#facetInput1, input#facetInput2 {
+  padding: 5px 5px 5px 10px;
+  border-radius: 10px;
+  border-color: var(--highlight-color);
 }
 
 div#myTabContent {
@@ -591,13 +524,11 @@ div#myTabContent {
 div#terms.tab-pane form {
   margin: 20px;
 }
-
 div#terms.tab-pane form select {
   padding: 5px 5px 5px 10px;
   border-radius: 10px;
   border-color: var(--highlight-color);
 }
-
 div#terms.tab-pane form button {
   border: 1px solid var(--dim-color);
   padding-top: 5px;
@@ -613,49 +544,47 @@ div#terms.tab-pane form button {
 table#timeline th {
   text-align: center;
 }
-
 table#timeline td {
   padding-left: 10px;
   text-align: right;
   width: 150px;
 }
-
 table#timeline td.good {
   text-align: left;
 }
-
 table#timeline td.version {
   padding-left: 0px;
   text-align: left;
 }
-
-table#timeline td.version,
-table#timeline td.count,
-table#timeline td.change {
+table#timeline td.version, table#timeline td.count, table#timeline td.change {
   width: 100px;
 }
-
 table#timeline td div.barchart {
-  width: 300px; background-color: maroon; height: 10px;
+  width: 300px;
+  background-color: maroon;
+  height: 10px;
 }
-
 table#timeline td div.barchart div.greenchart {
-  float: left; background-color: var(--highlight-color); text-align: left; height: 10px;
+  float: left;
+  background-color: var(--highlight-color);
+  text-align: left;
+  height: 10px;
 }
-
 table#timeline td.change-positive {
   color: var(--highlight-color);
 }
-
 table#timeline td.change-negative {
   color: maroon;
 }
-
-div#timeline ul {
+table#timeline ul {
   list-style-type: square;
   padding-left: 20px;
 }
 
+table.matrix tr td {
+  display: block;
+  float: left;
+}
 table.matrix tr td.labels {
   min-width: 300px;
   max-width: 300px;
@@ -663,7 +592,6 @@ table.matrix tr td.labels {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 table.matrix tr td.bars {
   min-width: 500px;
   max-width: 520px;
@@ -672,11 +600,13 @@ table.matrix tr td.bars span {
   display: block;
   float: left;
 }
-table.matrix tr td.bars span.green {background-color: var(--highlight-color)}
+table.matrix tr td.bars span.green {
+  background-color: var(--highlight-color);
+}
 table.matrix tr td.total {
   min-width: 80px;
   max-width: 80px;
-  text-align: right
+  text-align: right;
 }
 
 ul.list-856 {
@@ -704,21 +634,16 @@ td.record-field-label {
 #completeness-field-table table tr td {
   vertical-align: top;
 }
-
+#completeness-field-table table tr td a.trigger {
+  color: var(--dim-color);
+}
 #completeness-field-table table tr.field-level td {
   padding-top: 25px;
   border-bottom: 1px solid var(--highlight-color);
   vertical-align: bottom;
 }
-
-
-#completeness-field-table table tr.subfield-level,
-#completeness-field-table table tr.complex-type-level {
+#completeness-field-table table tr.subfield-level, #completeness-field-table table tr.complex-type-level {
   display: none;
-}
-
-#completeness-field-table table tr td a.trigger {
-  color: var(--dim-color);
 }
 
 /* autocomplete */
@@ -743,7 +668,7 @@ p.metric-definition {
 }
 
 .details .nav-link {
-  padding: .2rem 1rem;
+  padding: 0.2rem 1rem;
 }
 
 /* analysis parameters
@@ -763,3 +688,4 @@ p.metric-definition {
   color: var(--highlight-color);
   border-bottom: 1px solid #666666;
 }
+/*# sourceMappingURL=metadata-qa.css.map */
