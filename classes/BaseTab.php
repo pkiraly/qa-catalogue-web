@@ -128,6 +128,10 @@ abstract class BaseTab extends Tab {
     return sprintf('%s/%s/%s', $this->configuration->getDir(), $this->configuration->getDirName(), $name); // ['dir']
   }
 
+  protected function getDeltaFilePath($name): string {
+    return sprintf('%s/%s/delta/%s', $this->configuration->getDir(), $this->configuration->getDirName(), $name); // ['dir']
+  }
+
   protected function getVersionedFilePath($version, $name): string {
     return sprintf('%s/_historical/%s/%s/%s', $this->configuration->getDir(), $this->configuration->getDirName(), $version, $name);
   }
@@ -577,13 +581,15 @@ abstract class BaseTab extends Tab {
       $params[] = sprintf('%s=%s', $key, urlencode($object->{$key}));
   }
 
-  protected function getDbDir() {
+  protected function getDbDir(bool $delta) {
+    if ($delta)
+      return sprintf('%s/%s/delta', $this->configuration->getDir(), $this->configuration->getDirName());
     return sprintf('%s/%s', $this->configuration->getDir(), $this->configuration->getDirName());
   }
 
-  protected function issueDB(): IssuesDB {
+  protected function issueDB(bool $delta = false): IssuesDB {
     if (is_null($this->issueDB)) {
-      $this->issueDB = new IssuesDB($this->getDbDir(), $this->log);
+      $this->issueDB = new IssuesDB($this->getDbDir($delta), $this->log);
     }
     return $this->issueDB;
   }

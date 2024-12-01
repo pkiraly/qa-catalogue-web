@@ -4,7 +4,11 @@
   {include 'common/nav-tabs.tpl'}
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane active" id="issues" role="tabpanel" aria-labelledby="issues-tab">
-      <h2>{_('Violations of record format specification')}</h2>
+      {if $delta}
+        <h2>{_('Validation of latest changes')}</h2>
+      {else}
+        <h2>{_('Violations of record format specification')}</h2>
+      {/if}
 
       <p class="metric-definition">
         {_t('issues_definition')}
@@ -27,6 +31,11 @@
           {/foreach}
         </p>
       {/if}
+
+      {if $delta}
+        <p><span style="color: #999999">number of new/updated reords:</span> {$deltaCount}</p>
+      {/if}
+
       <div id="issues-table-placeholder">
         {include 'issues/issue-summary.tpl'}
       </div>
