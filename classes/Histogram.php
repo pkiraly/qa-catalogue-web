@@ -54,7 +54,6 @@ class Histogram extends BaseTab {
       ];
     }
 
-
     foreach ($this->serial_score_suffixes as $suffix) {
       $this->allowable_histograms['serial-score-histogram-' . $suffix] = [
         'name' => 'count', 'limit' => 10

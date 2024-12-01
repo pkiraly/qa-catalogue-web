@@ -64,7 +64,7 @@ abstract class BaseTab extends Tab {
       $this->display["control-fields"] = false;
     }
     if ($this->catalogue->getSchemaType() == 'UNIMARC' || is_null($this->historicalDataDir)) {
-      $this->display["history"] = false;
+      // $this->display["history"] = false;
       $this->display["timeline"] = false;
     }
     $this->isDockerized = $_ENV['IS_DOCKERIZED'] ?? false;
@@ -298,7 +298,7 @@ abstract class BaseTab extends Tab {
 
     $this->getFieldDefinitions();
 
-    $solrField = preg_replace('/_(ss|tt)$/', '', $solrField);
+    $solrField = preg_replace('/_(ss|tt|i)$/', '', $solrField);
     $label = $solrField;
     if ($solrField == 'type'
         || ($this->catalogue->getSchemaType() == 'MARC21'
@@ -351,13 +351,17 @@ abstract class BaseTab extends Tab {
       }
     } else {
       if ($this->catalogue->getSchemaType() == 'MARC21') {
+        $isFullField = preg_match('/^...(_count|_.+_full)$/', $solrField);
         $field = substr($solrField, 0, 3);
         $pos3_7 = substr($solrField, 3, 4);
 
         if ($pos3_7 == 'ind1' || $pos3_7 == 'ind2')
           $label = sprintf('%s/%s', $field, substr($solrField, 3, 4));
+        elseif ($isFullField)
+          $label = $field;
         else
           $label = sprintf('%s$%s', $field, substr($solrField, 3, 1));
+
         $found = false;
         if (isset($this->fieldDefinitions->fields->{$field})) {
           $fieldDefinition = $this->fieldDefinitions->fields->{$field};
@@ -367,6 +371,9 @@ abstract class BaseTab extends Tab {
           } else if ($pos3_7 == 'ind2' && isset($fieldDefinition->indicator2)) {
             $label .= ': ' . $fieldDefinition->label . ' / ' . $fieldDefinition->indicator2->label;
             $found = true;
+          } else if ($isFullField) {
+            $label .= ': ' . $fieldDefinition->label;
+            $found = true;
           } else if (isset($fieldDefinition->subfields->{substr($solrField, 3, 1)})) {
             $subfieldDefinition = $fieldDefinition->subfields->{substr($solrField, 3, 1)};
             $label .= ': ' . $fieldDefinition->label;
@@ -375,6 +382,7 @@ abstract class BaseTab extends Tab {
             $found = true;
           }
         }
+
         if (!$found) {
           foreach ($this->fieldDefinitions->fields as $fieldDefinition)
             if (isset($fieldDefinition->subfields))

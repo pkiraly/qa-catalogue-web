@@ -32,6 +32,7 @@ abstract class Tab {
     'control-fields'           => 'ControlFields',
     'download'                 => 'Download',
     'collocations'             => 'Collocations',
+    'data-element-timeline'    => 'DataElementTimeline',
   ];
 
   public static function create($name, $config): Tab {
