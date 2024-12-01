@@ -51,8 +51,15 @@ function displayHistogram(histogramDataUrl, histogramSvgClass) {
           .style("opacity", .9)
 
         var percentage = d.frequency / count * 100;
-        var msg = d.frequency.toLocaleString('en-US') + " records (" + percentage.toFixed(2) + "%) with "
-                + d.count + ' ' + units;
+        console.log(units == 'year');
+        if (units == 'year') {
+          var msg = d.frequency.toLocaleString('en-US') + " records (" + percentage.toFixed(2) + "%) in "
+            + d.count;
+        } else {
+          var msg = d.frequency.toLocaleString('en-US') + " records (" + percentage.toFixed(2) + "%) with "
+            + d.count + ' ' + units;
+        }
+
         tooltip
           .html(msg)
           .style("left", getXCoord() + "px")

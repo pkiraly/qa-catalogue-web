@@ -763,3 +763,7 @@ p.metric-definition {
   color: var(--highlight-color);
   border-bottom: 1px solid #666666;
 }
+
+.fa-chart-line {
+  color: #999999;
+}

@@ -1,7 +1,8 @@
 <td class="chart"><div style="width: {ceil($record->percent * 2)}px;">&nbsp;</div></td>
 <td class="terms">
   {if isset($record->solr) && !empty($record->solr)}
-    <a href="{$controller->termsLink($record)}" title="{_('terms')}"><img src="styles/list.png" width="20" height="20"></a>
+    <a href="{$controller->termsLink($record)}" title="{_('List of terms')}"><img src="styles/list.png" width="20" height="20"></a>
+    <a href="{$controller->timelineLink($record)}" title="{_('Data element utilisation timeline')}"><i class="fa-solid fa-chart-line"></i></a>
   {/if}
 </td>
 <td class="number-of-record">{$record->{'number-of-record'}|number_format}</td>
