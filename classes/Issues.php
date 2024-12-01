@@ -19,10 +19,20 @@ class Issues extends BaseTab {
   private $listType;
   private $version;
   public $currentGroup;
+  /**
+   * @var true
+   */
+  private bool $delta = false;
   protected $parameterFile = 'validation.params.json';
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
+    $smarty->assign("delta", $this->delta);
+    if ($this->delta) {
+      $this->count = $this->readCount($this->getDeltaFilePath('count.csv'));
+      $smarty->assign("deltaCount", $this->count);
+    }
+
     if ($this->versioning) {
       $versions = $this->getVersions();
       $smarty->assign('versions', $versions);
@@ -52,13 +62,13 @@ class Issues extends BaseTab {
     if ($this->action == 'download' || $this->action == 'query') {
       $this->processDownloadOrQueryRequest();
     } elseif ($this->action == 'record') {
-        $this->processRecordRequest($smarty);
+      $this->processRecordRequest($smarty);
     } elseif ($this->action == 'ajaxIssue') {
-       $this->processAjaxIssueRequest($smarty);
+      $this->processAjaxIssueRequest($smarty);
     } elseif ($this->action == 'ajaxIssueByTag') {
-       $this->processAjaxIssueByTagRequest($smarty);
+      $this->processAjaxIssueByTagRequest($smarty);
     } else {
-       $this->processListRequest($smarty);
+      $this->processListRequest($smarty);
     }
   }
 
@@ -76,6 +86,8 @@ class Issues extends BaseTab {
     $lineNumber = 0;
     if ($this->versioning && $this->version != '') {
       $elementsFile = $this->getVersionedFilePath($this->version, 'issue-summary.csv');
+    } elseif ($this->delta) {
+      $elementsFile = $this->getDeltaFilePath('issue-summary.csv');
     } else {
       $elementsFile = $this->getFilePath('issue-summary.csv');
     }
@@ -155,11 +167,11 @@ class Issues extends BaseTab {
   private function readIssuesAjaxDB($categoryId, $typeId, $path = null, $order = 'records DESC', $page = 0, $limit = 100) {
     $groupId = $this->grouped ? $this->groupId : '';
     if (is_null($path) || empty($path)) {
-      $this->recordCount = $this->issueDB()->getByCategoryTypeAndGroupCount($categoryId, $typeId, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
-      $result = $this->issueDB()->getByCategoryTypeAndGroup($categoryId, $typeId, $groupId, $order, $page * $limit, $limit);
+      $this->recordCount = $this->issueDB($this->delta)->getByCategoryTypeAndGroupCount($categoryId, $typeId, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+      $result = $this->issueDB($this->delta)->getByCategoryTypeAndGroup($categoryId, $typeId, $groupId, $order, $page * $limit, $limit);
     } else {
-      $this->recordCount = $this->issueDB()->getByCategoryTypePathAndGroupCount($categoryId, $typeId, $path, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
-      $result = $this->issueDB()->getByCategoryTypePathAndGroup($categoryId, $typeId, $path, $groupId, $order, $page * $limit, $limit);
+      $this->recordCount = $this->issueDB($this->delta)->getByCategoryTypePathAndGroupCount($categoryId, $typeId, $path, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+      $result = $this->issueDB($this->delta)->getByCategoryTypePathAndGroup($categoryId, $typeId, $path, $groupId, $order, $page * $limit, $limit);
     }
 
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
@@ -174,9 +186,9 @@ class Issues extends BaseTab {
     $groupId = $this->grouped ? $this->groupId : '';
 
     if ($this->grouped) {
-      $result = $this->issueDB()->getRecordNumberAndVariationsForPathGrouped($typeId, $groupId, $order, $page * $limit, $limit);
+      $result = $this->issueDB($this->delta)->getRecordNumberAndVariationsForPathGrouped($typeId, $groupId, $order, $page * $limit, $limit);
     } else {
-      $result = $this->issueDB()->getByCategoryAndTypeGroupedByPath($categoryId, $typeId, $groupId, $order, $page * $limit, $limit);
+      $result = $this->issueDB($this->delta)->getByCategoryAndTypeGroupedByPath($categoryId, $typeId, $groupId, $order, $page * $limit, $limit);
     }
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
       $record = (object) $row;
@@ -206,6 +218,8 @@ class Issues extends BaseTab {
     $lineNumber = 0;
     if ($this->versioning && $this->version != '') {
       $elementsFile = $this->getVersionedFilePath($this->version, 'issue-summary.csv');
+    } elseif ($this->delta) {
+      $elementsFile = $this->getDeltaFilePath('issue-summary.csv');
     } else {
       $elementsFile = $this->getFilePath('issue-summary.csv');
     }
@@ -296,6 +310,8 @@ class Issues extends BaseTab {
   protected function filePath($filename) {
     if ($this->versioning && $this->version != '') {
       $elementsFile = $this->getVersionedFilePath($this->version, $filename);
+    } elseif ($this->delta) {
+        $elementsFile = $this->getDeltaFilePath($filename);
     } else {
       $elementsFile = $this->getFilePath($filename);
     }
@@ -398,11 +414,11 @@ class Issues extends BaseTab {
   private function getIdsFromDBResult($id, $type, $action): SQLite3Result {
     $groupId = $this->grouped ? $this->groupId : '';
     if ($type == 'errorId')
-      $result = $this->issueDB()->getRecordIdsByErrorId($id, $groupId);
+      $result = $this->issueDB($this->delta)->getRecordIdsByErrorId($id, $groupId);
     else if ($type == 'categoryId')
-      $result = $this->issueDB()->getRecordIdsByCategoryId($id, $groupId);
+      $result = $this->issueDB($this->delta)->getRecordIdsByCategoryId($id, $groupId);
     else if ($type == 'typeId')
-      $result = $this->issueDB()->getRecordIdsByTypeId($id, $groupId);
+      $result = $this->issueDB($this->delta)->getRecordIdsByTypeId($id, $groupId);
     else
       $result = false;
 
@@ -424,6 +440,8 @@ class Issues extends BaseTab {
   private function getIdsFromCsv($errorId, $action) {
     if ($this->versioning && $this->version != '') {
       $elementsFile = $this->getVersionedFilePath($this->version, 'issue-collector.csv');
+    } elseif ($this->delta) {
+      $elementsFile = $this->getDeltaFilePath('issue-collector.csv');
     } else {
       $elementsFile = $this->getFilePath('issue-collector.csv');
     }
@@ -479,9 +497,11 @@ class Issues extends BaseTab {
     $this->limit = getOrDefault('limit', $this->issueLimit);
   }
 
-  protected function getDbDir() : string {
+  protected function getDbDir(bool $delta = false) : string {
     if ($this->versioning && $this->version != '') {
       $dir = sprintf('%s/_historical/%s/%s', $this->configuration->getDir(), $this->configuration->getDirName(), $this->version);
+    } elseif ($this->delta) {
+      $dir = sprintf('%s/%s/delta', $this->configuration->getDir(), $this->configuration->getDirName());
     } else {
       $dir = sprintf('%s/%s', $this->configuration->getDir(), $this->configuration->getDirName());
     }
@@ -671,12 +691,17 @@ class Issues extends BaseTab {
       $this->filePath('issue-total.csv'),
       $this->count,
       $this->grouped,
-      ($this->grouped ? $this->currentGroup : null)));
+      ($this->grouped ? $this->currentGroup : null))
+    );
     $smarty->assign('total', $this->count);
     $smarty->assign('fieldNames', ['path', 'message', 'instances', 'records']);
     $smarty->assign('listType', 'full-list');
     $smarty->assign('path', null);
     $smarty->assign('order', null);
     $smarty->registerPlugin("function", 'showMarcUrl', array('Issues', 'showMarcUrl'));
+  }
+
+  public function setDelta() {
+    $this->delta = true;
   }
 }

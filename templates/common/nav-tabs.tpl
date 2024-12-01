@@ -45,16 +45,21 @@
       {/if}
     </li>
     {/if}
-    {if $display['shacl'] || $display['issues']}
+    {if $display['issues'] || $display['shacl'] || $display['delta']}
     <li class="nav-item1">
-      {if $display['shacl']}
+      {if $display['shacl'] || $display['delta']}
         <a class="nav-link1 {if $isValidation}active{/if} dropdown-toggle"
            data-toggle="dropdown" role="tab1" aria-selected="true"
            id="validation-tab" aria-controls="validation"
            href="#">{_('Validation')}</a>
         <div class="dropdown-menu">
           <a class="dropdown-item" href="?tab=issues{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Issues')}</a>
-          <a class="dropdown-item" href="?tab=shacl{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Custom validation')}</a>
+          {if $display['delta']}
+            <a class="dropdown-item" href="?tab=delta{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Validation of latest changes')}</a>
+          {/if}
+          {if $display['shacl']}
+            <a class="dropdown-item" href="?tab=shacl{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Custom validation')}</a>
+          {/if}
         </div>
       {elseif $display['issues']}
         <a class="nav-link1 {if $tab == 'issues'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"

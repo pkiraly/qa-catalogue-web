@@ -18,6 +18,7 @@ abstract class Tab {
     'tt-completeness'          => 'TtCompleteness',
     'shelf-ready-completeness' => 'ShelfReadyCompleteness',
     'shacl'                    => 'Shacl',
+    'delta'                    => 'Issues',
     'network'                  => 'Network',
     'terms'                    => 'Terms',
     'pareto'                   => 'Pareto',
@@ -35,7 +36,11 @@ abstract class Tab {
 
   public static function create($name, $config): Tab {
     $class = Tab::names[$name];
-    return new $class($config, $config->getId()); 
+    $instance = new $class($config, $config->getId());
+    if ($name == 'delta') {
+      $instance->setDelta();
+    }
+    return $instance;
   }
 
   public static function defined($name): bool {
