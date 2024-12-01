@@ -427,6 +427,21 @@ class Completeness extends BaseTab {
     return '?' . join('&', $params);
   }
 
+  public function timelineLink($record) : string {
+    static $baseParams;
+    if (!isset($baseParams)) {
+      $baseParams = [
+        'tab=data-element-timeline',
+      ];
+      $baseParams = array_merge($baseParams, $this->getGeneralParams());
+      if ($this->grouped && $this->groupId != 0)
+        $baseParams[] = 'groupId=' . $this->groupId;
+    }
+    $params = $baseParams;
+    $params[] = 'field=' . $record->solr;
+    return '?' . join('&', $params);
+  }
+
   /**
    * @param object $record
    * @param array $matches

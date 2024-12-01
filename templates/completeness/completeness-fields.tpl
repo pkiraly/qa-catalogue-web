@@ -143,7 +143,7 @@
           <td class="subfield">{$record->subfield}</td>
           <td class="chart"><div style="width: {ceil($record->percent * 2)}px;">&nbsp;</div></td>
           <td class="terms">
-            {if isset($record->solr) && !empty($record->solr)}
+            {if isset($record->solr) && !empty($record->solr)}TERMS
               <a href="{$controller->termsLink($record)}"><i class="fa fa-list-ol"></i></a>
             {/if}
           </td>

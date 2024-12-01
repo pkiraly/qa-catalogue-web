@@ -346,3 +346,7 @@ msgid "shacl_definition"
 msgstr "Ez az oldal az adott könyvtár követelményeit tükröző, testreszabott szabálykészlet alapján végzett érvényesítés eredményét jeleníti meg. A szabályokat a Shape Constraints Language nyelvvel kell kifejezni, amely egy domainspecifikus nyelv az adatelemekkel szembeni korlátozások meghatározására. A szabálykészletet egy YAMPL vagy JSON konfigurációs fájlba lehet írni."
 msgid "Download the custom ruleset"
 msgstr "Egyedi szabálykészlet letöltése"
+
+# data element timeline
+msgid "data_element_timeline_definition"
+msgstr "Az alábbi idővonal azt mutatja meg, hogy hogyan változott egy adott adatelem használata évről-évre."

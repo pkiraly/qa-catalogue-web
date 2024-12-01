@@ -348,3 +348,7 @@ msgid "shacl_definition"
 msgstr "Esta página exibe o resultado da validação em relação a um conjunto personalizado de regras, que reflete os requisitos de uma biblioteca específica. As regras devem ser expressas com a linguagem de restrições de forma, que é uma linguagem específica de domínio para definir restrições contra elementos de dados. O conjunto de regras pode ser escrito em um arquivo de configuração YAMPL ou JSON."
 msgid "Download the custom ruleset"
 msgstr "Baixe o conjunto de regras personalizado"
+
+# data element timeline
+msgid "data_element_timeline_definition"
+msgstr "This timeline shows how the utilisation of a data element changed over the years"

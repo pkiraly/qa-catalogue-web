@@ -111,26 +111,29 @@
            href="?tab=network{$generalParams}">{_('Network')}</a>
       </li>
     {/if}
-    {if $display['terms'] || $display['control-fields'] || $display['collocations'] || $display['download'] || $display['settings']}
+    {if $display['terms'] || $display['data-element-timeline'] || $display['control-fields'] || $display['collocations'] || $display['download'] || $display['settings']}
     <li class="nav-item1">
       <a class="nav-link1 {if $isTool}active{/if} dropdown-toggle" data-toggle="dropdown" role="tab1" aria-selected="false"
          id="terms-tab" aria-controls="terms"
          href="#">{_('Tools')}</a>
       <div class="dropdown-menu">
         {if $display['terms']}
-        <a class="dropdown-item" href="?tab=terms{$generalParams}">{_('Terms')}</a>
+          <a class="dropdown-item" href="?tab=terms{$generalParams}">{_('Terms')}</a>
+        {/if}
+        {if $display['data-element-timeline']}
+          <a class="dropdown-item" href="?tab=data-element-timeline{$generalParams}">{_('Data element timeline')}</a>
         {/if}
         {if $display['control-fields']}
           <a class="dropdown-item" href="?tab=control-fields{$generalParams}">{_('Value distribution in control fields')}</a>
         {/if}
         {if $display['collocations']}
-        <a class="dropdown-item" href="?tab=collocations{$generalParams}">{_('Collocations')}</a>
+          <a class="dropdown-item" href="?tab=collocations{$generalParams}">{_('Collocations')}</a>
         {/if}
         {if $display['download']}
-        <a class="dropdown-item" href="?tab=download{$generalParams}">{_('Download')}</a>
+          <a class="dropdown-item" href="?tab=download{$generalParams}">{_('Download')}</a>
         {/if}
         {if $display['settings']}
-        <a class="dropdown-item" href="?tab=settings{$generalParams}">{_('Facets')}</a>
+          <a class="dropdown-item" href="?tab=settings{$generalParams}">{_('Facets')}</a>
         {/if}
       </div>
     </li>

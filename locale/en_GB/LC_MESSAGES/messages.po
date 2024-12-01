@@ -348,3 +348,7 @@ msgid "shacl_definition"
 msgstr "This page display result of validation against a customized set of rules, which reflects the requirements of a particular library. The rules should be expressed with Shape Constraints Language which is a domain specific language for defining constraints against data elements. The rule set could be writtem in a YAMPL or JSON configuration file."
 msgid "Download the custom ruleset"
 msgstr "Download the custom ruleset"
+
+# data element timeline
+msgid "data_element_timeline_definition"
+msgstr "This timeline shows how the utilisation of a data element changed over the years"

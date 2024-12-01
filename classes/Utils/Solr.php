@@ -27,6 +27,7 @@ class Solr {
       'numFound' => $solrResponse->response->numFound,
       'docs' => $solrResponse->response->docs,
       'facets' => (isset($solrResponse->facet_counts) ? $solrResponse->facet_counts->facet_fields : []),
+      'facet_queries' => (isset($solrResponse->facet_counts) && isset($solrResponse->facet_counts->facet_queries) ? $solrResponse->facet_counts->facet_queries : []),
       'params' => $solrResponse->responseHeader->params,
     ];
   }
@@ -101,6 +102,25 @@ class Solr {
         $parameters[] = 'fq=' . $filter;
 
     return $this->getSolrResponse($parameters)->facets;
+  }
+
+  public function getQueryFacets($query, $facetQueries, $limit = 100, $offset = 0, $termFilter = '', $filters = []) {
+    $parameters = array_merge([
+      $query,
+      'facet=on',
+      'facet.limit=' . $limit,
+      'facet.offset=' . $offset,
+      'core=' . $this->indexName,
+      'rows=0',
+      'wt=json',
+      'json.nl=map',
+    ], $facetQueries);
+
+    if (!empty($filters))
+      foreach ($filters as $filter)
+        $parameters[] = 'fq=' . $filter;
+
+    return $this->getSolrResponse($parameters)->facet_queries;
   }
 
   public function searchFacets($params) {
