@@ -115,16 +115,19 @@ class Issues extends BaseTab {
 
             $this->injectPica3($record);
             $typeId = $record->typeId;
+            // $($record->categoryId == 3 && $typeId == 9);
+            $type = $record->type;
             unset($record->categoryId);
             unset($record->typeId);
-            unset($record->type);
+
             $record->ratio = $record->records / $this->count;
             $record->percent = $record->ratio * 100;
 
             $record->url = str_replace('https://www.loc.gov/marc/bibliographic/', '', $record->url);
 
             $record->downloadUrl = $this->downloadLink('errorId=' . $record->id);
-            $record->queryUrl = $this->queryLink('errorId:' . $record->id);
+            $record->queryUrl = $this->queryLink($this->createIssueQuery($record));
+            unset($record->type);
 
             if (!isset($this->records[$typeId])) {
               $this->records[$typeId] = [];
@@ -147,6 +150,32 @@ class Issues extends BaseTab {
       $msg = sprintf("file %s is not existing", $elementsFile);
       $this->log->warning($msg);
     }
+  }
+
+  /**
+   * Create a Solr search query for finding the errors of a particular kind
+   *
+   * undefined field XXXX: search XXXX_count_i:*(requires configurationindexFieldCounts`)
+   * repetition of non-repeatable field XXXX: search XXXX_count_i:[1 TO *] (requires configuration indexFieldCounts)
+   *
+   * undefined subfield a of field XXXX: search XXXXa_ss:*
+   * repetition of non-repeatable subfield a of field XXXX: search XXXXa_count_i:[1 TO *] (requires configuration indexSubfieldCounts not implemented yet)
+   * @param $record
+   * @return string The
+   */
+  private function createIssueQuery($record) {
+    // TODO: use getSolrField($tag, $subfield)
+    if ($record->type == 'undefined field') {
+      $issueQuery = sprintf('%s_count_i:*', $record->path);
+    } elseif ($record->type == 'repetition of non-repeatable field') {
+      $issueQuery = sprintf('%s_count_i:[%s]', $record->path, urlencode('2 TO *'));
+    } elseif ($record->type == 'undefined subfield') {
+      // error_log(sprintf('getSolrField: %s%s -> %s', $record->path, $record->message, $this->getSolrField($record->path, $record->message)));
+      $issueQuery = sprintf('%s:*', $this->getSolrField($record->path, $record->message));
+    } else {
+      $issueQuery = sprintf('errorId:%s', $record->id);
+    }
+    return $issueQuery;
   }
 
   private function createPages($count) {
@@ -201,14 +230,14 @@ class Issues extends BaseTab {
   private function processRecord(&$record) {
     unset($record->categoryId);
     unset($record->typeId);
-    unset($record->type);
     if (!isset($record->path)) {
       $record->path = $record->MarcPath;
     }
     $this->calculateRatio($record);
     $record->url = str_replace('https://www.loc.gov/marc/bibliographic/', '', $record->url);
     $record->downloadUrl = $this->downloadLink('errorId=' . $record->id);
-    $record->queryUrl = $this->queryLink('errorId:' . $record->id);
+    $record->queryUrl = $this->queryLink($this->createIssueQuery($record));
+    unset($record->type);
 
     $this->injectPica3($record);
   }
@@ -537,7 +566,6 @@ class Issues extends BaseTab {
     if (!isset($baseParams)) {
       $baseParams = [
         'tab=data',
-        'type=issues',
       ];
       $baseParams = array_merge($baseParams, $this->getGeneralParams());
       if (isset($this->version) && !empty($this->version))
@@ -547,6 +575,9 @@ class Issues extends BaseTab {
     }
     $params = $baseParams;
     $params[] = 'query=' . $query;
+    if (preg_match('/^errorId:/', $query))
+      $params[] = 'type=issues';
+
     return '?' . join('&', $params);
   }
 

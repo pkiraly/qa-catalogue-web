@@ -30,6 +30,7 @@ class Configuration {
   private int $logLevel;
   private string $logHandler;
   private bool $extractGitVersion;
+  private bool $useDataElementInValidationSearch = false;
   private array $display = [];
 
   public static function fromIniFile(string $file, array $defaults=[]) {
