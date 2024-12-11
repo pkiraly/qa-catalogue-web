@@ -248,7 +248,6 @@ abstract class BaseTab extends Tab {
 
     $existingSolrFields = $this->solr()->getSolrFields($onlyStored);
     if (!isset($solrField) || !in_array($solrField, $existingSolrFields)) {
-      $solrField1 = isset($solrField) ? $solrField : false;
       $solrField = $tag;
       if ($subfield != '')
         $solrField .= preg_match('/[0-9a-zA-Z]/', $subfield) ? $subfield : 'x' . bin2hex($subfield);
@@ -257,6 +256,8 @@ abstract class BaseTab extends Tab {
       $solrField = str_replace('?', '\?', $solrField);
       $solrField = str_replace('/', '\/', $solrField);
       foreach ($existingSolrFields as $existingSolrField) {
+        if (!preg_match('/_ss$/', $existingSolrField))
+          continue;
         if (preg_match('/^' . $solrField . '_/', $existingSolrField)) {
           $parts = explode('_', $existingSolrField);
           if (count($parts) == 4) {
