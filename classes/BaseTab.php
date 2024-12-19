@@ -247,6 +247,7 @@ abstract class BaseTab extends Tab {
     }
 
     $existingSolrFields = $this->solr()->getSolrFields($onlyStored);
+    $fieldPrefix = $this->indexingParameters->fieldPrefix;
     if (!isset($solrField) || !in_array($solrField, $existingSolrFields)) {
       $solrField = $tag;
       if ($subfield != '')
@@ -258,7 +259,7 @@ abstract class BaseTab extends Tab {
       foreach ($existingSolrFields as $existingSolrField) {
         if (!preg_match('/_ss$/', $existingSolrField))
           continue;
-        if (preg_match('/^' . $solrField . '_/', $existingSolrField)) {
+        if (preg_match('/^' . $fieldPrefix . $solrField . '_/', $existingSolrField)) {
           $parts = explode('_', $existingSolrField);
           if (count($parts) == 4) {
             $found = TRUE;
@@ -515,14 +516,17 @@ abstract class BaseTab extends Tab {
     } else {
       $this->log->error('there is no parameterFile');
     }
+
+    $this->readIndexingParameters('marctosolr.params.json');
+    error_log('indexingParameters: ' . json_encode($this->indexingParameters));
   }
 
   protected function readIndexingParameters($paramFile) {
     $path = $this->getFilePath($paramFile);
     if (file_exists($path)) {
       $this->indexingParameters = json_decode(file_get_contents($path));
-      if ($this->analysisParameters) {
-        $this->analysisParameters->analysisTimestamp = date("Y-m-d H:i:s", filemtime($path));
+      if ($this->indexingParameters) {
+        $this->indexingParameters->analysisTimestamp = date("Y-m-d H:i:s", filemtime($path));
       }
     }
   }

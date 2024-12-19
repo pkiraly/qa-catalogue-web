@@ -27,6 +27,8 @@ class Issues extends BaseTab {
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
+
+    // $this->analysisParameters = json_decode(file_get_contents($path))
     $smarty->assign("delta", $this->delta);
     if ($this->delta) {
       $this->count = $this->readCount($this->getDeltaFilePath('count.csv'));
@@ -164,15 +166,23 @@ class Issues extends BaseTab {
    * @return string The
    */
   private function createIssueQuery($record) {
-    // TODO: use getSolrField($tag, $subfield)
-    if ($record->type == 'undefined field') {
-      $issueQuery = sprintf('%s_count_i:*', $record->path);
-    } elseif ($record->type == 'repetition of non-repeatable field') {
-      $issueQuery = sprintf('%s_count_i:[%s]', $record->path, urlencode('2 TO *'));
-    } elseif ($record->type == 'undefined subfield') {
+    if ($record->type == 'undefined field' && $this->indexingParameters->indexFieldCounts) {
+      $issueQuery = sprintf('%s%s_count_i:*', $this->indexingParameters->fieldPrefix, $record->path);
+    }
+    elseif ($record->type == 'repetition of non-repeatable field' && $this->indexingParameters->indexFieldCounts) {
+      $issueQuery = sprintf('%s%s_count_i:[%s]', $this->indexingParameters->fieldPrefix, $record->path, urlencode('2 TO *'));
+    }
+    elseif ($record->type == 'undefined subfield') {
       // error_log(sprintf('getSolrField: %s%s -> %s', $record->path, $record->message, $this->getSolrField($record->path, $record->message)));
       $issueQuery = sprintf('%s:*', $this->getSolrField($record->path, $record->message));
-    } else {
+    }
+    elseif ($record->type == 'repetition of non-repeatable subfield' && $this->indexingParameters->indexSubfieldCounts) {
+      $issueQuery = sprintf('%s%s_count_is:[%s]',
+        $this->indexingParameters->fieldPrefix,
+        str_replace('$', '', $record->path),
+        urlencode('2 TO *'));
+    }
+    else {
       $issueQuery = sprintf('errorId:%s', $record->id);
     }
     return $issueQuery;
