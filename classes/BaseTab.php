@@ -95,6 +95,7 @@ abstract class BaseTab extends Tab {
         $this->count = $this->analysisParameters->numberOfprocessedRecords;
       }
     }
+    error_log('$this->count: ' . $this->count);
     $smarty->assign('count', $this->count);
   }
 
