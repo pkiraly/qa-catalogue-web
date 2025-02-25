@@ -125,7 +125,7 @@ class Record {
   public function getLeaderByPosition($start, $end = NULL) {
     $leader = $this->getFirstField('Leader_ss');
     if ($leader != null) {
-      $length = ($end == null) ? 1 : $end - $start;
+      $length = ($end == null) ? 1 : ($end + 1) - $start;
       $part = substr($leader, $start, $length);
       return $part;
     }
@@ -135,7 +135,7 @@ class Record {
   public function get008ByPosition($start, $end = NULL) {
     $field = $this->getField('008');
     if ($field != null) {
-      $length = ($end == null) ? 1 : $end - $start;
+      $length = ($end == null) ? 1 : ($end + 1) - $start;
       $part = substr($field, $start, $length);
       return $part;
     }
@@ -145,7 +145,7 @@ class Record {
   public function get007ByPosition($start, $end = NULL) {
     $field = $this->getField('007');
     if ($field != null) {
-      $length = ($end == null) ? 1 : $end - $start;
+      $length = ($end == null) ? 1 : ($end + 1) - $start;
       $part = substr($field, $start, $length);
       return $part;
     }
@@ -155,7 +155,7 @@ class Record {
   public function get006ByPosition($start, $end = NULL) {
     $field = $this->getField('006');
     if ($field != null) {
-      $length = ($end == null) ? 1 : $end - $start;
+      $length = ($end == null) ? 1 : ($end + 1) - $start;
       $part = substr($field, $start, $length);
       return $part;
     }
