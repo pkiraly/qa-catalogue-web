@@ -104,7 +104,7 @@ msgstr "Alle Datensätze werden auf Übereinstimmung mit dem hinterlegten Schema
 msgid "records without issues"
 msgstr "Datensätze ohne Abweichungen"
 msgid "excluding undefined field issues"
-msgstr "Ohne unbekannte Felder"
+msgstr "Nur bekannte Felder"
 msgid "MARC21 scheme"
 msgstr "MARC21-Scheme"
 msgid "Avram scheme"
