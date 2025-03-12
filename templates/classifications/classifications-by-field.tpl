@@ -113,6 +113,8 @@
         </td>
       </tr>
       {assign var=previous value=$record->field}
+    {foreachelse}
+      No items were found in the search
     {/foreach}
   </tbody>
 </table>

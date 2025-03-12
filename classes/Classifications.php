@@ -93,34 +93,42 @@ class Classifications extends AddedEntry {
     $classificationRecords = [];
     $in = fopen($byRecordsFile, "r");
     while (($line = fgets($in)) != false) {
+      if (preg_match('/[^\\\]\\\[^\\\]/', $line)) {
+        $line = str_replace('\\', '\\\\', $line);
+        $this->log->info('escaped line: ' . $line);
+      }
       $values = str_getcsv($line);
       if (empty($header)) {
         $header = $values;
         continue;
       }
-      $classificationRecord = (object)array_combine($header, $values);
-      if ($this->catalogue->getSchemaType() == 'MARC21') {
-        $this->createFacetForMarc21($classificationRecord, $solrFieldMap);
-      } elseif ($this->catalogue->getSchemaType() == 'PICA') {
-        $this->createFacetForPica($classificationRecord, $picaFields);
-      } elseif ($this->catalogue->getSchemaType() == 'UNIMARC') {
-        $this->setUnimarcFacets($classificationRecord);
-      } else {
-        $this->log->warning('unhandled field in classification: ' . $classificationRecord->field);
-      }
-      if (isset($classificationRecord->facet2) && $classificationRecord->facet2 != '') {
-        $classificationRecord->facet2exists = in_array($classificationRecord->facet2, $solrFields);
-        if (!$classificationRecord->facet2exists) {
-          $this->log->warning($classificationRecord->facet2 . ' is not existing');
+      if (count($header) == count($values)) {
+        $classificationRecord = (object) array_combine($header, $values);
+        if ($this->catalogue->getSchemaType() == 'MARC21') {
+          $this->createFacetForMarc21($classificationRecord, $solrFieldMap);
+        } elseif ($this->catalogue->getSchemaType() == 'PICA') {
+          $this->createFacetForPica($classificationRecord, $picaFields);
+        } elseif ($this->catalogue->getSchemaType() == 'UNIMARC') {
+          $this->setUnimarcFacets($classificationRecord);
+        } else {
+          $this->log->warning('unhandled field in classification: ' . $classificationRecord->field);
         }
-      }
-      if (preg_match('/(^ |  +| $)/', $classificationRecord->scheme)) {
-        $classificationRecord->scheme = '"' . str_replace(' ', '&nbsp;', $classificationRecord->scheme) . '"';
-      }
-      $classificationRecord->ratio = $classificationRecord->recordcount / $this->count;
-      $classificationRecord->percent = $classificationRecord->ratio * 100;
+        if (isset($classificationRecord->facet2) && $classificationRecord->facet2 != '') {
+          $classificationRecord->facet2exists = in_array($classificationRecord->facet2, $solrFields);
+          if (!$classificationRecord->facet2exists) {
+            $this->log->warning($classificationRecord->facet2 . ' is not existing');
+          }
+        }
+        if (preg_match('/(^ |  +| $)/', $classificationRecord->scheme)) {
+          $classificationRecord->scheme = '"' . str_replace(' ', '&nbsp;', $classificationRecord->scheme) . '"';
+        }
+        $classificationRecord->ratio = $classificationRecord->recordcount / $this->count;
+        $classificationRecord->percent = $classificationRecord->ratio * 100;
 
-      $classificationRecords[] = $classificationRecord;
+        $classificationRecords[] = $classificationRecord;
+      } else {
+        $this->log->error('Problematic line: ' . $line);
+      }
     }
 
     $smarty->assign('records', $classificationRecords);
@@ -215,8 +223,7 @@ class Classifications extends AddedEntry {
   /**
    * @return string[]
    */
-  protected function getMarc21PredefinedSubjectFields(): array
-  {
+  protected function getMarc21PredefinedSubjectFields(): array {
     $fields = [
       '052' => 'Geographic Classification',
       '055' => 'Classification Numbers Assigned in Canada',
