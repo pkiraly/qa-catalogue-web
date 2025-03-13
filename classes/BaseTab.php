@@ -159,10 +159,17 @@ abstract class BaseTab extends Tab {
       $this->lastUpdate = trim(file_get_contents($file));
   }
 
-  protected function getSolrFieldMap(): array {
+  /**
+   * Get map of Solr fields (bib field => solr field pairs)
+   * @param $suffix Use Solr field suffix to filter results
+   * @return array
+   */
+  protected function getSolrFieldMap($suffix = null): array {
     $solrFieldMap = [];
     $fields = $this->solr()->getSolrFields();
     foreach ($fields as $field) {
+      if (!is_null($suffix) && preg_match('/' . $suffix . '$/', $field))
+        continue;
       $parts = explode('_', $field);
       $solrFieldMap[$parts[0]] = $field;
     }

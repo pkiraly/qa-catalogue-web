@@ -78,7 +78,7 @@ class Classifications extends AddedEntry {
       }
     }
 
-    $solrFieldMap = $this->getSolrFieldMap();
+    $solrFieldMap = $this->getSolrFieldMap('_ss'); // only phrase fields
 
     $byRecordsFile = $this->getFilePath('classifications-by-schema.csv');
     if (!file_exists($byRecordsFile)) {

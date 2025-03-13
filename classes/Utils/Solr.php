@@ -2,16 +2,24 @@
 
 namespace Utils;
 
+use Monolog\Logger;
+
 class Solr {
-  private $indexName;
-  private $mainSolrEndpoint;
+  private string $indexName;
+  private string $mainSolrEndpoint;
   private $solrFieldsFile;
-  private $solrForScoresUrl;
-  private $showAdvancedSearchForm;
+  private ?string $solrForScoresUrl;
+  private bool $showAdvancedSearchForm;
+  private Logger $log;
 
   private $solrFields;
 
-  public function __construct($configuration, $solrFieldsFile) {
+  /**
+   * @param Configuration $configuration
+   * @param $solrFieldsFile
+   */
+  public function __construct(Configuration $configuration, $solrFieldsFile) {
+    $this->log = $configuration->createLogger(get_class($this));
     $this->indexName = $configuration->getIndexName();
     $this->mainSolrEndpoint = $configuration->getMainSolrEndpoint();
     $this->solrForScoresUrl = $configuration->getSolrForScoresUrl();
