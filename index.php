@@ -41,7 +41,7 @@ if (!Tab::defined($tab)) $tab = 'issues';
 
 $smarty->assign('tab', $tab);
 $smarty->assign('isCompleteness', in_array($tab, ['completeness', 'serials', 'tt-completeness', 'shelf-ready-completeness', 'functions']));
-$smarty->assign('isValidation', in_array($tab, ['issues', 'shacl', 'delta']));
+$smarty->assign('isValidation', in_array($tab, ['issues', 'shacl', 'delta', 'translations']));
 $smarty->assign('isAuthority', in_array($tab, ['classifications', 'authorities']));
 $smarty->assign('isTool', in_array($tab, ['terms', 'control-fields', 'collocations', 'download', 'settings']));
 $languages = [

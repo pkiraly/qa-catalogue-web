@@ -16,9 +16,9 @@ class Solr {
 
   /**
    * @param Configuration $configuration
-   * @param $solrFieldsFile
+   * @param string $solrFieldsFile
    */
-  public function __construct(Configuration $configuration, $solrFieldsFile) {
+  public function __construct(Configuration $configuration, string $solrFieldsFile) {
     $this->log = $configuration->createLogger(get_class($this));
     $this->indexName = $configuration->getIndexName();
     $this->mainSolrEndpoint = $configuration->getMainSolrEndpoint();
@@ -40,11 +40,16 @@ class Solr {
     ];
   }
 
+  /**
+   * Check if there is distinct Solr index for validation data
+   * @return bool
+   */
   public function hasValidationIndex(): bool {
     return $this->isCoreAvailable($this->indexName . '_validation');
   }
 
   /**
+   * Checks if a Solr index is available
    * @param $core The name of the Solr core
    * @return bool
    */
@@ -74,7 +79,15 @@ class Solr {
     return false;
   }
 
-  public function countTotalFacets($facet, $query, $termFilter = '', $filters = []) {
+  /**
+   * Counts the total number of terms in a facet
+   * @param string $facet The facet field
+   * @param string $query A query to filter terms available in a subset of documents
+   * @param string $termFilter A term filter
+   * @param array $filters Filter queries
+   * @return int
+   */
+  public function countTotalFacets($facet, $query, $termFilter = '', $filters = []): int {
     $limit = 10000;
     $offset = 0;
     $total = 0;
@@ -88,6 +101,17 @@ class Solr {
     return $total;
   }
 
+  /**
+   * Get the list of facet terms
+   * @param string $facet The facet field (facet.field)
+   * @param string $query A query to filter terms available in a subset of documents
+   * @param int $limit Limit the number of facet (facet.limit)
+   * @param int $offset The offset of the first term to return (facet.offset)
+   * @param string $termFilter A term filter (f.*.facet.contains)
+   * @param array $filters Filter queries (fq)
+   * @return mixed
+   * @throws \Exception
+   */
   public function getFacets($facet, $query, $limit, $offset = 0, $termFilter = '', $filters = []) {
     $parameters = [
       'q=' . $query,
@@ -141,7 +165,6 @@ class Solr {
     }
   }
 
-
   public function getSolrModificationDate(): string {
     $url = $this->mainSolrEndpoint . 'admin/cores?action=STATUS&core=' . $this->indexName;
     $response = json_decode(file_get_contents($url));
@@ -150,7 +173,9 @@ class Solr {
   }
 
   /**
-   * @return array
+   * Returns the Solr fields. If it is already cached, it will use it, otherwise it retrieves from Solr.
+   * @param $onlyStored Flag to return only those fields that stores the content (default: false)
+   * @return mixed
    */
   public function getSolrFields($onlyStored = false) {
     if (!isset($this->solrFields)) {
