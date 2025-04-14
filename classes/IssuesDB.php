@@ -253,6 +253,22 @@ class IssuesDB extends SQLite3 {
     return $stmt->execute();
   }
 
+  public function getRecordIdsByTranslationsCount($criterium, $typeId, $groupId = '') {
+    if (!$this->hasColumnInTable($criterium, 'translations'))
+      return false;
+    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
+    $stmt = $this->prepare(
+      'SELECT COUNT(distinct(id)) AS count
+       FROM translations
+       WHERE "' . $criterium . '" = :typeId' . $groupCriterium);
+    $stmt->bindValue(':typeId', $typeId, SQLITE3_TEXT);
+    if ($groupId !== '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
+
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+
+    return $stmt->execute();
+  }
 
   public function getRecordIdsByTypeId($typeId, $groupId = '', $offset = 0, $limit = -1) {
     $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
@@ -268,6 +284,25 @@ class IssuesDB extends SQLite3 {
     $part = ($limit != -1) ? ' LIMIT :limit OFFSET :offset' : '';
     $stmt = $this->prepare('SELECT distinct(id)
        FROM shacl
+       WHERE "' . $criterium . '" = :typeId' . $groupCriterium . $part);
+    $stmt->bindValue(':typeId', $typeId, SQLITE3_TEXT);
+    if ($limit != -1) {
+      $stmt->bindValue(':limit', $limit, SQLITE3_INTEGER);
+      $stmt->bindValue(':offset', $offset, SQLITE3_INTEGER);
+    }
+    if ($groupId !== '')
+      $stmt->bindValue(':groupId', $groupId, SQLITE3_TEXT);
+
+    $this->log->debug(preg_replace('/[\s\n]+/', ' ', $stmt->getSQL(true)));
+
+    return $stmt->execute();
+  }
+
+  public function getRecordIdsByTranslations($criterium, $typeId, $groupId = '', $offset = 0, $limit = -1) {
+    $groupCriterium = ($groupId !== '') ? ' AND groupId = :groupId' : '';
+    $part = ($limit != -1) ? ' LIMIT :limit OFFSET :offset' : '';
+    $stmt = $this->prepare('SELECT distinct(id)
+       FROM translations
        WHERE "' . $criterium . '" = :typeId' . $groupCriterium . $part);
     $stmt->bindValue(':typeId', $typeId, SQLITE3_TEXT);
     if ($limit != -1) {

@@ -31,7 +31,7 @@ class Data extends Facetable {
     $this->filters = getOrDefault('filters', []);
     $this->start = (int) getOrDefault('start', 0);
     $this->rows = (int) getOrDefault('rows', 10, $this->itemsPerPageSelectors);
-    $this->type = getOrDefault('type', 'solr', ['solr', 'issues', 'custom-rule']);
+    $this->type = getOrDefault('type', 'solr', ['solr', 'issues', 'custom-rule', 'translations']);
     $this->action = getOrDefault('action', 'search', ['search', 'download']);
     $this->groupId = getOrDefault('groupId', 0);
     $this->searchform = getOrDefault('searchform', 'simple', ['simple', 'advanced']);
@@ -125,7 +125,7 @@ class Data extends Facetable {
         }
         $solrParams[] = 'q=' . urlencode($query);
       }
-    } else if ($this->type == 'custom-rule') {
+    } else if ($this->type == 'custom-rule' || $this->type == 'translations') {
       if (preg_match('/^([^ ]+):(0|1|NA)$/', $this->query, $matches)) {
         $recordIds = $this->prepareParametersForIssueQueries($matches[1], $matches[2]);
         $query = 'id:("' . join('" OR "', $recordIds) . '")';
@@ -342,8 +342,9 @@ class Data extends Facetable {
    * @return array
    */
   private function prepareParametersForIssueQueries($idType, $id): array {
+    $this->log->warning("prepareParametersForIssueQueries()");
     $groupId = $this->grouped ? $this->groupId : '';
-    $coreToUse = $this->type == 'custom-rule'
+    $coreToUse = ($this->type == 'custom-rule' || $this->type == 'translations')
                ? ''
                : ($this->isGroupAndErrorIdIndexed() ? $this->configuration->getIndexName() : $this->findCoreToUse());
     if ($coreToUse != '') {
@@ -531,6 +532,12 @@ class Data extends Facetable {
       if ($this->issueDB()->hasColumnInTable($idType, 'shacl')) {
         $this->numFound = $this->issueDB()->getRecordIdsByShaclCount($idType, $id, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
         $result = $this->issueDB()->getRecordIdsByShacl($idType, $id, $groupId, $this->start, $this->rows);
+      }
+    } else if ($this->type == 'translations') {
+      if ($this->issueDB()->hasColumnInTable($idType, 'translations')) {
+        $this->numFound = $this->issueDB()->getRecordIdsByTranslationsCount($idType, $id, $groupId)
+          ->fetchArray(SQLITE3_ASSOC)['count'];
+        $result = $this->issueDB()->getRecordIdsByTranslations($idType, $id, $groupId, $this->start, $this->rows);
       }
     } // FIXME: else? better make idtype an Enum?
     return $this->issueDB()->fetchAll($result, 'id');

@@ -18,6 +18,7 @@ abstract class Tab {
     'tt-completeness'          => 'TtCompleteness',
     'shelf-ready-completeness' => 'ShelfReadyCompleteness',
     'shacl'                    => 'Shacl',
+    'translations'             => 'Translations',
     'delta'                    => 'Issues',
     'network'                  => 'Network',
     'terms'                    => 'Terms',
