@@ -525,7 +525,7 @@ abstract class BaseTab extends Tab {
     }
 
     $this->readIndexingParameters('marctosolr.params.json');
-    error_log('indexingParameters: ' . json_encode($this->indexingParameters));
+    $this->log->info('indexingParameters: ' . json_encode($this->indexingParameters));
   }
 
   protected function readIndexingParameters($paramFile) {
