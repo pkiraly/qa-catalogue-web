@@ -49,6 +49,8 @@
           {if isset($rowData->withPica3)}{$rowData->withPica3}{else}{$rowData->path}{/if}
         </a>
       {/if}
+      {* TODO: search not by ID *}
+      {if $categoryId == 3 && $typeId == 9}###{/if}
     </td>
     <td class="message">
       {include "../message.tpl" message=$rowData->message}

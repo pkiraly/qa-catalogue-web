@@ -159,10 +159,17 @@ abstract class BaseTab extends Tab {
       $this->lastUpdate = trim(file_get_contents($file));
   }
 
-  protected function getSolrFieldMap(): array {
+  /**
+   * Get map of Solr fields (bib field => solr field pairs)
+   * @param $suffix Use Solr field suffix to filter results
+   * @return array
+   */
+  protected function getSolrFieldMap($suffix = null): array {
     $solrFieldMap = [];
     $fields = $this->solr()->getSolrFields();
     foreach ($fields as $field) {
+      if (!is_null($suffix) && preg_match('/' . $suffix . '$/', $field))
+        continue;
       $parts = explode('_', $field);
       $solrFieldMap[$parts[0]] = $field;
     }
@@ -247,8 +254,8 @@ abstract class BaseTab extends Tab {
     }
 
     $existingSolrFields = $this->solr()->getSolrFields($onlyStored);
+    $fieldPrefix = $this->indexingParameters->fieldPrefix;
     if (!isset($solrField) || !in_array($solrField, $existingSolrFields)) {
-      $solrField1 = isset($solrField) ? $solrField : false;
       $solrField = $tag;
       if ($subfield != '')
         $solrField .= preg_match('/[0-9a-zA-Z]/', $subfield) ? $subfield : 'x' . bin2hex($subfield);
@@ -257,7 +264,9 @@ abstract class BaseTab extends Tab {
       $solrField = str_replace('?', '\?', $solrField);
       $solrField = str_replace('/', '\/', $solrField);
       foreach ($existingSolrFields as $existingSolrField) {
-        if (preg_match('/^' . $solrField . '_/', $existingSolrField)) {
+        if (!preg_match('/_ss$/', $existingSolrField))
+          continue;
+        if (preg_match('/^' . $fieldPrefix . $solrField . '_/', $existingSolrField)) {
           $parts = explode('_', $existingSolrField);
           if (count($parts) == 4) {
             $found = TRUE;
@@ -514,14 +523,17 @@ abstract class BaseTab extends Tab {
     } else {
       $this->log->error('there is no parameterFile');
     }
+
+    $this->readIndexingParameters('marctosolr.params.json');
+    $this->log->info('indexingParameters: ' . json_encode($this->indexingParameters));
   }
 
   protected function readIndexingParameters($paramFile) {
     $path = $this->getFilePath($paramFile);
     if (file_exists($path)) {
       $this->indexingParameters = json_decode(file_get_contents($path));
-      if ($this->analysisParameters) {
-        $this->analysisParameters->analysisTimestamp = date("Y-m-d H:i:s", filemtime($path));
+      if ($this->indexingParameters) {
+        $this->indexingParameters->analysisTimestamp = date("Y-m-d H:i:s", filemtime($path));
       }
     }
   }

@@ -200,6 +200,7 @@ class Terms extends Facetable {
     $term = getOrDefault('term', '');
     $this->output = 'none';
     $fileName = $this->getFieldMapFileName();
+
     if (file_exists($fileName)) {
       $fileDate = date("Y-m-d H:i:s", filemtime($fileName));
       if ($this->solr()->getSolrModificationDate() > $fileDate) {
@@ -207,24 +208,26 @@ class Terms extends Facetable {
         unlink($fileName);
       }
     }
+
     if (!file_exists($fileName)) {
       $allFields = [];
       foreach ($this->getFields() as $field) {
         $label = $this->resolveSolrField($field);
         $allFields[] = ['label' => $label, 'value' => $field];
       }
-      $this->log->warning("generate " . $fileName);
       file_put_contents($fileName, json_encode($allFields));
     } else {
       $allFields = json_decode(file_get_contents($fileName));
     }
+
     $fields = [];
     foreach ($allFields as $field) {
       $label = is_object($field) ? $field->label : $field['label'];
       $fieldName = is_object($field) ? $field->value : $field['value'];
       if (    $this->isTermPartOfLabelOrFieldName($term, $label, $fieldName)
-           && $this->doesFieldMatchToVariant($fieldName))
+           && $this->doesFieldMatchToVariant($fieldName)) {
         $fields[] = ['label' => $label, 'value' => $fieldName];
+      }
     }
 
     print json_encode($fields);
@@ -291,7 +294,5 @@ class Terms extends Facetable {
     } catch(Exception $e) {
       $smarty->assign('error', $e->getMessage());
     }
-
-    $this->log->warning('done');
   }
 }
