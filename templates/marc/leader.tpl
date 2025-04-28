@@ -28,7 +28,7 @@
     <tr>
       <td>{$id}</td>
       <td>{$data->label}</td>
-        {assign var="code" value=$record->getLeaderByPosition($data->start, $data->end)}
+      {assign var="code" value=$record->getLeaderByPosition($data->start, $data->end)}
       <td>
         {if preg_match('/ /', $code)}
           "{str_replace(' ', '&nbsp;', $code)}"
