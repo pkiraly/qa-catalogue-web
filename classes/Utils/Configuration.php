@@ -297,9 +297,12 @@ class Configuration {
   }
 
   private function getDefaultMainSolrEndpoint(): string {
+    if (isset($_ENV['SORL_HOST']) && !empty($_ENV['SORL_HOST'])) {
+      return $_ENV['SORL_HOST'] . '/solr/';
+    }
     $protocol = $_ENV["SOLR_PROTOCOL"] ?? "http";
-    $host = $_ENV["SOLR_HOST"] ?? "localhost";
+    $domain = $_ENV["SOLR_DOMAIN"] ?? "localhost";
     $port = $_ENV["SOLR_PORT"] ?? "8983";
-    return $protocol . "://" . $host . ":" . $port . '/solr/';
+    return $protocol . "://" . $domain . ":" . $port . '/solr/';
   }
 }
