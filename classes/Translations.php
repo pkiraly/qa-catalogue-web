@@ -17,7 +17,7 @@ class Translations extends BaseTab {
   }
 
   public function getTemplate() {
-    return 'shacl/shacl.tpl';
+    return 'translations/translations.tpl';
   }
 
   private function processListRequest(&$smarty) {
