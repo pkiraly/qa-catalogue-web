@@ -60,6 +60,9 @@
           {if $display['shacl']}
             <a class="dropdown-item" href="?tab=shacl{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Custom validation')}</a>
           {/if}
+          {if $display['translations']}
+            <a class="dropdown-item" href="?tab=translations{$generalParams}{if isset($groupId)}&groupId={$groupId}{/if}">{_('Translation analysis')}</a>
+          {/if}
         </div>
       {elseif $display['issues']}
         <a class="nav-link1 {if $tab == 'issues'}active{/if}" data-toggle="tab1" role="tab1" aria-selected="false"
