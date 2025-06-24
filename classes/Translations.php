@@ -21,7 +21,7 @@ class Translations extends BaseTab {
   }
 
   private function processListRequest(&$smarty) {
-    $schemaFile = $this->analysisParameters->shaclConfigurationFile;
+    $schemaFile = $this->analysisParameters->translationConfigurationFile;
     $schemaFile = substr($schemaFile, strrpos($schemaFile, '/') + 1);
     $schemaFilePath = $this->getFilePath($schemaFile);
     $isYaml = preg_match('/\.ya?ml$/', $schemaFile);
