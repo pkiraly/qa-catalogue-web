@@ -50,7 +50,7 @@
         </a>
       {/if}
       {* TODO: search not by ID *}
-      {if $categoryId == 3 && $typeId == 9}###{/if}
+      {if $categoryId == 3 && $typeId == 9}{/if}
     </td>
     <td class="message">
       {include "../message.tpl" message=$rowData->message}
