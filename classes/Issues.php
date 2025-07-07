@@ -167,7 +167,9 @@ class Issues extends BaseTab {
    */
   private function createIssueQuery($record) {
     if ($this->catalogue->getSchemaType() == 'PICA' && preg_match('/[^a-zA-Z0-9]/', $record->path)) {
-      $solrPath = $this->picaToSolr($record->path);
+      $solrPath = str_replace('/', '_', $record->path);
+      $solrPath = str_replace('$', '', $solrPath);
+      $solrPath = preg_replace('/([^a-zA-Z0-9])/', '_', $solrPath);
     } else {
       $solrPath = $record->path;
     }
