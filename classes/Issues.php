@@ -166,11 +166,16 @@ class Issues extends BaseTab {
    * @return string The
    */
   private function createIssueQuery($record) {
+    if ($this->catalogue->getSchemaType() == 'PICA' && preg_match('/[^a-zA-Z0-9]/', $record->path)) {
+      $solrPath = $this->picaToSolr($record->path);
+    } else {
+      $solrPath = $record->path;
+    }
     if ($record->type == 'undefined field' && $this->indexingParameters->indexFieldCounts) {
-      $issueQuery = sprintf('%s%s_count_i:*', $this->indexingParameters->fieldPrefix, $record->path);
+      $issueQuery = sprintf('%s%s_count_i:*', $this->indexingParameters->fieldPrefix, $solrPath);
     }
     elseif ($record->type == 'repetition of non-repeatable field' && $this->indexingParameters->indexFieldCounts) {
-      $issueQuery = sprintf('%s%s_count_i:[%s]', $this->indexingParameters->fieldPrefix, $record->path, urlencode('2 TO *'));
+      $issueQuery = sprintf('%s%s_count_i:[%s]', $this->indexingParameters->fieldPrefix, $solrPath, urlencode('2 TO *'));
     }
     elseif ($record->type == 'undefined subfield') {
       // error_log(sprintf('getSolrField: %s%s -> %s', $record->path, $record->message, $this->getSolrField($record->path, $record->message)));
@@ -179,7 +184,7 @@ class Issues extends BaseTab {
     elseif ($record->type == 'repetition of non-repeatable subfield' && $this->indexingParameters->indexSubfieldCounts) {
       $issueQuery = sprintf('%s%s_count_is:[%s]',
         $this->indexingParameters->fieldPrefix,
-        str_replace('$', '', $record->path),
+        str_replace('$', '', $solrPath),
         urlencode('2 TO *'));
     }
     else {
