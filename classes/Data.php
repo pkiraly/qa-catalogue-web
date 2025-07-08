@@ -136,7 +136,7 @@ class Data extends Facetable {
       if ($this->searchform == 'simple') {
         $solrParams[] = 'q=' . $this->query;
         if ($this->groupId !== 0)
-          $solrParams[] 'fq=' . 'groupId_is:' . $this->groupId;
+          $solrParams[] = 'fq=' . 'groupId_is:' . $this->groupId;
       } else if ($this->searchform == 'advanced') {
         $fields = [];
         for ($i = 1; $i <= 3; $i++) {
