@@ -47,7 +47,7 @@
     {/if}
     {if $display['issues'] || $display['shacl'] || $display['delta']}
     <li class="nav-item1">
-      {if $display['shacl'] || $display['delta']}
+      {if $display['shacl'] || $display['translations'] || $display['delta']}
         <a class="nav-link1 {if $isValidation}active{/if} dropdown-toggle"
            data-toggle="dropdown" role="tab1" aria-selected="true"
            id="validation-tab" aria-controls="validation"

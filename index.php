@@ -65,7 +65,7 @@ try {
   $tab->prepareData($smarty);
 } catch(Throwable $e) {
   $logger->error('Failed to read analysis result', (array)$e);
-  $smarty->assign('error', 'Failed to read analysis result.');
+  $smarty->assign('error', 'Failed to read analysis result.' . json_encode((array)$e));
 }
 
 $ajax = getOrDefault('ajax', 0, [0, 1]);
