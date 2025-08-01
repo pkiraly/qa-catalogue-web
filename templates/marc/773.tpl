@@ -79,8 +79,15 @@
         {/if}
         {if isset($field->subfields->w)}
           <span class="record-control-number">
-            <a href="{$record->link($controller->getSolrField('035', 'a'), $field->subfields->w)}"
-               class="record-link">{include 'data/subfield.tpl' value=$field->subfields->w}</a>
+            {if is_array($field->subfields->w)}
+              {foreach from=array_unique($field->subfields->w) item=w name=w}
+                <a href="{$record->link($controller->getSolrField('035', 'a'), $w)}"
+                 class="record-link">{include 'data/subfield.tpl' value=$w}</a>{if !$smarty.foreach.w.last}, {/if}
+              {/foreach}
+            {else}
+              <a href="{$record->link($controller->getSolrField('035', 'a'), $field->subfields->w)}"
+                 class="record-link">{include 'data/subfield.tpl' value=$field->subfields->w}</a>
+            {/if}
           </span>
         {/if}
       </span>
