@@ -5,7 +5,7 @@ FROM php:8.1-apache
 RUN apt-get update \
  && apt-get install -y --no-install-recommends wget \
  && wget http://archive.ubuntu.com/ubuntu/pool/main/i/icu/libicu74_74.2-1ubuntu4_amd64.deb \
- && dpkg -i libicu74_74.2-1ubuntu4_amd64.deb 
+ && dpkg -i libicu74_74.2-1ubuntu4_amd64.deb \
  && apt-get install -y --no-install-recommends \
     locales gettext zlib1g-dev libzip-dev libyaml-dev nano libicu-dev icu-devtools unzip sqlite3 \
  && locale-gen en_GB.UTF-8 && locale-gen de_DE.UTF-8 && locale-gen pt_BR.UTF-8 && locale-gen hu_HU.UTF-8 \
