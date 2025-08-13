@@ -2,8 +2,8 @@
 
 class Gwdg extends Catalogue {
   protected $name = 'gwdg';
-  protected $label = 'GWDG';
-  protected $url = 'https://www.gwdg.de/';
+  protected $label = 'Max Planck Institutes for Intelligent Systems & Solid State Research / GWDG';
+  protected $url = 'https://test-mpis.koha.gwdg.de/';
 
   function getOpacLink($id, $record) {
     $rid = FALSE;
