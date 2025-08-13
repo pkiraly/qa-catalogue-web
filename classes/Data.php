@@ -93,9 +93,11 @@ class Data extends Facetable {
    */
   private function getBasicUrl(array $excluded = []): array {
     $urlParams = ['tab=data'];
-    $baseParams = ['query', 'facet', 'filters', 'start', 'rows', 'type', 'groupId', 'searchform'];
+    $baseParams = ['query', 'facet', 'filters', 'start', 'rows', 'type', 'searchform'];
     if ($this->searchform == 'advanced')
       $baseParams = array_merge($baseParams, ['field1', 'value1', 'field2', 'value2', 'field3', 'value3']);
+    if ($this->grouped)
+      $baseParams = array_merge($baseParams, ['groupId']);
     foreach ($baseParams as $property) {
       if (!in_array($property, $excluded))
         if (is_array($this->{$property})) // FIXME: fields are not defined in this class
@@ -465,7 +467,7 @@ class Data extends Facetable {
 
   private function getRecordIdByErrorId($core, $errorId, $groupId = null, $start = 0, $rows = 10): array {
     $query = 'errorId_is:' . $errorId;
-    if (!is_null($groupId))
+    if ($this->grouped && !is_null($groupId))
       $query .= ' AND groupId_is:' . $groupId;
 
     $response = $this->solr()->getSolrResponse(['q' => $query, 'fl' => 'id', 'start' => $start, 'rows' => $rows]);
