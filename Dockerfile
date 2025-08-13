@@ -4,7 +4,7 @@ FROM php:8.1-apache
 # install locales, gettext, zip, yaml
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-    locales gettext zlib1g-dev libzip-dev libyaml-dev nano libicu-dev libicu72 icu-devtools unzip sqlite3 \
+    locales gettext zlib1g-dev libzip-dev libyaml-dev nano libicu-dev libicu74 icu-devtools unzip sqlite3 \
  && locale-gen en_GB.UTF-8 && locale-gen de_DE.UTF-8 && locale-gen pt_BR.UTF-8 && locale-gen hu_HU.UTF-8 \
  && echo "en_GB.UTF-8 UTF-8" >> /etc/locale.gen \
  && echo "de_DE.UTF-8 UTF-8" >> /etc/locale.gen \
