@@ -32,6 +32,7 @@ class ControlFields extends BaseTab {
     $solrField = ($this->field == 'Leader')
       ? $this->solrFieldsMap[$this->field][$this->position]->solr
       : $this->solrFieldsMap[$this->field][$this->type][$this->position]->solr;
+    $solrField = preg_replace('/_tt$/', '_ss', $solrField);
     // TODO: this will throw an Exception if Solr is not reachable
     $termResponse = $this->solr()->getFacets($solrField, '*:*', 100, 0);
     $terms = $termResponse->{$solrField};
