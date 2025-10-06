@@ -43,7 +43,7 @@
   ],
   "require": {
     "psr/log": "~3.0",
-    "smarty/smarty": "^3.1",
+    "smarty/smarty": "^5.6",
     "monolog/monolog": "^2.5",
     "ext-sqlite3": "*"
   },
