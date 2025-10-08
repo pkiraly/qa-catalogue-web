@@ -87,13 +87,12 @@ abstract class BaseTab extends Tab {
 
     if ($this->analysisParameters) {
       $smarty->assign('analysisParameters', $this->analysisParameters);
-      $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
-      if (isset($this->analysisParameters->duration)) {
+      if (isset($this->analysisParameters->analysisTimestamp))
+        $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
+      if (isset($this->analysisParameters->duration))
         $smarty->assign('analysisDuration', $this->analysisParameters->duration);
-      }
-      if (isset($this->analysisParameters->numberOfprocessedRecords)) {
+      if (isset($this->analysisParameters->numberOfprocessedRecords))
         $this->count = $this->analysisParameters->numberOfprocessedRecords;
-      }
     }
     $smarty->assign('count', $this->count);
   }
@@ -120,6 +119,9 @@ abstract class BaseTab extends Tab {
     }
   }
 
+  /**
+   * @return the name of the template
+   */
   public function getTemplate() {
     // TODO: Implement getTemplate() method.
   }

@@ -74,7 +74,8 @@ class Data extends Facetable {
         $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
         if ($this->grouped)
           $this->groupBy = $this->analysisParameters->groupBy;
-        $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
+        if (isset($this->analysisParameters->analysisTimestamp))
+          $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
         $this->searchAction($smarty);
      }
     } catch(Exception $e) {
