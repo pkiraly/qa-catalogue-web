@@ -161,7 +161,7 @@ class Configuration {
   /**
    * whether the selected tab should be displayed
    * @param string $tab
-   * @param bool $default
+   * @param bool $default (applied if no direct value is set)
    * @return bool|null
    */
   public function display(string $tab, bool $default = false): ?bool {

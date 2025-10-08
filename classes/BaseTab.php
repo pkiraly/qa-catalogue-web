@@ -33,6 +33,7 @@ abstract class BaseTab extends Tab {
   protected Logger $log;
   protected string $action;
   protected bool $isDockerized = false;
+  private array $hiddenTabs = ['shacl', 'network', 'delta', 'translations'];
 
   /**
    * BaseTab constructor.
@@ -58,7 +59,7 @@ abstract class BaseTab extends Tab {
 
     // which tabs to show
     foreach (array_keys(Tab::names) as $tab)
-      $this->display[$tab] = $this->configuration->display($tab, $tab != "shacl" && $tab != "network");
+      $this->display[$tab] = $this->configuration->display($tab, !in_array($tab, $this->hiddenTabs));
     if ($this->catalogue->getSchemaType() != 'MARC21') {
       $this->display["pareto"] = false;
       $this->display["control-fields"] = false;
