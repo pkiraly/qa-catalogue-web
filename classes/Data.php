@@ -607,9 +607,10 @@ class Data extends Facetable {
   public function getIssnSource($code): string {
     static $codes = null;
     if (is_null($codes)) {
+      // source: https://www.issn.org/wp-content/uploads/Country_codes_centres_codes.pdf
       $codes = readCsv('common/issn-codes.csv', 'code');
     }
-    if (preg_match('/^0/', $code)) {
+    if (preg_match('/^0./', $code)) {
       $code = substr($code, 1);
     }
     if (isset($codes[$code])) {
