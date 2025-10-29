@@ -404,7 +404,6 @@ class Data extends Facetable {
     $smarty->assign('solrUrl', join('&', $solrParams));
     $smarty->assign('docs', []);
     $smarty->assign('facets', []);
-    $this->numFound = 0;
     $smarty->assign('numFound', 0);
     $smarty->assign('prevNextLinks', []);
     if ($this->solr()->isCoreAvailable()) {
@@ -419,6 +418,7 @@ class Data extends Facetable {
     } else {
       $this->log->warning('Solr index is NOT available');
       $smarty->assign('error', 'Solr service is not available.');
+      $this->numFound = 0;
     }
   }
 
@@ -602,5 +602,19 @@ class Data extends Facetable {
         $this->allGroups[$group->id] = $group->group;
     }
     return $this->allGroups[$id] ?? $id;
+  }
+
+  public function getIssnSource($code): string {
+    static $codes = null;
+    if (is_null($codes)) {
+      $codes = readCsv('common/issn-codes.csv', 'code');
+    }
+    if (preg_match('/^0/', $code)) {
+      $code = substr($code, 1);
+    }
+    if (isset($codes[$code])) {
+      return $codes[$code]->country;
+    }
+    return $code;
   }
 }
