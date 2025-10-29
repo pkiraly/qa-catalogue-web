@@ -694,6 +694,11 @@ td.record-field-label {
   font-size: 80%;
 }
 
+em.subfield-label {
+  color: #666666;
+  font-size: 80%;
+}
+
 .marc-human tr.tag td {
   padding: 5px;
 }
