@@ -640,6 +640,11 @@ abstract class BaseTab extends Tab {
     return sprintf('%s/%s', $this->configuration->getDir(), $this->configuration->getDirName());
   }
 
+  protected function issueDbIsAvailable(bool $delta = false): bool {
+    $dbDir = $this->getDbDir($delta);
+    return IssuesDB::hasDb($dbDir);
+  }
+
   protected function issueDB(bool $delta = false): IssuesDB {
     if (is_null($this->issueDB)) {
       $this->issueDB = new IssuesDB($this->getDbDir($delta), $this->log);

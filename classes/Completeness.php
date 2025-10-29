@@ -73,8 +73,14 @@ class Completeness extends BaseTab {
         $smarty->assign('currentGroup', $this->currentGroup);
         // $smarty->assign('tabSpecificParameters', $this->getTabSpecificParameters());
       }
+
+      if (!$this->issueDbIsAvailable()) {
+        $smarty->assign('error', 'The SQLite3 database file is not available. Probably the completeness analysis hasn\'t yet finished.');
+      }
+
       $this->loadPackages();
       $this->readCompleteness();
+
       $smarty->assign('packages', $this->packages);
       $smarty->assign('packageIndex', $this->packageIndex);
       if ($this->sort != '') {
@@ -232,7 +238,7 @@ class Completeness extends BaseTab {
 
   private function getDataElementCounts(): array {
     $dataElements = [];
-    if ($this->hasMarcElementTable()) {
+    if ($this->issueDbIsAvailable() && $this->hasMarcElementTable()) {
       $this->hasTotalPackage = true;
       $schema = $this->catalogue->getSchemaType();
       $result = $this->issueDB->getDataElementsByPackage($schema, $this->groupId, $this->type);
@@ -257,7 +263,7 @@ class Completeness extends BaseTab {
 
   private function readCompleteness() {
     SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
-    if ($this->hasMarcElementTable()) {
+    if ($this->issueDbIsAvailable() && $this->hasMarcElementTable()) {
       $this->log->warning('hasDBTable');
       $this->types = $this->getDocumentTypes($this->groupId);
       $start = microtime(true);

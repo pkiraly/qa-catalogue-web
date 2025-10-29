@@ -2,15 +2,20 @@
 
 class IssuesDB extends SQLite3 {
   protected Monolog\Logger $log;
+  private static $fileName = 'qa_catalogue.sqlite';
 
   function __construct(string $dir, $log) {
     $this->log = $log;
-    $file = $dir . '/qa_catalogue.sqlite';
+    $file = $dir . '/' . self::$fileName;
     try {
       $this->open($file);
     } catch (Exception $e) {
       die($e->getMessage() . ": <code>$file</code>");
     }
+  }
+
+  static function hasDb(string $dir): bool {
+    return file_exists($dir . '/' . self::$fileName);
   }
 
   public function getByCategoryTypeAndGroup($categoryId, $typeId, $groupId, $order, $offset, $limit) {
