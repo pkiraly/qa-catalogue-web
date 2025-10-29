@@ -433,6 +433,7 @@ abstract class BaseTab extends Tab {
   }
 
   protected function solrToMarcCode($solrField) {
+    $solrField = $this->removeSolrPrefix($solrField);
     $solrField = preg_replace('/_ss$/', '', $solrField);
     $label = $solrField;
     if ($this->catalogue->getSchemaType() == 'MARC21') {

@@ -5,12 +5,15 @@
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane active" id="data" role="tabpanel" aria-labelledby="data-tab">
       <h2>{_('Search')}</h2>
+
       <p class="metric-definition">
         {_('data_definition')}
       </p>
+
       <div class="container" id="content">
         <div class="row">
           <div class="col-3 search-block"></div>
+          {* search block *}
           <div class="col search-block">
             {if $showAdvancedSearchForm}
               <ul class="nav nav-tabs" id="searchforms">
@@ -35,11 +38,13 @@
               {include 'data/simple-search.tpl'}
             {/if}
           </div>
-        </div>
-        </div>
+        </div>{* first row *}
+
         <div class="row">
-        </div>
+        </div>{* /2nd row *}
+
         <div class="row">
+          {* filters and facets *}
           <div id="left" class="col-3">
             <div id="filters" class="filter-block">
               {if count($filters) > 0}
@@ -64,8 +69,10 @@
               <div id="facet-list">
                 {include 'marc-facets.tpl'}
               </div>
-            </div>
+            </div>{* /facet-block *}
           </div>
+
+          {* the main block *}
           <div id="main" class="col">
             <div class="row">
               <div class="col-8">
@@ -107,9 +114,9 @@
               </div>
             </div>
             <div id="solr-url">{htmlentities($solrUrl)}</div>
-          </div>
-        </div>
-      </div>
+          </div>{* /the main block *}
+        </div>{* /3rd row *}
+      </div>{* /container *}
     </div>
   </div>
 </div>
