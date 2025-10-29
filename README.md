@@ -19,6 +19,7 @@ implemented by PHP and JavaScript.
   - [Download](#download)
   - [Setup](#setup)
   - [Configuration](#configuration)
+    - [Tabs](#tabs)
 - [Customization](#customization)
   - [Templates](#templates)
   - [Catalogue class](#catalogue-class)
@@ -210,26 +211,26 @@ These are the tabs available in the system:
 | -------------------------- | ------------------------------------- |
 | `data`                     | search interface                      |
 | `completeness`             | completeness analysis                 |
-| `functions`                | Functional analysis                   |
 | `serials`                  | Carlstone's serials analysis          |
 | `tt-completeness`          | Thompson—Traill's e-book completeness |
 | `shelf-ready-completeness` | Booth's shelf-ready completeness      |
-| `issues`                   | Issues                                |
-| `shacl`                    | Custom validation                     |
-| `delta`                    | Validation of latest changes          |
-| `translations`             | Translation analysis                  |
-| `classifications`          | Subject analysis                      |
-| `authorities`              | Authority name analysis               |
+| `functions`                | functional analysis                   |
+| `issues`                   | validation results                    |
+| `shacl`                    | custom validation                     |
+| `delta`                    | validation of latest changes          |
+| `translations`             | translation analysis                  |
+| `classifications`          | subject analysis                      |
+| `authorities`              | authority name analysis               |
 | `pareto`                   | Pareto analysis                       |
-| `history`                  | History                               |
-| `timeline`                 | Timeline                              |
-| `network`                  | Network analysis                      |
-| `terms`                    | Terms                                 |
-| `control-fields`           | Value distribution in control fields  |
-| `collocations`             | Collocations                          |
-| `download`                 | Download                              |
-| `settings`                 | Facets                                |
-| `about`                    | About                                 |
+| `history`                  | cataloguing history                   |
+| `timeline`                 | timeline                              |
+| `network`                  | network analysis                      |
+| `terms`                    | indexed term list                     |
+| `control-fields`           | value distribution in control fields  |
+| `collocations`             | collocations of field values          |
+| `download`                 | download CSV files                    |
+| `settings`                 | setting facets                        |
+| `about`                    | about QA Catalogue                    |
 
 ## Customization
 
