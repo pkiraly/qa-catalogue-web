@@ -374,7 +374,6 @@ class Data extends Facetable {
   }
 
   private function searchAction(Smarty $smarty): void {
-    error_log('searchAction');
     $smarty->assign('showAdvancedSearchForm', $this->configuration->doShowAdvancedSearchForm());
     $smarty->assign('query', $this->query);
     $smarty->assign('start', $this->start);
@@ -402,8 +401,6 @@ class Data extends Facetable {
       }
     }
 
-    // The following may throw an exception when solr is not reachable
-    error_log('hello');
     $solrParams = $this->buildParameters($smarty);
     $smarty->assign('solrUrl', join('&', $solrParams));
     $smarty->assign('docs', []);

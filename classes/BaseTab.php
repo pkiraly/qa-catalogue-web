@@ -230,6 +230,16 @@ abstract class BaseTab extends Tab {
     return $this->fieldDefinitions;
   }
 
+  public function getFieldPrefix() {
+    static $fieldPrefix = null;
+    if (is_null($fieldPrefix)) {
+      $fieldPrefix = (isset($this->indexingParameters) && isset($this->indexingParameters->fieldPrefix))
+                   ? $this->indexingParameters->fieldPrefix
+                   : '';
+    }
+    return $fieldPrefix;
+  }
+
   public function getSolrField($tag, $subfield = '', $onlyStored = false) {
     $this->getFieldDefinitions();
 
@@ -257,7 +267,7 @@ abstract class BaseTab extends Tab {
     }
 
     $existingSolrFields = $this->solr()->getSolrFields($onlyStored);
-    $fieldPrefix = $this->indexingParameters->fieldPrefix;
+    $fieldPrefix = $this->getFieldPrefix();
     if (!isset($solrField) || !in_array($solrField, $existingSolrFields)) {
       $solrField = $tag;
       if ($subfield != '')
@@ -311,12 +321,10 @@ abstract class BaseTab extends Tab {
    * @return The cleared Solr field
    */
   private function removeSolrPrefix($solrField): string {
-    if (isset($this->indexingParameters) && isset($this->indexingParameters->fieldPrefix)) {
-      $fieldPrefix = $this->indexingParameters->fieldPrefix;
-      $len = strlen($fieldPrefix);
-      if ($len > 0) {
-        $solrField = substr($solrField, $len);
-      }
+    static $fieldPrefix = $this->getFieldPrefix();
+    $len = strlen($fieldPrefix);
+    if ($len > 0) {
+      $solrField = substr($solrField, $len);
     }
     return $solrField;
   }

@@ -173,17 +173,17 @@ class Issues extends BaseTab {
     } else {
       $solrPath = $record->path;
     }
-    if ($record->type == 'undefined field' && $this->indexingParameters->indexFieldCounts) {
+    if ($record->type == 'undefined field' && $this->fieldCountsIndexed()) {
       $issueQuery = sprintf('%s%s_count_i:*', $this->indexingParameters->fieldPrefix, $solrPath);
     }
-    elseif ($record->type == 'repetition of non-repeatable field' && $this->indexingParameters->indexFieldCounts) {
+    elseif ($record->type == 'repetition of non-repeatable field' && $this->fieldCountsIndexed()) {
       $issueQuery = sprintf('%s%s_count_i:[%s]', $this->indexingParameters->fieldPrefix, $solrPath, urlencode('2 TO *'));
     }
     elseif ($record->type == 'undefined subfield') {
       // error_log(sprintf('getSolrField: %s%s -> %s', $record->path, $record->message, $this->getSolrField($record->path, $record->message)));
       $issueQuery = sprintf('%s:*', $this->getSolrField($record->path, $record->message));
     }
-    elseif ($record->type == 'repetition of non-repeatable subfield' && $this->indexingParameters->indexSubfieldCounts) {
+    elseif ($record->type == 'repetition of non-repeatable subfield' && $this->subfieldCountsIndexed()) {
       $issueQuery = sprintf('%s%s_count_is:[%s]',
         $this->indexingParameters->fieldPrefix,
         str_replace('$', '', $solrPath),
@@ -193,6 +193,16 @@ class Issues extends BaseTab {
       $issueQuery = sprintf('errorId:%s', $record->id);
     }
     return $issueQuery;
+  }
+
+  private function fieldCountsIndexed() {
+    return isset($this->indexingParameters->indexFieldCounts)
+           && $this->indexingParameters->indexFieldCounts;
+  }
+
+  private function subfieldCountsIndexed() {
+    return isset($this->indexingParameters->indexSubfieldCounts)
+           && $this->indexingParameters->indexSubfieldCounts;
   }
 
   private function createPages($count) {
