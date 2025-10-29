@@ -374,6 +374,7 @@ class Data extends Facetable {
   }
 
   private function searchAction(Smarty $smarty): void {
+    error_log('searchAction');
     $smarty->assign('showAdvancedSearchForm', $this->configuration->doShowAdvancedSearchForm());
     $smarty->assign('query', $this->query);
     $smarty->assign('start', $this->start);
@@ -402,16 +403,27 @@ class Data extends Facetable {
     }
 
     // The following may throw an exception when solr is not reachable
+    error_log('hello');
     $solrParams = $this->buildParameters($smarty);
     $smarty->assign('solrUrl', join('&', $solrParams));
-    $response = $this->solr()->getSolrResponse($solrParams);
-    if (is_null($this->numFound)) {
-      $this->numFound = $response->numFound;
+    $smarty->assign('docs', []);
+    $smarty->assign('facets', []);
+    $this->numFound = 0;
+    $smarty->assign('numFound', 0);
+    $smarty->assign('prevNextLinks', []);
+    if ($this->solr()->isCoreAvailable()) {
+      $response = $this->solr()->getSolrResponse($solrParams);
+      if (is_null($this->numFound)) {
+        $this->numFound = $response->numFound;
+      }
+      $smarty->assign('docs', $response->docs);
+      $smarty->assign('facets', $response->facets);
+      $smarty->assign('numFound', $this->numFound);
+      $smarty->assign('prevNextLinks', $this->createPrevNextLinks($this->numFound));
+    } else {
+      $this->log->warning('Solr index is NOT available');
+      $smarty->assign('error', 'Solr service is not available.');
     }
-    $smarty->assign('numFound', $this->numFound);
-    $smarty->assign('prevNextLinks', $this->createPrevNextLinks($this->numFound));
-    $smarty->assign('docs', $response->docs);
-    $smarty->assign('facets', $response->facets);
   }
 
   /**

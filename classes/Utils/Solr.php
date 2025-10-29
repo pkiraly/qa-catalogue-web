@@ -53,18 +53,20 @@ class Solr {
    * @param $core The name of the Solr core
    * @return bool
    */
-  public function isCoreAvailable($core): bool {
+  public function isCoreAvailable($core = null): bool {
+    if (is_null($core))
+      $core = $this->indexName;
     $endpoint = $this->getEndpoint($core);
     if (is_null($endpoint))
       return false;
 
-    $url = $this->getEndpoint($core) . $core . '/admin/ping';
+    $url = $endpoint . $core . '/admin/ping';
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
     curl_setopt($ch, CURLOPT_TIMEOUT, 20);
