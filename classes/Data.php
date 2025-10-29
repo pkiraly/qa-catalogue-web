@@ -69,7 +69,6 @@ class Data extends Facetable {
       if ($this->action == 'download') {
         $this->downloadAction();
       } else {
-        $this->log->info('call parent::prepareData');
         parent::prepareData($smarty);
         $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
         if ($this->grouped)
