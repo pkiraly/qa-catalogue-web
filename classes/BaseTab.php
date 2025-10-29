@@ -321,7 +321,10 @@ abstract class BaseTab extends Tab {
    * @return The cleared Solr field
    */
   private function removeSolrPrefix($solrField): string {
-    static $fieldPrefix = $this->getFieldPrefix();
+    static $fieldPrefix = null;
+    if (is_null($fieldPrefix)) {
+      $fieldPrefix = $this->getFieldPrefix();
+    }
     $len = strlen($fieldPrefix);
     if ($len > 0) {
       $solrField = substr($solrField, $len);
