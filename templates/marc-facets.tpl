@@ -4,25 +4,32 @@
     <div id="{$facetName}" class="facet-block">
       <div class="facet-name">
         <strong>{$controller->resolveSolrField($facetName)}</strong>
-        <span class="terms-count" style="display: none">({_('number of distinct values')}: <strong id="terms-count"></strong>)</span>
+        <span class="terms-count" style="display: none">({_('number of distinct values')}: <strong
+            id="terms-count"></strong>)</span>
       </div>
       <ul>
         {foreach from=$values key=term item=count}
           <li>
-            <a href='{$facet->createLink($term)}' class="facet-term">{if preg_match('/(^\s|\s{2,}|\s$)/', $term)}"{preg_replace('/\s/', '&nbsp;', htmlspecialchars($term))}"{else}{htmlspecialchars($term)}{/if}</a>
+            <a href='{$facet->createLink($term)}' class="facet-term">{if preg_match('/(^\s|\s{2,}|\s$)/',
+              $term)}"{preg_replace('/\s/', '&nbsp;', htmlspecialchars($term))}"
+              {else}
+                {htmlspecialchars($term)}
+              {/if}</a>
             ({$count|number_format})
           </li>
         {/foreach}
         {if $facet->hasPrevList() || $facet->hasNextList()}
           <li>
             {if $facet->hasPrevList()}
-              <a class="facet-up{if $ajaxFacet == 1} ajax-facet-navigation{/if}" href="{$facet->createPrevLink()}" data-field="{$facetName}">
+              <a class="facet-up{if $ajaxFacet == 1} ajax-facet-navigation{/if}" href="{$facet->createPrevLink()}"
+                data-field="{$facetName}">
                 <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i>
               </a>
             {/if}
             more
             {if $facet->hasNextList()}
-              <a class="facet-down{if $ajaxFacet == 1} ajax-facet-navigation{/if}" href="{$facet->createNextLink()}" data-field="{$facetName}">
+              <a class="facet-down{if $ajaxFacet == 1} ajax-facet-navigation{/if}" href="{$facet->createNextLink()}"
+                data-field="{$facetName}">
                 <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
               </a>
             {/if}
