@@ -129,7 +129,8 @@ The following parameters can be set either for all catalogues (`parameter=value`
   `translations`, `network`, `terms`, `pareto`, `history`, `timeline`, `settings`, `about`, `record-issues`,
   `histogram`, `functional-analysis-histogram`, `control-fields`, `download`, `collocations`.
 - `display-...` (bool) show or hide selected tabs, for instance `display-issues`, `display-shacl`.
-  By default all tabs are shown if approriate data is available. Only `shacl` and `network` are disabled by default.
+  By default all tabs are shown if approriate data is available. `shacl`, `delta`, `translations`
+  and `network` are disabled by default.
 - `indexName` (string) name of the Solr index of a particular catalogue, if it is different from
   the name of the catalogue or the URL path.
 - `dirName` (string) name of the data directory of a particular catalogue, if it is different from
@@ -200,6 +201,35 @@ echo "catalogue=$CATALOG" >> configuration.cnf
 ```
 
 Finally you can access the application at `http://localhost/$APPDIR`.
+
+### Tabs
+
+These are the tabs available in the system:
+
+| name                       | description                           |
+| -------------------------- | ------------------------------------- |
+| `data`                     | search interface                      |
+| `completeness`             | completeness analysis                 |
+| `functions`                | Functional analysis                   |
+| `serials`                  | Carlstone's serials analysis          |
+| `tt-completeness`          | Thompson—Traill's e-book completeness |
+| `shelf-ready-completeness` | Booth's shelf-ready completeness      |
+| `issues`                   | Issues                                |
+| `shacl`                    | Custom validation                     |
+| `delta`                    | Validation of latest changes          |
+| `translations`             | Translation analysis                  |
+| `classifications`          | Subject analysis                      |
+| `authorities`              | Authority name analysis               |
+| `pareto`                   | Pareto analysis                       |
+| `history`                  | History                               |
+| `timeline`                 | Timeline                              |
+| `network`                  | Network analysis                      |
+| `terms`                    | Terms                                 |
+| `control-fields`           | Value distribution in control fields  |
+| `collocations`             | Collocations                          |
+| `download`                 | Download                              |
+| `settings`                 | Facets                                |
+| `about`                    | About                                 |
 
 ## Customization
 
