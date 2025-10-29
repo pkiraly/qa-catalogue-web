@@ -312,11 +312,14 @@ abstract class BaseTab extends Tab {
    */
   private function removeSolrPrefix($solrField): string {
     if (isset($this->indexingParameters) && isset($this->indexingParameters->fieldPrefix)) {
+      $this->log->info('has field prefix');
       $fieldPrefix = $this->indexingParameters->fieldPrefix;
       $len = strlen($fieldPrefix);
       if ($len > 0) {
         $solrField = substr($solrField, $len);
       }
+    } else {
+      $this->log->info('has NOT field prefix');
     }
     return $solrField;
   }
