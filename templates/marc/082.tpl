@@ -26,7 +26,7 @@
       {/if}
 
       {if property_exists($field->subfields, '2')}
-        <a href="{$record->filter('0822_ClassificationDdc_edition_ss', $field->subfields->{'2'})}" class="source" title="Source">{include 'data/subfield.tpl' value=$field->subfields->{'2'}}</a>
+        (<a href="{$record->filter('0822_ClassificationDdc_edition_ss', $field->subfields->{'2'})}" class="source" title="Source">{include 'data/subfield.tpl' value=$field->subfields->{'2'}}. edition</a>)
       {/if}
     </span>
     <br/>

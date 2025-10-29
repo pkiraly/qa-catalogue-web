@@ -304,10 +304,28 @@ abstract class BaseTab extends Tab {
     return preg_replace_callback('/x([0-9a-f]{2})/', function ($matches) { return chr(hexdec($matches[1])); }, $input);
   }
 
+  /**
+   * If indexingParameters contains fieldPrefix we should remove that from the beginning of the Solr field.
+   * 
+   * @param string The Solr field
+   * @return The cleared Solr field
+   */
+  private function removeSolrPrefix($solrField): string {
+    if (isset($this->indexingParameters) && isset($this->indexingParameters->fieldPrefix)) {
+      $fieldPrefix = $this->indexingParameters->fieldPrefix;
+      $len = strlen($fieldPrefix);
+      if ($len > 0) {
+        $solrField = substr($solrField, $len);
+      }
+    }
+    return $solrField;
+  }
+
   public function resolveSolrField($solrField) {
     if ($solrField == '')
       return '';
 
+    $solrField = $this->removeSolrPrefix($solrField);
     $this->getFieldDefinitions();
 
     $solrField = preg_replace('/_(ss|tt|i)$/', '', $solrField);
