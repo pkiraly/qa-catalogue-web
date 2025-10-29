@@ -10,6 +10,7 @@
   {include 'pica/037A.tpl'}{* Anmerkung *}
   {include 'pica/022A.tpl'}{* Einheitssachtitel *}
   {include 'pica/004A.tpl'}{* ISBN *}
+  {include 'pica/005A.tpl'}{* ISSN *}
   {include 'pica/006G.tpl'}{* DNB-Nr. *}
   {include 'pica/006U.tpl'}{* WV-Nr. *}
   {include 'pica/036E.tpl'}{* Schriftenreihe *}
@@ -22,11 +23,15 @@
 {if $record->hasAuthorityNames() || $record->hasSubjectHeadings()}
   <table class="authority-names">
     {if $record->hasAuthorityNames()}
-      <tr><td colspan="2" class="heading">Authority names</td></tr>
+      <tr>
+        <td colspan="2" class="heading">Authority names</td>
+      </tr>
     {/if}
 
     {if $record->hasSubjectHeadings()}
-      <tr><td colspan="2" class="heading">Subjects</td></tr>
+      <tr>
+        <td colspan="2" class="heading">Subjects</td>
+      </tr>
     {/if}
   </table>
 {/if}
