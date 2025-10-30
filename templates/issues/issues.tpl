@@ -17,8 +17,6 @@
         {/if}
       </p>
 
-      {include 'common/group-selector.tpl'}
-
       {if isset($versions) && !empty($versions)}
         <p>versions:
           {foreach from=$versions item=currentVersion name="versions"}

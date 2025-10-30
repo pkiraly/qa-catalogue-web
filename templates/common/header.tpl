@@ -1,21 +1,7 @@
 <h1><a href="." class="header-link"><i class="fa fa-cogs" aria-hidden="true"></i> QA catalogue</a> <span>{_('for analysing library data')}</span></h1>
-<div class="row" style="margin-bottom: 1rem;">
+<div class="row" style="margin-bottom: 0;">
   <div class="col-md-9">
     <i class="fa fa-book" aria-hidden="true"></i> <a href="{$catalogue->getUrl()}" target="_blank">{$catalogue->getLabel()}</a><br>
-  <span class="header-info">
-    {if $count > 0}
-      &nbsp; &nbsp; {_('number of records')}: <strong>{$count|number_format}</strong>
-    {/if}
-    {if isset($lastUpdate) && $lastUpdate != ''}
-      &nbsp; &nbsp; {_('last data update')}: <strong>{$lastUpdate}</strong>
-    {/if}
-    {if isset($analysisTimestamp)}
-      &nbsp; &nbsp; {_('timestamp of analysis')}: <strong>{$analysisTimestamp}</strong>
-    {/if}
-    {if isset($analysisDuration)}
-      ({$analysisDuration})
-    {/if}
-  </span>
   </div>
   <div class="col-md-3 text-right" id="language-selector">
     {foreach from=$languages key=language item=code name=languages}
@@ -28,4 +14,22 @@
     {/foreach}
   </div>
 </div>
-
+<div class="row" style="margin-bottom: 1rem;">
+  <div class="col-md-12">
+    <span class="header-info">
+    {include 'common/group-selector.tpl'}
+      {if $count > 0}
+        {_('number of records')}: <strong>{$count|number_format}</strong>
+      {/if}
+      {if isset($lastUpdate) && $lastUpdate != ''}
+        &nbsp; &nbsp; {_('last data update')}: <strong>{$lastUpdate}</strong>
+      {/if}
+      {if isset($analysisTimestamp)}
+        &nbsp; &nbsp; {_('timestamp of analysis')}: <strong>{$analysisTimestamp}</strong>
+      {/if}
+      {if isset($analysisDuration)}
+        ({$analysisDuration})
+      {/if}
+    </span>
+  </div>
+</div>
