@@ -4,7 +4,7 @@
   <input id="groupName" value="{$currentGroup->group}" type="text"
          class="form-control" size="50" style="display: inline; width: 65%">
   <button type="submit" class="btn">
-    <i class="fa fa-search" aria-hidden="true"></i> {_t('Select')}
+    <i class="fa fa-search" aria-hidden="true"></i> {_t('select library')}
   </button>
   <button class="btn btn-secondary" id="group-reset">
     {_t('the whole catalogue')}
