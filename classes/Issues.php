@@ -46,6 +46,8 @@ class Issues extends BaseTab {
     $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
     $smarty->assign('grouped', $this->grouped);
     $this->groupId = getOrDefault('groupId', 0);
+    if ($this->groupId == '')
+      $this->groupId = 0;
     $smarty->assign('groupId', $this->groupId);
 
     if ($this->grouped) {
