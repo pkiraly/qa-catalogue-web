@@ -32,6 +32,7 @@ class Configuration {
   private bool $extractGitVersion;
   private bool $useDataElementInValidationSearch = false;
   private array $display = [];
+  private bool $groupSearchByNames = false;
 
   public static function fromIniFile(string $file, array $defaults=[]) {
 
@@ -83,6 +84,7 @@ class Configuration {
     $this->solrForScoresUrl = $this->getValue('solrForScoresUrl', null);
     $this->showAdvancedSearchForm = $this->getValue('showAdvancedSearchForm', false);
     $this->extractGitVersion = $this->getValue('extractGitVersion', true);
+    $this->groupSearchByNames = $this->getValue('groupSearchByNames', false);
 
     // logging internals, not made available outside of this class
     $this->logFile = $this->getValue('logFile', 'logs/qa-catalogue.log');
@@ -294,6 +296,10 @@ class Configuration {
 
   public function doExtractGitVersion(): bool {
     return $this->extractGitVersion;
+  }
+
+  public function groupSearchByNames(): bool {
+    return $this->groupSearchByNames;
   }
 
   private function getDefaultMainSolrEndpoint(): string {

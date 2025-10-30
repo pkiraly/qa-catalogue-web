@@ -4,6 +4,11 @@
     <td colspan="2" class="field-level tag" id="completeness-{$record->websafeTag}">
       <a href="#" class="trigger" data-id="completeness-{$record->websafeTag}"
          title="Show subfields"><i class="fa fa-folder-closed"></i></a>
+      {* field query link *}
+      {if (isset($record->solrCountField))}
+        <a href="{$controller->createFieldQueryLink($record)}" title="{_t('Search records having this field!')}"><i class="fa fa-search"></i></a>
+      {/if}
+      {* field documentation link *}
       {if !empty($record->url)}
          <a href="{$record->url}" title="{_t('Go to the documentation of the field!')}" target="_blank">{$record->extendedTag}</a>
          {if !empty($record->label)} &mdash; {$record->label}{/if}

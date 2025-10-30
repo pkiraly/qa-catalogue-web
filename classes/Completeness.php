@@ -105,10 +105,25 @@ class Completeness extends BaseTab {
         $term = 'all';
       $this->output = 'none';
       $groups = $this->readGroups();
+      foreach ($groups as $key => $group) {
+        if (preg_match('/\[([^\]]+)\.*\]$/', $group->group, $matches)) {
+          $group->isil = $matches[1];
+        }
+      }
+      $this->log->warning('groups: ' . json_encode($groups));
       $labels = [];
-      foreach ($groups as $group)
-        if ($term != 'all' && strpos(strtoupper($group->group), strtoupper($term)) !== false)
-          $labels[] = ['label' => $group->group . ' (' . $group->count . ')', 'value' => $group->id];
+      foreach ($groups as $group) {
+        if ($this->configuration->groupSearchByNames()) {
+          if ($term != 'all' && strpos(strtoupper($group->group), strtoupper($term)) !== false)
+            $labels[] = ['label' => $group->group . ' (' . $group->count . ')', 'value' => $group->id];
+        } else {
+          if ($term != 'all'
+              && (strpos(strtoupper($group->id), strtoupper($term)) !== false
+                  || (isset($group->isil)
+                      && strpos(strtoupper($group->isil), strtoupper($term)) !== false)))
+            $labels[] = ['label' => $group->group . ' (' . $group->count . ')', 'value' => $group->id];
+        }
+      }
       print json_encode($labels);
     }
   }
@@ -450,6 +465,21 @@ class Completeness extends BaseTab {
     return '?' . join('&', $params);
   }
 
+  public function createFieldQueryLink($record): string {
+    static $baseParams;
+    if (!isset($baseParams)) {
+      $baseParams = [
+        'tab=data',
+      ];
+      $baseParams = array_merge($baseParams, $this->getGeneralParams());
+      if ($this->grouped && $this->groupId != 0)
+        $baseParams[] = 'groupId=' . $this->groupId;
+    }
+    $params = $baseParams;
+    $params[] = sprintf('query=%s:%s', $record->solrCountField, urlencode('*'));
+    return '?' . join('&', $params);
+  }
+
   /**
    * @param object $record
    * @param array $matches
@@ -576,6 +606,8 @@ class Completeness extends BaseTab {
       }
     }
 
+    $this->addCountField($record);
+
     if ($record->isLeader) {
       $this->records[$record->packageid][$record->key]['positions'][] = $record;
     } else if (isset($record->isDataField) && $record->isDataField == true) {
@@ -600,6 +632,22 @@ class Completeness extends BaseTab {
     unset($record->package);
     if (isset($record->isSubfield) && $record->isSubfield == true) {
       unset($record->key);
+    }
+  }
+
+  private function addCountField($record): void {
+    if ($record->isDataField && $record->isField && !$record->isSubfield) {
+      if ($record->solr !== false) {
+        $record->solrCountField = preg_replace('/(_full)?_ss$/', '_count_i', $record->solr);
+      } else {
+        $solr = $record->path;
+        $solr = str_replace('/', '_', $solr);
+        $solr = str_replace('@', '_', $solr);
+        if (preg_match('/[^A-Z0-9_]/', $solr)) {
+          $this->log->warning('with wrong character: ' . $solr);
+        }
+        $record->solrCountField = 'bib' . $solr . '_count_i';
+      }
     }
   }
 }
