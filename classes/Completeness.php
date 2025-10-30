@@ -68,8 +68,11 @@ class Completeness extends BaseTab {
           'lang' => $this->lang
         ]);
         $this->currentGroup = $this->selectCurrentGroup();
-        if (isset($this->currentGroup->count))
+        $this->log->warning('currentGroup: ' . json_encode($this->currentGroup));
+        if (isset($this->currentGroup->count)) {
           $this->count = $this->currentGroup->count;
+          $smarty->assign('count', $this->count);
+        }
         $smarty->assign('currentGroup', $this->currentGroup);
         // $smarty->assign('tabSpecificParameters', $this->getTabSpecificParameters());
       }
@@ -104,7 +107,7 @@ class Completeness extends BaseTab {
       $groups = $this->readGroups();
       $labels = [];
       foreach ($groups as $group)
-        if (($term == 'all' && $group->group == $term) || ($term != 'all' && strpos(strtoupper($group->group), strtoupper($term)) !== false))
+        if ($term != 'all' && strpos(strtoupper($group->group), strtoupper($term)) !== false)
           $labels[] = ['label' => $group->group . ' (' . $group->count . ')', 'value' => $group->id];
       print json_encode($labels);
     }
