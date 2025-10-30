@@ -57,7 +57,8 @@ class Issues extends BaseTab {
         $this->count = $this->currentGroup->count;
         $smarty->assign('count', $this->count);
       }
-      $smarty->assign('currentGroup', $this->currentGroup);
+      if ($this->groupId != 0)
+        $smarty->assign('currentGroup', $this->currentGroup);
       $smarty->assign('groups', $this->groups);
       $smarty->assign('params', [
         'action' => $this->action,

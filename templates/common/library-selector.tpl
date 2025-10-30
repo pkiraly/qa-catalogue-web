@@ -1,7 +1,7 @@
 <p class="library-selector" style="margin: 0;">
   <input name="groupId" id="groupId" type="hidden" value="{$groupId}">
   <label for="groupName" class="form-label">{_('Library')}:</label>
-  <input id="groupName" value="{$currentGroup->group}" type="text"
+  <input id="groupName" value="{if isset($currentGroup)}{$currentGroup->group}{/if}" type="text"
          class="form-control" size="50" style="display: inline; width: 65%">
   <button type="submit" class="btn">
     <i class="fa fa-search" aria-hidden="true"></i> {_t('select library')}
@@ -28,7 +28,7 @@
     });
     $('#group-reset').on('click', function(e) {
       $("#groupName").val('');
-      $("#groupId").val('');
+      $("#groupId").val(0);
       // e.preventDefault(); // do not submit the form
     });
   });

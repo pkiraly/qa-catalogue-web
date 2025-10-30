@@ -68,12 +68,12 @@ class Completeness extends BaseTab {
           'lang' => $this->lang
         ]);
         $this->currentGroup = $this->selectCurrentGroup();
-        $this->log->warning('currentGroup: ' . json_encode($this->currentGroup));
         if (isset($this->currentGroup->count)) {
           $this->count = $this->currentGroup->count;
           $smarty->assign('count', $this->count);
         }
-        $smarty->assign('currentGroup', $this->currentGroup);
+        if ($this->groupId != 0)
+          $smarty->assign('currentGroup', $this->currentGroup);
         // $smarty->assign('tabSpecificParameters', $this->getTabSpecificParameters());
       }
 
@@ -267,7 +267,6 @@ class Completeness extends BaseTab {
   private function readCompleteness() {
     SchemaUtil::initializeSchema($this->catalogue->getSchemaType());
     if ($this->issueDbIsAvailable() && $this->hasMarcElementTable()) {
-      $this->log->warning('hasDBTable');
       $this->types = $this->getDocumentTypes($this->groupId);
       $start = microtime(true);
       $result = $this->issueDB->getMarcElements($this->type, $this->groupId);
