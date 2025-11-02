@@ -10,6 +10,7 @@ class Record {
   private $basicQueryParameters;
   private $basicFilterParameters;
   private $catalogue;
+  private $id;
   private $log;
   private static bool $isSchemaInitialized = false;
   private static $schema = null;
@@ -25,6 +26,7 @@ class Record {
     $this->configuration = $configuration;
     $this->catalogue = $catalogue;
     $this->log = $log;
+    $this->id = $doc->id;
   }
 
   public function getFirstField($fieldName, $withSpaceReplace = FALSE) {
@@ -184,6 +186,135 @@ class Record {
 
   public function opacLink($id) {
     return $this->catalogue->getOpacLink($id, $this);
+  }
+
+  public function diff($schemaType = 'PICA') {
+    self::initializeSchema($schemaType);
+
+    /*
+    $index = [];
+    foreach ($this->record as $tag => $instances) {
+      if (!isset($index['tag']))
+        $index['tag'] = [];
+      foreach ($instances as $instance) {
+        foreach ($instance->subfields as $code => $value) {
+        }
+      }
+    }
+    */
+
+    // return $this->catalogue->getOpacLink($id, $this);
+    $format = 'pp';
+    if ($format == 'pp') {
+      $remoteRecord = $this->transformPicaFromPP();
+      if (!empty($remoteRecord)) {
+        return $this->compareWithRemoteRecord($remoteRecord);
+      }
+    }
+    return [];
+  }
+
+  private function compareWithRemoteRecord($remote) {
+    $current = $this->transformCurrent();
+    $merged = [];
+
+    foreach ($remote as $tag => $instances) {
+      $transformedInstances = [];
+      foreach ($instances as $instance) {
+        $subfields = [];
+        foreach ($instance as $subfield) {
+          $subfields[] = ['subfield' => $subfield];
+        }
+        $transformedInstances[] = $instance;
+      }
+      $merged[$tag] = ['instances' => $instances];
+      if (!isset($current[$tag])) {
+        $merged[$tag]['color'] = 'green';
+      } else {
+        // foreach ($instances as $instance)
+        if ($instances != $current[$tag]) {
+          // error_log($tag);
+          // error_log(json_encode($instances));
+          // error_log(json_encode($current[$tag]));
+          // $merged[$tag]['color'] = 'blue';
+          foreach ($instances as $key => $instanceB) {
+            $hasPair = true;
+            foreach ($current[$tag] as $instanceA) {
+              if ($instanceB != $instanceA) {
+                $hasPair = false;
+              }
+            }
+            if (!$hasPair) {
+              $subfields = $merged[$tag]['instances'][$key];
+              $merged[$tag]['instances'][$key] = [
+                'color' => 'blue',
+                'subfields' => $subfields,
+              ];
+            }
+          }
+        }
+      }
+    }
+    foreach ($current as $tag => $instances) {
+      if (!isset($remote[$tag])) {
+        $index = array_search($tag, array_keys($current));
+        $previousTag = array_keys($current)[$index-1];
+        $prevIndex = array_search($previousTag, array_keys($merged));
+        $result = array_merge(
+          array_slice($merged, 0, $prevIndex),
+          [$tag => ['instances' => $instances]],
+          array_slice($merged, $prevIndex)
+        );
+        $merged = $result;
+        $merged[$tag]['color'] = 'red';
+      }
+    }
+
+    return $merged;
+  }
+
+  private function transformCurrent() {
+    $current = [];
+    foreach ($this->record as $tag => $instances) {
+      if (!isset($current[$tag]))
+        $current[$tag] = [];
+      foreach ($instances as $instance) {
+        $currentInstance = [];
+        foreach ($instance->subfields as $code => $value) {
+          $currentInstance[] = ['code' => $code, 'value' => $value];
+        }
+        $current[$tag][] = $currentInstance;
+      }
+    }
+
+    return $current;
+  }
+
+  private function transformPicaFromPP() {
+    $url = $this->catalogue->getRecordViaApi($this->id);
+    $record = [];
+    if (!is_null($url)) {
+      $lines = @file($url);
+      if ($lines !== false) {
+        foreach ($lines as $line_num => $line) {
+          $line = trim($line);
+          list($tag, $content) = preg_split('/\s/', $line, 2);
+          if (!isset($record[$tag]))
+            $record[$tag] = [];
+          $subfields = explode('$', substr($content, 1));
+          $instance = [];
+          foreach ($subfields as $subfield) {
+            if ($subfield != '') {
+              $code = substr($subfield, 0, 1);
+              $value = substr($subfield, 1);
+              $instance[] = ['code' => $code, 'value' => $value];
+            }
+          }
+          $record[$tag][] = $instance;
+        }
+      }
+    }
+    return $record;
   }
 
   public function issueLink($id) {

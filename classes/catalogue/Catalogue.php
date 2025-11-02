@@ -13,6 +13,7 @@ class Catalogue {
   ];
   protected $defaultLang = 'en';
   protected $linkTemplate;
+  protected ?string $recordApiTemplate;
 
   public function __construct(Utils\Configuration $configuration, string $schemaType = NULL) {
     $this->name = $this->name ?? $configuration->getCatalogue() ?? '';
@@ -68,5 +69,16 @@ class Catalogue {
 
   public function getDefaultLang(): string {
     return $this->defaultLang;
+  }
+
+  public function getRecordApiTemplate(): ?string {
+    return $this->recordApiTemplate;
+  }
+
+  public function getRecordViaApi($id): ?string {
+    if ($this->recordApiTemplate && $id) {
+      return str_replace('{id}', trim($id), $this->recordApiTemplate);
+    }
+    return null;
   }
 }

@@ -128,7 +128,10 @@ The following parameters can be set either for all catalogues (`parameter=value`
   `start` will be used. The possible values are: `start` (default), `data`, `completeness`, `issues`, `functions`,
   `classifications`, `authorities`, `serials`, `tt-completeness`, `shelf-ready-completeness`, `shacl`, `delta`,
   `translations`, `network`, `terms`, `pareto`, `history`, `timeline`, `settings`, `about`, `record-issues`,
-  `histogram`, `functional-analysis-histogram`, `control-fields`, `download`, `collocations`.
+  `histogram`, `functional-analysis-histogram`, `control-fields`, `download`, `collocations`, `record-diff`.
+  `record-diff` is a special one, it is an extra tab in the record display, that shows the difference between
+  the states or records stored in QA Catalogue and the library database. It requires the `recordApiTemplate` 
+  in the catalogue configuration. 
 - `display-...` (bool) show or hide selected tabs, for instance `display-issues`, `display-shacl`.
   By default all tabs are shown if approriate data is available. `shacl`, `delta`, `translations`
   and `network` are disabled by default.

@@ -374,6 +374,7 @@ class Data extends Facetable {
 
   private function searchAction(Smarty $smarty): void {
     $smarty->assign('showAdvancedSearchForm', $this->configuration->doShowAdvancedSearchForm());
+    $smarty->assign('showRecordDiff', $this->configuration->display('record-diff', false));
     $smarty->assign('query', $this->query);
     $smarty->assign('start', $this->start);
     $smarty->assign('rows', $this->rows);

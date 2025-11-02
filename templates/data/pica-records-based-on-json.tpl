@@ -30,6 +30,12 @@
                id="pica-holdings-tab-{$id}" href="#pica-holdings-{$id}" aria-controls="pica-holdings-tab">{_('Holdings')}</a>
           </li>
         {/if}
+        {if $showRecordDiff}
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
+               id="pica-diff-tab-{$id}" href="#pica-diff-{$id}" aria-controls="pica-diff-tab">{_('Diff')}</a>
+          </li>
+        {/if}
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
              id="pica-solr-tab-{$id}" href="#pica-solr-{$id}" aria-controls="pica-solr-tab">Solr</a>
@@ -53,6 +59,11 @@
         {if $grouped}
           <div class="tab-pane record-tab" id="pica-holdings-{$id}" role="tabpanel" aria-labelledby="data-tab">
             {include 'data/pica/holdings-view.tpl'}
+          </div>
+        {/if}
+        {if $showRecordDiff}
+          <div class="tab-pane record-tab" id="pica-diff-{$id}" role="tabpanel" aria-labelledby="data-tab">
+            {include 'data/pica/diff-view.tpl'}
           </div>
         {/if}
         <div class="tab-pane record-tab" id="pica-solr-{$id}" role="tabpanel" aria-labelledby="data-tab">
