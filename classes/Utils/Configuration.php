@@ -33,6 +33,7 @@ class Configuration {
   private bool $useDataElementInValidationSearch = false;
   private array $display = [];
   private bool $groupSearchByNames = false;
+  private ?string $recordApiForDiff = null;
 
   public static function fromIniFile(string $file, array $defaults=[]) {
 
@@ -97,6 +98,7 @@ class Configuration {
     $this->schema = $this->getValue('schema', null); // 'MARC21'
     $this->linkTemplate = $this->getValue('linkTemplate', null);
     $this->language = $this->getValue('language', null); // 'en'
+    $this->recordApiForDiff = $this->getValue('recordApiForDiff', null);
 
     foreach ($configuration as $key => $value) {
       if (preg_match('/^display-/', $key)) {
@@ -274,6 +276,15 @@ class Configuration {
    */
   public function getLinkTemplate(): ?string {
     return $this->linkTemplate;
+  }
+
+  
+  /**
+   * URL template for the record API of the library catalogue
+   * @return string|null
+   */
+  public function getRecordApiForDiff(): ?string {
+    return $this->recordApiForDiff;
   }
 
   /**

@@ -191,19 +191,6 @@ class Record {
   public function diff($schemaType = 'PICA') {
     self::initializeSchema($schemaType);
 
-    /*
-    $index = [];
-    foreach ($this->record as $tag => $instances) {
-      if (!isset($index['tag']))
-        $index['tag'] = [];
-      foreach ($instances as $instance) {
-        foreach ($instance->subfields as $code => $value) {
-        }
-      }
-    }
-    */
-
-    // return $this->catalogue->getOpacLink($id, $this);
     $format = 'pp';
     if ($format == 'pp') {
       $remoteRecord = $this->transformPicaFromPP();
@@ -231,12 +218,7 @@ class Record {
       if (!isset($current[$tag])) {
         $merged[$tag]['color'] = 'green';
       } else {
-        // foreach ($instances as $instance)
         if ($instances != $current[$tag]) {
-          // error_log($tag);
-          // error_log(json_encode($instances));
-          // error_log(json_encode($current[$tag]));
-          // $merged[$tag]['color'] = 'blue';
           foreach ($instances as $key => $instanceB) {
             $hasPair = true;
             foreach ($current[$tag] as $instanceA) {
@@ -322,6 +304,16 @@ class Record {
       'tab=record-issues',
       // 'action=record',
       'recordId=' . $id,
+      'ajax=1'
+    ]);
+  }
+
+  public function diffLink($id, $schemaType = 'MARC21') {
+    return '?' . join('&', [
+      'tab=record-diff',
+      // 'action=record',
+      'recordId=' . $id,
+      'schema=' . $schemaType,
       'ajax=1'
     ]);
   }
@@ -705,6 +697,10 @@ class Record {
       $tagToDisplay = $text;
 
     return $tagToDisplay;
+  }
+
+  public function getId(): string {
+    return $this->id;
   }
 
 }

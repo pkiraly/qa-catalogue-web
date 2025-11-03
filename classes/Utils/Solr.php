@@ -27,7 +27,7 @@ class Solr {
     $this->solrFieldsFile = $solrFieldsFile;
   }
 
-  public function getSolrResponse($params): object {
+  public function getSolrResponse(array $params): object {
     $url = $this->mainSolrEndpoint . $this->indexName . '/select?' . join('&', $this->encodeParams($params));
     $solrResponse = json_decode(file_get_contents($url));
     if (!$solrResponse) throw new \Exception("Solr request failed");

@@ -28,6 +28,7 @@ abstract class Tab {
     'settings'                 => 'Settings',
     'about'                    => 'About',
     'record-issues'            => 'RecordIssues',
+    'record-diff'              => 'RecordDiff',
     'histogram'                => 'Histogram',
     'functional-analysis-histogram' => 'FunctionalAnalysisHistogram',
     'control-fields'           => 'ControlFields',

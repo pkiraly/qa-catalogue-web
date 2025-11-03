@@ -13,7 +13,7 @@ class Catalogue {
   ];
   protected $defaultLang = 'en';
   protected $linkTemplate;
-  protected ?string $recordApiTemplate;
+  protected ?string $recordApiForDiff;
 
   public function __construct(Utils\Configuration $configuration, string $schemaType = NULL) {
     $this->name = $this->name ?? $configuration->getCatalogue() ?? '';
@@ -25,6 +25,7 @@ class Catalogue {
       $this->schemaType = $configuration->getSchema() ?? $this->schemaType;
     $this->defaultLang = $configuration->getLanguage() ?? $this->defaultLang;
     $this->linkTemplate = $configuration->getLinkTemplate() ?? $this->linkTemplate;
+    $this->recordApiForDiff = $configuration->getRecordApiForDiff();
   }
 
   public function getOpacLink($id, $record) {
@@ -71,13 +72,9 @@ class Catalogue {
     return $this->defaultLang;
   }
 
-  public function getRecordApiTemplate(): ?string {
-    return $this->recordApiTemplate;
-  }
-
   public function getRecordViaApi($id): ?string {
-    if ($this->recordApiTemplate && $id) {
-      return str_replace('{id}', trim($id), $this->recordApiTemplate);
+    if ($this->recordApiForDiff && $id) {
+      return str_replace('{id}', trim($id), $this->recordApiForDiff);
     }
     return null;
   }

@@ -15,5 +15,5 @@ class K10plus_pica_grouped extends Catalogue {
   ];
   protected $defaultLang = 'de';
   protected $linkTemplate = 'https://opac.k10plus.de/DB=2.299/PPNSET?PPN={id}&PRS=HOL&HILN=888&INDEXSET=21';
-  protected ?string $recordApiTemplate = 'http://unapi.k10plus.de/?id=opac-de-627:ppn:{id}&format=pp';
+  // protected ?string $recordApiTemplate = 'http://unapi.k10plus.de/?id=opac-de-627:ppn:{id}&format=pp';
 }

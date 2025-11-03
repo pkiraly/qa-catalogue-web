@@ -1,6 +1,5 @@
 {if $showRecordDiff}
   <h4>{_('Differences between the analysed record and its current status in the catalogue')}</h4>
-  {assign var="diff" value=$record->diff('PICA')}
 
   {if empty($diff)}
     {_t('It is not possible to retrieve the record')}

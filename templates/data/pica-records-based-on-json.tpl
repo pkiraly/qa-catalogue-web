@@ -33,7 +33,7 @@
         {if $showRecordDiff}
           <li class="nav-item">
             <a class="nav-link" data-toggle="tab" role="tab" aria-selected="false"
-               id="pica-diff-tab-{$id}" href="#pica-diff-{$id}" aria-controls="pica-diff-tab">{_('Diff')}</a>
+               id="pica-diff-tab-{$id}" href="{$record->diffLink($id, 'PICA')}" aria-controls="pica-diff-tab" data-id="{$id}">{_('Diff')}</a>
           </li>
         {/if}
         <li class="nav-item">
@@ -63,7 +63,7 @@
         {/if}
         {if $showRecordDiff}
           <div class="tab-pane record-tab" id="pica-diff-{$id}" role="tabpanel" aria-labelledby="data-tab">
-            {include 'data/pica/diff-view.tpl'}
+            <p>retrieving diff...</p>
           </div>
         {/if}
         <div class="tab-pane record-tab" id="pica-solr-{$id}" role="tabpanel" aria-labelledby="data-tab">

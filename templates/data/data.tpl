@@ -127,8 +127,8 @@
       });
     }
 
-    function activateTab(type, id) {
-      issueTabid = type + '-issue-' + id;
+    function activateTab(schema, type, id) {
+      issueTabid = schema + '-' + type + '-' + id;
       $('#details-tab-' + id + ' .tab-pane').each(function() {
         if ($(this).attr('id') == issueTabid) {
           $(this).addClass('active');
@@ -149,7 +149,7 @@
         event.preventDefault();
         var id = $(this).attr('data-id');
         var url = $(this).attr('href');
-        activateTab('marc', id);
+        activateTab('marc', 'issue', id);
         $.ajax(url)
           .done(function(result) {
             $('#marc-issue-' + id).html(result);
@@ -160,12 +160,27 @@
         event.preventDefault();
         var id = $(this).attr('data-id');
         var url = $(this).attr('href');
-        activateTab('pica', id);
+        activateTab('pica', 'issue', id);
         $.ajax(url)
           .done(function(result) {
             $('#pica-issue-' + id).html(result);
           });
       });
+
+      /**
+       * Activate diff tab
+       */
+      $('a[aria-controls="pica-diff-tab"]').click(function(event) {
+        event.preventDefault();
+        var id = $(this).attr('data-id');
+        var url = $(this).attr('href');
+        activateTab('pica', 'diff', id);
+        $.ajax(url)
+          .done(function(result) {
+            $('#pica-diff-' + id).html(result);
+          });
+      });
+
 
       setFacetNavigationClickBehaviour();
     });
