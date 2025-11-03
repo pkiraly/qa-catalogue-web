@@ -601,6 +601,7 @@ abstract class BaseTab extends Tab {
 
   protected function readGroups(): array {
     $groups = readCsv($this->getFilePath('completeness-groups.csv'));
+
     usort($groups, function ($a, $b) {
       if ($a->group == $b->group) return 0;
       return ($a->group < $b->group) ? -1 : 1;
