@@ -10,7 +10,7 @@
       <span style="display: inline; color: red">{_t('removed from the library catalogue')}</span>
     </p>
 
-    <table>
+    <table width="100%">
       {foreach from=$diff key=tag item=tagValue}
         {assign var="prev_index" value=-1}
         {foreach from=$tagValue['instances'] key=instance_index item=instance}
@@ -29,7 +29,7 @@
             <tr {if !empty($color)}style="color:{$color}"{/if}>
               <td>{if $subfield_index == 0 && $instance_index != $prev_index}{$tag}{/if}</td>
               <td>${$subfield['code']}</td>
-              <td>{$subfield['value']}</td>
+              <td style="text-wrap: wrap;">{$subfield['value']}</td>
             </tr>
           {/foreach}
           {assign var="prev_index" value=$instance_index}
