@@ -29,7 +29,7 @@
             <div class="row" {if !empty($color)}style="color:{$color}"{/if}>
               <div class="col-1">{if $subfield_index == 0 && $instance_index != $prev_index}{$tag}{/if}</div>
               <div class="col-1">${$subfield['code']}</div>
-              <div class="col-10" style="text-wrap: wrap; overflow: hidden;">{$subfield['value']}</div>
+              <div class="col-10" style="text-wrap: nowrap; overflow: hidden;">{$subfield['value']|htmlentities}</div>
             </div>
           {/foreach}
           {assign var="prev_index" value=$instance_index}
