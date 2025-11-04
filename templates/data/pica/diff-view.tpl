@@ -2,7 +2,7 @@
   <h4>{_('Differences between the analysed record and its current status in the catalogue')}</h4>
 
   {if empty($diff)}
-    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> {_t('It is not possible to retrieve the record')}
+    <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: var(--highlight-color);"></i> {_t('It is not possible to retrieve the record.')}
   {else}
     <p style="text-align: right; margin: 1em;">{_t('color codes')}:
       <span style="display: inline; color: blue">{_t('changes in the library catalogue')}</span>,
