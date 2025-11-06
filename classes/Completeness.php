@@ -192,7 +192,7 @@ class Completeness extends BaseTab {
             ? -1
             : 1);
       });
-      // FIXME: $dataElementCount is not defined in this method
+      // FIXME: $dataElementCount is not defined in this method (because of the static call)
       // $dataElementCounts = $this->getDataElementCounts();
       $dataElementCounts = null; // TODO: remove this when we can fix the root of the problem (static call)
       if (isset($dataElementCounts) && isset($dataElementCounts['total'])) {
