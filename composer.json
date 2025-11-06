@@ -33,7 +33,21 @@
     "git-version": [
       "Utils\\GitVersion::saveVersion",
       "cat version.ini"
+    ],
+    "set-git-hooks-dir": [
+      "git config core.hooksPath .githooks"
     ]
+  },
+  "scripts-descriptions": {
+    "post-install-cmd": "Runs commands after installation",
+    "translate": "Creates the binary translation files",
+    "lint": "Runs PHP syntax checker",
+    "analyse": "Use PHPStan to analyse code",
+    "test": "Runs unit tests",
+    "checks": "Runs lint, code analysis and unit tests",
+    "release": "Runs release process",
+    "git-version": "Saves git version to version.ini",
+    "set-git-hooks-dir": "Set a directory for the git hooks"
   },
   "repositories": [
     {
