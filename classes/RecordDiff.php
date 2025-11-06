@@ -6,6 +6,7 @@
 class RecordDiff extends BaseTab {
 
   protected $recordId;
+  protected $schema;
   protected $parameterFile = 'validation.params.json';
 
   public function prepareData(Smarty &$smarty) {

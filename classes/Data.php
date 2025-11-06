@@ -23,6 +23,12 @@ class Data extends Facetable {
   private $searchform = 'simple';
   protected $parameterFile = 'marctosolr.params.json';
   private ?array $allGroups;
+  public string $field1;
+  public string $field2;
+  public string $field3;
+  public string $value1;
+  public string $value2;
+  public string $value3;
 
   public function __construct($configuration, $id) {
     parent::__construct($configuration, $id);
@@ -512,13 +518,11 @@ class Data extends Facetable {
     if ($idType == 'errorId') {
       return $this->getRecordIdByErrorId($coreToUse, $id, $groupId, $this->start, $this->rows);
     } else if ($idType == 'categoryId') {
-      // FIXME: $db is not defined
-      $errorIds = $this->issueDB()->fetchAll($db->getErrorIdsByCategoryId($id, $groupId), 'id');
+      $errorIds = $this->issueDB()->fetchAll($this->issueDB()->getErrorIdsByCategoryId($id, $groupId), 'id');
       $this->log->info("errorIds: " . join(', ', $errorIds));
       return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $errorIds) . ')', $groupId, $this->start, $this->rows);
     } else if ($idType == 'typeId') {
-      // FIXME: $db is not defined
-      $errorIds = $this->issueDB()->fetchAll($db->getErrorIdsByTypeId($id, $groupId), 'id');
+      $errorIds = $this->issueDB()->fetchAll($this->issueDB()->getErrorIdsByTypeId($id, $groupId), 'id');
       return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $errorIds) . ')', $groupId, $this->start, $this->rows);
     }
     return null;

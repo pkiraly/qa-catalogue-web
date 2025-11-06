@@ -68,8 +68,6 @@ class Issues extends BaseTab {
 
     if ($this->action == 'download' || $this->action == 'query') {
       $this->processDownloadOrQueryRequest();
-    } elseif ($this->action == 'record') {
-      $this->processRecordRequest($smarty);
     } elseif ($this->action == 'ajaxIssue') {
       $this->processAjaxIssueRequest($smarty);
     } elseif ($this->action == 'ajaxIssueByTag') {
@@ -705,14 +703,6 @@ class Issues extends BaseTab {
     $this->readIssuesAjax($this->categoryId, $this->typeId, $path, $this->order, $this->page, $this->limit);
     $this->assignAjax($smarty);
     $smarty->assign('path', $path);
-  }
-
-  private function processRecordRequest(Smarty $smarty): void {
-    $recordId = getOrDefault('recordId', '');
-    if ($recordId != '') {
-      // FIXME: this method is not defined in this class!
-      $this->getRecordIssues($recordId, $smarty);
-    }
   }
 
   private function processDownloadOrQueryRequest(): void {

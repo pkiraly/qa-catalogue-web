@@ -25,7 +25,7 @@ class Pareto extends BaseTab {
             $files[] = $this->isDockerized() ? $imageDir . '/' . $file : $file;
         }
       } else {
-        $this->log('no image dir found: ' . $imageDir);
+        $this->log->warning('no image dir found: ' . $imageDir);
       }
     }
     return $files;

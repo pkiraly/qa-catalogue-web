@@ -302,7 +302,6 @@ class Record {
   public function issueLink($id) {
     return '?' . join('&', [
       'tab=record-issues',
-      // 'action=record',
       'recordId=' . $id,
       'ajax=1'
     ]);
@@ -311,7 +310,6 @@ class Record {
   public function diffLink($id, $schemaType = 'MARC21') {
     return '?' . join('&', [
       'tab=record-diff',
-      // 'action=record',
       'recordId=' . $id,
       'schema=' . $schemaType,
       'ajax=1'

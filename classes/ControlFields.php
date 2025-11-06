@@ -105,10 +105,6 @@ class ControlFields extends BaseTab {
     }
   }
 
-  private function createTermList() {
-    return $this->solr()->getFacets($this->facet, $this->query, $this->facetLimit, $this->offset);
-  }
-
   private function asCsv($terms) {
     header("Content-type: text/csv");
     echo $this->formatAsCsv($terms);

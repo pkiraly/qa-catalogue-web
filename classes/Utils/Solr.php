@@ -30,7 +30,12 @@ class Solr {
   public function getSolrResponse(array $params): object {
     $url = $this->mainSolrEndpoint . $this->indexName . '/select?' . join('&', $this->encodeParams($params));
     $solrResponse = json_decode(file_get_contents($url));
-    if (!$solrResponse) throw new \Exception("Solr request failed");
+
+    if (!$solrResponse) {
+      $this->log->warning('The failed Solr request: ' . $url);
+      throw new \Exception("Solr request failed");
+    }
+
     return (object)[
       'numFound' => $solrResponse->response->numFound,
       'docs' => $solrResponse->response->docs,

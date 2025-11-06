@@ -124,7 +124,7 @@ abstract class BaseTab extends Tab {
    * @return the name of the template
    */
   public function getTemplate() {
-    // TODO: Implement getTemplate() method.
+    return null;
   }
 
   protected function getFilePath($name): string {

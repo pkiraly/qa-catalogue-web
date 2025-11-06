@@ -109,7 +109,7 @@ class Translations extends BaseTab {
 
     if ($ruleId != '') {
       if ($this->sqliteExists()) {
-        $this->numFound = $this->issueDB()->getRecordIdsByShaclCount($ruleId, $value, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
+        $numFound = $this->issueDB()->getRecordIdsByShaclCount($ruleId, $value, $groupId)->fetchArray(SQLITE3_ASSOC)['count'];
         $result = $this->issueDB()->getRecordIdsByShacl($ruleId, $value, $groupId);
         while ($row = $result->fetchArray(SQLITE3_ASSOC))
           echo $row['id'], "\n";
