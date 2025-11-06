@@ -194,7 +194,8 @@ class Completeness extends BaseTab {
       });
       // FIXME: $dataElementCount is not defined in this method
       // $dataElementCounts = $this->getDataElementCounts();
-      if (isset($dataElementCounts['total'])) {
+      $dataElementCounts = null; // TODO: remove this when we can fix the root of the problem (static call)
+      if (isset($dataElementCounts) && isset($dataElementCounts['total'])) {
         $packages[] = (object)[
           'packageid' => 'total',
           'iscoretag' => false,
