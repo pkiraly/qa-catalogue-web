@@ -31,7 +31,7 @@ class Terms extends Facetable {
     $this->termFilter = getOrDefault('termFilter', '');
     $this->ajaxFacet = getOrDefault('ajax', 0, [0, 1]);
     $this->facetLimit = getOrDefault('limit', 100, [10, 25, 50, 100]);
-    $this->action = getOrDefault('action', 'list', ['list', 'download', 'fields', 'term-count']);
+    $this->action = getOrDefault('action', 'list', ['list', 'download', 'fields', 'term-count', 'json']);
     $this->variant = getOrDefault('variant', 'phrase', ['phrase', 'tokenized']);
 
     $this->params = [
@@ -57,7 +57,9 @@ class Terms extends Facetable {
       $this->termCountAction();
     } else if ($this->action == 'fields') {
       $this->fieldsAction();
-    } else {
+    } else if ($this->action == 'json') {
+      $this->jsonAction();
+    } else { // list
       $this->listAction($smarty);
     }
   }
@@ -293,6 +295,28 @@ class Terms extends Facetable {
       $smarty->assign('solrFields', $this->getFields());
     } catch(Exception $e) {
       $smarty->assign('error', $e->getMessage());
+    }
+  }
+
+  /**
+   * @return void
+   */
+  private function jsonAction(): void {
+
+    if ($this->grouped) {
+      $this->groups = $this->readGroups();
+      $this->currentGroup = $this->selectCurrentGroup();
+      if (isset($this->currentGroup->count))
+        $this->count = $this->currentGroup->count;
+    }
+
+    try {
+      $facets = $this->createTermList();
+      header('Content-Type: application/json; charset=utf-8');
+      print json_encode($facets);
+
+    } catch(Exception $e) {
+      // $smarty->assign('error', $e->getMessage());
     }
   }
 }
