@@ -306,6 +306,7 @@ class Terms extends Facetable {
   private function jsonAction(): void {
     error_log('jsonAction()');
     $this->log->info('jsonAction()');
+    $this->output = 'none';
 
     if ($this->grouped) {
       $this->groups = $this->readGroups();
