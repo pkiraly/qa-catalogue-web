@@ -47,6 +47,7 @@ class Terms extends Facetable {
 
   public function prepareData(Smarty &$smarty) {
     parent::prepareData($smarty);
+    error_log('action: ' . $this->action);
     $this->log->info('action: ' . $this->action);
 
     if ($this->grouped && $this->groupId != 0)
@@ -303,6 +304,7 @@ class Terms extends Facetable {
    * @return void
    */
   private function jsonAction(): void {
+    error_log('jsonAction()');
     $this->log->info('jsonAction()');
 
     if ($this->grouped) {
@@ -318,6 +320,7 @@ class Terms extends Facetable {
       print json_encode($facets);
 
     } catch(Exception $e) {
+      error_log('exception: ' . $e->getMessage());
       $this->log->error($e->getMessage());
     }
   }
