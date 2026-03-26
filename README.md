@@ -162,6 +162,8 @@ The following parameters can be set either for all catalogues (`parameter=value`
 - `language` (string) default language of the user interface
 - `linkTemplate` (string) URL template to link into the library catalogue (`{id}` will be
   replaced by the trimmed record identifier). This parameter does not work for all cataloueg classes.
+- `recordApiForDiff` (string) URL template for the record API of the library catalogue (default is null)
+- `corsHeader` (string) The value for CORS header 'Access-Control-Allow-Origin' see https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS/Errors/CORSMissingAllowOrigin (default is null)
 
 The parameter `include` can be used to include another configuration file and merge its parameters into the base configuration. Recursive inclusion is not supported and include is ignored if the referenced file does not exist.
 

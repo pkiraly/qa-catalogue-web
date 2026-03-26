@@ -313,7 +313,9 @@ class Terms extends Facetable {
 
     try {
       $facets = $this->createTermList();
-      header('Access-Control-Allow-Origin: *');
+      $corsHeader = $this->configuration->getCorsHeader();
+      if (!is_null($corsHeader))
+        header('Access-Control-Allow-Origin: ' . $corsHeader);
       header('Content-Type: application/json; charset=utf-8');
       print json_encode($facets);
 

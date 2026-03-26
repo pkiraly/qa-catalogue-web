@@ -34,6 +34,7 @@ class Configuration {
   private array $display = [];
   private bool $groupSearchByNames = false;
   private ?string $recordApiForDiff = null;
+  private ?string $corsHeader = null;
 
   public static function fromIniFile(string $file, array $defaults=[]) {
 
@@ -99,6 +100,7 @@ class Configuration {
     $this->linkTemplate = $this->getValue('linkTemplate', null);
     $this->language = $this->getValue('language', null); // 'en'
     $this->recordApiForDiff = $this->getValue('recordApiForDiff', null);
+    $this->corsHeader = $this->getValue('corsHeader', null);
 
     foreach ($configuration as $key => $value) {
       if (preg_match('/^display-/', $key)) {
@@ -278,13 +280,21 @@ class Configuration {
     return $this->linkTemplate;
   }
 
-  
   /**
    * URL template for the record API of the library catalogue
    * @return string|null
    */
   public function getRecordApiForDiff(): ?string {
     return $this->recordApiForDiff;
+  }
+
+  /**
+   * The value for CORS header 'Access-Control-Allow-Origin'
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS/Errors/CORSMissingAllowOrigin
+   * @return string|null
+   */
+  public function getCorsHeader(): ?string {
+    return $this->corsHeader;
   }
 
   /**
