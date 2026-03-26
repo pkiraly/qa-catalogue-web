@@ -313,6 +313,7 @@ class Terms extends Facetable {
 
     try {
       $facets = $this->createTermList();
+      header('Access-Control-Allow-Origin: *');
       header('Content-Type: application/json; charset=utf-8');
       print json_encode($facets);
 
