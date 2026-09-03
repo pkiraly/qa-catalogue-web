@@ -29,6 +29,7 @@ class Data extends Facetable {
   public string $value1;
   public string $value2;
   public string $value3;
+  private string $fieldPrefix;
 
   public function __construct($configuration, $id) {
     parent::__construct($configuration, $id);
@@ -81,6 +82,10 @@ class Data extends Facetable {
           $this->groupBy = $this->analysisParameters->groupBy;
         if (isset($this->analysisParameters->analysisTimestamp))
           $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
+
+        if (!is_null($this->analysisParameters) && !empty($this->analysisParameters->fieldPrefix))
+          $this->fieldPrefix = $this->analysisParameters->fieldPrefix;
+
         $this->searchAction($smarty);
      }
     } catch(Exception $e) {
@@ -338,8 +343,7 @@ class Data extends Facetable {
 
   public function getRecord($doc) {
     $record = new Record($doc, $this->configuration, $this->catalogue, $this->log);
-    if (!is_null($this->analysisParameters) && !empty($this->analysisParameters->fieldPrefix))
-      $record->setFieldPrefix($this->analysisParameters->fieldPrefix);
+    $record->setFieldPrefix($this->fieldPrefix);
     $record->setBasicQueryParameters($this->getBasicUrl(['query', 'filters']));
     $record->setBasicFilterParameters($this->getBasicUrl([]));
     return $record;
