@@ -15,6 +15,7 @@ class Record {
   private static bool $isSchemaInitialized = false;
   private static $schema = null;
   private static $fields = null;
+  private $fieldPrefix = null;
 
   /**
    * Record constructor.
@@ -27,10 +28,15 @@ class Record {
     $this->catalogue = $catalogue;
     $this->log = $log;
     $this->id = $doc->id;
+    // $controller->getAnalysisParameters
   }
 
   public function getFirstField($fieldName, $withSpaceReplace = FALSE) {
     $value = null;
+    if (!is_null($this->fieldPrefix))
+      // $fieldName = preg_replace('/^' . $this->fieldPrefix . '/', '', $fieldName);
+      $fieldName = $this->fieldPrefix . $fieldName;
+
     if (isset($this->doc->{$fieldName})) {
       $value = $this->doc->{$fieldName}[0];
       if ($withSpaceReplace) {
@@ -699,6 +705,10 @@ class Record {
 
   public function getId(): string {
     return $this->id;
+  }
+
+  public function setFieldPrefix(string $fieldPrefix): void {
+    $this->fieldPrefix = $fieldPrefix;
   }
 
 }

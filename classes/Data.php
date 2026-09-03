@@ -338,6 +338,8 @@ class Data extends Facetable {
 
   public function getRecord($doc) {
     $record = new Record($doc, $this->configuration, $this->catalogue, $this->log);
+    if (!is_null($this->analysisParameters) && !empty($this->analysisParameters->fieldPrefix))
+      $record->setFieldPrefix($this->analysisParameters->fieldPrefix);
     $record->setBasicQueryParameters($this->getBasicUrl(['query', 'filters']));
     $record->setBasicFilterParameters($this->getBasicUrl([]));
     return $record;

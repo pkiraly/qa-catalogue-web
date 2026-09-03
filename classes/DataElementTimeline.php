@@ -40,6 +40,7 @@ class DataElementTimeline extends BaseTab {
   private function downloadAction($dataElement): void {
     $this->output = 'none';
     header('Content-Type: text/csv; charset=utf-8');
+    // header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-{RANDOM_NONCE}' 'strict-dynamic'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none';");
 
     $query = 'q=' . urlencode($dataElement . ':*');
     $facetQueries = [];

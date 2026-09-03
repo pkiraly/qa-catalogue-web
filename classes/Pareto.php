@@ -7,6 +7,9 @@ class Pareto extends BaseTab {
     parent::prepareData($smarty);
 
     $smarty->assign('files', $this->listFiles());
+
+    $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
+    $smarty->assign('grouped', $this->grouped);
   }
 
   public function getTemplate() {
