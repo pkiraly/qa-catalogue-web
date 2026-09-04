@@ -2,26 +2,28 @@
 
 use Schema\Pica\PicaSchemaManager;
 use Schema\Unimarc\UnimarcSchemaManager;
+use Utils\Configuration;
+use Catalogue;
 
 class Record {
-  private $configuration;
+  private Configuration $configuration;
   private $doc;
   private $record;
   private $basicQueryParameters;
   private $basicFilterParameters;
-  private $catalogue;
+  private Catalogue $catalogue;
   private $id;
   private $log;
   private static bool $isSchemaInitialized = false;
   private static $schema = null;
   private static $fields = null;
-  private $fieldPrefix = null;
+  private ?string $fieldPrefix = null;
 
   /**
    * Record constructor.
    * @param $doc
    */
-  public function __construct($doc, $configuration, $catalogue, $log) {
+  public function __construct($doc, Configuration $configuration, Catalogue $catalogue, $log) {
     $this->doc = $doc;
     $this->record = json_decode($doc->record_sni);
     $this->configuration = $configuration;
@@ -717,6 +719,31 @@ class Record {
 
   public function setFieldPrefix(string $fieldPrefix): void {
     $this->fieldPrefix = $fieldPrefix;
+  }
+
+  public function needsAuthorSeparator(): bool {
+    if ($this->catalogue->getSchemaType() == 'MARC21') {
+      $field = $this->getField('245');
+      $subfield = property_exists($field->subfields, 'b')
+        ? $field->subfields->{'b'}
+        : $field->subfields->{'a'};
+      $subfield = is_array($subfield) ? $subfield[0] : $subfield;
+
+      return !preg_match('/\/\s*$/', $subfield);
+    }
+    return false;
+  }
+
+  public function needsSubtitleSeparator(): bool {
+    if ($this->catalogue->getSchemaType() == 'MARC21') {
+      $field = $this->getField('245');
+      if (property_exists($field->subfields, 'a')) {
+        $subfield = $field->subfields->{'a'};
+        $subfield = is_array($subfield) ? $subfield[0] : $subfield;
+        return !preg_match('/:\s*$/', $subfield);
+      }
+    }
+    return false;
   }
 
 }
