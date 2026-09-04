@@ -34,17 +34,8 @@
   <br />
 {/if}
 
-{if $record->hasPublication()}
-  {* 250a_Edition_editionStatement_ss *}
-  {assign var="tag260" value=$record->getField('260')}
-  <i class="fa fa-calendar" aria-hidden="true"></i>
-  Published
-  {include 'data/conditional-foreach.tpl' obj=$tag260->subfields key='a' label='in' tag='260a'}{* 260a_Publication_place_ss *}
-  {include 'data/conditional-foreach.tpl' obj=$tag260->subfields key='b' label='by' tag='260b'}{* 260b_Publication_agent_ss *}
-  {include 'data/conditional-foreach.tpl' obj=$tag260->subfields key='c' label='in' tag='260c'}{* 260c_Publication_date_ss *}
-  <br />
-{/if}
-
+{* Production, Publication, Distribution, Manufacture, and Copyright Notice *}
+{include 'marc/260.tpl'}
 {include 'marc/264.tpl'}
 
 {if $record->hasPhysicalDescription()}

@@ -28,13 +28,11 @@ class Record {
     $this->catalogue = $catalogue;
     $this->log = $log;
     $this->id = $doc->id;
-    // $controller->getAnalysisParameters
   }
 
   public function getFirstField($fieldName, $withSpaceReplace = FALSE) {
     $value = null;
     if (!is_null($this->fieldPrefix))
-      // $fieldName = preg_replace('/^' . $this->fieldPrefix . '/', '', $fieldName);
       $fieldName = $this->fieldPrefix . $fieldName;
 
     if (isset($this->doc->{$fieldName})) {
@@ -44,6 +42,16 @@ class Record {
       }
     }
     return $value;
+  }
+
+  private function hasSubfield($fieldName, $subfieldName) {
+    if ($this->hasField($fieldName)) {
+      foreach ($this->doc->{$fieldName} as $field) {
+        if (property_exists($field->subfields, $subfieldName))
+          return true;
+      }
+    }
+    return false;
   }
 
   public function getField($fieldName) {
