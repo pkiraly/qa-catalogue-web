@@ -608,6 +608,9 @@ class Record {
 
   public function filter($field, $value) {
     $filters = [];
+    if (!is_null($this->fieldPrefix))
+      $field = $this->fieldPrefix . $field;
+
     if (is_array($value))
       foreach ($value as $v)
         $filters[] = 'filters[]=' . urlencode(sprintf('%s:"%s"', $field, $v));
