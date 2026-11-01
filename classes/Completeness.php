@@ -466,7 +466,7 @@ class Completeness extends BaseTab {
     return '?' . join('&', $params);
   }
 
-  public function createFieldQueryLink($record): string {
+  public function createFieldQueryLink($tag): string {
     static $baseParams;
     if (!isset($baseParams)) {
       $baseParams = [
@@ -477,7 +477,7 @@ class Completeness extends BaseTab {
         $baseParams[] = 'groupId=' . $this->groupId;
     }
     $params = $baseParams;
-    $params[] = sprintf('query=%s:%s', $record->solrCountField, urlencode('*'));
+    $params[] = sprintf('query=%s:%s', $tag->solrCountField, urlencode('*'));
     return '?' . join('&', $params);
   }
 
@@ -641,13 +641,13 @@ class Completeness extends BaseTab {
       if ($record->solr !== false) {
         $record->solrCountField = preg_replace('/(_full)?_ss$/', '_count_i', $record->solr);
       } else {
-        $solr = $record->path;
-        $solr = str_replace('/', '_', $solr);
-        $solr = str_replace('@', '_', $solr);
-        if (preg_match('/[^A-Z0-9_]/', $solr)) {
-          $this->log->warning('with wrong character: ' . $solr);
+        $solrField = $record->path;
+        $solrField = str_replace('/', '_', $solrField);
+        $solrField = str_replace('@', '_', $solrField);
+        if (preg_match('/[^A-Z0-9_]/', $solrField)) {
+          $this->log->warning('with wrong character: ' . $solrField);
         }
-        $record->solrCountField = 'bib' . $solr . '_count_i';
+        $record->solrCountField = $this->getFieldPrefix() . $solrField . '_count_i';
       }
     }
   }

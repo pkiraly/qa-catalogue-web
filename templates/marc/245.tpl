@@ -5,8 +5,10 @@
   {foreach from=$fieldInstances item=field name=fields}
     <span class="245">
       {foreach from=$field->subfields key=code item=value name=subfields}
-        {if $code == 'c' && $record->getLeaderByPosition(18) == 'c'}/{/if}
-        {if $code == 'b' && $record->getLeaderByPosition(18) == 'c'}:{/if}
+        {if $code == 'b' && $record->needsSubtitleSeparator()}:{/if}
+        {* if $code == 'b' && $record->getLeaderByPosition(18) == 'c'}:{/if *}
+        {if $code == 'c' && $record->needsAuthorSeparator()}/{/if}
+        {*if $code == 'c' && $record->getLeaderByPosition(18) == 'c'}/{/if *}
         <span class="{$code}">
           {if is_array($value)}
             {foreach from=$value item=v name=v}

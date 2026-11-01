@@ -772,3 +772,7 @@ p.metric-definition {
 .fa-chart-line {
   color: #999999;
 }
+
+.field-label {
+  color: #cccccc;
+}

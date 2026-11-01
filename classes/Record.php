@@ -2,25 +2,28 @@
 
 use Schema\Pica\PicaSchemaManager;
 use Schema\Unimarc\UnimarcSchemaManager;
+use Utils\Configuration;
+use Catalogue;
 
 class Record {
-  private $configuration;
+  private Configuration $configuration;
   private $doc;
   private $record;
   private $basicQueryParameters;
   private $basicFilterParameters;
-  private $catalogue;
+  private Catalogue $catalogue;
   private $id;
   private $log;
   private static bool $isSchemaInitialized = false;
   private static $schema = null;
   private static $fields = null;
+  private ?string $fieldPrefix = null;
 
   /**
    * Record constructor.
    * @param $doc
    */
-  public function __construct($doc, $configuration, $catalogue, $log) {
+  public function __construct($doc, Configuration $configuration, Catalogue $catalogue, $log) {
     $this->doc = $doc;
     $this->record = json_decode($doc->record_sni);
     $this->configuration = $configuration;
@@ -31,6 +34,9 @@ class Record {
 
   public function getFirstField($fieldName, $withSpaceReplace = FALSE) {
     $value = null;
+    if (!is_null($this->fieldPrefix))
+      $fieldName = $this->fieldPrefix . $fieldName;
+
     if (isset($this->doc->{$fieldName})) {
       $value = $this->doc->{$fieldName}[0];
       if ($withSpaceReplace) {
@@ -38,6 +44,16 @@ class Record {
       }
     }
     return $value;
+  }
+
+  private function hasSubfield($fieldName, $subfieldName) {
+    if ($this->hasField($fieldName)) {
+      foreach ($this->doc->{$fieldName} as $field) {
+        if (property_exists($field->subfields, $subfieldName))
+          return true;
+      }
+    }
+    return false;
   }
 
   public function getField($fieldName) {
@@ -592,6 +608,9 @@ class Record {
 
   public function filter($field, $value) {
     $filters = [];
+    if (!is_null($this->fieldPrefix))
+      $field = $this->fieldPrefix . $field;
+
     if (is_array($value))
       foreach ($value as $v)
         $filters[] = 'filters[]=' . urlencode(sprintf('%s:"%s"', $field, $v));
@@ -699,6 +718,35 @@ class Record {
 
   public function getId(): string {
     return $this->id;
+  }
+
+  public function setFieldPrefix(string $fieldPrefix): void {
+    $this->fieldPrefix = $fieldPrefix;
+  }
+
+  public function needsAuthorSeparator(): bool {
+    if ($this->catalogue->getSchemaType() == 'MARC21') {
+      $field = $this->getField('245');
+      $subfield = property_exists($field->subfields, 'b')
+        ? $field->subfields->{'b'}
+        : $field->subfields->{'a'};
+      $subfield = is_array($subfield) ? $subfield[0] : $subfield;
+
+      return !preg_match('/\/\s*$/', $subfield);
+    }
+    return false;
+  }
+
+  public function needsSubtitleSeparator(): bool {
+    if ($this->catalogue->getSchemaType() == 'MARC21') {
+      $field = $this->getField('245');
+      if (property_exists($field->subfields, 'a')) {
+        $subfield = $field->subfields->{'a'};
+        $subfield = is_array($subfield) ? $subfield[0] : $subfield;
+        return !preg_match('/:\s*$/', $subfield);
+      }
+    }
+    return false;
   }
 
 }
