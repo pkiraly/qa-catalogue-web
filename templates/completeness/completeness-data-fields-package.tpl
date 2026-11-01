@@ -19,7 +19,6 @@
     {include 'completeness/completeness-numbers.tpl'}
   </tr>
   {foreach from=$dataField['subfields'] item=subfield}
-    {* assign var="record" value=$subfield *}
     <tr class="subfield-level completeness-{$subfield->websafeTag}">
       <td class="path" id="completeness-{$subfield->path}">
         {if $subfield->isLeader || $subfield->isComplexControlField || !$subfield->isField
