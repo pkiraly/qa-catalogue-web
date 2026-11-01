@@ -776,3 +776,7 @@ p.metric-definition {
 .field-label {
   color: #cccccc;
 }
+
+tr.issue-list-row.even {
+  background-color: #eeeeee;
+}

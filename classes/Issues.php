@@ -605,7 +605,7 @@ class Issues extends BaseTab {
     }
     $params = $baseParams;
     $params[] = 'query=' . $query;
-    if (preg_match('/^errorId:/', $query))
+    if (preg_match('/^(errorId|categoryId|typeId):/', $query))
       $params[] = 'type=issues';
 
     return '?' . join('&', $params);

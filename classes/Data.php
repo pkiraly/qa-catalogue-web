@@ -80,6 +80,8 @@ class Data extends Facetable {
         $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
         if ($this->grouped)
           $this->groupBy = $this->analysisParameters->groupBy;
+        else
+          $this->groupId = '';
 
         if (isset($this->analysisParameters->analysisTimestamp))
           $smarty->assign('analysisTimestamp', $this->analysisParameters->analysisTimestamp);
@@ -130,6 +132,7 @@ class Data extends Facetable {
     if ($this->type == 'issues') {
       if (preg_match('/^(categoryId|typeId|errorId):(\d+)$/', $this->query, $matches)) {
         if ($this->isGroupAndErrorIdIndexed()) {
+          // TODO: use categoryId_is, typeId_is ...
           $query = $this->getQueryForMainCore($matches);
           $solrParams[] = 'start=' . $this->start;
         } else {
@@ -386,7 +389,6 @@ class Data extends Facetable {
   }
 
   private function searchAction(Smarty $smarty): void {
-    error_log('getRecordApiForDiff: ' . $this->configuration->getRecordApiForDiff());
     $smarty->assign('showAdvancedSearchForm', $this->configuration->doShowAdvancedSearchForm());
     $smarty->assign('showRecordDiff', !is_null($this->configuration->getRecordApiForDiff()));
     $smarty->assign('query', $this->query);
@@ -524,11 +526,12 @@ class Data extends Facetable {
   private function prepareParametersForIssueQueriesSolr(string $idType, $id, $groupId, string $coreToUse): ?array {
     if ($idType == 'errorId') {
       return $this->getRecordIdByErrorId($coreToUse, $id, $groupId, $this->start, $this->rows);
-    } else if ($idType == 'categoryId') {
+    }
+    else if ($idType == 'categoryId') {
       $errorIds = $this->issueDB()->fetchAll($this->issueDB()->getErrorIdsByCategoryId($id, $groupId), 'id');
-      $this->log->info("errorIds: " . join(', ', $errorIds));
       return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $errorIds) . ')', $groupId, $this->start, $this->rows);
-    } else if ($idType == 'typeId') {
+    }
+    else if ($idType == 'typeId') {
       $errorIds = $this->issueDB()->fetchAll($this->issueDB()->getErrorIdsByTypeId($id, $groupId), 'id');
       return $this->getRecordIdByErrorId($coreToUse, '(' . join(' OR ', $errorIds) . ')', $groupId, $this->start, $this->rows);
     }
@@ -571,8 +574,8 @@ class Data extends Facetable {
 
   private function isGroupAndErrorIdIndexed() {
     return !is_null($this->indexingParameters)
-           && isset($this->indexingParameters->validationUrl)
-           && in_array('errorId_is', $this->solr()->getSolrFields());
+           && (isset($this->indexingParameters->validationUrl)
+           || in_array('errorId_is', $this->solr()->getSolrFields()));
   }
 
   /**

@@ -5,7 +5,7 @@
    $recordCount
    $path
 *}
-<tr class="t t-{$categoryId}-{$typeId} text-centered">
+<tr class="issue-list-commands t t-{$categoryId}-{$typeId} text-centered">
   <td colspan="8">
     {_('count')}: {$recordCount} |
     {if $listType == 'filtered-list'}

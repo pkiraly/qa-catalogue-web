@@ -1,5 +1,6 @@
+{* table header *}
 {if count($records) > 1}
-  <tr class="t t-{$categoryId}-{$typeId} x-{$categoryId}-{$typeId}">
+  <tr class="issue-list-header t t-{$categoryId}-{$typeId} x-{$categoryId}-{$typeId}">
     <td class="path">
       <a class="clickMore clickMore-{$categoryId}-{$typeId}" data-id="{$categoryId}-{$typeId}" data-page="{$categoryId}-{$typeId}-0"
          href="{$controller->sortIssuesLink($categoryId, $typeId, $path, 'MarcPath ASC')}">
@@ -39,8 +40,9 @@
     <td class="percent text-right"></td>
   </tr>
 {/if}
+{* table rows -- issues *}
 {foreach from=$records item="rowData" name="foo"}
-  <tr class="t t-{$categoryId}-{$typeId} x-{$categoryId}-{$typeId} {if $smarty.foreach.foo.index % 2 == 1}odd{/if}">
+  <tr class="issue-list-row t t-{$categoryId}-{$typeId} x-{$categoryId}-{$typeId} {if $smarty.foreach.foo.index % 2 == 1}odd{else}even{/if}">
     <td class="path">
       {if empty($rowData->url)}
         {if isset($rowData->withPica3)}{$rowData->withPica3}{else}{$rowData->path}{/if}
@@ -65,4 +67,5 @@
     <td class="percent text-right" title="{$rowData->percent|number_format:8}%">{$rowData->percent|number_format:2}</td>
   </tr>
 {/foreach}
+{* table footer -- commands for issues *}
 {include file="issues/issue-list-navigation.tpl"}
