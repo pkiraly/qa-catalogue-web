@@ -298,7 +298,7 @@ class Configuration {
   }
 
   /**
-   * Create a logget
+   * Create a logger
    * @param $name The name of the logger
    * @return Logger
    */

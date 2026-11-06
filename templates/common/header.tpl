@@ -19,13 +19,13 @@
     <span class="header-info">
     {include 'common/group-selector.tpl'}
       {if $count > 0}
-        {_('number of records')}: <strong>{$count|number_format}</strong>
+        {_('number of records')}: <strong id="header-info-count">{$count|number_format}</strong>
       {/if}
       {if isset($lastUpdate) && $lastUpdate != ''}
-        &nbsp; &nbsp; {_('last data update')}: <strong>{$lastUpdate}</strong>
+        &nbsp; &nbsp; {_('last data update')}: <strong id="header-info-update">{$lastUpdate}</strong>
       {/if}
       {if isset($analysisTimestamp)}
-        &nbsp; &nbsp; {_('timestamp of analysis')}: <strong>{$analysisTimestamp}</strong>
+        &nbsp; &nbsp; {_('timestamp of analysis')}: <strong id="header-info-timestamp">{$analysisTimestamp}</strong>
       {/if}
       {if isset($analysisDuration)}
         ({$analysisDuration})
