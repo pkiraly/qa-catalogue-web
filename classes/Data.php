@@ -30,6 +30,7 @@ class Data extends Facetable {
   public string $value2;
   public string $value3;
   private string $fieldPrefix = '';
+  public $currentGroup;
 
   public function __construct($configuration, $id) {
     parent::__construct($configuration, $id);
@@ -78,9 +79,11 @@ class Data extends Facetable {
       } else {
         parent::prepareData($smarty);
         $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
-        if ($this->grouped)
+        if ($this->grouped) {
           $this->groupBy = $this->analysisParameters->groupBy;
-        else
+          $this->currentGroup = $this->selectCurrentGroup();
+          $smarty->assign('currentGroup', $this->currentGroup);
+        } else
           $this->groupId = '';
 
         if (isset($this->analysisParameters->analysisTimestamp))
