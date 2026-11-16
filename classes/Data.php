@@ -79,6 +79,7 @@ class Data extends Facetable {
       } else {
         parent::prepareData($smarty);
         $this->grouped = !is_null($this->analysisParameters) && !empty($this->analysisParameters->groupBy);
+        $smarty->assign('grouped', $this->grouped);
         if ($this->grouped) {
           $this->groupBy = $this->analysisParameters->groupBy;
           $this->currentGroup = $this->selectCurrentGroup();
