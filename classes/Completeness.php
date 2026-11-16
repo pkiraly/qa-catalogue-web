@@ -110,7 +110,6 @@ class Completeness extends BaseTab {
           $group->isil = $matches[1];
         }
       }
-      $this->log->warning('groups: ' . json_encode($groups));
       $labels = [];
       foreach ($groups as $group) {
         if ($this->configuration->groupSearchByNames()) {

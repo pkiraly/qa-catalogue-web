@@ -164,6 +164,8 @@ The following parameters can be set either for all catalogues (`parameter=value`
   replaced by the trimmed record identifier). This parameter does not work for all cataloueg classes.
 - `recordApiForDiff` (string) URL template for the record API of the library catalogue (default is null)
 - `corsHeader` (string) The value for CORS header 'Access-Control-Allow-Origin' see https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS/Errors/CORSMissingAllowOrigin (default is null)
+- `extractGitVersion` (bool) enable to extract git version to be displayed on the bottom of the tabs. Default: true.
+- `groupSearchByNames` (bool) enable searching groups by their name. Default: false.
 
 The parameter `include` can be used to include another configuration file and merge its parameters into the base configuration. Recursive inclusion is not supported and include is ignored if the referenced file does not exist.
 
