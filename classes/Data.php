@@ -30,6 +30,7 @@ class Data extends Facetable {
   public string $value2;
   public string $value3;
   private string $fieldPrefix = '';
+  public array $groups;
   public $currentGroup;
 
   public function __construct($configuration, $id) {
@@ -82,6 +83,8 @@ class Data extends Facetable {
         $smarty->assign('grouped', $this->grouped);
         if ($this->grouped) {
           $this->groupBy = $this->analysisParameters->groupBy;
+          $this->groups = $this->readGroups();
+          $smarty->assign('groups', $this->groups);
           $this->currentGroup = $this->selectCurrentGroup();
           $smarty->assign('currentGroup', $this->currentGroup);
         } else
